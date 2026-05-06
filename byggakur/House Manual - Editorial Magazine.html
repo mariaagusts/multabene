@@ -201,13 +201,11 @@
   .welcome .signoff { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 24px; color: var(--ink); margin-top: 24px; }
   .welcome-art {
     aspect-ratio: 4/5;
-    background: linear-gradient(180deg, #d4d8c0 0%, #abb89a 50%, #6e7d6a 100%);
     position: relative; overflow: hidden;
     border-radius: 2px;
   }
-  .welcome-art::before {
-    content: ''; position: absolute; inset: 0;
-    background-image: repeating-linear-gradient(45deg, transparent 0 16px, rgba(0,0,0,0.04) 16px 17px);
+  .welcome-art img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center;
   }
   .welcome-art .lab {
     position: absolute; bottom: 16px; left: 16px;
@@ -1121,7 +1119,7 @@ out.push(sec('welcome', '01', 'Welcome', '<em>Make</em> yourself<br>at home.', '
       <p>This is our home, not a rental property, please make yourself comfortable. Help yourself to anything in the kitchen. The Wi-Fi is fast, the water is the cleanest you'll ever drink, and the hot tub is, frankly, the best part of the house.</p>
       <div class="signoff">${M.welcome.signoff}</div>
     </div>
-    <div class="welcome-art"><div class="lab">Photo · Garden & house</div></div>
+    <div class="welcome-art"><img src="yfirlit.jpg" alt="Aerial view of Byggakur 12"><div class="lab">Photo · Garden & house</div></div>
   </div>`
 ));
 
