@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Byggakur 12 — House Manual · Three directions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;400;500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f3ee;
+    --paper: #fff;
+    --ink: #14140f;
+    --ink-2: #4d4c45;
+    --ink-3: #88857c;
+    --rule: #d4d2c8;
+    --accent: #2e3d2c;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 64px 32px 96px; }
+  @media (max-width: 700px) { .wrap { padding: 36px 20px; } }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3);
+    display: flex; gap: 12px; align-items: center;
+  }
+  .eyebrow .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+  h1 {
+    font-family: 'Fraunces', serif; font-weight: 300;
+    font-size: clamp(40px, 6vw, 72px); line-height: 1; letter-spacing: -0.03em;
+    margin: 24px 0 24px;
+  }
+  h1 em { font-style: italic; color: var(--ink-2); }
+  .intro { font-size: 18px; color: var(--ink-2); max-width: 60ch; line-height: 1.55; margin: 0 0 64px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--paper); border-radius: 8px;
+    padding: 32px; display: flex; flex-direction: column;
+    text-decoration: none; color: var(--ink);
+    transition: transform .15s, box-shadow .15s;
+    border: 1px solid var(--rule);
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -20px rgba(0,0,0,0.15); }
+  .card .num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; color: var(--ink-3); text-transform: uppercase; }
+  .card h3 { font-family: 'Fraunces', serif; font-weight: 400; font-size: 28px; line-height: 1.1; letter-spacing: -0.01em; margin: 16px 0 8px; }
+  .card .desc { font-size: 14px; color: var(--ink-2); line-height: 1.55; margin: 0 0 20px; flex: 1; }
+  .preview {
+    aspect-ratio: 4/3; border-radius: 4px; overflow: hidden; margin-bottom: 20px;
+    border: 1px solid var(--rule);
+  }
+  .preview iframe { width: 320%; height: 320%; transform: scale(0.31); transform-origin: top left; border: 0; pointer-events: none; }
+  .swatches { display: flex; gap: 6px; margin-top: 8px; }
+  .sw { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.08); }
+  .cta { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-top: 16px; }
+
+  .additions {
+    margin-top: 96px; padding: 48px;
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 8px;
+  }
+  @media (max-width: 700px) { .additions { padding: 28px 20px; } }
+  .additions h2 { font-family: 'Fraunces', serif; font-weight: 300; font-size: 36px; letter-spacing: -0.02em; margin: 0 0 8px; }
+  .additions .sub { color: var(--ink-2); font-size: 15px; max-width: 60ch; margin: 0 0 32px; }
+  .add-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; }
+  @media (max-width: 700px) { .add-grid { grid-template-columns: 1fr; } }
+  .add {
+    padding: 18px 0; border-top: 1px solid var(--rule);
+    display: grid; grid-template-columns: 28px 1fr; gap: 14px; align-items: start;
+  }
+  .add:nth-last-child(-n+2) { border-bottom: 1px solid var(--rule); }
+  .add .ico { color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 11px; padding-top: 2px; }
+  .add h4 { font-size: 15px; font-weight: 600; margin: 0 0 4px; }
+  .add p { font-size: 13px; color: var(--ink-2); margin: 0; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow"><span class="dot"></span><span>House Manual · Three directions to compare</span></div>
+  <h1>Byggakur 12 —<br><em>house manual</em>, redesigned.</h1>
+  <p class="intro">Three takes on your manual, all built from the same content. They share a Nordic-minimal sensibility but differ in tone — pick the one that feels most "you", and we'll iterate from there. Every direction is a single scrolling page with a sticky table of contents, a dedicated 112 emergency card, and is print-friendly for keeping a paper copy in the house.</p>
+
+  <div class="grid">
+    <a class="card" href="House Manual - Editorial.html">
+      <div class="preview"><iframe src="House Manual - Editorial.html" loading="lazy"></iframe></div>
+      <div class="num">Direction 01</div>
+      <h3>Editorial &amp; warm</h3>
+      <p class="desc">A serif display face (Fraunces) on warm off-white, paired with a clean Inter for body. Quiet, confident, lots of horizontal rules. Feels like a Kinfolk-y guidebook.</p>
+      <div class="swatches">
+        <div class="sw" style="background:#f5f1ea"></div>
+        <div class="sw" style="background:#1c1a17"></div>
+        <div class="sw" style="background:#2e3d2c"></div>
+        <div class="sw" style="background:#b8531c"></div>
+      </div>
+      <div class="cta">Open direction 01 →</div>
+    </a>
+
+    <a class="card" href="House Manual - Modular.html">
+      <div class="preview"><iframe src="House Manual - Modular.html" loading="lazy"></iframe></div>
+      <div class="num">Direction 02</div>
+      <h3>Modular &amp; cool</h3>
+      <p class="desc">Each section is a rounded card on a cool gray field. All-sans-serif (Manrope), fjord-blue accents, hover states, an interactive checkout list. Feels like a modern product page.</p>
+      <div class="swatches">
+        <div class="sw" style="background:#ececec"></div>
+        <div class="sw" style="background:#18181b"></div>
+        <div class="sw" style="background:#1f4068"></div>
+        <div class="sw" style="background:#d8443a"></div>
+      </div>
+      <div class="cta">Open direction 02 →</div>
+    </a>
+
+    <a class="card" href="House Manual - Editorial Magazine.html">
+      <div class="preview"><iframe src="House Manual - Editorial Magazine.html" loading="lazy"></iframe></div>
+      <div class="num">Direction 03</div>
+      <h3>Atmospheric &amp; magazine</h3>
+      <p class="desc">A full-bleed dark hero with mountain silhouettes, oversized Instrument Serif italics, a burnt-sienna accent, and a full-bleed Northern Lights section. Most cinematic — feels like a travel magazine spread.</p>
+      <div class="swatches">
+        <div class="sw" style="background:#f4f3ee"></div>
+        <div class="sw" style="background:#14140f"></div>
+        <div class="sw" style="background:#7a4a1f"></div>
+        <div class="sw" style="background:#88e0b8"></div>
+      </div>
+      <div class="cta">Open direction 03 →</div>
+    </a>
+  </div>
+
+  <div class="additions">
+    <h2>What I added to your manual</h2>
+    <p class="sub">Beyond redesigning what was there, I drafted a few new sections that house manuals usually benefit from. All copy is in <code style="background:rgba(0,0,0,0.05);padding:2px 6px;border-radius:3px;font-size:12px;">content.js</code> — easy to edit, change, or delete anything.</p>
+
+    <div class="add-grid">
+      <div class="add"><div class="ico">+1</div><div><h4>Arrival checklist</h4><p>Six things to do in the first five minutes — find the key box, lift the door handle to lock, shoes off, Wi-Fi, thermostat, text María.</p></div></div>
+      <div class="add"><div class="ico">+2</div><div><h4>Quick-facts strip</h4><p>Wi-Fi, key code, check-in, greenhouse code, parking, and "drink the tap water!" — a glance-and-go reference at the top.</p></div></div>
+      <div class="add"><div class="ico">+3</div><div><h4>Dedicated 112 card</h4><p>Pulled emergency info out of the body and into a styled card next to the welcome — visible without scrolling.</p></div></div>
+      <div class="add"><div class="ico">+4</div><div><h4>House rules summary</h4><p>Six little rules with icons, gathered from prose scattered through the doc (shoes, quiet hours, smoking, the rug, locking the door, key return).</p></div></div>
+      <div class="add"><div class="ico">+5</div><div><h4>Northern Lights section</h4><p>Season, where to look, how to photograph them, and a hot-tub aurora-watching tip — a question every guest asks.</p></div></div>
+      <div class="add"><div class="ico">+6</div><div><h4>Driving in Iceland</h4><p>Eight practical tips: road.is, single-lane bridges, F-roads, wind ripping doors off, "impassable" warnings.</p></div></div>
+      <div class="add"><div class="ico">+7</div><div><h4>Sample itineraries</h4><p>1-day, 3-day and 7-day plans (city + Sky Lagoon, Golden Circle + South Coast, Ring Road sampler) so guests have a starting point.</p></div></div>
+      <div class="add"><div class="ico">+8</div><div><h4>Icelandic phrases</h4><p>A small cheat-sheet of 12 useful phrases — takk, skál, gjörðu svo vel, etc.</p></div></div>
+      <div class="add"><div class="ico">+9</div><div><h4>Checkout checklist</h4><p>Eight tickable items so guests leave the house in good shape (and you don't have to ask). Persists in browser between visits.</p></div></div>
+      <div class="add"><div class="ico">+10</div><div><h4>Cleaner restaurant guide</h4><p>Split into "walking distance" and "Reykjavík", with one-line cuisine descriptors instead of TripAdvisor URLs.</p></div></div>
+    </div>
+
+    <h2 style="margin-top: 48px;">A few things you might also consider</h2>
+    <p class="sub">Optional — happy to add any of these if useful:</p>
+    <div class="add-grid">
+      <div class="add"><div class="ico">○</div><div><h4>Photos</h4><p>Real photos of the hot tub controls, the fuse box, the laundry machines, etc. would replace the placeholder blocks and make the manuals far more useful (and warmer).</p></div></div>
+      <div class="add"><div class="ico">○</div><div><h4>Floor plan</h4><p>A simple labelled floor plan helps with "where's the dishwasher?" type questions.</p></div></div>
+      <div class="add"><div class="ico">○</div><div><h4>Seasonal version</h4><p>Some content shifts by season (aurora chasing in winter, midnight-sun viewing spots in summer). I could add a small toggle.</p></div></div>
+      <div class="add"><div class="ico">○</div><div><h4>QR code on a printed card</h4><p>One small printed card on the kitchen counter linking guests to the live online version, so they always have it.</p></div></div>
+      <div class="add"><div class="ico">○</div><div><h4>Pet / kid section expansion</h4><p>If you allow pets, a section on dog-friendly spots, vets, and house rules around pets.</p></div></div>
+      <div class="add"><div class="ico">○</div><div><h4>Emergency hospital details</h4><p>Address, drive time, and what to expect at Landspítali, in case anyone needs urgent care.</p></div></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

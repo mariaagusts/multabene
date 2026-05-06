@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Byggakur 12 · House Manual · Direction 1</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f1ea;          /* warm off-white, oklch(0.95 0.012 80) */
+    --paper: #fbf8f3;
+    --ink: #1c1a17;
+    --ink-2: #4a463f;
+    --ink-3: #8a847a;
+    --rule: #d9d2c4;
+    --accent: #2e3d2c;       /* deep moss / Iceland highland */
+    --accent-2: #b8531c;     /* warm rust, used sparingly */
+    --emergency: #b53a2b;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  a:hover { color: var(--accent-2); }
+
+  .page-wrap { max-width: 1280px; margin: 0 auto; padding: 0 48px; }
+  @media (max-width: 800px) { .page-wrap { padding: 0 20px; } }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding: 72px 0 56px;
+    border-bottom: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 64px;
+    align-items: end;
+  }
+  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 36px; } }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 24px;
+    display: flex; gap: 12px; align-items: center;
+  }
+  .eyebrow .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+  h1.title {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-optical-sizing: auto;
+    font-variation-settings: "opsz" 144;
+    font-size: clamp(48px, 7vw, 96px);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin: 0 0 24px;
+  }
+  h1.title em { font-style: italic; font-weight: 400; color: var(--ink-2); }
+  .subtitle {
+    font-size: 19px; color: var(--ink-2); max-width: 520px; line-height: 1.5;
+    margin: 0;
+  }
+  .subtitle .addr { color: var(--ink); }
+
+  /* Emergency card */
+  .emergency-card {
+    background: var(--ink);
+    color: #f5f1ea;
+    padding: 28px 28px 24px;
+    border-radius: 4px;
+    position: relative;
+  }
+  .emergency-card .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #d9c8a8;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .emergency-card .tag::before {
+    content: ''; width: 8px; height: 8px; background: #d9534f; border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(217,83,79,.6); animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(217,83,79,.6); }
+    70% { box-shadow: 0 0 0 12px rgba(217,83,79,0); }
+    100% { box-shadow: 0 0 0 0 rgba(217,83,79,0); }
+  }
+  .emergency-card .num {
+    font-family: 'Fraunces', serif;
+    font-size: 84px;
+    line-height: 1;
+    font-weight: 300;
+    margin: 16px 0 8px;
+    letter-spacing: -0.04em;
+  }
+  .emergency-card .desc { font-size: 14px; color: #c8bfac; line-height: 1.4; }
+  .emergency-card .links { margin-top: 16px; padding-top: 16px; border-top: 1px solid #38332a; display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+  .emergency-card .links a { color: #f5f1ea; }
+
+  /* ─── QUICK FACTS STRIP ─── */
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+    padding: 36px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  @media (max-width: 900px) { .facts { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 500px) { .facts { grid-template-columns: repeat(2, 1fr); } }
+  .fact {
+    padding: 8px 20px;
+    border-left: 1px solid var(--rule);
+  }
+  .fact:first-child { border-left: none; padding-left: 0; }
+  @media (max-width: 900px) {
+    .fact:nth-child(3n+1) { border-left: none; padding-left: 0; }
+  }
+  .fact .label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 6px; }
+  .fact .val { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 400; letter-spacing: -0.02em; line-height: 1.1; }
+  .fact .sub { font-size: 12px; color: var(--ink-3); margin-top: 4px; }
+
+  /* ─── LAYOUT WITH TOC ─── */
+  .layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 80px;
+    padding: 64px 0 120px;
+  }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; gap: 32px; } }
+
+  .toc { position: sticky; top: 32px; align-self: start; }
+  @media (max-width: 900px) { .toc { position: static; } }
+  .toc h6 {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);
+    margin: 0 0 16px; font-weight: 500;
+  }
+  .toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  .toc li { counter-increment: toc; }
+  .toc a {
+    display: flex; gap: 12px; align-items: baseline;
+    padding: 7px 0; font-size: 14px; color: var(--ink-2);
+    text-decoration: none; border-bottom: 1px dashed transparent;
+    transition: color .15s;
+  }
+  .toc a::before {
+    content: counter(toc, decimal-leading-zero);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--ink-3); width: 22px; flex: none;
+  }
+  .toc a:hover, .toc a.active { color: var(--accent); }
+  .toc a.active::before { color: var(--accent); }
+
+  /* sections */
+  section { scroll-margin-top: 24px; padding-bottom: 80px; }
+  section + section { border-top: 1px solid var(--rule); padding-top: 64px; }
+  .sec-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3);
+    margin-bottom: 18px; display: flex; align-items: center; gap: 12px;
+  }
+  .sec-tag .num { color: var(--accent); }
+  h2 {
+    font-family: 'Fraunces', serif; font-weight: 300;
+    font-size: clamp(36px, 4.5vw, 56px); line-height: 1.05;
+    letter-spacing: -0.02em; margin: 0 0 28px;
+  }
+  h3 {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: 24px; letter-spacing: -0.01em; margin: 0 0 8px;
+  }
+  p.lede { font-size: 19px; color: var(--ink-2); line-height: 1.55; max-width: 65ch; margin: 0 0 32px; }
+  p { max-width: 65ch; }
+
+  /* welcome */
+  .welcome-body { font-size: 19px; line-height: 1.55; color: var(--ink-2); max-width: 56ch; }
+  .welcome-body p + p { margin-top: 18px; }
+  .signoff { font-family: 'Fraunces', serif; font-style: italic; font-size: 22px; color: var(--ink); margin-top: 32px; }
+
+  /* arrival */
+  .checklist { display: flex; flex-direction: column; gap: 0; max-width: 720px; }
+  .check {
+    display: grid; grid-template-columns: 32px 1fr; gap: 18px;
+    padding: 22px 0; border-bottom: 1px solid var(--rule);
+    align-items: start;
+  }
+  .check:first-child { border-top: 1px solid var(--rule); }
+  .check .n {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--ink-3); padding-top: 4px;
+  }
+  .check h4 {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: 21px; margin: 0 0 4px; letter-spacing: -0.01em;
+  }
+  .check p { margin: 0; font-size: 15px; color: var(--ink-2); line-height: 1.5; }
+
+  /* Wifi card */
+  .wifi-card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 28px 32px;
+    border-radius: 4px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    margin: 32px 0; max-width: 600px;
+  }
+  .wifi-card .lab { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+  .wifi-card .v { font-family: 'JetBrains Mono', monospace; font-size: 22px; color: var(--ink); margin-top: 6px; }
+
+  /* Inside the house cards */
+  .house-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; max-width: 900px; }
+  @media (max-width: 700px) { .house-grid { grid-template-columns: 1fr; } }
+  .house-grid > div {
+    padding: 28px 28px 28px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .house-grid > div:nth-child(odd) { padding-right: 32px; border-right: 1px solid var(--rule); }
+  .house-grid > div:nth-child(even) { padding-left: 32px; }
+  @media (max-width: 700px) {
+    .house-grid > div { padding: 24px 0 !important; border-right: none !important; }
+  }
+  .house-grid h4 { font-family: 'Fraunces', serif; font-weight: 400; font-size: 22px; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .house-grid p { font-size: 15px; color: var(--ink-2); line-height: 1.55; margin: 0; }
+  .tip {
+    margin-top: 12px; padding: 10px 14px;
+    background: rgba(46,61,44,0.06);
+    border-left: 2px solid var(--accent);
+    font-size: 13px; color: var(--ink-2);
+  }
+  .tip::before { content: 'Tip · '; font-weight: 600; color: var(--accent); }
+
+  /* hot tub */
+  .hottub {
+    display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; max-width: 1000px;
+    align-items: start;
+  }
+  @media (max-width: 800px) { .hottub { grid-template-columns: 1fr; } }
+  .steps { counter-reset: step; list-style: none; padding: 0; margin: 0; }
+  .steps li {
+    counter-increment: step; padding: 18px 0 18px 56px;
+    position: relative; border-top: 1px solid var(--rule);
+    font-size: 15px; color: var(--ink-2); line-height: 1.5;
+  }
+  .steps li:last-child { border-bottom: 1px solid var(--rule); }
+  .steps li::before {
+    content: counter(step);
+    position: absolute; left: 0; top: 18px;
+    font-family: 'Fraunces', serif; font-size: 32px; color: var(--accent);
+    line-height: 1;
+  }
+
+  /* Image placeholders */
+  .img-ph {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    aspect-ratio: 4/3;
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .img-ph::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(45deg, transparent 0 14px, rgba(28,26,23,0.04) 14px 15px);
+  }
+  .img-ph .lab {
+    position: relative;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    background: var(--paper);
+    padding: 4px 10px;
+    border: 1px solid var(--rule);
+  }
+
+  /* Photo grid */
+  .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+  .photo-cell .lab-line { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); margin-top: 8px; }
+  .photo-cell .note-line { font-size: 13px; color: var(--ink-3); line-height: 1.5; margin-top: 4px; }
+
+  /* Kids */
+  .kids-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+  @media (max-width: 800px) { .kids-grid { grid-template-columns: 1fr; gap: 32px; } }
+  .kids-spots { list-style: none; padding: 0; margin: 0; }
+  .kids-spots li { padding: 14px 0; border-top: 1px solid var(--rule); }
+  .kids-spots li:last-child { border-bottom: 1px solid var(--rule); }
+  .kids-spots .nm { font-weight: 500; }
+  .kids-spots .note { font-size: 14px; color: var(--ink-2); margin-top: 2px; }
+  .kids-prac { list-style: none; padding: 0; margin: 0; }
+  .kids-prac li { font-size: 14px; color: var(--ink-2); padding: 6px 0 6px 20px; position: relative; line-height: 1.55; }
+  .kids-prac li::before { content: '·'; position: absolute; left: 0; color: var(--accent); }
+
+  /* Seasonal */
+  .season-tabs { display: flex; gap: 0; border: 1px solid var(--rule); border-radius: 2px; overflow: hidden; max-width: 480px; margin-bottom: 28px; }
+  .season-tab { flex: 1; padding: 14px 12px; background: transparent; border: 0; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); border-right: 1px solid var(--rule); }
+  .season-tab:last-child { border-right: 0; }
+  .season-tab.active { background: var(--ink); color: var(--paper); }
+  .season-headline { font-family: 'Fraunces', serif; font-size: 28px; line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 18px; max-width: 36ch; font-style: italic; color: var(--ink-2); font-weight: 300; }
+  .season-tips { list-style: none; padding: 0; margin: 0; columns: 2; column-gap: 48px; }
+  @media (max-width: 800px) { .season-tips { columns: 1; } }
+  .season-tips li { padding: 8px 0 8px 22px; position: relative; font-size: 14.5px; line-height: 1.55; color: var(--ink-2); break-inside: avoid; }
+  .season-tips li::before { content: ''; position: absolute; left: 0; top: 14px; width: 12px; height: 1px; background: var(--accent); }
+
+  /* Hospital + QR */
+  .hosp-wrap { display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; align-items: start; }
+  @media (max-width: 800px) { .hosp-wrap { grid-template-columns: 1fr; } }
+  .hosp-card { background: var(--paper); border: 1px solid var(--rule); padding: 28px; }
+  .hosp-card h4 { margin: 0 0 4px; font-size: 14px; font-weight: 600; }
+  .hosp-card .meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 16px; }
+  .hosp-card p { margin: 8px 0; font-size: 14.5px; color: var(--ink-2); line-height: 1.6; }
+  .hosp-card a { color: var(--accent); }
+  .qr-card { background: var(--ink); color: var(--paper); padding: 28px; display: grid; grid-template-columns: 96px 1fr; gap: 20px; align-items: center; border-radius: 2px; }
+  .qr-card .qr-glyph { width: 96px; height: 96px; background: var(--paper); padding: 8px; }
+  .qr-card .qr-glyph svg { width: 100%; height: 100%; display: block; }
+  .qr-card h4 { font-family: 'Fraunces', serif; font-weight: 400; font-size: 20px; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .qr-card p { margin: 0; font-size: 13px; line-height: 1.55; color: rgba(245,241,234,0.75); }
+
+  /* House rules grid */
+  .rules-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); max-width: 1000px; }
+  @media (max-width: 800px) { .rules-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px) { .rules-grid { grid-template-columns: 1fr; } }
+  .rule { background: var(--bg); padding: 28px; }
+  .rule .ico { width: 32px; height: 32px; color: var(--accent); margin-bottom: 16px; }
+  .rule h4 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 19px; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .rule p { font-size: 14px; color: var(--ink-2); margin: 0; line-height: 1.5; }
+
+  /* Neighbourhood */
+  .nb-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; max-width: 900px; }
+  @media (max-width: 700px) { .nb-grid { grid-template-columns: 1fr; } }
+  .nb {
+    padding: 18px 0; border-bottom: 1px solid var(--rule);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: baseline;
+    padding-right: 32px;
+  }
+  .nb:nth-child(even) { padding-left: 32px; padding-right: 0; }
+  .nb:nth-child(odd) { border-right: 1px solid var(--rule); }
+  @media (max-width: 700px) {
+    .nb { grid-template-columns: 1fr; padding: 18px 0 !important; border-right: none !important; }
+  }
+  .nb-name { font-family: 'Fraunces', serif; font-size: 18px; }
+  .nb-meta { font-size: 13px; color: var(--ink-3); }
+
+  /* Restaurants */
+  .rest-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; max-width: 1000px; }
+  @media (max-width: 800px) { .rest-cols { grid-template-columns: 1fr; gap: 32px; } }
+  .rest-col h3 { margin-bottom: 16px; }
+  .rest-list { list-style: none; padding: 0; margin: 0; }
+  .rest-list li {
+    padding: 14px 0; border-top: 1px solid var(--rule);
+    display: flex; justify-content: space-between; gap: 16px;
+  }
+  .rest-list li:last-child { border-bottom: 1px solid var(--rule); }
+  .rest-name { font-family: 'Fraunces', serif; font-size: 18px; }
+  .rest-meta { font-size: 13px; color: var(--ink-3); text-align: right; flex: none; max-width: 50%; }
+
+  /* TODO list */
+  .todo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule); border: 1px solid var(--rule); max-width: 1000px; }
+  @media (max-width: 700px) { .todo-grid { grid-template-columns: 1fr; } }
+  .todo-item { background: var(--bg); padding: 24px 28px; }
+  .todo-item .type { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 6px; }
+  .todo-item h4 { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 400; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .todo-item p { font-size: 14px; color: var(--ink-2); margin: 0 0 12px; line-height: 1.5; }
+  .todo-item a { font-size: 13px; }
+
+  /* Itineraries */
+  .itin { display: grid; grid-template-columns: 200px 1fr; gap: 32px; max-width: 900px; padding: 36px 0; border-top: 1px solid var(--rule); align-items: start; }
+  .itin:last-child { border-bottom: 1px solid var(--rule); }
+  @media (max-width: 700px) { .itin { grid-template-columns: 1fr; gap: 12px; } }
+  .itin-len { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 300; letter-spacing: -0.02em; color: var(--accent); line-height: 1; }
+  .itin-title { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 400; margin: 0 0 12px; letter-spacing: -0.01em; }
+  .itin ul { list-style: none; padding: 0; margin: 0; }
+  .itin ul li { padding: 8px 0 8px 22px; position: relative; font-size: 15px; color: var(--ink-2); line-height: 1.5; }
+  .itin ul li::before { content: '·'; position: absolute; left: 4px; font-weight: bold; color: var(--accent); }
+
+  /* Aurora */
+  .aurora-wrap { display: grid; grid-template-columns: 1.2fr 1fr; gap: 64px; max-width: 1100px; align-items: start; }
+  @media (max-width: 800px) { .aurora-wrap { grid-template-columns: 1fr; } }
+  .aurora-tips { list-style: none; padding: 0; margin: 0; }
+  .aurora-tips li { padding: 18px 0; border-top: 1px solid var(--rule); font-size: 15px; color: var(--ink-2); line-height: 1.55; display: grid; grid-template-columns: 18px 1fr; gap: 12px; }
+  .aurora-tips li:last-child { border-bottom: 1px solid var(--rule); }
+  .aurora-tips li::before { content: '✦'; color: var(--accent); }
+  .aurora-illus {
+    aspect-ratio: 4/5;
+    background: linear-gradient(180deg, #0d1019 0%, #18293a 50%, #1a3045 100%);
+    position: relative; overflow: hidden; border-radius: 4px;
+  }
+  .aurora-illus::after {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 30% at 30% 35%, rgba(120, 220, 170, 0.45), transparent 60%),
+      radial-gradient(ellipse 70% 25% at 70% 45%, rgba(80, 180, 230, 0.35), transparent 60%),
+      radial-gradient(ellipse 90% 20% at 50% 55%, rgba(180, 120, 220, 0.25), transparent 60%);
+    filter: blur(8px);
+  }
+  .aurora-illus .stars {
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 12% 18%, white, transparent),
+      radial-gradient(1px 1px at 28% 8%, white, transparent),
+      radial-gradient(1px 1px at 60% 12%, white, transparent),
+      radial-gradient(1px 1px at 82% 22%, white, transparent),
+      radial-gradient(1px 1px at 45% 30%, rgba(255,255,255,0.6), transparent),
+      radial-gradient(1px 1px at 92% 6%, white, transparent);
+    opacity: 0.9;
+  }
+  .aurora-illus .label {
+    position: absolute; bottom: 16px; left: 16px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: rgba(255,255,255,0.5); z-index: 2;
+  }
+
+  /* Driving */
+  .driving-tips { list-style: none; padding: 0; margin: 0; max-width: 800px; }
+  .driving-tips li { padding: 16px 0; border-top: 1px solid var(--rule); display: grid; grid-template-columns: 32px 1fr; gap: 12px; font-size: 15px; color: var(--ink-2); line-height: 1.5; }
+  .driving-tips li:last-child { border-bottom: 1px solid var(--rule); }
+  .driving-tips .n { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-3); padding-top: 3px; }
+
+  /* Phrases */
+  .phrases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 1px; background: var(--rule); border: 1px solid var(--rule); max-width: 1000px; }
+  @media (max-width: 700px) { .phrases { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .phrases { grid-template-columns: 1fr; } }
+  .phrase { background: var(--bg); padding: 22px 24px; border-bottom: 1px solid var(--rule); }
+  .phrase .is { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 400; letter-spacing: -0.01em; color: var(--ink); }
+  .phrase .en { font-size: 13px; color: var(--ink-3); margin-top: 4px; }
+  .phrase .say { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-3); opacity: 0.7; margin-top: 6px; letter-spacing: 0.04em; }
+
+  /* Checkout */
+  .checkout-list { list-style: none; padding: 0; margin: 0; max-width: 720px; counter-reset: co; }
+  .checkout-list li {
+    counter-increment: co;
+    padding: 20px 0 20px 56px;
+    border-top: 1px solid var(--rule);
+    position: relative;
+  }
+  .checkout-list li:last-child { border-bottom: 1px solid var(--rule); }
+  .checkout-list li::before {
+    content: '☐';
+    position: absolute; left: 0; top: 16px;
+    font-size: 28px; color: var(--ink-3); line-height: 1;
+  }
+  .checkout-list li:hover::before { color: var(--accent); }
+  .checkout-list h4 { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 500; letter-spacing: -0.01em; margin: 0 0 4px; }
+  .checkout-list p { font-size: 14px; color: var(--ink-2); margin: 0; line-height: 1.5; }
+
+  /* Footer */
+  .footer {
+    border-top: 1px solid var(--rule);
+    padding: 48px 0 80px;
+    display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px;
+    align-items: start;
+  }
+  @media (max-width: 700px) { .footer { grid-template-columns: 1fr; gap: 32px; } }
+  .footer h6 { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); font-weight: 500; margin: 0 0 12px; }
+  .footer .signature { font-family: 'Fraunces', serif; font-size: 28px; font-style: italic; font-weight: 300; letter-spacing: -0.01em; }
+  .footer p, .footer a { font-size: 14px; color: var(--ink-2); line-height: 1.6; }
+
+  /* Print */
+  @media print {
+    .toc { display: none; }
+    .layout { grid-template-columns: 1fr; gap: 0; }
+    body { font-size: 11pt; background: white; }
+    section + section { page-break-before: auto; }
+    .emergency-card { background: white; color: black; border: 2px solid black; }
+    .emergency-card .num { color: black; }
+    .emergency-card .links a { color: black; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <!-- HERO -->
+  <div class="hero" data-screen-label="Hero">
+    <div>
+      <div class="eyebrow"><span class="dot"></span><span>House Manual · Iceland · 64°N</span></div>
+      <h1 class="title">A small guide<br>to <em>your stay</em></h1>
+      <p class="subtitle"><span class="addr">Byggakur 12, 210 Garðabær.</span> Everything you need to know about the house, the neighbourhood, and a few favourite places in Iceland, collected by your hosts.</p>
+    </div>
+    <aside class="emergency-card" aria-label="Emergency">
+      <div class="tag"><span>Emergency</span></div>
+      <div class="num">112</div>
+      <div class="desc">Police · Fire · Ambulance.<br>One number for any urgent help, in English.</div>
+      <div class="links">
+        <a href="https://safetravel.is" target="_blank">safetravel.is</a>
+        <a href="https://en.vedur.is" target="_blank">vedur.is · weather</a>
+      </div>
+    </aside>
+  </div>
+
+  <!-- QUICK FACTS -->
+  <div class="facts" id="facts"></div>
+
+  <!-- LAYOUT -->
+  <div class="layout">
+
+    <!-- TOC -->
+    <nav class="toc" aria-label="Table of contents">
+      <h6>Contents</h6>
+      <ol id="toc-list"></ol>
+    </nav>
+
+    <!-- CONTENT -->
+    <main id="main"></main>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div>
+      <h6>From your hosts</h6>
+      <p class="signature">Takk fyrir, thanks for staying.</p>
+      <p style="margin-top: 12px;">If anything in this guide is unclear or missing, please tell us. We'd rather you ask than guess.</p>
+    </div>
+    <div>
+      <h6>Reach us</h6>
+      <p>María Ágústsdóttir<br>+354 844 2770<br><a href="mailto:mariaagusts@gmail.com">mariaagusts@gmail.com</a></p>
+    </div>
+    <div>
+      <h6>Address</h6>
+      <p>Byggakur 12<br>210 Garðabær<br>Iceland</p>
+      <p><a href="https://goo.gl/maps/AwKvTrRU7ErZuRXt9" target="_blank">Open in Maps →</a></p>
+    </div>
+  </div>
+
+</div>
+
+<script src="content.js"></script>
+<script>
+const M = window.MANUAL;
+const root = document.getElementById('main');
+const tocList = document.getElementById('toc-list');
+const facts = document.getElementById('facts');
+
+// Quick facts
+facts.innerHTML = M.quickFacts.map(f => `
+  <div class="fact">
+    <div class="label">${f.label}</div>
+    <div class="val">${f.value}</div>
+    <div class="sub">${f.sub}</div>
+  </div>
+`).join('');
+
+// TOC
+tocList.innerHTML = M.toc.map(t => `<li><a href="#${t.id}">${t.label}</a></li>`).join('');
+
+function sec(id, num, label, title, lede, body) {
+  return `
+  <section id="${id}" data-screen-label="${label}">
+    <div class="sec-tag"><span class="num">${num}</span><span>${label}</span></div>
+    <h2>${title}</h2>
+    ${lede ? `<p class="lede">${lede}</p>` : ''}
+    ${body}
+  </section>`;
+}
+
+const num = i => String(i+1).padStart(2,'0');
+
+const sections = [];
+
+// 01 Welcome
+sections.push(sec('welcome', '01', 'Welcome', M.welcome.headline + '.', '',
+  `<div class="welcome-body">
+    <p>${M.welcome.body}</p>
+    <p>This is our home, not a rental property, please make yourself comfortable. Help yourself to anything in the kitchen. The Wi-Fi is fast, the water is the cleanest you'll ever drink, and the hot tub is, frankly, the best part of the house.</p>
+    <p class="signoff">${M.welcome.signoff}</p>
+  </div>`
+));
+
+// 02 Arrival
+sections.push(sec('arrival', '02', 'Arrival & key', 'Getting in', 'Six things to do when you first walk in. Should take five minutes.',
+  `<div class="checklist">
+    ${M.arrivalChecklist.map((c,i) => `
+      <div class="check">
+        <div class="n">${num(i)}</div>
+        <div>
+          <h4>${c.title}</h4>
+          <p>${c.body}</p>
+        </div>
+      </div>`).join('')}
+  </div>`
+));
+
+// 03 Essentials
+sections.push(sec('essentials', '03', 'Essentials', 'Wi-Fi, parking, the basics', '',
+  `<div class="wifi-card">
+    <div>
+      <div class="lab">Wi-Fi network</div>
+      <div class="v">${M.essentials.wifi.name}</div>
+    </div>
+    <div>
+      <div class="lab">Password</div>
+      <div class="v">${M.essentials.wifi.pass}</div>
+    </div>
+  </div>
+  <p>${M.essentials.wifi.note}</p>
+  <h3 style="margin-top: 32px;">Parking</h3>
+  <p>${M.essentials.parking}</p>
+  <h3 style="margin-top: 32px;">Rubbish & recycling</h3>
+  <p>${M.essentials.rubbish}</p>
+  <h3 style="margin-top: 32px;">Food delivery</h3>
+  <ul style="list-style: none; padding: 0; margin: 0;">
+    ${M.food.delivery.map(d => `<li style="padding: 8px 0;"><strong>${d.name}</strong>. ${d.note} <a href="${d.url}" target="_blank">${d.url.replace('https://','')}</a></li>`).join('')}
+  </ul>`
+));
+
+// 04 House
+sections.push(sec('house', '04', 'Inside the house', 'Inside the house', 'How things work, room by room.',
+  `<div class="house-grid">
+    ${M.insideHouse.map(h => `
+      <div>
+        <h4>${h.title}</h4>
+        <p>${h.body}</p>
+        ${h.tip ? `<div class="tip">${h.tip}</div>` : ''}
+      </div>`).join('')}
+  </div>`
+));
+
+// 05 Outdoors / hot tub
+sections.push(sec('outdoors', '05', 'Outdoors & hot tub', 'The hot tub, BBQ & greenhouse', M.outdoors.hotTub.summary,
+  `<div class="hottub">
+    <ol class="steps">
+      ${M.outdoors.hotTub.steps.map(s => `<li>${s}</li>`).join('')}
+    </ol>
+    <div class="img-ph"><span class="lab">Photo · Hot tub at dusk</span></div>
+  </div>
+  <h3 style="margin-top: 48px;">BBQ</h3>
+  <p>${M.outdoors.bbq}</p>
+  <h3 style="margin-top: 32px;">Greenhouse</h3>
+  <p>${M.outdoors.greenhouse}</p>
+  <h3 style="margin-top: 32px;">Cameras</h3>
+  <p>${M.outdoors.cameras}</p>`
+));
+
+// 06 Rules
+sections.push(sec('rules', '06', 'House rules', 'A handful of house rules', "We don't have many. These six matter.",
+  `<div class="rules-grid">
+    ${M.rules.map(r => `
+      <div class="rule">
+        <svg class="ico" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          ${ruleIcon(r.icon)}
+        </svg>
+        <h4>${r.title}</h4>
+        <p>${r.body}</p>
+      </div>`).join('')}
+  </div>`
+));
+
+// 06b Photo reference
+sections.push(sec('photos', '06b', 'Photo reference', 'Photo reference', 'Where to find, and how to use, every fiddly thing in the house. Each card is a placeholder for a real photo we\'ll swap in.',
+  `<div class="photo-grid">
+    ${M.photos.map(p => `
+      <div class="photo-cell">
+        <div class="img-ph"><span class="lab">${p.label}</span></div>
+        <div class="lab-line">${p.id}</div>
+        <p class="note-line">${p.note}</p>
+      </div>`).join('')}
+  </div>`
+));
+
+// 07 Neighbourhood
+sections.push(sec('neighbourhood', '07', 'Neighbourhood', `Around ${M.neighbourhood.name}`, M.neighbourhood.summary,
+  `<div class="nb-grid">
+    ${M.neighbourhood.nearby.map(n => `
+      <div class="nb">
+        <div class="nb-name">${n.name}</div>
+        <div class="nb-meta">${n.type} · ${n.note}</div>
+      </div>`).join('')}
+  </div>
+  <h3 style="margin-top: 48px;">Getting around</h3>
+  <p><strong>Taxi:</strong> ${M.neighbourhood.transport.taxi.join(' · ')}. ${M.neighbourhood.transport.taxiNote}</p>
+  <p><strong>Bus:</strong> ${M.neighbourhood.transport.bus} <a href="${M.neighbourhood.transport.busUrl}" target="_blank">straeto.is</a></p>`
+));
+
+// 07b Kids
+sections.push(sec('kids', '07b', 'Travelling with kids', M.kids.headline, M.kids.body,
+  `<div class="kids-grid">
+    <div>
+      <h3 style="margin: 0 0 12px;">Where to take them</h3>
+      <ul class="kids-spots">
+        ${M.kids.spots.map(s => `<li><div class="nm">${s.name}${s.url ? ` &middot; <a href="${s.url}" target="_blank" style="color: var(--accent);">site</a>` : ''}</div><div class="note">${s.note}</div></li>`).join('')}
+      </ul>
+    </div>
+    <div>
+      <h3 style="margin: 0 0 12px;">Practical</h3>
+      <ul class="kids-prac">
+        ${M.kids.practical.map(p => `<li>${p}</li>`).join('')}
+      </ul>
+    </div>
+  </div>`
+));
+
+// 08 Restaurants
+sections.push(sec('restaurants', '08', 'Where to eat', 'Where to eat', `Book ahead at <a href="https://www.dineout.is" target="_blank">dineout.is</a>, popular spots fill up.`,
+  `<div class="rest-cols">
+    <div class="rest-col">
+      <h3>Walking distance</h3>
+      <ul class="rest-list">
+        ${M.restaurants.nearby.map(r => `
+          <li><span class="rest-name">${r.map ? `<a href="${r.map}" target="_blank" style="color: inherit;">${r.name} ↗</a>` : r.name}</span><span class="rest-meta">${r.type}<br>${r.note}</span></li>`).join('')}
+      </ul>
+    </div>
+    <div class="rest-col">
+      <h3>Reykjavík</h3>
+      <ul class="rest-list">
+        ${M.restaurants.reykjavik.map(r => `
+          <li><span class="rest-name">${r.map ? `<a href="${r.map}" target="_blank" style="color: inherit;">${r.name} ↗</a>` : r.name}</span><span class="rest-meta">${r.type}</span></li>`).join('')}
+      </ul>
+    </div>
+  </div>
+  <h3 style="margin-top: 40px;">Food halls</h3>
+  <ul class="rest-list">
+    ${M.restaurants.foodHalls.map(r => `
+      <li><span class="rest-name">${r.map ? `<a href="${r.map}" target="_blank" style="color: inherit;">${r.name} ↗</a>` : r.name}</span><span class="rest-meta">${r.type}<br>${r.note}</span></li>`).join('')}
+  </ul>
+  <p style="margin-top: 32px;"><strong>Buying alcohol:</strong> ${M.restaurants.booze}</p>`
+));
+
+// 09 To do
+sections.push(sec('todo', '09', 'Things to do', 'Things to do', '',
+  `<div class="todo-grid">
+    ${M.todo.map(t => `
+      <div class="todo-item">
+        <div class="type">${t.type}</div>
+        <h4>${t.name}</h4>
+        <p>${t.note}</p>
+        ${t.url ? `<a href="${t.url}" target="_blank">Visit site →</a>` : ''}
+      </div>`).join('')}
+  </div>`
+));
+
+// 10 Itineraries
+sections.push(sec('itineraries', '10', 'Itineraries', 'Sample itineraries', "Three plans, depending on how long you've got.",
+  M.itineraries.map(it => `
+    <div class="itin">
+      <div class="itin-len">${it.length}</div>
+      <div>
+        <h3 class="itin-title">${it.title}</h3>
+        <ul>${it.stops.map(s => `<li>${s}</li>`).join('')}</ul>
+      </div>
+    </div>`).join('')
+));
+
+// 11 Aurora
+sections.push(sec('aurora', '11', 'Northern Lights', 'Catching the Northern Lights', M.aurora.season,
+  `<div class="aurora-wrap">
+    <ul class="aurora-tips">
+      ${M.aurora.tips.map(t => `<li><span></span><span>${t}</span></li>`).join('')}
+    </ul>
+    <div class="aurora-illus">
+      <div class="stars"></div>
+      <div class="label">Photo placeholder · aurora over Garðabær</div>
+    </div>
+  </div>`
+));
+
+// 12 Driving
+sections.push(sec('driving', '12', 'Driving in Iceland', 'Driving in Iceland', M.driving.summary,
+  `<ul class="driving-tips">
+    ${M.driving.tips.map((t,i) => `<li><span class="n">${num(i)}</span><span>${t}</span></li>`).join('')}
+  </ul>`
+));
+
+// 13 Phrases
+sections.push(sec('phrases', '13', 'Icelandic phrases', 'A few Icelandic phrases', "Locals all speak excellent English, but a 'takk' goes a long way.",
+  `<div class="phrases">
+    ${M.phrases.map(p => `<div class="phrase"><div class="is">${p.is}</div><div class="en">${p.en}</div><div class="say">${p.say}</div></div>`).join('')}
+  </div>`
+));
+
+// 13b Seasonal
+sections.push(sec('seasonal', '13b', 'By season', 'What changes by season', 'Tap a tab. Different things matter at different times of year.',
+  `<div class="season-tabs" role="tablist">
+    <button class="season-tab active" data-season="winter">Winter</button>
+    <button class="season-tab" data-season="shoulder">Shoulder</button>
+    <button class="season-tab" data-season="summer">Summer</button>
+  </div>
+  <div id="season-content"></div>`
+));
+
+// 14b Hospital + QR
+sections.push(sec('hospital', '14b', 'Hospital & pharmacy', 'If you need urgent care', 'Most issues like twisted ankles, fevers and cuts are best handled at the local clinic, not 112. Here\'s where to go.',
+  `<div class="hosp-wrap">
+    <div class="hosp-card">
+      <div class="meta">Nearest hospital</div>
+      <h4 style="font-family: 'Fraunces', serif; font-weight: 400; font-size: 22px; letter-spacing: -0.01em;">${M.hospital.name}</h4>
+      <p><strong>Address.</strong> ${M.hospital.address}</p>
+      <p><strong>Drive.</strong> ${M.hospital.drive}</p>
+      <p><strong>Phone.</strong> ${M.hospital.phone}</p>
+      <p>${M.hospital.note}</p>
+      <p><a href="${M.hospital.map}" target="_blank">Open in Maps →</a></p>
+      <p style="margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--rule);"><strong>Local clinic.</strong> ${M.hospital.clinic}</p>
+      <p><strong>Pharmacy.</strong> ${M.hospital.pharmacy}</p>
+    </div>
+    <div>
+      <div class="qr-card">
+        <div class="qr-glyph">
+          <svg viewBox="0 0 80 80">
+            <rect width="80" height="80" fill="#fff"/>
+            <g fill="#14140f">
+              <rect x="6" y="6" width="18" height="18"/><rect x="10" y="10" width="10" height="10" fill="#fff"/><rect x="13" y="13" width="4" height="4"/>
+              <rect x="56" y="6" width="18" height="18"/><rect x="60" y="10" width="10" height="10" fill="#fff"/><rect x="63" y="13" width="4" height="4"/>
+              <rect x="6" y="56" width="18" height="18"/><rect x="10" y="60" width="10" height="10" fill="#fff"/><rect x="13" y="63" width="4" height="4"/>
+              <rect x="30" y="6" width="4" height="4"/><rect x="38" y="6" width="4" height="4"/><rect x="46" y="10" width="4" height="4"/>
+              <rect x="30" y="14" width="4" height="4"/><rect x="42" y="14" width="4" height="4"/>
+              <rect x="6" y="30" width="4" height="4"/><rect x="14" y="30" width="4" height="4"/><rect x="22" y="30" width="4" height="4"/><rect x="30" y="30" width="4" height="4"/><rect x="38" y="30" width="4" height="4"/><rect x="50" y="30" width="4" height="4"/><rect x="58" y="30" width="4" height="4"/><rect x="66" y="30" width="4" height="4"/>
+              <rect x="10" y="38" width="4" height="4"/><rect x="22" y="38" width="4" height="4"/><rect x="34" y="38" width="4" height="4"/><rect x="46" y="38" width="4" height="4"/><rect x="58" y="38" width="4" height="4"/>
+              <rect x="6" y="46" width="4" height="4"/><rect x="18" y="46" width="4" height="4"/><rect x="26" y="46" width="4" height="4"/><rect x="38" y="46" width="4" height="4"/><rect x="50" y="46" width="4" height="4"/><rect x="62" y="46" width="4" height="4"/><rect x="70" y="46" width="4" height="4"/>
+              <rect x="30" y="58" width="4" height="4"/><rect x="42" y="58" width="4" height="4"/><rect x="54" y="58" width="4" height="4"/><rect x="62" y="58" width="4" height="4"/>
+              <rect x="34" y="66" width="4" height="4"/><rect x="46" y="66" width="4" height="4"/><rect x="58" y="66" width="4" height="4"/><rect x="70" y="66" width="4" height="4"/>
+            </g>
+          </svg>
+        </div>
+        <div>
+          <h4>${M.qr.headline}</h4>
+          <p>${M.qr.body}</p>
+        </div>
+      </div>
+    </div>
+  </div>`
+));
+
+// 14 Checkout
+sections.push(sec('checkout', '14', 'Before you go', 'Before you head out', '',
+  `<ol class="checkout-list">
+    ${M.checkout.map(c => `<li><h4>${c.title}</h4><p>${c.body}</p></li>`).join('')}
+  </ol>`
+));
+
+root.innerHTML = sections.join('');
+
+function ruleIcon(name) {
+  const icons = {
+    shoes: '<path d="M4 22 L4 16 C 4 14, 6 12, 9 12 L 12 12 L 14 9 L 19 9 C 23 9, 26 12, 27 16 L 28 18 C 28 20, 26 22, 24 22 Z"/><line x1="9" y1="14" x2="9" y2="22"/><line x1="14" y1="12" x2="14" y2="22"/>',
+    moon: '<path d="M22 18 A 8 8 0 1 1 14 8 A 6 6 0 0 0 22 18 Z"/>',
+    smoke: '<rect x="6" y="14" width="20" height="4" rx="0.5"/><path d="M22 14 V 10"/><path d="M19 11 V 7"/><line x1="6" y1="14" x2="26" y2="18" stroke-width="1.6" stroke="#b53a2b"/>',
+    lock: '<rect x="8" y="14" width="16" height="12" rx="1"/><path d="M11 14 V 10 A 5 5 0 0 1 21 10 V 14"/><circle cx="16" cy="20" r="1.5" fill="currentColor"/>',
+    rug: '<rect x="5" y="9" width="22" height="14" rx="0.5"/><line x1="5" y1="13" x2="27" y2="13"/><line x1="5" y1="19" x2="27" y2="19"/><line x1="3" y1="9" x2="5" y2="9"/><line x1="27" y1="9" x2="29" y2="9"/><line x1="3" y1="23" x2="5" y2="23"/><line x1="27" y1="23" x2="29" y2="23"/>',
+    key: '<circle cx="11" cy="16" r="5"/><path d="M16 16 H 26"/><path d="M22 16 V 20"/><path d="M26 16 V 19"/>',
+  };
+  return icons[name] || '<circle cx="16" cy="16" r="8"/>';
+}
+
+// Seasonal tabs
+function renderSeason(key) {
+  const s = M.seasons[key];
+  document.getElementById('season-content').innerHTML = `
+    <p class="season-headline">${s.headline}</p>
+    <ul class="season-tips">
+      ${s.tips.map(t => `<li>${t}</li>`).join('')}
+    </ul>`;
+}
+renderSeason('winter');
+document.querySelectorAll('.season-tab').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.season-tab').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    renderSeason(b.dataset.season);
+  });
+});
+
+// TOC active state
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.toc a').forEach(a => a.classList.remove('active'));
+      const link = document.querySelector(`.toc a[href="#${e.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+document.querySelectorAll('section').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
