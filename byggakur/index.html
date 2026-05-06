@@ -83,6 +83,20 @@
     margin-top: 32px; font-size: 18px; max-width: 480px;
     color: rgba(244,243,238,0.7); line-height: 1.55;
   }
+  .hero-pill {
+    display: inline-flex; align-items: center; gap: 14px;
+    margin-top: 24px; padding: 10px 20px 10px 16px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 999px; color: var(--paper); text-decoration: none;
+    font-family: 'Instrument Sans', sans-serif; font-size: 14px;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .hero-pill:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.32); }
+  .hero-pill .eyebrow {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent-soft);
+  }
   .hero-bottom {
     z-index: 2; position: relative;
     display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: end;
@@ -629,6 +643,10 @@
   <div class="hero-mid">
     <h1>The house,<br>and a little<br>of <em>Iceland.</em></h1>
     <p class="strap">A guide to staying at Byggakur 12. What to know, what to do, and a few of our favourite places nearby. Curated by your host.</p>
+    <a class="hero-pill" href="https://my.visme.co/view/90rnejvg-iceland-by-a-local#s1" target="_blank" rel="noopener">
+      <span class="eyebrow">Bonus</span>
+      <span>My full Iceland guide ↗</span>
+    </a>
   </div>
   <div class="hero-bottom">
     <div class="hero-meta">
@@ -727,7 +745,7 @@ window.MANUAL = {
     note: "Iceland's main hospital. The Fossvogur branch handles A&E (er. emergency room / bráðamóttökuna). Walk-in is fine, no need to call ahead. Most staff speak excellent English.",
     map: "https://goo.gl/maps/QYbY7v9YJZcEYY7H7",
     clinic: "For minor issues, the closer local clinic is Heilsugæsla Garðabæjar at Garðatorg.",
-    pharmacy: "Closest pharmacy: Lyfja at Garðatorg. Most convenient is the drive-through Car-Pharmacy (Apótekarinn) at Hlíðasmári in Kópavogur.",
+    pharmacy: "Closest pharmacy: Lyfja at Garðatorg. Most convenient is the <a href=\"https://maps.app.goo.gl/qTXUfhUviy4j1BLn8\" target=\"_blank\">drive-through Car-Pharmacy (Apótekarinn)</a> at Hlíðasmári in Kópavogur.",
   },
 
   qr: {
@@ -736,9 +754,9 @@ window.MANUAL = {
   },
 
   photos: [
-    { id: "front-door", src: "/byggakur/photos/Picture1.png", label: "Front door & key box", note: "The door, the key box mounted above the trash shelter, and the right hand-lifting motion. One wide shot or two close-ups." },
-    { id: "hot-tub-faucet", src: "/byggakur/photos/hottubfaucet.png", label: "Hot tub faucet (garage)", note: "The two knobs in the garage. Left handle for power, right knob preset to 42°C. Annotate with arrows if possible." },
-    { id: "hot-tub-drain", src: ["/byggakur/photos/hottub1.png", "/byggakur/photos/hottub2.png"], label: "Hot tub drain", note: "The drain handle underneath the steps, in both open and closed positions." },
+    { id: "front-door", src: "/byggakur/photos/Picture1.png", label: "Front door & key box", note: "The door, the key box mounted above the trash shelter, and the right hand-lifting motion." },
+    { id: "hot-tub-faucet", src: "/byggakur/photos/hottubfaucet.png", label: "Hot tub faucet (garage)", note: "The two knobs in the garage. Left handle for power, right knob preset to 42°C." },
+    { id: "hot-tub-drain", src: ["/byggakur/photos/hottub1.png", "/byggakur/photos/hottub2.png"], label: "Hot tub drain", note: "The drain handle underneath the steps, shown open and closed." },
     { id: "laundry", src: "/byggakur/photos/laundry1.png", label: "Laundry machines", note: "All three machines in a row, with the pre-loaded one labelled. Show the dryer's water tank top-left." },
     { id: "coffee", src: ["/byggakur/photos/coffee1.png", "/byggakur/photos/coffee2.png", "/byggakur/photos/coffee3.png", "/byggakur/photos/coffee4.png"], label: "Coffee machine controls", note: "On/off button and the hot-water knob. A second shot of the milk frother on the side." },
     { id: "fuse-box", label: "Fuse box", note: "Where it lives + a labelled close-up of the breakers, in case anything trips." },
@@ -796,15 +814,15 @@ window.MANUAL = {
       { name: "Lava Show", note: "Real molten lava poured indoors, just feet away. Genuinely thrilling. Two locations: Reykjavík and Vík.", url: "https://lavashow.com" },
       { name: "Ásgarðslaug pool", note: "Walking distance. Kids' area, shallow pools, hot pots." },
       { name: "Álftaneslaug pool", note: "Wave machine. Kids' favourite." },
-      { name: "Whales of Iceland", note: "Walk-around life-size whale models. Quietly amazing for under-7s.", url: "https://whalesoficeland.is" },
+      { name: "Whales of Iceland", note: "Walk-around life-size whale models. Quietly amazing for all ages.", url: "https://whalesoficeland.is" },
       { name: "FlyOver Iceland", note: "Simulator ride over Iceland. Short, thrilling, indoor.", url: "https://www.flyovericeland.com" },
     ],
     practical: [
-      "Tap water is safe straight from the cold tap. Fill bottles, no need to buy.",
-      "Pharmacies stock children's painkillers and basic medicine. Closest is Lyfja at Garðatorg, but the most convenient is the drive-through Car-Pharmacy at Hlíðasmári in Kópavogur.",
+      "Tap water is safe straight from the cold tap. Fill bottles, no need to buy. Just keep the tap running for a bit so it gets properly cold. For some reason the tap water is coldest in the downstairs bathroom (it might sound odd to get drinking water from a bathroom, but trust me on this!).",
+      "Pharmacies stock children's painkillers and basic medicine. Closest is Lyfja at Garðatorg, but the most convenient is the <a href=\"https://maps.app.goo.gl/qTXUfhUviy4j1BLn8\" target=\"_blank\">drive-through Car-Pharmacy</a> at Hlíðasmári in Kópavogur.",
       "Most restaurants have high-chairs and kids' menus by default; no need to call ahead.",
       "Kids ride free on Strætó (city buses) under 6, half-price 6 to 17.",
-      "Public pools are extremely kid-friendly. Just shower fully naked before entering (Icelandic rule, no exceptions).",
+      "Public pools are extremely kid-friendly. Just shower fully naked before entering (Icelandic rule, no exceptions). This is because our pools are geothermally heated and use very little chlorine, so everyone needs to be properly clean going in.",
       "My own daughters (12 and 14) have grown up with all of these spots. They can vouch.",
     ],
   },
@@ -837,7 +855,7 @@ window.MANUAL = {
   },
 
   arrivalChecklist: [
-    { title: "Find the key box", body: "Sometimes I'll leave the house unlocked for you, so try the front door first. If it's locked, the key box is mounted above the trash-bin shelter, opposite the front door. Code: 0312. Slide the cover, enter the code, key drops out." },
+    { title: "Find the key box", body: "Sometimes I'll leave the house unlocked for you with keys inside, so try the front door first. If it's locked, there is a spare key in the key box that is mounted above the trash-bin shelter, opposite the front door. Code: 0312. Slide the cover, enter the code, key drops out." },
     { title: "Lock the front door properly", body: "It's a safe neighbourhood, so locking isn't really a concern. If you do lock it, pull the handle UP first, then turn the key. The bolt won't engage otherwise." },
     { title: "Shoes off", body: "Icelandic homes are shoes-off. The downstairs hardwood and living-room rug are sensitive to water." },
     { title: "Connect to Wi-Fi", body: "Network: B12 · Password: 06030112" },
@@ -855,21 +873,21 @@ window.MANUAL = {
   ],
 
   essentials: {
-    wifi: { name: "B12", pass: "06030112", note: "Recently upgraded, should be very fast." },
+    wifi: { name: "B12", pass: "06030112", note: "Recently upgraded, should be <strong>VERY</strong> fast. (Recent speed test: 778 Mbps download, 407 Mbps upload.)" },
     parking: "The driveway fits up to three cars.",
-    rubbish: "Three bins out front: regular trash + food waste (left), plastic recycling (middle), paper & card (right). If full, use the third door on the right and we'll take care of it.",
+    rubbish: "Three bins out front: regular trash + food waste (left), plastic recycling (middle), paper & card (right). If full, use the third door on the right and I'll take care of it.",
     smoking: "No smoking inside the house, please.",
   },
 
   insideHouse: [
     {
       title: "Kitchen",
-      body: "The microwave sits above the main oven. Press 'Menu' to switch to Microwave mode. Dishwasher is under the sink, on the left. You'll find utensils, condiments, oil, coffee and tea. Please help yourself to anything in the cupboards.",
+      body: "The microwave sits above the main oven. Press 'Menu' to switch to Microwave mode. Dishwasher is under the sink, on the left. You'll find utensils, condiments, oil, coffee and tea in the kitchen, and some more (feel free to use what you find).",
       tip: "The coffee machine doubles as a hot-water tap (turn the knob after switching it on, ~2 min warmup).",
     },
     {
       title: "Coffee machine",
-      body: "Press the on/off button and please be gentle with it, it sometimes takes a few seconds to wake up. It rinses for ~30s before it's ready. Refill water from the tap, empty the drip bin when prompted, uses beans from the hopper. Milk frother is on the inside, please put the milk in the fridge after use.",
+      body: "Press the on/off button and please be gentle with it, it sometimes takes a few seconds to wake up. It rinses for ~30s before it's ready, so leave your cup off to the side while it does. Refill water from the tap, empty the drip bin when prompted, uses beans from the hopper. Milk frother is on the inside, please put the milk in the fridge after use.",
     },
     {
       title: "Laundry",
@@ -1132,7 +1150,7 @@ function sec(id, n, label, title, lede, body, opts = {}) {
 
 const out = [];
 
-out.push(sec('welcome', '01', 'Welcome', '<em>Make</em> yourself<br>at home.', '',
+out.push(sec('welcome', '01', 'Welcome', 'Make yourself<br>at <em>home</em>.', '',
   `<div class="welcome">
     <div>
       <p>${M.welcome.body}</p>
@@ -1157,7 +1175,7 @@ out.push(sec('arrival', '02', 'Arrival', 'First five<br><em>minutes</em>.', 'Six
 ));
 
 // QR-ish placeholder pattern for wifi card
-out.push(sec('essentials', '03', 'Essentials', '<em>The</em> basics.', '',
+out.push(sec('essentials', '03', 'Essentials', 'The <em>basics</em>.', '',
   `<div class="wifi">
     <div><div class="lbl">Wi-Fi network</div><div class="val">${M.essentials.wifi.name}</div></div>
     <div><div class="lbl">Password</div><div class="val">${M.essentials.wifi.pass}</div></div>
