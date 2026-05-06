@@ -539,6 +539,14 @@
   .photo-ph { aspect-ratio: 4/3; background: var(--paper); border: 1px solid var(--rule); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
   .photo-ph::before { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, transparent 0 14px, rgba(20,20,15,0.04) 14px 15px); }
   .photo-ph .lab { position: relative; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); background: var(--paper); padding: 4px 10px; border: 1px solid var(--rule); }
+  .photo-ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+  .ph-arr { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(253,252,248,0.88); border: 1px solid var(--rule); color: var(--ink); width: 30px; height: 30px; border-radius: 2px; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; z-index: 3; padding: 0; }
+  .ph-arr:hover { background: var(--paper); }
+  .ph-prev { left: 8px; }
+  .ph-next { right: 8px; }
+  .ph-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 3; }
+  .ph-dots span { width: 5px; height: 5px; border-radius: 50%; background: rgba(253,252,248,0.45); transition: background 0.2s; }
+  .ph-dots span.on { background: var(--paper); }
   .photo-cell .id-line { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-top: 10px; }
   .photo-cell .note-line { font-size: 13px; color: var(--ink-2); line-height: 1.5; margin-top: 4px; }
 
@@ -731,11 +739,11 @@ window.MANUAL = {
   },
 
   photos: [
-    { id: "front-door", label: "Front door & key box", note: "The door, the key box mounted above the trash shelter, and the right hand-lifting motion. One wide shot or two close-ups." },
-    { id: "hot-tub-faucet", label: "Hot tub faucet (garage)", note: "The two knobs in the garage. Left handle for power, right knob preset to 42°C. Annotate with arrows if possible." },
-    { id: "hot-tub-drain", label: "Hot tub drain", note: "The drain handle underneath the steps, in both open and closed positions." },
-    { id: "laundry", label: "Laundry machines", note: "All three machines in a row, with the pre-loaded one labelled. Show the dryer's water tank top-left." },
-    { id: "coffee", label: "Coffee machine controls", note: "On/off button and the hot-water knob. A second shot of the milk frother on the side." },
+    { id: "front-door", src: "photos/Picture1.png", label: "Front door & key box", note: "The door, the key box mounted above the trash shelter, and the right hand-lifting motion. One wide shot or two close-ups." },
+    { id: "hot-tub-faucet", src: "photos/hottubfaucet.png", label: "Hot tub faucet (garage)", note: "The two knobs in the garage. Left handle for power, right knob preset to 42°C. Annotate with arrows if possible." },
+    { id: "hot-tub-drain", src: ["photos/hottub1.png", "photos/hottub2.png"], label: "Hot tub drain", note: "The drain handle underneath the steps, in both open and closed positions." },
+    { id: "laundry", src: "photos/laundry1.png", label: "Laundry machines", note: "All three machines in a row, with the pre-loaded one labelled. Show the dryer's water tank top-left." },
+    { id: "coffee", src: ["photos/coffee1.png", "photos/coffee2.png", "photos/coffee3.png", "photos/coffee4.png"], label: "Coffee machine controls", note: "On/off button and the hot-water knob. A second shot of the milk frother on the side." },
     { id: "fuse-box", label: "Fuse box", note: "Where it lives + a labelled close-up of the breakers, in case anything trips." },
     { id: "trash-bins", label: "Trash & recycling bins", note: "All three bins from the front, with labels matching the manual: regular, plastic, paper." },
     { id: "bbq-gas", label: "BBQ & spare gas", note: "The BBQ on the patio with the spare gas tank visible on the right side." },
@@ -1280,14 +1288,29 @@ out.push(sec('kids', '07b', 'Travelling with kids', M.kids.headline.replace('?',
   </div>`
 ));
 
-out.push(sec('photos', '06b', 'Photo reference', 'Where to find <em>everything</em>.', "Each cell is a placeholder for a real photo we'll swap in.",
+function photoCell(p) {
+  if (!p.src) {
+    return `<div class="photo-cell">
+      <div class="photo-ph"><span class="lab">${p.label}</span></div>
+      <div class="id-line">${p.id}</div>
+      <p class="note-line">${p.note}</p>
+    </div>`;
+  }
+  const srcs = Array.isArray(p.src) ? p.src : [p.src];
+  const multi = srcs.length > 1;
+  return `<div class="photo-cell">
+    <div class="photo-ph${multi ? ' ph-carousel' : ''}">
+      ${srcs.map((s, i) => `<img src="${s}" alt="${p.label}"${i > 0 ? ' hidden' : ''}>`).join('')}
+      ${multi ? `<button class="ph-arr ph-prev" aria-label="Previous">&#8592;</button><button class="ph-arr ph-next" aria-label="Next">&#8594;</button><div class="ph-dots">${srcs.map((_, i) => `<span${i === 0 ? ' class="on"' : ''}></span>`).join('')}</div>` : ''}
+    </div>
+    <div class="id-line">${p.id}</div>
+    <p class="note-line">${p.note}</p>
+  </div>`;
+}
+
+out.push(sec('photos', '06b', 'Photo reference', 'Where to find <em>everything</em>.', "Use the arrows to step through multi-photo guides.",
   `<div class="photo-grid">
-    ${M.photos.map(p => `
-      <div class="photo-cell">
-        <div class="photo-ph"><span class="lab">${p.label}</span></div>
-        <div class="id-line">${p.id}</div>
-        <p class="note-line">${p.note}</p>
-      </div>`).join('')}
+    ${M.photos.map(photoCell).join('')}
   </div>`
 ));
 
@@ -1508,6 +1531,21 @@ const obs = new IntersectionObserver(entries => {
   });
 }, { rootMargin: '-15% 0px -75% 0px' });
 document.querySelectorAll('section').forEach(s => obs.observe(s));
+
+// Photo carousels
+document.querySelectorAll('.ph-carousel').forEach(c => {
+  let idx = 0;
+  const imgs = c.querySelectorAll('img');
+  const dots = c.querySelectorAll('.ph-dots span');
+  const total = imgs.length;
+  function go(n) {
+    imgs[idx].hidden = true; dots[idx].className = '';
+    idx = (n + total) % total;
+    imgs[idx].hidden = false; dots[idx].className = 'on';
+  }
+  c.querySelector('.ph-prev').addEventListener('click', () => go(idx - 1));
+  c.querySelector('.ph-next').addEventListener('click', () => go(idx + 1));
+});
 </script>
 </body>
 </html>
