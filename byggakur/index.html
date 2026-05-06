@@ -196,7 +196,7 @@
   p { max-width: 65ch; margin: 0 0 14px; }
 
   /* Welcome */
-  .welcome { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: end; }
+  .welcome { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
   @media (max-width: 800px) { .welcome { grid-template-columns: 1fr; gap: 32px; } }
   .welcome p { font-size: 17px; color: var(--ink-2); line-height: 1.65; }
   .welcome .signoff { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 24px; color: var(--ink); margin-top: 24px; }
@@ -677,7 +677,7 @@
     <div>
       <h6>From your host</h6>
       <p class="closer">Takk fyrir.<br><em>Thank you for staying.</em></p>
-      <p style="margin-top: 16px;">If anything is unclear or missing, please tell us. We'd rather you ask than guess.</p>
+      <p style="margin-top: 16px;">If anything is unclear or missing, please tell me. I'd rather you ask than guess.</p>
     </div>
     <div>
       <h6>Reach us</h6>
@@ -837,7 +837,7 @@ window.MANUAL = {
   },
 
   arrivalChecklist: [
-    { title: "Find the key box", body: "It's mounted above the trash-bin shelter, opposite the front door. Code: 0312. Slide the cover, enter the code, key drops out." },
+    { title: "Find the key box", body: "Sometimes I'll leave the house unlocked for you, so try the front door first. If it's locked, the key box is mounted above the trash-bin shelter, opposite the front door. Code: 0312. Slide the cover, enter the code, key drops out." },
     { title: "Lock the front door properly", body: "It's a safe neighbourhood, so locking isn't really a concern. If you do lock it, pull the handle UP first, then turn the key. The bolt won't engage otherwise." },
     { title: "Shoes off", body: "Icelandic homes are shoes-off. The downstairs hardwood and living-room rug are sensitive to water." },
     { title: "Connect to Wi-Fi", body: "Network: B12 · Password: 06030112" },
@@ -878,7 +878,7 @@ window.MANUAL = {
     },
     {
       title: "Showers & bath",
-      body: "Showers are powerful. If water starts pooling, lower the pressure. For the bathtub, run the water for ~10 seconds before plugging the drain (the pipes need a moment to flush clear). The fan switch in each bathroom helps cut the steam.",
+      body: "Showers are powerful. If water starts pooling, lower the pressure. One quirk worth knowing about the bathtub: the house is fairly new and no other tap does this, but for some reason that one pipe needs a brief rinse, so the first few seconds run slightly brown. Run the water for ~10 seconds before plugging the drain and it clears up. The fan switch in each bathroom helps cut the steam.",
     },
     {
       title: "Heating & climate",
@@ -903,8 +903,8 @@ window.MANUAL = {
       summary: "Five steps to fill it.",
       steps: [
         "Close the drain, it's outside, underneath the hot tub steps. Turn the handle to the closed position.",
-        "Open the faucet in the garage (white door inside the downstairs bedroom). The temperature is pre-set on the right knob to 42°C, which is what I like, it's quite hot. Turn the LEFT handle for full power.",
-        "Once the tub is filled, close the faucet.",
+        "Open the faucet in the garage (white door inside the downstairs bedroom). The temperature is pre-set on the right knob to 42°C (108°F), which is what I like, it's quite hot. Turn the LEFT handle for full power.",
+        "Once the tub is filled, please close the faucet so it doesn't keep running.",
         "Enjoy. The tub doesn't have bubble jets, just a hot soak.",
         "When done, open the drain (the opposite direction from step 1).",
       ],
@@ -920,7 +920,7 @@ window.MANUAL = {
     { icon: "moon", title: "Quiet 10 PM to 8 AM", body: "Outside only, in the garden and driveway. Inside the house, be as loud as you like. Many young families on the street, and neighbours' bedrooms face both the driveway and the garden." },
     { icon: "smoke", title: "No smoking", body: "Anywhere inside the house." },
     { icon: "lock", title: "Lift handle, then lock", body: "The front-door bolt only engages with the handle up." },
-    { icon: "rug", title: "Mind the living-room rug", body: "Even water marks it. Especially after the hot tub." },
+    { icon: "rug", title: "Mind the living-room rug", body: "Even water marks it, especially after the hot tub. It already shows some wear and tear (I do not recommend buying a 100% viscose rug!)." },
     { icon: "key", title: "Key back in box at checkout", body: "Same code: 0312." },
   ],
 
@@ -939,7 +939,7 @@ window.MANUAL = {
     ],
     transport: {
       taxi: ["+354 588 5522"],
-      taxiNote: "Stick to Hreyfill (+354 588 5522), a registered taxi firm with fixed prices. Look for the Hreyfill sign. The local taxi market was deregulated a few years ago and turned into a bit of a cowboy market. Cars can still be marked as taxis but not be registered to a big firm, which means the driver can set their own price and charge whatever they like. There's no Uber in Iceland.",
+      taxiNote: "Stick to <strong>Hreyfill (+354 588 5522)</strong>, a registered taxi firm with fixed prices. Look for the Hreyfill sign. The local taxi market was deregulated a few years ago and turned into a bit of a cowboy market. Cars can still be marked as taxis but not be registered to a big firm, which means the driver can set their own price and charge whatever they like. There's no Uber in Iceland.",
       bus: "Bus #1 from the nearby stop runs straight downtown.",
       busUrl: "https://straeto.is/en",
     },
@@ -971,7 +971,7 @@ window.MANUAL = {
       { name: "Smáralind food hall", type: "Mall food hall", note: "Closest to the house, in the shopping centre.", map: "https://maps.google.com/?q=Sm%C3%A1ralind+food+hall" },
     ],
     reservations: "Book ahead at https://www.dineout.is, popular spots fill up.",
-    booze: "Wine & beer aren't sold in supermarkets. Easiest: pick up at duty-free on landing. Otherwise search 'Vínbúðin' on Maps.",
+    booze: "Wine & beer aren't sold in supermarkets. Easiest and <strong>much cheaper</strong>: pick up at duty-free on landing. Otherwise search 'Vínbúðin' on Maps.",
   },
 
   todo: [
@@ -1214,8 +1214,9 @@ out.push(sec('rules', '06', 'House rules', 'Six small <em>house rules</em>.', "W
   </div>`
 ));
 
-out.push(sec('neighbourhood', '07', 'Neighbourhood', `Around <em>${M.neighbourhood.name}</em>.`, M.neighbourhood.summary,
-  `<div class="map-block">
+out.push(sec('neighbourhood', '07', 'Neighbourhood', `Around <em>${M.neighbourhood.name}</em>.`, '',
+  `<p class="lede" style="max-width: none;">${M.neighbourhood.summary}</p>
+  <div class="map-block">
     <div class="map-art">
       <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
         <!-- land base -->
