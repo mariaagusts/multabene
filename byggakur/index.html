@@ -237,20 +237,15 @@
     background: var(--ink); color: var(--paper);
     padding: 36px 40px;
     border-radius: 2px;
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px;
+    display: grid; grid-template-columns: 1fr 1fr auto; gap: 32px;
     margin: 24px 0; align-items: center;
   }
   @media (max-width: 700px) { .wifi { grid-template-columns: 1fr 1fr; padding: 24px; } }
   .wifi .lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(244,243,238,0.4); }
   .wifi .val { font-family: 'Instrument Serif', serif; font-size: 36px; letter-spacing: -0.02em; margin-top: 6px; }
-  .wifi .qr {
-    background: var(--paper); aspect-ratio: 1; max-width: 100px;
-    display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr); gap: 1px; padding: 8px;
-    margin-left: auto;
-  }
+  .wifi .qr { background: #fff; padding: 8px; border-radius: 2px; display: block; margin-left: auto; }
+  .wifi .qr svg { display: block; width: 96px; height: 96px; }
   @media (max-width: 700px) { .wifi .qr { display: none; } }
-  .wifi .qr div { background: var(--ink); }
-  .wifi .qr div.off { background: var(--paper); }
 
   .basics-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 32px; padding-top: 32px; border-top: 1px solid var(--rule); }
   @media (max-width: 700px) { .basics-3 { grid-template-columns: 1fr; gap: 16px; } }
@@ -631,11 +626,11 @@
   </div>
   <div class="hero-mid">
     <h1>The house,<br>and a little<br>of <em>Iceland.</em></h1>
-    <p class="strap">A guide to staying at Byggakur 12. What to know, what to do, and a few of our favourite places nearby. Curated by your hosts.</p>
+    <p class="strap">A guide to staying at Byggakur 12. What to know, what to do, and a few of our favourite places nearby. Curated by your host.</p>
   </div>
   <div class="hero-bottom">
     <div class="hero-meta">
-      <div><div class="lbl">Hosts</div><div class="val">María Ágústsdóttir<br>+354 844 2770</div></div>
+      <div><div class="lbl">Host</div><div class="val">María Ágústsdóttir<br>+354 844 2770</div></div>
       <div><div class="lbl">Check-in / out</div><div class="val">4 PM · 11 AM</div></div>
       <div><div class="lbl">Updated</div><div class="val">May 2026</div></div>
     </div>
@@ -678,7 +673,7 @@
 <footer class="footer">
   <div class="footer-inner">
     <div>
-      <h6>From your hosts</h6>
+      <h6>From your host</h6>
       <p class="closer">Takk fyrir.<br><em>Thank you for staying.</em></p>
       <p style="margin-top: 16px;">If anything is unclear or missing, please tell us. We'd rather you ask than guess.</p>
     </div>
@@ -835,7 +830,7 @@ window.MANUAL = {
 
   welcome: {
     headline: "Welcome to my home",
-    body: "I hope you have a fantastic stay and an amazing time in Iceland. I live in this house with my two daughters (12 and 14), it's not a rental property, so you'll find it stocked like a real home. Please make yourself comfortable, and let me know if there's anything I can do to make your trip even better. I'm easily reachable by phone, text or email.",
+    body: "I hope you have a fantastic stay and an amazing time in Iceland. I live in this house with my two daughters (12 and 14). It's primarily our home, though we open it up to guests now and then, so you'll find it stocked like the real home it is. Let me know if there's anything I can do to make your trip even better. I'm easily reachable by phone, text or email.",
     signoff: "María",
   },
 
@@ -951,7 +946,7 @@ window.MANUAL = {
     nearby: [
       { name: "Mathús Garðabæjar", type: "Bistro & fine dining", note: "Local favourite. 15 min walk / 5 min drive.", map: "https://maps.google.com/?q=Math%C3%BAs+Gar%C3%B0ab%C3%A6jar" },
       { name: "Te & Kaffi", type: "Coffee & wine", note: "Open evenings, serves alcohol.", map: "https://maps.google.com/?q=Te+%26+Kaffi+Gar%C3%B0at%C3%B3rg" },
-      { name: "Flatey", type: "Italian sourdough pizza", note: "Sourdough crust, not thin-crust. Excellent.", map: "https://maps.google.com/?q=Flatey+Pizza+Reykjav%C3%ADk" },
+      { name: "Flatey", type: "Italian sourdough pizza", note: "Sourdough crust, not thin-crust. Excellent.", map: "https://maps.google.com/?q=Flatey+Pizza+Gar%C3%B0atorg" },
       { name: "Huppa", type: "Ice cream", note: "Try a 'bragðarefur', ice cream with mixed-in candy.", map: "https://maps.google.com/?q=Huppa+ice+cream+Garðabær" },
     ],
     reykjavik: [
@@ -1072,12 +1067,12 @@ window.MANUAL = {
     { title: "Strip used beds", body: "Just the rooms you slept in, leave the linens on the floor." },
     { title: "Lock up", body: "Front door: lift handle UP, then turn the key." },
     { title: "Key back in the box", body: "Code 0312, same as arrival." },
-    { title: "Text María", body: "+354 844 2770, just a quick 'we're out, thank you!'" },
+    { title: "Text María", body: "+354 844 2770, just a quick 'we're out!'" },
   ],
 
   food: {
     delivery: [
-      { name: "Wolt", url: "https://wolt.com", note: "Restaurant delivery, this covers basically everything. My personal favourite to order in is Flatbakan." },
+      { name: "Wolt", url: "https://wolt.is", note: "Restaurant delivery, this covers basically everything. My personal favourite to order in is Flatbakan." },
     ],
   },
 
@@ -1124,7 +1119,7 @@ out.push(sec('welcome', '01', 'Welcome', '<em>Make</em> yourself<br>at home.', '
   `<div class="welcome">
     <div>
       <p>${M.welcome.body}</p>
-      <p>This is our home, not a rental property, please make yourself comfortable. Help yourself to anything in the kitchen. The Wi-Fi is fast, the water is the cleanest you'll ever drink, and the hot tub is, frankly, the best part of the house.</p>
+      <p>Please make yourself comfortable and help yourself to anything in the kitchen. The Wi-Fi is fast and the water is the cleanest you'll ever drink.</p>
       <div class="signoff">${M.welcome.signoff}</div>
     </div>
     <div class="welcome-art"><img src="yfirlit.jpg" alt="Aerial view of Byggakur 12"><div class="lab">Photo · Garden & house</div></div>
@@ -1145,21 +1140,11 @@ out.push(sec('arrival', '02', 'Arrival', 'First five<br><em>minutes</em>.', 'Six
 ));
 
 // QR-ish placeholder pattern for wifi card
-const qrPattern = Array.from({length: 64}, (_,i) => {
-  const r = Math.floor(i/8), c = i%8;
-  // Corner finder patterns
-  if ((r<3 && c<3) || (r<3 && c>4) || (r>4 && c<3)) {
-    if (r===0 || r===2 || c===0 || c===2 || r===4 || c===4 || r===6 || c===6) return '';
-  }
-  // Random-looking bits
-  return ((r*c+r+c) % 3 === 0) ? '' : 'off';
-}).map(s => `<div class="${s}"></div>`).join('');
-
 out.push(sec('essentials', '03', 'Essentials', '<em>The</em> basics.', '',
   `<div class="wifi">
     <div><div class="lbl">Wi-Fi network</div><div class="val">${M.essentials.wifi.name}</div></div>
     <div><div class="lbl">Password</div><div class="val">${M.essentials.wifi.pass}</div></div>
-    <div class="qr">${qrPattern}</div>
+    <a class="qr" href="https://multabene.is/byggakur" aria-label="Open house manual at multabene.is/byggakur"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 37" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h37v37H0z"/><path stroke="#000000" d="M4 4.5h7m1 0h4m1 0h3m6 0h7M4 5.5h1m5 0h1m8 0h1m6 0h1m5 0h1M4 6.5h1m1 0h3m1 0h1m1 0h2m1 0h3m3 0h1m2 0h1m1 0h1m1 0h3m1 0h1M4 7.5h1m1 0h3m1 0h1m2 0h1m5 0h4m3 0h1m1 0h3m1 0h1M4 8.5h1m1 0h3m1 0h1m2 0h1m1 0h1m3 0h4m3 0h1m1 0h3m1 0h1M4 9.5h1m5 0h1m1 0h2m2 0h3m1 0h3m1 0h1m1 0h1m5 0h1M4 10.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M14 11.5h4m4 0h3M4 12.5h1m1 0h1m3 0h2m4 0h2m1 0h2m3 0h1m2 0h1m2 0h1m1 0h1M4 13.5h3m1 0h1m2 0h5m4 0h1m2 0h1m2 0h2m3 0h2M4 14.5h2m2 0h3m1 0h1m4 0h2m1 0h1m2 0h1m1 0h6m1 0h1M4 15.5h1m3 0h1m4 0h1m4 0h3m1 0h2m1 0h1m1 0h1m1 0h1M4 16.5h3m1 0h4m1 0h1m1 0h4m4 0h1m2 0h1m5 0h1M11 17.5h1m1 0h1m2 0h3m4 0h2m1 0h2m3 0h2M7 18.5h1m2 0h1m1 0h1m1 0h1m2 0h1m1 0h3m1 0h4m3 0h1M5 19.5h4m5 0h4m4 0h1m3 0h3M4 20.5h1m3 0h6m2 0h2m1 0h2m3 0h1m1 0h2m4 0h1M6 21.5h4m1 0h1m8 0h2m1 0h2m1 0h2m2 0h3M4 22.5h3m3 0h1m2 0h2m2 0h2m1 0h1m1 0h3m1 0h1m1 0h2m2 0h1M7 23.5h1m3 0h1m1 0h1m1 0h1m2 0h3m1 0h4m1 0h1M4 24.5h4m2 0h1m1 0h1m1 0h5m5 0h6m1 0h1M12 25.5h1m1 0h5m3 0h1m1 0h1m3 0h3m1 0h1M4 26.5h7m1 0h1m2 0h2m2 0h1m1 0h1m2 0h1m1 0h1m1 0h1m3 0h1M4 27.5h1m5 0h1m3 0h1m2 0h1m4 0h1m1 0h1m3 0h1m2 0h1M4 28.5h1m1 0h3m1 0h1m2 0h1m2 0h2m1 0h2m2 0h7M4 29.5h1m1 0h3m1 0h1m2 0h2m1 0h2m2 0h1m1 0h2m1 0h1m1 0h5M4 30.5h1m1 0h3m1 0h1m1 0h4m2 0h1m1 0h1m1 0h1m1 0h2m2 0h1m2 0h2M4 31.5h1m5 0h1m3 0h1m3 0h3m3 0h4m1 0h1M4 32.5h7m1 0h4m1 0h2m1 0h3m1 0h2m3 0h1m2 0h1"/></svg></a>
   </div>
   <p style="font-size: 14px; color: var(--ink-3); max-width: 560px;">${M.essentials.wifi.note}</p>
   <div class="basics-3">
@@ -1185,7 +1170,7 @@ out.push(sec('house', '04', 'Inside the house', 'How <em>things</em> work.', "Ea
 
 out.push(sec('outdoors', '05', 'Outdoors', 'The <em>hot tub</em>, BBQ &amp; garden.', M.outdoors.hotTub.summary,
   `<div class="ht-hero">
-    <div class="quote">Five small steps to <em>a hot tub at 39°C</em> under an Icelandic sky.</div>
+    <div class="quote">Five small steps to <em>a hot tub at 42°C</em> under an Icelandic sky.</div>
     <div class="meta">Hot tub · Read once before starting</div>
   </div>
   <div class="ht-steps">
