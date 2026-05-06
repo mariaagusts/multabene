@@ -145,6 +145,15 @@ body {
   display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
 }
 
+.home-intro { margin: 4px 0 20px; }
+.home-intro .lead {
+  font-size: 16px; font-weight: 700; color: #1a1a1a;
+  letter-spacing: -0.3px; margin-bottom: 8px; line-height: 1.35;
+}
+.home-intro .body {
+  font-size: 14px; color: #555; line-height: 1.55;
+}
+
 .suggestion-card {
   background: #FF4E2A; color: white; border-radius: 22px;
   padding: 22px; margin-bottom: 16px;
@@ -409,6 +418,10 @@ body {
       <button class="help-btn" id="help-btn" title="Hjálp">?</button>
     </div>
   </div>
+  <div class="home-intro">
+    <p class="lead">10 mínútur. Eitt svæði. Það er nóg.</p>
+    <p class="body">Hugmyndin er að gera heimilisverkin minna yfirþyrmandi. Veldu svæði, kveiktu á tímamælinum, og sjáðu hvað þú getur klárað. Það verður ekki fullkomið, en það verður klárað.</p>
+  </div>
   <div class="help-box" id="help-box">
     <div class="help-box-title">☁ Samstilling milli tækja</div>
     <div class="help-step"><div class="help-num">1</div><span>Þegar þú opnar appið í fyrsta sinn fær það sjálfkrafa einkvæman 6-stafa kóða.</span></div>
@@ -516,8 +529,7 @@ const FB_ON = FB_URL && !FB_URL.includes('YOUR-PROJECT');
 
 const BUILT_IN = [
   { id:'kitchen',       name:'Eldhúsborð og uppþvottur', icon:'🍽️',  multiple:false, bg:'#FFF3CD' },
-  { id:'fridge',        name:'Ísskápur',                  icon:'❄️',   multiple:false, bg:'#D6EEF8' },
-  { id:'freezer',       name:'Frystir',                   icon:'🧊',   multiple:false, bg:'#CCE9FF' },
+  { id:'fridge',        name:'Ísskápur og frystir',       icon:'❄️',   multiple:false, bg:'#D6EEF8' },
   { id:'laundry_fold',  name:'Þvottur — brjóta saman',   icon:'👕',   multiple:false, bg:'#E8DCFF' },
   { id:'laundry_room',  name:'Þvottaherbergi',            icon:'🧺',   multiple:false, bg:'#F8D7F0' },
   { id:'cupboard',      name:'Skápur eða skúffa',         icon:'🗄️',   multiple:true,  bg:'#FFE4C4' },
@@ -526,8 +538,9 @@ const BUILT_IN = [
   { id:'living',        name:'Stofuyfirborð',             icon:'🛋️',   multiple:false, bg:'#FFF0C4' },
   { id:'kids',          name:'Barnasvæði',                icon:'🧸',   multiple:false, bg:'#DDFAD4' },
   { id:'bedroom',       name:'Svefnherbergi',             icon:'🛏️',   multiple:false, bg:'#E0DCFF' },
+  { id:'desk',          name:'Skrifborð / vinnusvæði',    icon:'💻',   multiple:false, bg:'#EAE0FF' },
   { id:'paperwork',     name:'Pappírar og póstur',        icon:'📬',   multiple:false, bg:'#FFEAB0' },
-  { id:'paper_plastic', name:'Pappír og plast',           icon:'♻️',   multiple:false, bg:'#C5F5C5' },
+  { id:'paper_plastic', name:'Ruslafötur og endurvinnsla', icon:'♻️',  multiple:false, bg:'#C5F5C5' },
   { id:'vacuum',        name:'Ryksuga allt',              icon:'🌀',   multiple:false, bg:'#DDE8FF' },
 ];
 const EXTRA_BGS = ['#FFE8D6','#D6F5E8','#E8D6FF','#FFD6E8','#D6E8FF','#F5FFD6','#FFD6D6','#D6F0FF'];
