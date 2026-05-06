@@ -1,163 +1,988 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Byggakur 12 — House Manual · Three directions</title>
+<title>Byggakur 12 · House Manual</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;400;500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f4f3ee;
-    --paper: #fff;
-    --ink: #14140f;
-    --ink-2: #4d4c45;
-    --ink-3: #88857c;
-    --rule: #d4d2c8;
-    --accent: #2e3d2c;
+    --bg: #ececec;            /* cool light gray */
+    --paper: #ffffff;
+    --ink: #18181b;
+    --ink-2: #404049;
+    --ink-3: #80808a;
+    --rule: #d4d4d8;
+    --rule-soft: #e4e4e8;
+    --accent: #1f4068;        /* deep fjord blue */
+    --accent-glow: #4a90c0;
+    --warn: #c0532b;
+    --emergency: #d8443a;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body {
-    background: var(--bg); color: var(--ink);
-    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Manrope', -apple-system, system-ui, sans-serif;
+    font-size: 16px; line-height: 1.55;
+    font-weight: 400;
+    letter-spacing: -0.005em;
     -webkit-font-smoothing: antialiased;
   }
-  .wrap { max-width: 1200px; margin: 0 auto; padding: 64px 32px 96px; }
-  @media (max-width: 700px) { .wrap { padding: 36px 20px; } }
-  .eyebrow {
-    font-family: 'JetBrains Mono', monospace; font-size: 11px;
-    letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3);
-    display: flex; gap: 12px; align-items: center;
-  }
-  .eyebrow .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
-  h1 {
-    font-family: 'Fraunces', serif; font-weight: 300;
-    font-size: clamp(40px, 6vw, 72px); line-height: 1; letter-spacing: -0.03em;
-    margin: 24px 0 24px;
-  }
-  h1 em { font-style: italic; color: var(--ink-2); }
-  .intro { font-size: 18px; color: var(--ink-2); max-width: 60ch; line-height: 1.55; margin: 0 0 64px; }
-  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
-  .card {
-    background: var(--paper); border-radius: 8px;
-    padding: 32px; display: flex; flex-direction: column;
-    text-decoration: none; color: var(--ink);
-    transition: transform .15s, box-shadow .15s;
-    border: 1px solid var(--rule);
-  }
-  .card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -20px rgba(0,0,0,0.15); }
-  .card .num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; color: var(--ink-3); text-transform: uppercase; }
-  .card h3 { font-family: 'Fraunces', serif; font-weight: 400; font-size: 28px; line-height: 1.1; letter-spacing: -0.01em; margin: 16px 0 8px; }
-  .card .desc { font-size: 14px; color: var(--ink-2); line-height: 1.55; margin: 0 0 20px; flex: 1; }
-  .preview {
-    aspect-ratio: 4/3; border-radius: 4px; overflow: hidden; margin-bottom: 20px;
-    border: 1px solid var(--rule);
-  }
-  .preview iframe { width: 320%; height: 320%; transform: scale(0.31); transform-origin: top left; border: 0; pointer-events: none; }
-  .swatches { display: flex; gap: 6px; margin-top: 8px; }
-  .sw { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.08); }
-  .cta { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-top: 16px; }
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+  a:hover { color: var(--accent-glow); }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
 
-  .additions {
-    margin-top: 96px; padding: 48px;
-    background: var(--paper); border: 1px solid var(--rule); border-radius: 8px;
+  .shell { max-width: 1400px; margin: 0 auto; padding: 24px; }
+  @media (max-width: 700px) { .shell { padding: 12px; } }
+
+  /* ── Hero card ── */
+  .hero {
+    background: var(--paper);
+    border-radius: 12px;
+    padding: 40px;
+    display: grid; grid-template-columns: 1.5fr 1fr; gap: 48px;
+    align-items: stretch;
   }
-  @media (max-width: 700px) { .additions { padding: 28px 20px; } }
-  .additions h2 { font-family: 'Fraunces', serif; font-weight: 300; font-size: 36px; letter-spacing: -0.02em; margin: 0 0 8px; }
-  .additions .sub { color: var(--ink-2); font-size: 15px; max-width: 60ch; margin: 0 0 32px; }
-  .add-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; }
-  @media (max-width: 700px) { .add-grid { grid-template-columns: 1fr; } }
-  .add {
-    padding: 18px 0; border-top: 1px solid var(--rule);
-    display: grid; grid-template-columns: 28px 1fr; gap: 14px; align-items: start;
+  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; padding: 28px; gap: 32px; } }
+  .hero-left { display: flex; flex-direction: column; justify-content: space-between; }
+  .crumb {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3);
+    display: flex; gap: 14px; align-items: center;
   }
-  .add:nth-last-child(-n+2) { border-bottom: 1px solid var(--rule); }
-  .add .ico { color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 11px; padding-top: 2px; }
-  .add h4 { font-size: 15px; font-weight: 600; margin: 0 0 4px; }
-  .add p { font-size: 13px; color: var(--ink-2); margin: 0; line-height: 1.5; }
+  .crumb .pill {
+    background: var(--ink); color: white;
+    padding: 4px 10px; border-radius: 100px;
+    letter-spacing: 0.14em; font-size: 10px;
+  }
+  h1.title {
+    font-family: 'Manrope', sans-serif; font-weight: 200;
+    font-size: clamp(48px, 6.5vw, 92px);
+    line-height: 0.98; letter-spacing: -0.04em;
+    margin: 32px 0 24px;
+  }
+  h1.title strong { font-weight: 600; }
+  .sub { font-size: 17px; color: var(--ink-2); max-width: 480px; line-height: 1.5; }
+  .meta-strip {
+    margin-top: 36px; padding-top: 24px;
+    border-top: 1px solid var(--rule-soft);
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .meta-strip > div { font-size: 13px; }
+  .meta-strip .lbl { font-family: 'IBM Plex Mono', monospace; color: var(--ink-3); text-transform: uppercase; font-size: 10px; letter-spacing: 0.14em; margin-bottom: 4px; }
+  .meta-strip .val { font-weight: 500; color: var(--ink); }
+
+  /* Emergency card – right side of hero */
+  .emergency {
+    background: linear-gradient(160deg, #1a1a1f, #0c0c0f);
+    color: white;
+    border-radius: 8px;
+    padding: 28px;
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .emergency::before {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(216, 68, 58, 0.4), transparent 60%);
+  }
+  .emergency .label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 8px;
+    color: #ff8a7a;
+  }
+  .emergency .label::before {
+    content: ''; width: 8px; height: 8px; background: var(--emergency); border-radius: 50%;
+    animation: bp 1.4s ease infinite;
+  }
+  @keyframes bp { 50% { transform: scale(1.3); opacity: 0.6; } }
+  .emergency .num {
+    font-size: 96px; line-height: 1; font-weight: 200; letter-spacing: -0.05em;
+    margin: 18px 0 6px; position: relative;
+  }
+  .emergency .desc { font-size: 14px; color: #b0b0b8; line-height: 1.5; position: relative; }
+  .emergency .links { margin-top: auto; padding-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .emergency .links a {
+    color: white; border: 1px solid #4a4a55; padding: 6px 12px; border-radius: 100px;
+    font-size: 12px; font-family: 'IBM Plex Mono', monospace;
+  }
+  .emergency .links a:hover { background: var(--emergency); border-color: var(--emergency); }
+
+  /* ── Quick facts card row ── */
+  .facts-row {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;
+    margin-top: 8px;
+  }
+  @media (max-width: 900px) { .facts-row { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 500px) { .facts-row { grid-template-columns: repeat(2, 1fr); } }
+  .fact {
+    background: var(--paper); border-radius: 10px; padding: 18px 20px;
+    transition: transform .15s;
+  }
+  .fact:hover { transform: translateY(-2px); }
+  .fact .lbl { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--ink-3); letter-spacing: 0.14em; text-transform: uppercase; }
+  .fact .val { font-weight: 600; font-size: 22px; margin-top: 8px; letter-spacing: -0.02em; }
+  .fact .sub { font-size: 12px; color: var(--ink-3); margin-top: 4px; }
+
+  /* ── Layout ── */
+  .layout {
+    display: grid; grid-template-columns: 280px 1fr; gap: 8px;
+    margin-top: 8px;
+  }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+
+  /* TOC */
+  .toc-card {
+    background: var(--paper); border-radius: 12px; padding: 28px 24px;
+    position: sticky; top: 24px; align-self: start;
+  }
+  @media (max-width: 900px) { .toc-card { position: static; } }
+  .toc-card h6 { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); margin: 0 0 16px; font-weight: 500; }
+  .toc-card ol { list-style: none; padding: 0; margin: 0; }
+  .toc-card li { margin: 0; }
+  .toc-card a {
+    display: flex; align-items: center; gap: 12px;
+    padding: 9px 12px; margin: 0 -12px;
+    border-radius: 6px;
+    font-size: 13px; color: var(--ink-2); border: none;
+    transition: background .12s, color .12s;
+  }
+  .toc-card a:hover { background: var(--rule-soft); color: var(--ink); }
+  .toc-card a.active { background: var(--ink); color: white; }
+  .toc-card a .n { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-3); }
+  .toc-card a.active .n { color: rgba(255,255,255,0.7); }
+
+  /* Content stack */
+  .stack { display: flex; flex-direction: column; gap: 8px; }
+
+  .card {
+    background: var(--paper); border-radius: 12px; padding: 48px;
+    scroll-margin-top: 24px;
+  }
+  @media (max-width: 700px) { .card { padding: 28px 22px; } }
+  .sec-tag {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .sec-tag .n { color: var(--ink-3); }
+  h2 {
+    font-family: 'Manrope', sans-serif; font-weight: 300;
+    font-size: clamp(32px, 4vw, 48px); line-height: 1.05;
+    letter-spacing: -0.03em; margin: 0 0 12px;
+  }
+  h2 strong { font-weight: 600; }
+  .lede { font-size: 18px; color: var(--ink-2); line-height: 1.5; max-width: 60ch; margin: 0 0 32px; font-weight: 300; }
+  h3 { font-family: 'Manrope', sans-serif; font-size: 18px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 8px; }
+  p { max-width: 65ch; margin: 0 0 12px; }
+
+  /* Welcome */
+  .welcome-box { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+  @media (max-width: 800px) { .welcome-box { grid-template-columns: 1fr; gap: 24px; } }
+  .welcome-text p { font-size: 17px; color: var(--ink-2); line-height: 1.6; }
+  .signoff { font-style: italic; color: var(--ink); font-size: 18px; margin-top: 24px; }
+  .welcome-img {
+    aspect-ratio: 4/5; border-radius: 8px; overflow: hidden;
+    background: linear-gradient(180deg, #c8d8e2 0%, #95acc0 50%, #6e8a9e 100%);
+    position: relative;
+    display: flex; align-items: end; justify-content: start;
+  }
+  .welcome-img::after {
+    content: ''; position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(45deg, transparent 0 18px, rgba(255,255,255,0.06) 18px 19px);
+  }
+  .welcome-img .lab {
+    position: relative; margin: 16px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: white; background: rgba(0,0,0,0.4); padding: 4px 10px; border-radius: 4px;
+  }
+
+  /* Arrival – numbered tiles */
+  .arrival-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  }
+  @media (max-width: 700px) { .arrival-grid { grid-template-columns: 1fr; } }
+  .arrival-item {
+    border: 1px solid var(--rule-soft); border-radius: 8px;
+    padding: 22px 24px;
+    display: flex; gap: 18px; align-items: start;
+    transition: border-color .15s;
+  }
+  .arrival-item:hover { border-color: var(--accent); }
+  .arrival-item .n {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px; color: var(--accent);
+    flex: none; width: 28px; height: 28px;
+    border: 1px solid var(--accent); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .arrival-item h4 { font-size: 16px; font-weight: 600; margin: 0 0 4px; }
+  .arrival-item p { font-size: 14px; color: var(--ink-2); margin: 0; line-height: 1.5; }
+
+  /* WiFi – special card */
+  .wifi-block {
+    background: linear-gradient(135deg, var(--accent), #2a5485);
+    color: white;
+    border-radius: 10px; padding: 28px;
+    display: grid; grid-template-columns: 1fr 1fr auto; gap: 24px; align-items: end;
+  }
+  @media (max-width: 700px) { .wifi-block { grid-template-columns: 1fr 1fr; } }
+  .wifi-block .lbl { font-family: 'IBM Plex Mono', monospace; font-size: 10px; opacity: 0.6; letter-spacing: 0.14em; text-transform: uppercase; }
+  .wifi-block .val { font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 500; margin-top: 6px; }
+  .wifi-block .icon {
+    width: 40px; height: 40px; opacity: 0.4;
+  }
+
+  /* Sub-grid (basics) */
+  .basics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 32px; }
+  @media (max-width: 700px) { .basics-grid { grid-template-columns: 1fr; } }
+  .basic-item { padding: 20px; border: 1px solid var(--rule-soft); border-radius: 8px; }
+  .basic-item h4 { font-size: 14px; margin: 0 0 6px; font-weight: 600; }
+  .basic-item p { font-size: 13px; color: var(--ink-2); margin: 0; line-height: 1.5; }
+
+  /* House grid */
+  .house-list { display: flex; flex-direction: column; gap: 0; }
+  .house-row {
+    padding: 24px 0; border-top: 1px solid var(--rule-soft);
+    display: grid; grid-template-columns: 200px 1fr; gap: 32px;
+  }
+  .house-row:last-child { border-bottom: 1px solid var(--rule-soft); }
+  @media (max-width: 700px) { .house-row { grid-template-columns: 1fr; gap: 8px; } }
+  .house-row h4 { font-size: 18px; font-weight: 600; margin: 0; }
+  .house-row p { font-size: 14px; color: var(--ink-2); margin: 0 0 8px; }
+  .tip {
+    margin-top: 10px; padding: 10px 14px;
+    background: rgba(31, 64, 104, 0.06); border-radius: 6px;
+    font-size: 13px; color: var(--ink-2);
+    border-left: 3px solid var(--accent);
+  }
+  .tip::before { content: 'Tip · '; color: var(--accent); font-weight: 600; }
+
+  /* Hot tub – steps as horizontal pills */
+  .ht-summary { font-size: 17px; color: var(--ink-2); margin-bottom: 32px; max-width: 60ch; }
+  .ht-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 40px; }
+  @media (max-width: 900px) { .ht-steps { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px) { .ht-steps { grid-template-columns: 1fr; } }
+  .ht-step {
+    background: linear-gradient(180deg, #f4f4f6, #e9e9ec);
+    border-radius: 10px; padding: 20px;
+    position: relative;
+  }
+  .ht-step .n {
+    font-family: 'Manrope', sans-serif; font-weight: 200;
+    font-size: 56px; line-height: 1; color: var(--accent);
+    letter-spacing: -0.05em;
+  }
+  .ht-step p { font-size: 13px; color: var(--ink-2); margin: 12px 0 0; line-height: 1.5; }
+  .ht-aside { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  @media (max-width: 700px) { .ht-aside { grid-template-columns: 1fr; } }
+  .ht-aside > div { padding: 20px; border: 1px solid var(--rule-soft); border-radius: 8px; }
+  .ht-aside h4 { margin: 0 0 6px; font-size: 14px; font-weight: 600; }
+  .ht-aside p { font-size: 13px; color: var(--ink-2); margin: 0; line-height: 1.5; }
+
+  /* Rules */
+  .rules-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  @media (max-width: 700px) { .rules-list { grid-template-columns: 1fr; } }
+  .rule-row {
+    display: grid; grid-template-columns: 40px 1fr; gap: 16px;
+    padding: 18px 20px; border: 1px solid var(--rule-soft); border-radius: 8px; align-items: start;
+  }
+  .rule-row svg { width: 28px; height: 28px; color: var(--accent); }
+  .rule-row h4 { font-size: 15px; font-weight: 600; margin: 0 0 4px; }
+  .rule-row p { font-size: 13px; color: var(--ink-2); margin: 0; line-height: 1.5; }
+
+  /* Neighbourhood */
+  .nb-list { display: grid; grid-template-columns: 1fr; gap: 0; }
+  .nb-item {
+    display: grid; grid-template-columns: 200px 1fr 1fr; gap: 32px;
+    padding: 18px 0; border-top: 1px solid var(--rule-soft); align-items: baseline;
+  }
+  @media (max-width: 700px) { .nb-item { grid-template-columns: 1fr; gap: 4px; } }
+  .nb-item:last-child { border-bottom: 1px solid var(--rule-soft); }
+  .nb-item .name { font-size: 16px; font-weight: 600; }
+  .nb-item .type { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; }
+  .nb-item .note { font-size: 13px; color: var(--ink-2); }
+
+  .transport {
+    margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  @media (max-width: 700px) { .transport { grid-template-columns: 1fr; } }
+  .transport > div { padding: 20px; border: 1px solid var(--rule-soft); border-radius: 8px; }
+  .transport h4 { font-size: 14px; margin: 0 0 6px; font-weight: 600; }
+  .transport p { font-size: 13px; color: var(--ink-2); margin: 0; }
+
+  /* Restaurants */
+  .rest-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  @media (max-width: 800px) { .rest-tabs { grid-template-columns: 1fr; } }
+  .rest-tabs h3 { padding-bottom: 12px; border-bottom: 1px solid var(--rule-soft); margin-bottom: 0; }
+  .rest-line {
+    display: grid; grid-template-columns: 1fr auto; gap: 24px;
+    padding: 14px 0; border-bottom: 1px solid var(--rule-soft); align-items: baseline;
+  }
+  .rest-line .nm { font-size: 15px; font-weight: 600; }
+  .rest-line .ty { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.12em; }
+  .rest-line .nt { font-size: 13px; color: var(--ink-2); margin-top: 4px; }
+  .booze {
+    margin-top: 32px; padding: 16px 20px; background: rgba(192, 83, 43, 0.08); border-radius: 8px;
+    font-size: 13px; color: var(--ink-2);
+  }
+  .booze::before { content: '🍷 '; }
+
+  /* TODO */
+  .todo-stack { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 700px) { .todo-stack { grid-template-columns: 1fr; } }
+  .todo-card {
+    border: 1px solid var(--rule-soft); border-radius: 10px; overflow: hidden;
+    display: grid; grid-template-rows: 120px 1fr;
+  }
+  .todo-card .visual {
+    position: relative; overflow: hidden;
+    background: linear-gradient(135deg, #d6e4ec, #aac0d0);
+  }
+  .todo-card .visual::after {
+    content: ''; position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(45deg, transparent 0 14px, rgba(255,255,255,0.1) 14px 15px);
+  }
+  .todo-card .visual .tag {
+    position: absolute; top: 12px; left: 12px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    background: rgba(255,255,255,0.85); padding: 4px 10px; border-radius: 100px; color: var(--ink);
+  }
+  .todo-card .body { padding: 18px 20px; }
+  .todo-card h4 { font-size: 17px; margin: 0 0 6px; font-weight: 600; }
+  .todo-card p { font-size: 13px; color: var(--ink-2); margin: 0 0 10px; line-height: 1.5; }
+  .todo-card a { font-size: 12px; }
+
+  /* Itineraries – timeline */
+  .itin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 800px) { .itin-grid { grid-template-columns: 1fr; } }
+  .itin {
+    border: 1px solid var(--rule-soft); border-radius: 10px; padding: 24px;
+  }
+  .itin .badge {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: white;
+    background: var(--accent); padding: 4px 10px; border-radius: 100px;
+    display: inline-block;
+  }
+  .itin h3 { margin: 12px 0 16px; font-size: 18px; }
+  .itin ul { list-style: none; padding: 0; margin: 0; counter-reset: s; }
+  .itin ul li {
+    counter-increment: s; padding: 8px 0 8px 26px; position: relative;
+    font-size: 13px; color: var(--ink-2); line-height: 1.5;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .itin ul li::before {
+    content: ''; position: absolute; left: 8px; top: 14px;
+    width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+  }
+  .itin ul li:first-child { border-top: none; }
+
+  /* Aurora */
+  .aurora {
+    border-radius: 10px; padding: 36px;
+    background:
+      radial-gradient(ellipse 60% 40% at 30% 30%, rgba(120, 220, 170, 0.35), transparent 70%),
+      radial-gradient(ellipse 50% 30% at 75% 50%, rgba(140, 100, 220, 0.25), transparent 70%),
+      linear-gradient(180deg, #0e1322 0%, #1a2638 100%);
+    color: white;
+    display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px;
+    position: relative; overflow: hidden;
+  }
+  @media (max-width: 800px) { .aurora { grid-template-columns: 1fr; padding: 24px; } }
+  .aurora::before {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1.5px 1.5px at 12% 18%, white, transparent),
+      radial-gradient(1px 1px at 28% 8%, white, transparent),
+      radial-gradient(1px 1px at 60% 12%, white, transparent),
+      radial-gradient(1.5px 1.5px at 82% 22%, white, transparent),
+      radial-gradient(1px 1px at 92% 6%, white, transparent),
+      radial-gradient(1px 1px at 8% 78%, rgba(255,255,255,0.7), transparent),
+      radial-gradient(1px 1px at 30% 88%, rgba(255,255,255,0.5), transparent);
+    pointer-events: none;
+  }
+  .aurora h2 { color: white; }
+  .aurora .lede { color: rgba(255,255,255,0.7); }
+  .aurora .sec-tag { color: #88e0b8; }
+  .aurora .sec-tag .n { color: rgba(255,255,255,0.4); }
+  .aurora-tips { list-style: none; padding: 0; margin: 0; position: relative; }
+  .aurora-tips li {
+    padding: 14px 0; border-top: 1px solid rgba(255,255,255,0.1);
+    font-size: 14px; line-height: 1.55; color: rgba(255,255,255,0.85);
+    display: grid; grid-template-columns: 16px 1fr; gap: 10px;
+  }
+  .aurora-tips li:last-child { border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .aurora-tips li::before { content: '✦'; color: #88e0b8; }
+  .aurora-side { position: relative; align-self: end; }
+  .aurora-side .quote {
+    font-family: 'Manrope', sans-serif; font-weight: 200;
+    font-size: 28px; line-height: 1.2; letter-spacing: -0.02em;
+    color: white; max-width: 320px;
+  }
+  .aurora-side .quote em { color: #88e0b8; font-style: normal; }
+  .aurora-side .credit {
+    margin-top: 18px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.4);
+  }
+
+  /* Driving */
+  .drive-list { columns: 2; column-gap: 32px; }
+  @media (max-width: 700px) { .drive-list { columns: 1; } }
+  .drive-list > div {
+    break-inside: avoid; margin-bottom: 12px;
+    padding: 16px 18px; border: 1px solid var(--rule-soft); border-radius: 8px;
+    display: grid; grid-template-columns: 24px 1fr; gap: 10px;
+  }
+  .drive-list .n { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent); padding-top: 2px; }
+  .drive-list p { font-size: 13px; color: var(--ink-2); margin: 0; line-height: 1.55; }
+
+  /* Phrases */
+  .ph-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  @media (max-width: 800px) { .ph-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .ph-grid { grid-template-columns: 1fr; } }
+  .ph {
+    padding: 18px 20px; background: var(--rule-soft); border-radius: 8px;
+    transition: background .15s;
+  }
+  .ph:hover { background: var(--accent); color: white; }
+  .ph:hover .ph-en { color: rgba(255,255,255,0.7); }
+  .ph-is { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+  .ph-en { font-size: 12px; color: var(--ink-3); margin-top: 4px; transition: color .15s; }
+  .ph-say { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--ink-3); opacity: 0.7; margin-top: 4px; letter-spacing: 0.04em; transition: color .15s; }
+  .ph:hover .ph-say { color: rgba(255,255,255,0.6); }
+
+  /* Checkout */
+  .check-list { display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; }
+  @media (max-width: 700px) { .check-list { grid-template-columns: 1fr; } }
+  .check-row {
+    display: grid; grid-template-columns: 28px 1fr; gap: 14px;
+    padding: 16px 0; border-bottom: 1px solid var(--rule-soft); align-items: start;
+    cursor: pointer;
+  }
+  .check-row .box {
+    width: 22px; height: 22px; border: 1.5px solid var(--ink-3); border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .15s; flex: none;
+  }
+  .check-row.done .box { background: var(--accent); border-color: var(--accent); }
+  .check-row.done .box::after { content: '✓'; color: white; font-size: 14px; }
+  .check-row.done h4, .check-row.done p { text-decoration: line-through; opacity: 0.5; }
+  .check-row h4 { font-size: 15px; font-weight: 600; margin: 0 0 2px; }
+  .check-row p { font-size: 13px; color: var(--ink-2); margin: 0; line-height: 1.5; }
+
+  /* Footer */
+  /* Photo grid */
+  .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+  .photo-cell { padding: 12px; border: 1px solid var(--rule-soft); border-radius: 10px; background: var(--paper); transition: border-color .15s; }
+  .photo-cell:hover { border-color: var(--accent); }
+  .photo-ph { aspect-ratio: 4/3; border-radius: 6px; background: var(--bg); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+  .photo-ph::before { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, transparent 0 14px, rgba(31,64,104,0.05) 14px 15px); }
+  .photo-ph .lab { position: relative; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); background: var(--paper); padding: 4px 10px; border-radius: 100px; }
+  .photo-cell .id-line { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+  .photo-cell .note-line { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; margin-top: 4px; }
+
+  /* Kids */
+  .kids-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  @media (max-width: 800px) { .kids-grid { grid-template-columns: 1fr; gap: 24px; } }
+  .kids-spots { display: grid; gap: 10px; }
+  .kid-spot { padding: 14px 16px; border: 1px solid var(--rule-soft); border-radius: 8px; }
+  .kid-spot:hover { border-color: var(--accent); }
+  .kid-spot .nm { font-weight: 600; font-size: 14.5px; }
+  .kid-spot .note { font-size: 12.5px; color: var(--ink-2); margin-top: 3px; line-height: 1.5; }
+  .kids-prac { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+  .kids-prac li { font-size: 13px; color: var(--ink-2); padding: 10px 14px; background: var(--bg); border-radius: 6px; line-height: 1.5; }
+
+  /* Seasonal */
+  .season-tabs { display: inline-flex; padding: 4px; background: var(--bg); border-radius: 100px; margin-bottom: 28px; }
+  .season-tab { padding: 8px 18px; border: 0; background: transparent; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); border-radius: 100px; }
+  .season-tab.active { background: var(--ink); color: #fff; }
+  .season-headline { font-size: 20px; color: var(--ink); margin: 0 0 20px; max-width: 50ch; font-weight: 300; line-height: 1.4; }
+  .season-tips { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; list-style: none; padding: 0; margin: 0; }
+  @media (max-width: 800px) { .season-tips { grid-template-columns: 1fr; } }
+  .season-tips li { padding: 14px 16px; background: var(--bg); border-radius: 8px; font-size: 13.5px; color: var(--ink-2); line-height: 1.55; }
+
+  /* Hospital + QR */
+  .hosp-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 800px) { .hosp-grid { grid-template-columns: 1fr; } }
+  .hosp-block { padding: 24px; border: 1px solid var(--rule-soft); border-radius: 10px; }
+  .hosp-block .meta { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+  .hosp-block h3 { font-size: 22px; font-weight: 600; margin: 0 0 14px; letter-spacing: -0.01em; }
+  .hosp-block .row { display: grid; grid-template-columns: 80px 1fr; gap: 8px; padding: 10px 0; border-top: 1px solid var(--rule-soft); font-size: 13.5px; }
+  .hosp-block .row:first-of-type { border-top: 0; }
+  .hosp-block .row .k { color: var(--ink-3); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding-top: 2px; }
+  .hosp-block .row .v { color: var(--ink-2); }
+  .hosp-block p.note { font-size: 13px; color: var(--ink-2); margin: 12px 0 0; line-height: 1.55; }
+  .pharm-strip { margin-top: 16px; padding: 12px 16px; background: rgba(31,64,104,0.06); border-radius: 8px; font-size: 12.5px; color: var(--ink-2); border-left: 3px solid var(--accent); }
+  .qr-block { background: var(--ink); color: #fff; padding: 24px; border-radius: 10px; }
+  .qr-block .qr-glyph { width: 120px; height: 120px; background: #fff; padding: 8px; border-radius: 6px; margin-bottom: 16px; }
+  .qr-block .qr-glyph svg { width: 100%; height: 100%; display: block; }
+  .qr-block h4 { font-size: 18px; margin: 0 0 6px; font-weight: 600; }
+  .qr-block p { font-size: 12.5px; color: rgba(255,255,255,0.65); margin: 0; line-height: 1.55; }
+
+  /* Footer (real) */
+  .footer-card {
+    background: var(--ink); color: white; border-radius: 12px;
+    padding: 48px; margin-top: 8px;
+    display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px;
+  }
+  @media (max-width: 700px) { .footer-card { grid-template-columns: 1fr; padding: 28px; } }
+  .footer-card h6 { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin: 0 0 12px; }
+  .footer-card .big {
+    font-family: 'Manrope', sans-serif; font-weight: 200;
+    font-size: 32px; letter-spacing: -0.02em; line-height: 1.2;
+  }
+  .footer-card p, .footer-card a { color: rgba(255,255,255,0.8); font-size: 14px; line-height: 1.6; }
+  .footer-card a { border-color: rgba(255,255,255,0.3); }
+
+  /* Print */
+  @media print {
+    body { background: white; }
+    .toc-card, .layout { display: block; }
+    .card, .footer-card { background: white; color: black; box-shadow: none; padding: 16pt 0; page-break-inside: avoid; border-top: 1pt solid #ccc; border-radius: 0; }
+    .footer-card * { color: black !important; }
+    a { color: black; }
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="eyebrow"><span class="dot"></span><span>House Manual · Three directions to compare</span></div>
-  <h1>Byggakur 12 —<br><em>house manual</em>, redesigned.</h1>
-  <p class="intro">Three takes on your manual, all built from the same content. They share a Nordic-minimal sensibility but differ in tone — pick the one that feels most "you", and we'll iterate from there. Every direction is a single scrolling page with a sticky table of contents, a dedicated 112 emergency card, and is print-friendly for keeping a paper copy in the house.</p>
 
-  <div class="grid">
-    <a class="card" href="House Manual - Editorial.html">
-      <div class="preview"><iframe src="House Manual - Editorial.html" loading="lazy"></iframe></div>
-      <div class="num">Direction 01</div>
-      <h3>Editorial &amp; warm</h3>
-      <p class="desc">A serif display face (Fraunces) on warm off-white, paired with a clean Inter for body. Quiet, confident, lots of horizontal rules. Feels like a Kinfolk-y guidebook.</p>
-      <div class="swatches">
-        <div class="sw" style="background:#f5f1ea"></div>
-        <div class="sw" style="background:#1c1a17"></div>
-        <div class="sw" style="background:#2e3d2c"></div>
-        <div class="sw" style="background:#b8531c"></div>
-      </div>
-      <div class="cta">Open direction 01 →</div>
-    </a>
+<div class="shell">
 
-    <a class="card" href="House Manual - Modular.html">
-      <div class="preview"><iframe src="House Manual - Modular.html" loading="lazy"></iframe></div>
-      <div class="num">Direction 02</div>
-      <h3>Modular &amp; cool</h3>
-      <p class="desc">Each section is a rounded card on a cool gray field. All-sans-serif (Manrope), fjord-blue accents, hover states, an interactive checkout list. Feels like a modern product page.</p>
-      <div class="swatches">
-        <div class="sw" style="background:#ececec"></div>
-        <div class="sw" style="background:#18181b"></div>
-        <div class="sw" style="background:#1f4068"></div>
-        <div class="sw" style="background:#d8443a"></div>
+  <!-- HERO + EMERGENCY -->
+  <div class="hero" data-screen-label="Hero">
+    <div class="hero-left">
+      <div class="crumb">
+        <span class="pill">Iceland</span>
+        <span>64.0654° N · 21.9412° W</span>
       </div>
-      <div class="cta">Open direction 02 →</div>
-    </a>
-
-    <a class="card" href="House Manual - Editorial Magazine.html">
-      <div class="preview"><iframe src="House Manual - Editorial Magazine.html" loading="lazy"></iframe></div>
-      <div class="num">Direction 03</div>
-      <h3>Atmospheric &amp; magazine</h3>
-      <p class="desc">A full-bleed dark hero with mountain silhouettes, oversized Instrument Serif italics, a burnt-sienna accent, and a full-bleed Northern Lights section. Most cinematic — feels like a travel magazine spread.</p>
-      <div class="swatches">
-        <div class="sw" style="background:#f4f3ee"></div>
-        <div class="sw" style="background:#14140f"></div>
-        <div class="sw" style="background:#7a4a1f"></div>
-        <div class="sw" style="background:#88e0b8"></div>
+      <div>
+        <h1 class="title">Welcome to<br><strong>Byggakur 12</strong></h1>
+        <p class="sub">Your full guide to the house, the neighbourhood and a few of our favourite places in Iceland.</p>
       </div>
-      <div class="cta">Open direction 03 →</div>
-    </a>
+      <div class="meta-strip">
+        <div><div class="lbl">Address</div><div class="val">Byggakur 12, 210 Garðabær</div></div>
+        <div><div class="lbl">Hosts</div><div class="val">María Ágústsdóttir & family</div></div>
+        <div><div class="lbl">Updated</div><div class="val">May 2026</div></div>
+      </div>
+    </div>
+    <aside class="emergency">
+      <div class="label">Emergency · Iceland</div>
+      <div class="num">112</div>
+      <div class="desc">Police · Fire · Ambulance.<br>One number. Operators speak English.</div>
+      <div class="links">
+        <a href="https://safetravel.is" target="_blank">safetravel.is</a>
+        <a href="https://en.vedur.is" target="_blank">vedur.is</a>
+      </div>
+    </aside>
   </div>
 
-  <div class="additions">
-    <h2>What I added to your manual</h2>
-    <p class="sub">Beyond redesigning what was there, I drafted a few new sections that house manuals usually benefit from. All copy is in <code style="background:rgba(0,0,0,0.05);padding:2px 6px;border-radius:3px;font-size:12px;">content.js</code> — easy to edit, change, or delete anything.</p>
+  <!-- QUICK FACTS -->
+  <div class="facts-row" id="facts"></div>
 
-    <div class="add-grid">
-      <div class="add"><div class="ico">+1</div><div><h4>Arrival checklist</h4><p>Six things to do in the first five minutes — find the key box, lift the door handle to lock, shoes off, Wi-Fi, thermostat, text María.</p></div></div>
-      <div class="add"><div class="ico">+2</div><div><h4>Quick-facts strip</h4><p>Wi-Fi, key code, check-in, greenhouse code, parking, and "drink the tap water!" — a glance-and-go reference at the top.</p></div></div>
-      <div class="add"><div class="ico">+3</div><div><h4>Dedicated 112 card</h4><p>Pulled emergency info out of the body and into a styled card next to the welcome — visible without scrolling.</p></div></div>
-      <div class="add"><div class="ico">+4</div><div><h4>House rules summary</h4><p>Six little rules with icons, gathered from prose scattered through the doc (shoes, quiet hours, smoking, the rug, locking the door, key return).</p></div></div>
-      <div class="add"><div class="ico">+5</div><div><h4>Northern Lights section</h4><p>Season, where to look, how to photograph them, and a hot-tub aurora-watching tip — a question every guest asks.</p></div></div>
-      <div class="add"><div class="ico">+6</div><div><h4>Driving in Iceland</h4><p>Eight practical tips: road.is, single-lane bridges, F-roads, wind ripping doors off, "impassable" warnings.</p></div></div>
-      <div class="add"><div class="ico">+7</div><div><h4>Sample itineraries</h4><p>1-day, 3-day and 7-day plans (city + Sky Lagoon, Golden Circle + South Coast, Ring Road sampler) so guests have a starting point.</p></div></div>
-      <div class="add"><div class="ico">+8</div><div><h4>Icelandic phrases</h4><p>A small cheat-sheet of 12 useful phrases — takk, skál, gjörðu svo vel, etc.</p></div></div>
-      <div class="add"><div class="ico">+9</div><div><h4>Checkout checklist</h4><p>Eight tickable items so guests leave the house in good shape (and you don't have to ask). Persists in browser between visits.</p></div></div>
-      <div class="add"><div class="ico">+10</div><div><h4>Cleaner restaurant guide</h4><p>Split into "walking distance" and "Reykjavík", with one-line cuisine descriptors instead of TripAdvisor URLs.</p></div></div>
+  <!-- LAYOUT -->
+  <div class="layout">
+    <nav class="toc-card" aria-label="Contents">
+      <h6>Contents</h6>
+      <ol id="toc-list"></ol>
+    </nav>
+    <div class="stack" id="main"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-card">
+    <div>
+      <h6>Hosts</h6>
+      <p class="big">Takk fyrir.<br>Thank you for staying.</p>
+      <p style="margin-top: 16px;">If anything is unclear or missing, please tell us. We'd rather you ask than guess.</p>
     </div>
-
-    <h2 style="margin-top: 48px;">A few things you might also consider</h2>
-    <p class="sub">Optional — happy to add any of these if useful:</p>
-    <div class="add-grid">
-      <div class="add"><div class="ico">○</div><div><h4>Photos</h4><p>Real photos of the hot tub controls, the fuse box, the laundry machines, etc. would replace the placeholder blocks and make the manuals far more useful (and warmer).</p></div></div>
-      <div class="add"><div class="ico">○</div><div><h4>Floor plan</h4><p>A simple labelled floor plan helps with "where's the dishwasher?" type questions.</p></div></div>
-      <div class="add"><div class="ico">○</div><div><h4>Seasonal version</h4><p>Some content shifts by season (aurora chasing in winter, midnight-sun viewing spots in summer). I could add a small toggle.</p></div></div>
-      <div class="add"><div class="ico">○</div><div><h4>QR code on a printed card</h4><p>One small printed card on the kitchen counter linking guests to the live online version, so they always have it.</p></div></div>
-      <div class="add"><div class="ico">○</div><div><h4>Pet / kid section expansion</h4><p>If you allow pets, a section on dog-friendly spots, vets, and house rules around pets.</p></div></div>
-      <div class="add"><div class="ico">○</div><div><h4>Emergency hospital details</h4><p>Address, drive time, and what to expect at Landspítali, in case anyone needs urgent care.</p></div></div>
+    <div>
+      <h6>Reach us</h6>
+      <p>María Ágústsdóttir<br>+354 844 2770<br><a href="mailto:mariaagusts@gmail.com">mariaagusts@gmail.com</a></p>
+    </div>
+    <div>
+      <h6>Address</h6>
+      <p>Byggakur 12<br>210 Garðabær<br>Iceland</p>
+      <p><a href="https://goo.gl/maps/AwKvTrRU7ErZuRXt9" target="_blank">Open in Maps →</a></p>
     </div>
   </div>
+
 </div>
+
+<script src="content.js"></script>
+<script>
+const M = window.MANUAL;
+const num = i => String(i+1).padStart(2,'0');
+
+// Quick facts
+document.getElementById('facts').innerHTML = M.quickFacts.map(f => `
+  <div class="fact">
+    <div class="lbl">${f.label}</div>
+    <div class="val">${f.value}</div>
+    <div class="sub">${f.sub}</div>
+  </div>
+`).join('');
+
+// TOC
+document.getElementById('toc-list').innerHTML = M.toc.map((t,i) => `
+  <li><a href="#${t.id}"><span class="n">${num(i)}</span><span>${t.label}</span></a></li>
+`).join('');
+
+function card(id, n, label, title, lede, body) {
+  return `<section class="card" id="${id}" data-screen-label="${label}">
+    <div class="sec-tag"><span class="n">${n}</span><span>${label}</span></div>
+    <h2>${title}</h2>
+    ${lede ? `<p class="lede">${lede}</p>` : ''}
+    ${body}
+  </section>`;
+}
+
+const sections = [];
+
+sections.push(card('welcome', '01', 'Welcome', '<strong>Make yourself at home.</strong>', '',
+  `<div class="welcome-box">
+    <div class="welcome-text">
+      <p>${M.welcome.body}</p>
+      <p>This is our home, not a rental property, please make yourself comfortable. Help yourself to anything in the kitchen. The Wi-Fi is fast, the water is the cleanest you'll ever drink, and the hot tub is, frankly, the best part of the house.</p>
+      <div class="signoff">${M.welcome.signoff}</div>
+    </div>
+    <div class="welcome-img"><div class="lab">Photo · House exterior</div></div>
+  </div>`
+));
+
+sections.push(card('arrival', '02', 'Arrival & key', 'First few minutes', 'Six things to handle when you walk in.',
+  `<div class="arrival-grid">
+    ${M.arrivalChecklist.map((c,i) => `
+      <div class="arrival-item">
+        <div class="n">${num(i)}</div>
+        <div>
+          <h4>${c.title}</h4>
+          <p>${c.body}</p>
+        </div>
+      </div>`).join('')}
+  </div>`
+));
+
+sections.push(card('essentials', '03', 'Essentials', 'Wi-Fi & basics', '',
+  `<div class="wifi-block">
+    <div><div class="lbl">Network</div><div class="val">${M.essentials.wifi.name}</div></div>
+    <div><div class="lbl">Password</div><div class="val">${M.essentials.wifi.pass}</div></div>
+    <svg class="icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <path d="M5 12 A 18 18 0 0 1 27 12"/>
+      <path d="M9 16 A 12 12 0 0 1 23 16"/>
+      <path d="M13 20 A 6 6 0 0 1 19 20"/>
+      <circle cx="16" cy="24" r="1.5" fill="currentColor"/>
+    </svg>
+  </div>
+  <p style="margin-top: 16px; font-size: 14px; color: var(--ink-3);">${M.essentials.wifi.note}</p>
+  <div class="basics-grid">
+    <div class="basic-item"><h4>Parking</h4><p>${M.essentials.parking}</p></div>
+    <div class="basic-item"><h4>Rubbish</h4><p>${M.essentials.rubbish}</p></div>
+    <div class="basic-item"><h4>Smoking</h4><p>${M.essentials.smoking}</p></div>
+  </div>
+  <h3 style="margin-top: 32px;">Food delivery</h3>
+  <div class="basics-grid">
+    ${M.food.delivery.map(d => `<div class="basic-item"><h4>${d.name}</h4><p>${d.note}<br><a href="${d.url}" target="_blank">${d.url.replace('https://','')}</a></p></div>`).join('')}
+  </div>`
+));
+
+sections.push(card('house', '04', 'Inside the house', 'How <strong>things work</strong>', "Each room and appliance, and where to find what.",
+  `<div class="house-list">
+    ${M.insideHouse.map(h => `
+      <div class="house-row">
+        <h4>${h.title}</h4>
+        <div>
+          <p>${h.body}</p>
+          ${h.tip ? `<div class="tip">${h.tip}</div>` : ''}
+        </div>
+      </div>`).join('')}
+  </div>`
+));
+
+sections.push(card('outdoors', '05', 'Outdoors & hot tub', 'The <strong>hot tub</strong>, BBQ & garden', M.outdoors.hotTub.summary,
+  `<p class="ht-summary">Five steps. Read them once before you start. The faucet is in the garage and the drain is outside, which catches people off guard.</p>
+  <div class="ht-steps">
+    ${M.outdoors.hotTub.steps.map((s,i) => `
+      <div class="ht-step">
+        <div class="n">${num(i)}</div>
+        <p>${s}</p>
+      </div>`).join('')}
+  </div>
+  <div class="ht-aside">
+    <div><h4>BBQ</h4><p>${M.outdoors.bbq}</p></div>
+    <div><h4>Greenhouse</h4><p>${M.outdoors.greenhouse}</p></div>
+    <div><h4>Cameras</h4><p>${M.outdoors.cameras}</p></div>
+  </div>`
+));
+
+sections.push(card('rules', '06', 'House rules', 'A few <strong>house rules</strong>', "We don't have many. These six matter.",
+  `<div class="rules-list">
+    ${M.rules.map(r => `
+      <div class="rule-row">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          ${ruleIcon(r.icon)}
+        </svg>
+        <div>
+          <h4>${r.title}</h4>
+          <p>${r.body}</p>
+        </div>
+      </div>`).join('')}
+  </div>`
+));
+
+sections.push(card('neighbourhood', '07', 'Neighbourhood', `Around <strong>${M.neighbourhood.name}</strong>`, M.neighbourhood.summary,
+  `<div class="nb-list">
+    ${M.neighbourhood.nearby.map(n => `
+      <div class="nb-item">
+        <div class="name">${n.name}</div>
+        <div class="type">${n.type}</div>
+        <div class="note">${n.note}</div>
+      </div>`).join('')}
+  </div>
+  <div class="transport">
+    <div>
+      <h4>Taxi</h4>
+      <p>${M.neighbourhood.transport.taxi.join(' · ')}<br><span style="color: var(--ink-3);">${M.neighbourhood.transport.taxiNote}</span></p>
+    </div>
+    <div>
+      <h4>Bus</h4>
+      <p>${M.neighbourhood.transport.bus}<br><a href="${M.neighbourhood.transport.busUrl}" target="_blank">straeto.is</a></p>
+    </div>
+  </div>`
+));
+
+sections.push(card('photos', '06b', 'Photo reference', 'Photo <strong>reference</strong>', "Where to find, and how to use, every fiddly thing in the house. Each cell is a placeholder for a real photo.",
+  `<div class="photo-grid">
+    ${M.photos.map(p => `
+      <div class="photo-cell">
+        <div class="photo-ph"><span class="lab">${p.label}</span></div>
+        <div class="id-line">${p.id}</div>
+        <p class="note-line">${p.note}</p>
+      </div>`).join('')}
+  </div>`
+));
+
+sections.push(card('kids', '07b', 'Travelling with kids', M.kids.headline, M.kids.body,
+  `<div class="kids-grid">
+    <div>
+      <h3 style="margin: 0 0 14px;">Where to take them</h3>
+      <div class="kids-spots">
+        ${M.kids.spots.map(s => `<div class="kid-spot"><div class="nm">${s.name}${s.url ? ` · <a href="${s.url}" target="_blank">site</a>` : ''}</div><div class="note">${s.note}</div></div>`).join('')}
+      </div>
+    </div>
+    <div>
+      <h3 style="margin: 0 0 14px;">Practical</h3>
+      <ul class="kids-prac">
+        ${M.kids.practical.map(p => `<li>${p}</li>`).join('')}
+      </ul>
+    </div>
+  </div>`
+));
+
+sections.push(card('restaurants', '08', 'Where to eat', 'Where <strong>to eat</strong>', `Book ahead at <a href="https://www.dineout.is" target="_blank">dineout.is</a>, popular spots fill up.`,
+  `<div class="rest-tabs">
+    <div>
+      <h3 style="margin-bottom: 0;">Walking distance</h3>
+      ${M.restaurants.nearby.map(r => `
+        <div class="rest-line">
+          <div><div class="nm">${r.map ? `<a href="${r.map}" target="_blank" style="color: inherit;">${r.name} ↗</a>` : r.name}</div><div class="nt">${r.note}</div></div>
+          <div class="ty">${r.type}</div>
+        </div>`).join('')}
+    </div>
+    <div>
+      <h3 style="margin-bottom: 0;">Reykjavík</h3>
+      ${M.restaurants.reykjavik.map(r => `
+        <div class="rest-line">
+          <div><div class="nm">${r.map ? `<a href="${r.map}" target="_blank" style="color: inherit;">${r.name} ↗</a>` : r.name}</div></div>
+          <div class="ty">${r.type}</div>
+        </div>`).join('')}
+    </div>
+  </div>
+  <div style="margin-top: 32px;">
+    <h3 style="margin-bottom: 0;">Food halls</h3>
+    ${M.restaurants.foodHalls.map(r => `
+      <div class="rest-line">
+        <div><div class="nm">${r.map ? `<a href="${r.map}" target="_blank" style="color: inherit;">${r.name} ↗</a>` : r.name}</div><div class="nt">${r.note}</div></div>
+        <div class="ty">${r.type}</div>
+      </div>`).join('')}
+  </div>
+  <div class="booze">${M.restaurants.booze}</div>`
+));
+
+sections.push(card('todo', '09', 'Things to do', 'Things to do', '',
+  `<div class="todo-stack">
+    ${M.todo.map(t => `
+      <div class="todo-card">
+        <div class="visual"><span class="tag">${t.type}</span></div>
+        <div class="body">
+          <h4>${t.name}</h4>
+          <p>${t.note}</p>
+          ${t.url ? `<a href="${t.url}" target="_blank">Visit →</a>` : ''}
+        </div>
+      </div>`).join('')}
+  </div>`
+));
+
+sections.push(card('itineraries', '10', 'Itineraries', 'Sample <strong>itineraries</strong>', "Three plans, depending on how long you've got.",
+  `<div class="itin-grid">
+    ${M.itineraries.map(it => `
+      <div class="itin">
+        <span class="badge">${it.length}</span>
+        <h3>${it.title}</h3>
+        <ul>${it.stops.map(s => `<li>${s}</li>`).join('')}</ul>
+      </div>`).join('')}
+  </div>`
+));
+
+sections.push(`<section class="card aurora" id="aurora" data-screen-label="Aurora">
+  <div class="sec-tag"><span class="n">11</span><span>Northern Lights</span></div>
+  <div style="grid-column: 1; position: relative;">
+    <h2>Catching the <strong>aurora</strong></h2>
+    <p class="lede">${M.aurora.season}</p>
+    <ul class="aurora-tips">
+      ${M.aurora.tips.map(t => `<li><span></span><span>${t}</span></li>`).join('')}
+    </ul>
+  </div>
+  <div class="aurora-side">
+    <div class="quote">It will look pale at first. Wait. <em>The greens come slowly.</em></div>
+    <div class="credit">Local advice · Garðabær</div>
+  </div>
+</section>`);
+
+sections.push(card('driving', '12', 'Driving in Iceland', 'Driving in Iceland', M.driving.summary,
+  `<div class="drive-list">
+    ${M.driving.tips.map((t,i) => `<div><span class="n">${num(i)}</span><p>${t}</p></div>`).join('')}
+  </div>`
+));
+
+sections.push(card('phrases', '13', 'Icelandic phrases', 'A few <strong>Icelandic phrases</strong>', "Locals all speak excellent English, but a 'takk' goes a long way.",
+  `<div class="ph-grid">
+    ${M.phrases.map(p => `<div class="ph"><div class="ph-is">${p.is}</div><div class="ph-en">${p.en}</div><div class="ph-say">${p.say}</div></div>`).join('')}
+  </div>`
+));
+
+sections.push(card('seasonal', '13b', 'By season', 'What changes <strong>by season</strong>', "Tap a tab. Different things matter at different times of year.",
+  `<div class="season-tabs" role="tablist">
+    <button class="season-tab active" data-season="winter">Winter</button>
+    <button class="season-tab" data-season="shoulder">Shoulder</button>
+    <button class="season-tab" data-season="summer">Summer</button>
+  </div>
+  <div id="season-content"></div>`
+));
+
+sections.push(card('hospital', '14b', 'Hospital & pharmacy', 'If you need <strong>urgent care</strong>', "Most issues like twisted ankles, fevers and cuts are best handled at the local clinic, not 112.",
+  `<div class="hosp-grid">
+    <div class="hosp-block">
+      <div class="meta">Nearest hospital</div>
+      <h3>${M.hospital.name}</h3>
+      <div class="row"><div class="k">Address</div><div class="v">${M.hospital.address}</div></div>
+      <div class="row"><div class="k">Drive</div><div class="v">${M.hospital.drive}</div></div>
+      <div class="row"><div class="k">Phone</div><div class="v">${M.hospital.phone}</div></div>
+      <div class="row"><div class="k">Maps</div><div class="v"><a href="${M.hospital.map}" target="_blank">Open in Maps →</a></div></div>
+      <p class="note">${M.hospital.note}</p>
+      <p class="note" style="margin-top: 14px;"><strong style="color: var(--ink);">Local clinic.</strong> ${M.hospital.clinic}</p>
+      <div class="pharm-strip"><strong style="color: var(--ink);">Pharmacy.</strong> ${M.hospital.pharmacy}</div>
+    </div>
+    <div class="qr-block">
+      <div class="qr-glyph">
+        <svg viewBox="0 0 80 80">
+          <rect width="80" height="80" fill="#fff"/>
+          <g fill="#18181b">
+            <rect x="6" y="6" width="18" height="18"/><rect x="10" y="10" width="10" height="10" fill="#fff"/><rect x="13" y="13" width="4" height="4"/>
+            <rect x="56" y="6" width="18" height="18"/><rect x="60" y="10" width="10" height="10" fill="#fff"/><rect x="63" y="13" width="4" height="4"/>
+            <rect x="6" y="56" width="18" height="18"/><rect x="10" y="60" width="10" height="10" fill="#fff"/><rect x="13" y="63" width="4" height="4"/>
+            <rect x="30" y="6" width="4" height="4"/><rect x="38" y="6" width="4" height="4"/><rect x="46" y="10" width="4" height="4"/>
+            <rect x="30" y="14" width="4" height="4"/><rect x="42" y="14" width="4" height="4"/>
+            <rect x="6" y="30" width="4" height="4"/><rect x="14" y="30" width="4" height="4"/><rect x="22" y="30" width="4" height="4"/><rect x="30" y="30" width="4" height="4"/><rect x="38" y="30" width="4" height="4"/><rect x="50" y="30" width="4" height="4"/><rect x="58" y="30" width="4" height="4"/><rect x="66" y="30" width="4" height="4"/>
+            <rect x="10" y="38" width="4" height="4"/><rect x="22" y="38" width="4" height="4"/><rect x="34" y="38" width="4" height="4"/><rect x="46" y="38" width="4" height="4"/><rect x="58" y="38" width="4" height="4"/>
+            <rect x="6" y="46" width="4" height="4"/><rect x="18" y="46" width="4" height="4"/><rect x="26" y="46" width="4" height="4"/><rect x="38" y="46" width="4" height="4"/><rect x="50" y="46" width="4" height="4"/><rect x="62" y="46" width="4" height="4"/><rect x="70" y="46" width="4" height="4"/>
+            <rect x="30" y="58" width="4" height="4"/><rect x="42" y="58" width="4" height="4"/><rect x="54" y="58" width="4" height="4"/><rect x="62" y="58" width="4" height="4"/>
+            <rect x="34" y="66" width="4" height="4"/><rect x="46" y="66" width="4" height="4"/><rect x="58" y="66" width="4" height="4"/><rect x="70" y="66" width="4" height="4"/>
+          </g>
+        </svg>
+      </div>
+      <h4>${M.qr.headline}</h4>
+      <p>${M.qr.body}</p>
+    </div>
+  </div>`
+));
+
+sections.push(card('checkout', '14', 'Before you go', 'Before <strong>you head out</strong>', '',
+  `<div class="check-list">
+    ${M.checkout.map((c,i) => `
+      <div class="check-row" data-i="${i}">
+        <div class="box"></div>
+        <div>
+          <h4>${c.title}</h4>
+          <p>${c.body}</p>
+        </div>
+      </div>`).join('')}
+  </div>`
+));
+
+document.getElementById('main').innerHTML = sections.join('');
+
+function ruleIcon(name) {
+  const icons = {
+    shoes: '<path d="M4 22 L4 16 C 4 14, 6 12, 9 12 L 12 12 L 14 9 L 19 9 C 23 9, 26 12, 27 16 L 28 18 C 28 20, 26 22, 24 22 Z"/><line x1="9" y1="14" x2="9" y2="22"/><line x1="14" y1="12" x2="14" y2="22"/>',
+    moon: '<path d="M22 18 A 8 8 0 1 1 14 8 A 6 6 0 0 0 22 18 Z"/>',
+    smoke: '<rect x="6" y="14" width="20" height="4" rx="0.5"/><path d="M22 14 V 10"/><path d="M19 11 V 7"/><line x1="6" y1="14" x2="26" y2="18" stroke-width="1.6" stroke="#c0532b"/>',
+    lock: '<rect x="8" y="14" width="16" height="12" rx="1"/><path d="M11 14 V 10 A 5 5 0 0 1 21 10 V 14"/><circle cx="16" cy="20" r="1.5" fill="currentColor"/>',
+    rug: '<rect x="5" y="9" width="22" height="14" rx="0.5"/><line x1="5" y1="13" x2="27" y2="13"/><line x1="5" y1="19" x2="27" y2="19"/>',
+    key: '<circle cx="11" cy="16" r="5"/><path d="M16 16 H 26"/><path d="M22 16 V 20"/><path d="M26 16 V 19"/>',
+  };
+  return icons[name] || '<circle cx="16" cy="16" r="8"/>';
+}
+
+// Checkout interactivity
+const STORAGE = 'b12-checkout';
+const saved = JSON.parse(localStorage.getItem(STORAGE) || '{}');
+document.querySelectorAll('.check-row').forEach(r => {
+  const i = r.dataset.i;
+  if (saved[i]) r.classList.add('done');
+  r.addEventListener('click', () => {
+    r.classList.toggle('done');
+    saved[i] = r.classList.contains('done');
+    localStorage.setItem(STORAGE, JSON.stringify(saved));
+  });
+});
+
+// Seasonal tabs
+function renderSeasonM(key) {
+  const s = M.seasons[key];
+  document.getElementById('season-content').innerHTML = `
+    <p class="season-headline">${s.headline}</p>
+    <ul class="season-tips">
+      ${s.tips.map(t => `<li>${t}</li>`).join('')}
+    </ul>`;
+}
+renderSeasonM('winter');
+document.querySelectorAll('.season-tab').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.season-tab').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    renderSeasonM(b.dataset.season);
+  });
+});
+
+// TOC active state
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.toc-card a').forEach(a => a.classList.remove('active'));
+      const link = document.querySelector(`.toc-card a[href="#${e.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-15% 0px -75% 0px' });
+document.querySelectorAll('.card').forEach(s => obs.observe(s));
+</script>
 </body>
 </html>
