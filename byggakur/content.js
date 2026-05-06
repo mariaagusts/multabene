@@ -236,7 +236,7 @@ window.MANUAL = {
     nearby: [
       { name: "Krónan", type: "Low-cost supermarket", note: "Right on the way in." },
       { name: "Brauð & Co", type: "Bakery", note: "Sourdough straight from the oven, next to Krónan." },
-      { name: "Bónus", type: "Cheapest groceries in Iceland", note: "Yellow sign with a pink pig." },
+      { name: "Bónus", type: "Cheapest groceries in Iceland", note: "At Garðatorg. Yellow sign with a pink pig." },
       { name: "Hagkaup", type: "Large supermarket", note: "Open 24/7. Not low-cost." },
       { name: "Garðatorg", type: "Town plaza", note: "Restaurants, pharmacy, dry-cleaner, ice-cream, small shops." },
       { name: "Smáralind", type: "Shopping centre", note: "Variety of shops & a food hall. Short drive." },
