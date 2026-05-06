@@ -836,7 +836,7 @@ window.MANUAL = {
 
   arrivalChecklist: [
     { title: "Find the key box", body: "It's mounted above the trash-bin shelter, opposite the front door. Code: 0312. Slide the cover, enter the code, key drops out." },
-    { title: "Lock the front door properly", body: "Pull the handle UP first, then turn the key. The bolt won't engage otherwise." },
+    { title: "Lock the front door properly", body: "It's a safe neighbourhood, so locking isn't really a concern. If you do lock it, pull the handle UP first, then turn the key. The bolt won't engage otherwise." },
     { title: "Shoes off", body: "Icelandic homes are shoes-off. The downstairs hardwood and living-room rug are sensitive to water." },
     { title: "Connect to Wi-Fi", body: "Network: B12 · Password: 06030112" },
     { title: "Climate", body: "If too warm, open windows. If too cold, close them. The house has floor heating, which reacts slowly to changes, so give it a bit of time before adjusting again." },
@@ -909,13 +909,13 @@ window.MANUAL = {
       cooldown: "If it gets too hot, turn off the LEFT handle in the garage and the water will cool down naturally over time.",
     },
     bbq: "On the patio. Remember to shut off the gas after use. There's an extra gas tank on the right side of the BBQ. If that also runs out (shouldn't be needed), swap the empty tank at any N1 (red) gas station, bring the empty one, pay only for the gas.",
-    greenhouse: "Code 121 if locked (I lock it in heavy winds). Note that the greenhouse is not noise-proof, so please keep voices low in the garden, especially after 10 PM. My neighbours' bedrooms face this side and they've asked me to mention this.",
+    greenhouse: "Code 121 if locked (I lock it in heavy winds). Note that the <strong>greenhouse is not noise-proof, so please keep voices low in the garden, especially after 10 PM.</strong> My neighbours' bedrooms face this side and they've asked me to mention this.",
     cameras: "Arlo cameras outside only, none inside. The patio camera doesn't cover the hot tub. Feel free to take them down if you'd prefer. I mute all notifications except the doorbell.",
   },
 
   rules: [
     { icon: "shoes", title: "Shoes off inside", body: "Hardwood floors and a sensitive living-room rug." },
-    { icon: "moon", title: "Quiet 10 PM to 8 AM", body: "Many young families on the street, and neighbours' bedrooms face the garden and the driveway." },
+    { icon: "moon", title: "Quiet 10 PM to 8 AM", body: "Outside only, in the garden and driveway. Inside the house, be as loud as you like. Many young families on the street, and neighbours' bedrooms face this side." },
     { icon: "smoke", title: "No smoking", body: "Anywhere inside the house." },
     { icon: "lock", title: "Lift handle, then lock", body: "The front-door bolt only engages with the handle up." },
     { icon: "rug", title: "Mind the living-room rug", body: "Even water marks it. Especially after the hot tub." },
@@ -1071,9 +1071,22 @@ window.MANUAL = {
   ],
 
   food: {
-    delivery: [
-      { name: "Wolt", url: "https://wolt.is", note: "Restaurant delivery, this covers basically everything. My personal favourite to order in is Flatbakan." },
-    ],
+    delivery: {
+      via: "Wolt",
+      url: "https://wolt.is",
+      intro: "Wolt covers basically everything. A few personal favourites, by category:",
+      items: [
+        { name: "Íslenska Flatbakan", type: "Pizza" },
+        { name: "Lokal", type: "Salads" },
+        { name: "Nings", type: "Chinese", note: "Try the Chow mein." },
+        { name: "Hraðlestin", type: "Indian" },
+        { name: "Yuzu", type: "Smash burgers" },
+        { name: "Serrano", type: "Mexican" },
+        { name: "Lemon", type: "Salads & wraps" },
+        { name: "Dons Donuts", type: "Donuts" },
+        { name: "Ísbúð Huppu", type: "Ice cream", note: "Ask for a 'Bragðarefur', like a McFlurry but with dozens of mix-ins. I prefer the milk base, sometimes called 'old', over cream." },
+      ],
+    },
   },
 
   pools: [
@@ -1151,9 +1164,6 @@ out.push(sec('essentials', '03', 'Essentials', '<em>The</em> basics.', '',
     <div><h4>Parking</h4><p>${M.essentials.parking}</p></div>
     <div><h4>Rubbish &amp; recycling</h4><p>${M.essentials.rubbish}</p></div>
     <div><h4>Smoking</h4><p>${M.essentials.smoking}</p></div>
-  </div>
-  <div class="basics-3" style="margin-top: 0; padding-top: 0; border-top: none;">
-    ${M.food.delivery.map(d => `<div><h4>${d.name}</h4><p>${d.note}<br><a href="${d.url}" target="_blank">${d.url.replace('https://','')}</a></p></div>`).join('')}
   </div>`
 ));
 
@@ -1330,6 +1340,18 @@ out.push(sec('restaurants', '08', 'Where to eat', 'A few <em>favourite</em> tabl
           <div class="rest-note">${r.note}</div>
         </div>
         <div class="rest-type">${r.type}</div>
+      </div>`).join('')}
+  </div>
+  <div style="margin-top: 48px;">
+    <h3>Order in <a href="${M.food.delivery.url}" target="_blank" style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); font-weight: 400; margin-left: 8px; vertical-align: middle;">via ${M.food.delivery.via} ↗</a></h3>
+    <p style="font-size: 14px; color: var(--ink-2); margin: 0 0 16px; max-width: 600px;">${M.food.delivery.intro}</p>
+    ${M.food.delivery.items.map(r => `
+      <div class="rest-row">
+        <div>
+          <div class="rest-name">${r.name}</div>
+          ${r.note ? `<div class="rest-note">${r.note}</div>` : ''}
+        </div>
+        <div class="rest-meta">${r.type}</div>
       </div>`).join('')}
   </div>
   <div class="booze-card">
