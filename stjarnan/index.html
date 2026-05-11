@@ -308,7 +308,7 @@
   </div>
 
   <!-- 04 TEKJUR 2025 -->
-  <div class="section-title"><span class="num">04</span><span>Tekjur 2025 — tegund og deildir</span><span class="hint">Hvernig 1.260m kr. koma inn</span></div>
+  <div class="section-title"><span class="num">04</span><span>Tekjur 2025 — tegund og deildir</span><span class="hint">Heildartekjur 1.260m kr. — þ.a. 122m reiknuð afnot mannvirkja</span></div>
   <div class="card-2">
     <div class="card">
       <h3>Skipting tekna eftir tegund</h3>
@@ -318,7 +318,7 @@
     </div>
     <div class="card">
       <h3>Tekjur eftir deild</h3>
-      <div class="csub">Hversu mikið aflar hver deild · 2025 · m.kr.</div>
+      <div class="csub">Heildartekjur eftir deildum · 2025 · m.kr. · Aðalstjórn inniheldur reiknuð afnot mannvirkja og rekstur knattspyrnuvalla</div>
       <div style="position:relative;height:340px"><canvas id="divRev"></canvas></div>
     </div>
   </div>
@@ -487,7 +487,7 @@
   </div>
 
   <!-- 12 STYRKHÁÐNI -->
-  <div class="section-title"><span class="num">12</span><span>Styrkháðni eftir deildum</span><span class="hint">Hlutfall styrkja af heildartekjum · 2024</span></div>
+  <div class="section-title"><span class="num">12</span><span>Styrkjahlutfall eftir deildum</span><span class="hint">Hlutfall styrkja af heildartekjum · 2024</span></div>
   <div class="info">
     Þessi greining sýnir hversu <b>styrkháðar</b> deildirnar eru. Meistaraflokkar í handknattleik og fimleik eru nær <b>95% háðar styrkjum</b> — ef styrkir dragast saman hrynur reksturinn. Unglingadeildir eru aftur á móti að mestu sjálfbærar með æfingagjöldum.
   </div>
@@ -650,18 +650,20 @@ pieLabels.forEach((l, i) => {
 });
 
 // ─── 04 DIV REV 2025 ─────────────────────────────────────────────
+// Tölur úr ársreikningi 2025 — Rekstrartekjur alls per deild
 const divRev = [
-  ['Knattspyrna mfl.', 230.7],
-  ['Fimleikar B&U',    158.2],
-  ['Knattspyrna B&U',  157.8],
-  ['Handknattl. mfl.', 100.4],
-  ['Körfuknattl. B&U',  62.1],
-  ['Körfuknattl. mfl.', 53.5],
-  ['Handknattl. B&U',   45.2],
-  ['Fimleikar mfl.',    18.0],
-  ['Sunddeild',         13.7],
-  ['Lyftingadeild',      8.5],
-  ['Almenningsíþr.',     7.4],
+  ['Aðalstjórn',       382.5],
+  ['Knattspyrna mfl.', 236.8],
+  ['Fimleikar B&U',    166.9],
+  ['Knattspyrna B&U',  150.2],
+  ['Handknattl. mfl.',  82.9],
+  ['Körfuknattl. mfl.', 75.9],
+  ['Körfuknattl. B&U',  56.9],
+  ['Handknattl. B&U',   48.0],
+  ['Fimleikar mfl.',    25.4],
+  ['Lyftingadeild',      8.9],
+  ['Sunddeild',          8.6],
+  ['Almenningsíþr.',     5.2],
 ].sort((a,b) => b[1] - a[1]);
 new Chart(document.getElementById('divRev'), {
   type: 'bar',
@@ -685,13 +687,14 @@ new Chart(document.getElementById('divRev'), {
 });
 
 // ─── 05 DIV NET 2025 ─────────────────────────────────────────────
+// Tölur úr ársreikningi 2025 — Rekstrarniðurstaða ársins per deild
+// Stjörnukonur er sjálfstæð eining utan samstæðunnar (sbr. sk. 2 í ársreikningi).
 const divNet = [
   ['Aðalstjórn',         27.0],
   ['Sunddeild',           2.7],
   ['Almenningsíþr.',      0.8],
   ['Körfuknattl. B&U',    0.7],
   ['Fimleikar mfl.',      0.3],
-  ['Stjörnukonur',       -0.1],
   ['Handknattl. B&U',    -0.5],
   ['Fimleikar B&U',      -0.9],
   ['Lyftingadeild',      -2.5],
@@ -727,18 +730,21 @@ new Chart(document.getElementById('divNet'), {
 });
 
 // ─── 06 REV/EXP 2025 ─────────────────────────────────────────────
+// Tölur úr ársreikningi 2025. Tekjur = Rekstrartekjur alls per deild.
+// Gjöld eru reiknuð sem Tekjur − Rekstrarniðurstaða ársins (úr chart 05).
 const reD = [
-  ['Knattspyrna mfl.',  230.7, 307.2],
-  ['Fimleikar B&U',     158.2, 159.1],
-  ['Knattspyrna B&U',   157.8, 161.8],
-  ['Handknattl. mfl.',  100.4, 113.4],
-  ['Körfuknattl. B&U',   62.1,  61.4],
-  ['Körfuknattl. mfl.',  53.5,  70.7],
-  ['Handknattl. B&U',    45.2,  45.7],
-  ['Fimleikar mfl.',     18.0,  17.7],
-  ['Sunddeild',          13.7,  11.0],
-  ['Lyftingadeild',       8.5,  11.0],
-  ['Almenningsíþr.',      7.4,   6.6],
+  ['Aðalstjórn',        382.5, 355.5],
+  ['Knattspyrna mfl.',  236.8, 313.3],
+  ['Fimleikar B&U',     166.9, 167.8],
+  ['Knattspyrna B&U',   150.2, 154.2],
+  ['Handknattl. mfl.',   82.9,  95.9],
+  ['Körfuknattl. mfl.',  75.9,  93.1],
+  ['Körfuknattl. B&U',   56.9,  56.2],
+  ['Handknattl. B&U',    48.0,  48.5],
+  ['Fimleikar mfl.',     25.4,  25.1],
+  ['Lyftingadeild',       8.9,  11.4],
+  ['Sunddeild',           8.6,   5.9],
+  ['Almenningsíþr.',      5.2,   4.4],
 ];
 new Chart(document.getElementById('revExp'), {
   type: 'bar',
