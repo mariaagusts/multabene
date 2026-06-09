@@ -502,8 +502,13 @@ async function applySync(code){
 function schedulePush(){
   if(!syncCode) return;
   setSyncDot("sync"); clearTimeout(pushTimer);
-  pushTimer=setTimeout(pushSync,700);
+  pushTimer=setTimeout(pushSync,150);
 }
+window.addEventListener("pagehide",()=>{
+  if(!syncCode||!pushTimer) return;
+  clearTimeout(pushTimer); pushTimer=null;
+  pushSync();
+});
 async function pushSync(){
   if(!syncCode) return;
   try{
