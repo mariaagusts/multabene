@@ -143,13 +143,14 @@
   .fly{border-color:rgba(233,196,106,.3)}
   .fly .nm{display:block;color:var(--gold);font-weight:600;font-size:13px;margin-bottom:3px}
   .fly .why{color:var(--mist-dim);font-size:12.5px;line-height:1.4}
-  .fly-row{display:flex;align-items:baseline;gap:8px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+  .fly-row{display:grid;grid-template-columns:68px 1fr;grid-template-rows:auto auto;column-gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)}
   .fly-row:last-child{border-bottom:none;padding-bottom:0}
   .fly-row-today{display:block;padding-bottom:9px;margin-bottom:5px;border-bottom:1px solid rgba(233,196,106,.2)}
   .fly-row-today .fly-row-day{display:block;color:var(--gold);font-weight:600;font-size:13px;margin-bottom:3px}
   .fly-row-today .fly-row-why{display:block;color:var(--mist-dim);font-size:12.5px;line-height:1.4}
-  .fly-row-label{flex:0 0 68px;font-size:12px;color:var(--mist-dim);font-weight:500}
-  .fly-row-name{font-size:12.5px;color:var(--moss)}
+  .fly-row-label{font-size:12px;color:var(--mist-dim);font-weight:500;padding-top:1px}
+  .fly-row-name{font-size:12.5px;color:var(--moss);font-weight:600}
+  .fly-row .fly-row-why{grid-column:2;font-size:11.5px;color:var(--mist-dim);line-height:1.4;margin-top:2px}
   .flow{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--mist);transition:.12s}
   .flow:hover{border-color:var(--salmon);transform:translateY(-1px)}
   .flow .ico{font-size:20px}
@@ -776,7 +777,7 @@ function renderForecast(days, placeName){
     const diff2=Math.round((dt2-today)/86400000);
     const lbl=diff2===0?"Í dag":diff2===1?"Á morgun":DOW[dt2.getDay()];
     if(i===0) return `<div class="fly-row fly-row-today"><span class="fly-row-day">🪰 Fluga dagsins: <b>${escapeHtml(f.name)}</b></span><span class="fly-row-why">${escapeHtml(f.why)}</span></div>`;
-    return `<div class="fly-row"><span class="fly-row-label">${lbl}</span><span class="fly-row-name">🪰 ${escapeHtml(f.name)}</span></div>`;
+    return `<div class="fly-row"><span class="fly-row-label">${lbl}</span><span class="fly-row-name">🪰 ${escapeHtml(f.name)}</span><span class="fly-row-why">${escapeHtml(f.why)}</span></div>`;
   }).join("");
   document.getElementById("flyTip").innerHTML=flyRows;
 }
