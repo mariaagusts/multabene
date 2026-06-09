@@ -387,7 +387,7 @@ const PEP = [
 /* ------------- STATE + STORAGE ------------- */
 const KEY="veidi-pokkun-2026";
 const SYNC_KEY="veidi-sync-2026";
-const SYNC_BASE="https://jsonblob.com/api/jsonBlob";
+const FB_URL="https://min-timer-multabeneis-default-rtdb.europe-west1.firebasedatabase.app";
 let state = { checked:{}, deleted:[], custom:[], loc:"64.77,-21.52" };
 let syncCode=null, pushTimer=null;
 
@@ -406,26 +406,29 @@ function setSyncDot(s){
   if(dot) dot.className="syncdot"+(s?(" "+s):"");
   if(lbl) lbl.textContent = s==="on"?"Samstillt ✓" : s==="sync"?"Samstilli…" : s==="err"?"Villa" : "Samstilla";
 }
-function fmtCode(c){ return (c||"").replace(/(.{4})/g,"$1 ").trim(); }
+function fmtCode(c){ return (c||"").replace(/(.{3})(.{3})/,"$1 $2"); }
+function genCode(){
+  const ch="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  return Array.from({length:6},()=>ch[Math.floor(Math.random()*ch.length)]).join("");
+}
 
-/* cloud ops,free JSON store, no key (jsonblob.com) */
+/* cloud ops — Firebase Realtime Database */
 async function createSync(){
   try{
-    const res=await fetch(SYNC_BASE,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(syncPayload())});
-    if(!res.ok) throw 0;
-    let id=res.headers.get("X-jsonblob");
-    if(!id){ id=(res.headers.get("Location")||"").split("/").pop(); }
-    if(!id) throw 0;
-    syncCode=id; storeSyncCode(); setSyncDot("on"); return id;
+    if(!syncCode){ syncCode=genCode(); storeSyncCode(); }
+    const r=await fetch(`${FB_URL}/veidi/${syncCode}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(syncPayload())});
+    if(!r.ok) throw 0;
+    setSyncDot("on"); return syncCode;
   }catch(e){ return null; }
 }
 async function applySync(code){
-  code=(code||"").replace(/\s+/g,"");
+  code=(code||"").replace(/\s+/g,"").toUpperCase();
   if(!code) return false;
   try{
-    const res=await fetch(SYNC_BASE+"/"+encodeURIComponent(code),{headers:{"Accept":"application/json"}});
-    if(!res.ok) throw 0;
-    const remote=await res.json();
+    const r=await fetch(`${FB_URL}/veidi/${code}.json`);
+    if(!r.ok) throw 0;
+    const remote=await r.json();
+    if(!remote||typeof remote!=="object") throw 0;
     state=Object.assign({checked:{},deleted:[],custom:[],loc:state.loc},remote);
     syncCode=code; storeSyncCode(); saveLocal(); render(); refreshWeatherFromState(); setSyncDot("on");
     return true;
@@ -439,16 +442,17 @@ function schedulePush(){
 async function pushSync(){
   if(!syncCode) return;
   try{
-    const res=await fetch(SYNC_BASE+"/"+encodeURIComponent(syncCode),{method:"PUT",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(syncPayload())});
-    setSyncDot(res.ok?"on":"err");
+    const r=await fetch(`${FB_URL}/veidi/${syncCode}.json`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(syncPayload())});
+    setSyncDot(r.ok?"on":"err");
   }catch(e){ setSyncDot("err"); }
 }
 async function pullSync(){
   if(!syncCode) return;
   try{
-    const res=await fetch(SYNC_BASE+"/"+encodeURIComponent(syncCode),{headers:{"Accept":"application/json"}});
-    if(!res.ok){ setSyncDot("err"); return; }
-    const remote=await res.json();
+    const r=await fetch(`${FB_URL}/veidi/${syncCode}.json`);
+    if(!r.ok){ setSyncDot("err"); return; }
+    const remote=await r.json();
+    if(!remote) return;
     state=Object.assign({checked:{},deleted:[],custom:[],loc:state.loc},remote);
     saveLocal(); render(); setSyncDot("on");
   }catch(e){ setSyncDot("err"); }
