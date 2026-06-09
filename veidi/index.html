@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="is">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Veiðipökkun 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --river-deep:#0f2229;
+    --river:#15303a;
+    --panel:#1b3a44;
+    --panel-2:#214651;
+    --line:#2f5560;
+    --mist:#e7f0f1;
+    --mist-dim:#a9c2c7;
+    --salmon:#f0907a;
+    --salmon-deep:#d96f57;
+    --moss:#9bb892;
+    --gold:#e9c46a;
+    --radius:14px;
+    --shadow:0 10px 30px rgba(0,0,0,.28);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--mist);
+    background:
+      radial-gradient(1100px 520px at 82% -12%, #2a3b5e 0%, transparent 55%),
+      radial-gradient(900px 520px at 98% -6%, #1f5a55 0%, transparent 48%),
+      radial-gradient(900px 500px at 0% 0%, #173640 0%, transparent 55%),
+      linear-gradient(180deg,#0f2229 0%, #0c1a20 100%);
+    background-attachment:fixed;
+    min-height:100vh;
+    line-height:1.5;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 20px 80px}
+
+  /* ---------- header / signature ---------- */
+  header{padding:8px 0 4px}
+  .eyebrow{
+    font-size:12px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--moss);font-weight:600;margin:0 0 6px
+  }
+  h1{
+    font-family:'Fraunces',Georgia,serif;
+    font-weight:800;font-size:clamp(36px,7vw,68px);
+    line-height:.96;margin:0;letter-spacing:-.02em;color:var(--mist);
+  }
+  h1 em{font-style:italic;color:var(--gold)}
+  .sub{margin:10px 0 0;color:var(--mist-dim);font-size:clamp(15px,2.2vw,18px);max-width:60ch}
+
+  /* river progress */
+  .river{
+    position:relative;margin:26px 0 8px;height:64px;border-radius:999px;
+    background:linear-gradient(180deg,#0c1e24,#11343f);
+    border:1px solid var(--line);overflow:hidden;box-shadow:inset 0 2px 10px rgba(0,0,0,.4)
+  }
+  .river-fill{
+    position:absolute;inset:0;width:0%;
+    background:linear-gradient(90deg,#1d5563,#2a7d86 60%,#34a0a4);
+    transition:width .6s cubic-bezier(.22,.61,.36,1);
+  }
+  .river-fill::after{
+    content:"";position:absolute;inset:0;opacity:.4;mix-blend-mode:screen;
+    background:repeating-linear-gradient(115deg,transparent 0 14px,rgba(255,255,255,.08) 14px 16px);
+    animation:flow 7s linear infinite
+  }
+  @keyframes flow{to{background-position:200px 0}}
+  .tick{position:absolute;top:9px;bottom:9px;width:1px;background:rgba(233,196,106,.45);z-index:1}
+  .fish{
+    position:absolute;top:50%;left:0;transform:translate(-50%,-50%);
+    transition:left .6s cubic-bezier(.22,.61,.36,1), transform .4s ease;
+    width:46px;height:30px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.4));
+    animation:bob 2.4s ease-in-out infinite;z-index:2
+  }
+  @keyframes bob{0%,100%{margin-top:-2px}50%{margin-top:3px}}
+  .river.done .fish{animation:leap .9s ease-in-out infinite}
+  @keyframes leap{0%,100%{transform:translate(-50%,-50%) rotate(-6deg)}50%{transform:translate(-50%,-130%) rotate(-22deg)}}
+  .river-label{
+    position:absolute;right:16px;top:50%;transform:translateY(-50%);
+    font-family:'Fraunces',serif;font-weight:600;font-size:15px;color:#eafafa;
+    text-shadow:0 1px 4px rgba(0,0,0,.5);z-index:3;pointer-events:none
+  }
+  .pep{margin:6px 2px 0;font-size:14px;color:var(--gold);min-height:20px;font-weight:500}
+
+  /* ---------- section cards ---------- */
+  .card{
+    background:linear-gradient(180deg,var(--panel),var(--river));
+    border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:18px 18px 14px;margin-top:18px
+  }
+  .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;padding-bottom:9px;border-bottom:1px solid rgba(233,196,106,.16)}
+  .card-head h2{
+    font-family:'Fraunces',serif;font-weight:600;font-size:13px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--mist);margin:0;display:flex;align-items:center;gap:9px
+  }
+  .card-head .ico{font-size:17px}
+  .count{font-size:11px;color:var(--gold);background:rgba(233,196,106,.14);border:1px solid rgba(233,196,106,.32);
+    padding:2px 9px;border-radius:999px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+  #wxPlace{background:none;border:none;color:var(--mist-dim);padding:0;font-weight:500;font-size:12px}
+
+  /* ---------- weather ---------- */
+  .wx-controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:4px 0 14px}
+  select,input[type=text]{
+    background:var(--river-deep);color:var(--mist);border:1px solid var(--line);
+    border-radius:10px;padding:9px 11px;font:inherit;font-size:14px;outline:none
+  }
+  select:focus,input[type=text]:focus{border-color:var(--salmon);box-shadow:0 0 0 3px rgba(240,144,122,.18)}
+  .btn{
+    background:var(--salmon);color:#2a1411;border:none;border-radius:10px;
+    padding:9px 14px;font:inherit;font-weight:600;font-size:14px;cursor:pointer;transition:transform .12s, background .12s
+  }
+  .btn:hover{background:#f4a48f}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:transparent;color:var(--mist-dim);border:1px solid var(--line)}
+  .btn.ghost:hover{color:var(--mist);border-color:var(--salmon)}
+  .wx-tip{margin:2px 2px 14px;font-size:14px;color:var(--moss);font-weight:500;min-height:20px}
+  .wx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px}
+  .day{
+    background:var(--river-deep);border:1px solid var(--line);border-radius:12px;
+    padding:12px 12px 11px;text-align:center;position:relative
+  }
+  .day .dow{font-weight:700;font-size:13px;color:var(--mist)}
+  .day .date{font-size:11px;color:var(--mist-dim);margin-bottom:4px}
+  .day .emoji{font-size:30px;line-height:1.1;margin:2px 0}
+  .day .temps{font-variant-numeric:tabular-nums;font-size:15px;font-weight:600}
+  .day .temps .lo{color:var(--mist-dim);font-weight:500}
+  .day .meta{font-size:11px;color:var(--mist-dim);margin-top:3px}
+  .day .joke{font-size:11px;color:var(--gold);margin-top:6px;line-height:1.3;min-height:14px}
+  .day.today{border-color:var(--gold);box-shadow:0 0 0 2px rgba(233,196,106,.25)}
+  .wx-msg{font-size:14px;color:var(--mist-dim);padding:6px 2px}
+  .wx-msg a{color:var(--salmon)}
+  .skel{height:120px;border-radius:12px;background:linear-gradient(100deg,#16323b 30%,#1d3f49 50%,#16323b 70%);background-size:200% 100%;animation:sh 1.2s linear infinite}
+  @keyframes sh{to{background-position:-200% 0}}
+  .wx-extra{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+  @media(max-width:560px){.wx-extra{grid-template-columns:1fr}}
+  .fly,.flow{background:var(--river-deep);border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+  .fly{border-color:rgba(233,196,106,.3)}
+  .fly .nm{display:block;color:var(--gold);font-weight:600;font-size:13px;margin-bottom:3px}
+  .fly .why{color:var(--mist-dim);font-size:12.5px;line-height:1.4}
+  .flow{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--mist);transition:.12s}
+  .flow:hover{border-color:var(--salmon);transform:translateY(-1px)}
+  .flow .ico{font-size:20px}
+  .flow b{font-weight:600;font-size:13.5px}
+  .flow small{display:block;color:var(--mist-dim);font-size:11px;margin-top:1px}
+  .flow .arr{margin-left:auto;color:var(--salmon);font-size:16px}
+
+  /* ---------- list items ---------- */
+  .cols{column-width:240px;column-gap:14px}
+  .item{
+    display:flex;align-items:flex-start;gap:10px;padding:8px 9px;margin-bottom:7px;
+    background:var(--river-deep);border:1px solid transparent;border-radius:10px;
+    break-inside:avoid;cursor:pointer;transition:background .12s,border-color .12s,opacity .25s,transform .25s
+  }
+  .item:hover{border-color:var(--line)}
+  .box{
+    flex:0 0 auto;width:20px;height:20px;border-radius:6px;border:2px solid var(--mist-dim);
+    margin-top:1px;display:grid;place-items:center;transition:.15s
+  }
+  .box svg{width:13px;height:13px;opacity:0;transform:scale(.5);transition:.15s;stroke:#23170a}
+  .item.done .box{background:var(--gold);border-color:var(--gold)}
+  .item.done .box svg{opacity:1;transform:scale(1)}
+  .label{flex:1;font-size:14.5px;color:var(--mist)}
+  .item.done .label{color:var(--mist-dim);text-decoration:line-through;text-decoration-color:var(--gold)}
+  .maybe{font-size:10px;letter-spacing:.04em;color:var(--gold);border:1px solid rgba(233,196,106,.4);
+    border-radius:6px;padding:1px 5px;margin-left:6px;vertical-align:middle;white-space:nowrap}
+  .del{
+    flex:0 0 auto;background:none;border:none;color:#5e8088;cursor:pointer;font-size:18px;
+    line-height:1;padding:0 2px;border-radius:6px;transition:.12s;opacity:0
+  }
+  .item:hover .del{opacity:1}
+  .del:hover{color:var(--salmon)}
+  .item.removing{opacity:0;transform:translateX(14px) scale(.96)}
+
+  /* add row */
+  .addrow{display:flex;gap:8px;margin-top:10px}
+  .addrow input{flex:1}
+
+  /* resources */
+  .links{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .links a{
+    display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--mist);
+    background:var(--river-deep);border:1px solid var(--line);border-radius:10px;padding:11px 12px;
+    font-size:14px;transition:.12s
+  }
+  .links a:hover{border-color:var(--salmon);transform:translateY(-1px)}
+  .links .lk-ico{font-size:18px}
+  .links small{display:block;color:var(--mist-dim);font-size:11px;margin-top:1px}
+
+  /* footer controls */
+  .footbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px;justify-content:space-between}
+  .trash{font-size:13px;color:var(--mist-dim)}
+  .trash a{color:var(--salmon);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+  .credit{font-size:12px;color:#5e8088;margin-top:30px;text-align:center}
+  .credit em{font-family:'Fraunces',serif;color:var(--moss);font-style:italic}
+
+  /* ---------- sync controls ---------- */
+  .topbar{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-bottom:2px}
+  .syncbtn{position:relative;display:inline-flex;align-items:center;gap:7px;background:rgba(233,196,106,.1);
+    color:var(--gold);border:1px solid rgba(233,196,106,.3);border-radius:999px;padding:7px 13px;
+    font:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:.12s}
+  .syncbtn:hover{background:rgba(233,196,106,.2)}
+  .syncbtn.round{padding:7px 0;width:34px;justify-content:center}
+  .syncdot{width:8px;height:8px;border-radius:50%;background:#5e8088;transition:.2s}
+  .syncdot.on{background:#7ed09a}
+  .syncdot.sync{background:var(--gold);animation:pulse 1s ease-in-out infinite}
+  .syncdot.err{background:#e07a6b}
+  @keyframes pulse{50%{opacity:.4}}
+  .btn.gold{background:var(--gold);color:#23170a}
+  .btn.gold:hover{background:#efce82}
+
+  .overlay{position:fixed;inset:0;background:rgba(6,14,18,.66);backdrop-filter:blur(3px);
+    display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
+  .overlay.show{display:flex}
+  .modal{background:linear-gradient(180deg,#1d3f49,#16313b);border:1px solid var(--line);
+    border-radius:16px;max-width:440px;width:100%;padding:22px 22px 24px;box-shadow:0 30px 70px rgba(0,0,0,.5)}
+  .modal h3{font-family:'Fraunces',serif;font-weight:600;font-size:22px;margin:0 0 2px;color:var(--mist)}
+  .modal h3 .ic{color:var(--gold)}
+  .modal p{color:var(--mist-dim);font-size:14px;margin:9px 0}
+  .modal .close{float:right;background:none;border:none;color:var(--mist-dim);font-size:24px;cursor:pointer;line-height:1;margin:-4px -4px 0 0}
+  .codebox{display:flex;align-items:center;gap:8px;background:var(--river-deep);border:1px solid rgba(233,196,106,.35);
+    border-radius:10px;padding:8px 10px 8px 13px;margin:12px 0;font-size:18px;letter-spacing:.05em;color:var(--gold);
+    word-break:break-all;font-weight:600;font-variant-numeric:tabular-nums}
+  .or{display:flex;align-items:center;gap:10px;color:var(--mist-dim);font-size:11px;margin:15px 0;text-transform:uppercase;letter-spacing:.12em}
+  .or::before,.or::after{content:"";height:1px;flex:1;background:var(--line)}
+  .modal .btn.full{width:100%;justify-content:center;display:flex;margin-top:4px}
+  .modal input{width:100%;margin:6px 0}
+  .stat{font-size:13px;color:var(--mist-dim);margin-top:10px;min-height:18px}
+  .stat b{color:#7ed09a;font-weight:600}
+  .disc{display:inline-block;margin-top:15px;color:#e07a6b;font-size:13px;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+  .steps{margin:8px 0 0;padding-left:20px}
+  .steps li{margin:8px 0;font-size:14px;color:var(--mist)}
+  .steps b{color:var(--gold);font-weight:600}
+
+  @media(max-width:560px){
+    .river{height:56px}.fish{width:40px}
+    .wrap{padding:20px 14px 70px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <button class="syncbtn" id="cloudBtn" aria-haspopup="dialog">
+      <span aria-hidden="true">☁️</span><span class="lbl" id="syncLbl">Samstilla</span><span class="syncdot" id="syncDot"></span>
+    </button>
+    <button class="syncbtn round" id="helpBtn" aria-label="Leiðbeiningar um samstillingu">?</button>
+  </div>
+  <header>
+    <p class="eyebrow">Veiðiferð · sumar 2026</p>
+    <h1>Pökkunarlisti <em>með sporði</em></h1>
+    <p class="sub">Merktu við það sem komið er í töskuna, strikaðu út það sem ekki þarf, og athugaðu hvort áin verði þér væn. Laxinn syndir upp ána í takt við pökkunina.</p>
+
+    <div class="river" id="river" title="Pökkunarframvinda">
+      <div class="river-fill" id="fill"></div>
+      <div class="tick" style="left:25%"></div><div class="tick" style="left:50%"></div><div class="tick" style="left:75%"></div>
+      <svg class="fish" id="fish" viewBox="0 0 100 64" aria-hidden="true">
+        <path d="M8 32 C20 12, 56 10, 74 26 C80 18, 90 16, 96 18 C92 26, 92 30, 95 34 C92 38, 92 42, 96 50 C90 52, 80 50, 74 42 C56 56, 20 54, 8 34 C6 33.2 6 32.8 8 32 Z"
+              fill="#e98f78"/>
+        <path d="M8 32 C20 12, 56 10, 74 26 C70 30, 70 36, 74 42 C56 56, 20 54, 8 34 Z" fill="#d8775e" opacity=".55"/>
+        <circle cx="22" cy="28" r="3.4" fill="#10241b"/>
+        <path d="M40 22 C50 30, 50 36, 40 44" fill="none" stroke="#c2604a" stroke-width="2.4" opacity=".6"/>
+      </svg>
+      <span class="river-label" id="riverLabel">0%</span>
+    </div>
+    <p class="pep" id="pep">Taskan pakkar sér ekki sjálf.</p>
+  </header>
+
+  <!-- WEATHER -->
+  <section class="card">
+    <div class="card-head">
+      <h2><span class="ico">🌦️</span> Veðurspá við ána</h2>
+      <span class="count" id="wxPlace"></span>
+    </div>
+    <div class="wx-controls">
+      <select id="riverSelect" aria-label="Veldu á">
+        <option value="64.77,-21.52" selected>Norðurá (Borgarfjörður)</option>
+        <option value="64.85,-21.43">Þverá / Kjarrá</option>
+        <option value="64.55,-21.37">Grímsá</option>
+        <option value="64.40,-21.43">Laxá í Kjós</option>
+        <option value="64.13,-21.83">Elliðaár (Reykjavík)</option>
+        <option value="65.83,-17.35">Laxá í Aðaldal</option>
+        <option value="65.50,-19.85">Blanda</option>
+        <option value="65.40,-20.75">Miðfjarðará</option>
+        <option value="65.75,-14.85">Selá í Vopnafirði</option>
+        <option value="64.85,-22.30">Haffjarðará</option>
+        <option value="__search">Leita að öðrum stað…</option>
+      </select>
+      <input type="text" id="placeSearch" placeholder="t.d. Egilsstaðir" style="display:none" />
+      <button class="btn" id="wxGo">Sækja spá</button>
+    </div>
+    <p class="wx-tip" id="wxTip"></p>
+    <div class="wx-grid" id="wxGrid"></div>
+    <div class="wx-extra">
+      <div class="fly" id="flyTip"></div>
+      <a class="flow" id="flowLink" href="https://vatn.is" target="_blank" rel="noopener">
+        <span class="ico" aria-hidden="true">🌊</span>
+        <span><b>Vatnshæð &amp; rennsli</b><small>Rauntölur frá Veðurstofunni — finndu ána þína</small></span>
+        <span class="arr" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- LISTS render here -->
+  <div id="lists"></div>
+
+  <!-- RESOURCES -->
+  <section class="card">
+    <div class="card-head"><h2><span class="ico">🎓</span> Til upprifjunar á bakkanum</h2></div>
+    <div class="links" id="links"></div>
+  </section>
+
+  <div class="footbar">
+    <span class="trash" id="trash"></span>
+    <span><button class="btn ghost" id="resetBtn">Núllstilla allt</button></span>
+  </div>
+
+  <p class="credit">Þétt pökkun, strekktir taumar! <em>Góða veiði.</em> 🎣</p>
+</div>
+
+<div class="overlay" id="syncOverlay">
+  <div class="modal" role="dialog" aria-label="Samstilling milli tækja">
+    <button class="close" data-close>×</button>
+    <h3><span class="ic">☁️</span> Samstilling milli tækja</h3>
+    <div id="syncBody"></div>
+  </div>
+</div>
+
+<div class="overlay" id="helpOverlay">
+  <div class="modal" role="dialog" aria-label="Leiðbeiningar">
+    <button class="close" data-close>×</button>
+    <h3><span class="ic">?</span> Hvernig samstilling virkar</h3>
+    <p>Samstilling tengir tækin þín saman svo sami listi — með hökum, útstrikunum og því sem þú bættir við — birtist á þeim öllum.</p>
+    <ol class="steps">
+      <li>Á fyrsta tækinu: smelltu á <b>☁️ Samstilla</b> og svo <b>Búa til samstillingarkóða</b>.</li>
+      <li>Afritaðu kóðann sem birtist.</li>
+      <li>Á hinu tækinu (t.d. símanum): opnaðu síðuna, smelltu á <b>☁️ Samstilla</b>, límdu kóðann og smelltu á <b>Tengja með kóða</b>.</li>
+      <li>Það er allt og sumt. Breytingar skila sér sjálfkrafa milli tækja þegar síðan er opnuð eða uppfærð.</li>
+    </ol>
+    <p style="font-size:12.5px;color:#7c989f">Kóðinn geymir bara pökkunarlistann. Geymdu hann hjá þér — hver sem hefur kóðann getur séð og breytt listanum.</p>
+  </div>
+</div>
+
+<script>
+/* ---------------- DATA ---------------- */
+const CATEGORIES = [
+  { id:"graejur", name:"Veiðigræjur", ico:"🎣", items:[
+    "Veiðistöng","Veiðihjól","Veiðijakki (regnjakki)","Vöðlur (muna eftir beltinu)","Vöðluskór",
+    "Flugur","Sólgleraugu","Hattur / derhúfa","Ullarföt undir vöðlur","Ullarsokkar (til skiptanna)",
+    "Hlýjar peysur / lopapeysa","Húfa?","Hanskar?","Bakpoki fyrir drykki og föt","Veiðiskæri",
+    "Veiðiklippur","Auka taumar/taumaefni","Veiðivaralitur","Veiðinaglalakk","Flugnanet og sprey" ]},
+  { id:"fatnadur", name:"Annar fatnaður", ico:"🧥", items:[
+    "Nærfatnaður","Sokkar","Stuttermabolur","Náttföt","Inniskór","Þægileg föt","Sundföt",
+    "Vesti?","Primaloft-jakki?","Úlpa?","Fín föt?" ]},
+  { id:"snyrti", name:"Snyrtidót", ico:"🪥", items:[
+    "Tannbursti","Tannkrem","Förðunardót","Svitalyktareyðir","Sjampó","Hárnæring","Þurrsjampó",
+    "Hárbursti","Hárteygjur","Hárolía","Rakakrem","Plástrar","Naglaklippur","Plokkari","Varasalvi",
+    "Sólarvörn?","Eyrnatappar","Verkjalyf","Ofnæmislyf / önnur lyf","Vítamín / Treo?",
+    "Tannstönglar / þráður","Innlegg / dömubindi / tappar","Hárblásari og sléttujárn","Ilmvatn","Eyrnapinnar" ]},
+  { id:"raf", name:"Raftæki", ico:"🔌", items:[
+    "Hleðslubankar","Hleðslutengi í vegg","Hleðslusnúra iPhone","Hleðslusnúra Samsung","Hleðslusnúra Micro USB","Hátalari" ]},
+  { id:"matur", name:"Matur & drykkur", ico:"🍫", items:[
+    "Hitabrúsi, bollar og kakómix?","Collab / Coke Zero / sódavatn","Nesti (snickers, ostur o.fl.)",
+    "Áfengi (nikótín?)","Vatnsbrúsi?" ]},
+  { id:"annad", name:"Annað", ico:"📦", items:[
+    "Teppi?","WC pappír / blautþurrkur?","Kælibox + kælikubbar","Merkimiðar","Tappatogari / upptakari",
+    "Hotties (hitapúðar í skó/hanska)","Arineldur + gas + kveikjari","Lím / límband?",
+    "Gleraugnahreinsir/klútur","Plastglös" ]},
+];
+
+const LINKS = [
+  {t:"Einhendukast – með Klaus Frimor", s:"veidiflugur.is", ico:"🎬", u:"https://veidiflugur.is/2022/04/20/einhendukost-med-klaus-frimor/"},
+  {t:"Tvíhendu / Switch-kast", s:"YouTube", ico:"▶️", u:"https://www.youtube.com/watch?v=L-YNhjCy8AM"},
+  {t:"Tvíhendu / Switch-kast II", s:"YouTube · sérstaklega mín. 9:00", ico:"▶️", u:"https://www.youtube.com/watch?v=Gp5ekOqL2HM"},
+  {t:"Flugulínur og taumar", s:"YouTube", ico:"▶️", u:"https://www.youtube.com/watch?v=Jn5dxeu-g58"},
+  {t:"Veiðihnútar", s:"YouTube", ico:"▶️", u:"https://www.youtube.com/watch?v=K7ex8V8z-M8"},
+  {t:"Flugur í Norðurá (fróðleikur)", s:"veidiflugur.is", ico:"🪰", u:"https://veidiflugur.is/2020/06/22/flugur-i-nordura/"},
+  {t:"Hitch flugur (fróðleikur)", s:"veidiflugur.is", ico:"🪰", u:"https://veidiflugur.is/hitch/"},
+];
+
+const PEP = [
+  [0,   "Taskan pakkar sér ekki sjálf."],
+  [10,  "Byrjað! Laxinn lyftir brúninni."],
+  [30,  "Þetta er að mjakast. Sporðurinn dillast."],
+  [50,  "Hálfnað verk þá hafið er — eða svo segir máltækið."],
+  [70,  "Komið vel á veg. Stöngin bíður spennt."],
+  [90,  "Næstum því! Ekki gleyma flugunum, í alvöru."],
+  [100, "Þú ert klár í ána! Renndu í hann fyrir okkur. 🐟"],
+];
+
+/* ------------- STATE + STORAGE ------------- */
+const KEY="veidi-pokkun-2026";
+const SYNC_KEY="veidi-sync-2026";
+const SYNC_BASE="https://jsonblob.com/api/jsonBlob";
+let state = { checked:{}, deleted:[], custom:[], loc:"64.77,-21.52" };
+let syncCode=null, pushTimer=null;
+
+function loadState(){
+  try{ const raw=localStorage.getItem(KEY); if(raw) state=Object.assign(state,JSON.parse(raw)); }catch(e){}
+}
+function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+function saveState(){ saveLocal(); schedulePush(); }
+
+function loadSyncCode(){ try{ syncCode=localStorage.getItem(SYNC_KEY)||null; }catch(e){} }
+function storeSyncCode(){ try{ syncCode?localStorage.setItem(SYNC_KEY,syncCode):localStorage.removeItem(SYNC_KEY); }catch(e){} }
+function syncPayload(){ return {checked:state.checked, deleted:state.deleted, custom:state.custom, loc:state.loc}; }
+
+function setSyncDot(s){
+  const dot=document.getElementById("syncDot"), lbl=document.getElementById("syncLbl");
+  if(dot) dot.className="syncdot"+(s?(" "+s):"");
+  if(lbl) lbl.textContent = s==="on"?"Samstillt ✓" : s==="sync"?"Samstilli…" : s==="err"?"Villa" : "Samstilla";
+}
+function fmtCode(c){ return (c||"").replace(/(.{4})/g,"$1 ").trim(); }
+
+/* cloud ops — free JSON store, no key (jsonblob.com) */
+async function createSync(){
+  try{
+    const res=await fetch(SYNC_BASE,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(syncPayload())});
+    if(!res.ok) throw 0;
+    let id=res.headers.get("X-jsonblob");
+    if(!id){ id=(res.headers.get("Location")||"").split("/").pop(); }
+    if(!id) throw 0;
+    syncCode=id; storeSyncCode(); setSyncDot("on"); return id;
+  }catch(e){ return null; }
+}
+async function applySync(code){
+  code=(code||"").replace(/\s+/g,"");
+  if(!code) return false;
+  try{
+    const res=await fetch(SYNC_BASE+"/"+encodeURIComponent(code),{headers:{"Accept":"application/json"}});
+    if(!res.ok) throw 0;
+    const remote=await res.json();
+    state=Object.assign({checked:{},deleted:[],custom:[],loc:state.loc},remote);
+    syncCode=code; storeSyncCode(); saveLocal(); render(); refreshWeatherFromState(); setSyncDot("on");
+    return true;
+  }catch(e){ return false; }
+}
+function schedulePush(){
+  if(!syncCode) return;
+  setSyncDot("sync"); clearTimeout(pushTimer);
+  pushTimer=setTimeout(pushSync,700);
+}
+async function pushSync(){
+  if(!syncCode) return;
+  try{
+    const res=await fetch(SYNC_BASE+"/"+encodeURIComponent(syncCode),{method:"PUT",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(syncPayload())});
+    setSyncDot(res.ok?"on":"err");
+  }catch(e){ setSyncDot("err"); }
+}
+async function pullSync(){
+  if(!syncCode) return;
+  try{
+    const res=await fetch(SYNC_BASE+"/"+encodeURIComponent(syncCode),{headers:{"Accept":"application/json"}});
+    if(!res.ok){ setSyncDot("err"); return; }
+    const remote=await res.json();
+    state=Object.assign({checked:{},deleted:[],custom:[],loc:state.loc},remote);
+    saveLocal(); render(); setSyncDot("on");
+  }catch(e){ setSyncDot("err"); }
+}
+function disconnectSync(){ syncCode=null; storeSyncCode(); setSyncDot(""); renderSyncBody(); }
+
+/* sync modal body */
+function renderSyncBody(){
+  const b=document.getElementById("syncBody"); if(!b) return;
+  if(syncCode){
+    b.innerHTML=`
+      <p>Þetta tæki er tengt. Notaðu sama kóða á öðrum tækjum til að sjá sama lista.</p>
+      <div class="codebox"><span>${fmtCode(syncCode)}</span><button class="btn gold" id="copyCode" style="margin-left:auto">Afrita</button></div>
+      <button class="btn ghost full" id="pullBtn">Sækja nýjustu útgáfu</button>
+      <p class="stat" id="syncStat">Breytingar samstillast sjálfkrafa.</p>
+      <span class="disc" id="discBtn">Aftengja þetta tæki</span>`;
+    b.querySelector("#copyCode").onclick=async(ev)=>{
+      try{ await navigator.clipboard.writeText(syncCode); ev.target.textContent="Afritað ✓"; }catch(e){}
+    };
+    b.querySelector("#pullBtn").onclick=async()=>{
+      b.querySelector("#syncStat").textContent="Sæki…";
+      await pullSync(); refreshWeatherFromState();
+      const s=document.getElementById("syncStat"); if(s) s.innerHTML="Uppfært frá skýinu <b>✓</b>";
+    };
+    b.querySelector("#discBtn").onclick=()=>{ if(confirm("Aftengja þetta tæki? Listinn helst en hættir að samstillast.")) disconnectSync(); };
+  } else {
+    b.innerHTML=`
+      <p>Tengdu tölvuna og símann saman svo sami pökkunarlisti — með hökum og öllu — birtist á báðum.</p>
+      <button class="btn gold full" id="createBtn">Búa til samstillingarkóða</button>
+      <div class="or">eða</div>
+      <input type="text" id="codeInput" placeholder="Límdu kóða frá hinu tækinu" autocomplete="off">
+      <button class="btn ghost full" id="connectBtn">Tengja með kóða</button>
+      <p class="stat" id="syncStat"></p>`;
+    b.querySelector("#createBtn").onclick=async()=>{
+      const st=b.querySelector("#syncStat"); st.textContent="Bý til kóða…";
+      const id=await createSync();
+      if(id){ renderSyncBody(); } else { st.textContent="Tókst ekki að tengjast skýinu. Athugaðu nettengingu og reyndu aftur."; }
+    };
+    b.querySelector("#connectBtn").onclick=async()=>{
+      const st=b.querySelector("#syncStat"); st.textContent="Tengist…";
+      const ok=await applySync(b.querySelector("#codeInput").value);
+      if(ok){ renderSyncBody(); } else { const s=document.getElementById("syncStat"); if(s) s.textContent="Fann ekki lista með þessum kóða. Athugaðu hvort hann sé réttur."; }
+    };
+  }
+}
+document.getElementById("cloudBtn").onclick=()=>{ renderSyncBody(); document.getElementById("syncOverlay").classList.add("show"); };
+document.getElementById("helpBtn").onclick=()=>document.getElementById("helpOverlay").classList.add("show");
+document.querySelectorAll(".overlay").forEach(o=>{
+  o.addEventListener("click",e=>{ if(e.target===o||e.target.hasAttribute("data-close")) o.classList.remove("show"); });
+});
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") document.querySelectorAll(".overlay.show").forEach(o=>o.classList.remove("show")); });
+
+/* ------------- helpers ------------- */
+function uid(){ return "c"+Math.random().toString(36).slice(2,8); }
+function splitMaybe(label){
+  const m = label.trim().endsWith("?");
+  return { text: m ? label.trim().slice(0,-1).trim() : label, maybe:m };
+}
+
+/* ------------- build item registry ------------- */
+let ITEMS = []; // {id, cat, label}
+function buildItems(){
+  ITEMS = [];
+  CATEGORIES.forEach(c=>{
+    c.items.forEach(label=> ITEMS.push({id: c.id+"|"+label, cat:c.id, label}));
+  });
+  state.custom.forEach(ci=> ITEMS.push({id:ci.id, cat:ci.cat, label:ci.label, custom:true}));
+}
+
+/* ------------- RENDER LISTS ------------- */
+const listsEl = document.getElementById("lists");
+function render(){
+  buildItems();
+  const delSet = new Set(state.deleted);
+  listsEl.innerHTML = "";
+  CATEGORIES.forEach(cat=>{
+    const items = ITEMS.filter(i=>i.cat===cat.id && !delSet.has(i.id));
+    const done = items.filter(i=>state.checked[i.id]).length;
+    const card = document.createElement("section");
+    card.className="card";
+    card.innerHTML = `
+      <div class="card-head">
+        <h2><span class="ico">${cat.ico}</span> ${cat.name}</h2>
+        <span class="count">${done}/${items.length} pakkað</span>
+      </div>
+      <div class="cols"></div>
+      <div class="addrow">
+        <input type="text" placeholder="Bæta við hlut í «${cat.name}»…" data-add="${cat.id}">
+        <button class="btn ghost" data-addbtn="${cat.id}">Bæta við</button>
+      </div>`;
+    const cols = card.querySelector(".cols");
+    items.forEach(it=>{
+      const {text,maybe}=splitMaybe(it.label);
+      const row=document.createElement("div");
+      row.className="item"+(state.checked[it.id]?" done":"");
+      row.dataset.id=it.id;
+      row.innerHTML=`
+        <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg></span>
+        <span class="label">${escapeHtml(text)}</span>
+        <button class="del" title="Eyða hlut" aria-label="Eyða">×</button>`;
+      cols.appendChild(row);
+    });
+    if(items.length===0){
+      cols.innerHTML='<p class="wx-msg" style="padding:4px 2px">Tómt hólf. Allt pakkað eða allt strikað út — hvort tveggja telst sigur.</p>';
+    }
+    listsEl.appendChild(card);
+  });
+  updateProgress();
+  renderTrash();
+  saveState();
+}
+
+function escapeHtml(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+/* ------------- PROGRESS ------------- */
+function updateProgress(){
+  const delSet=new Set(state.deleted);
+  const live=ITEMS.filter(i=>!delSet.has(i.id));
+  const total=live.length;
+  const done=live.filter(i=>state.checked[i.id]).length;
+  const pct= total? Math.round(done/total*100) : 0;
+  document.getElementById("fill").style.width=pct+"%";
+  document.getElementById("fish").style.left=Math.max(5,Math.min(95,pct))+"%";
+  document.getElementById("riverLabel").textContent= total? `${done}/${total} · ${pct}%` : "0%";
+  document.getElementById("river").classList.toggle("done", pct===100 && total>0);
+  let msg=PEP[0][1];
+  for(const [thr,t] of PEP){ if(pct>=thr) msg=t; }
+  document.getElementById("pep").textContent=msg;
+}
+
+/* ------------- TRASH / restore ------------- */
+function renderTrash(){
+  const el=document.getElementById("trash");
+  const n=state.deleted.length;
+  el.innerHTML = n? `🗑️ Strikað út: ${n} ${n===1?"hlutur":"hlutir"} — <a id="restore">endurheimta allt</a>` : "";
+  const r=document.getElementById("restore");
+  if(r) r.onclick=()=>{ state.deleted=[]; render(); };
+}
+
+/* ------------- EVENTS (delegated) ------------- */
+listsEl.addEventListener("click", e=>{
+  const del=e.target.closest(".del");
+  const row=e.target.closest(".item");
+  const addbtn=e.target.closest("[data-addbtn]");
+  if(addbtn){ addItem(addbtn.getAttribute("data-addbtn")); return; }
+  if(del && row){
+    e.stopPropagation();
+    const id=row.dataset.id;
+    row.classList.add("removing");
+    setTimeout(()=>{ if(!state.deleted.includes(id)) state.deleted.push(id); delete state.checked[id]; render(); },230);
+    return;
+  }
+  if(row){
+    const id=row.dataset.id;
+    state.checked[id]=!state.checked[id];
+    row.classList.toggle("done");
+    row.querySelector(".count");
+    // update the category count + progress without full re-render for snappiness
+    refreshCounts();
+    updateProgress();
+    saveState();
+  }
+});
+listsEl.addEventListener("keydown", e=>{
+  if(e.key==="Enter" && e.target.matches("[data-add]")) addItem(e.target.getAttribute("data-add"));
+});
+function refreshCounts(){
+  const delSet=new Set(state.deleted);
+  CATEGORIES.forEach(cat=>{
+    const items=ITEMS.filter(i=>i.cat===cat.id && !delSet.has(i.id));
+    const done=items.filter(i=>state.checked[i.id]).length;
+    const card=[...listsEl.querySelectorAll(".card")].find(c=>c.querySelector("h2").textContent.includes(cat.name));
+    if(card) card.querySelector(".count").textContent=`${done}/${items.length} pakkað`;
+  });
+}
+function addItem(catId){
+  const input=listsEl.querySelector(`[data-add="${catId}"]`);
+  const val=(input.value||"").trim();
+  if(!val) return;
+  state.custom.push({id:uid(), cat:catId, label:val});
+  input.value="";
+  render();
+}
+
+document.getElementById("resetBtn").addEventListener("click", ()=>{
+  if(confirm("Núllstilla allt? Hökin, útstrikuðu hlutirnir og það sem þú bættir við hverfa.")){
+    state={checked:{},deleted:[],custom:[],loc:state.loc}; render();
+  }
+});
+
+/* =================  WEATHER  ================= */
+const sel=document.getElementById("riverSelect");
+const searchBox=document.getElementById("placeSearch");
+sel.addEventListener("change", ()=>{
+  searchBox.style.display = sel.value==="__search" ? "" : "none";
+  if(sel.value==="__search") searchBox.focus();
+});
+document.getElementById("wxGo").addEventListener("click", goWeather);
+searchBox.addEventListener("keydown", e=>{ if(e.key==="Enter") goWeather(); });
+
+const WMO = {
+  0:["Heiðskírt","☀️"],1:["Léttskýjað","🌤️"],2:["Skýjað með köflum","⛅"],3:["Alskýjað","☁️"],
+  45:["Þoka","🌫️"],48:["Þoka","🌫️"],
+  51:["Súld","🌦️"],53:["Súld","🌦️"],55:["Súld","🌦️"],56:["Frostúði","🌧️"],57:["Frostúði","🌧️"],
+  61:["Rigning","🌧️"],63:["Rigning","🌧️"],65:["Mikil rigning","🌧️"],66:["Frostrigning","🌧️"],67:["Frostrigning","🌧️"],
+  71:["Snjókoma","🌨️"],73:["Snjókoma","🌨️"],75:["Mikil snjókoma","❄️"],77:["Slydda","🌨️"],
+  80:["Skúrir","🌦️"],81:["Skúrir","🌦️"],82:["Slagveður","⛈️"],85:["Snjóél","🌨️"],86:["Snjóél","🌨️"],
+  95:["Þrumuveður","⛈️"],96:["Þrumuveður","⛈️"],99:["Þrumuveður m. hagléli","⛈️"]
+};
+const DOW=["Sun","Mán","Þri","Mið","Fim","Fös","Lau"];
+
+function dayJoke(code, tmax, wind, precip){
+  if(wind>=12) return "Haltu í stöngina — og húfuna.";
+  if(precip>=3 || [65,82,95,96,99].includes(code)) return "Regngallinn, ekki bara vöðlurnar.";
+  if([61,63,80,81,51,53,55].includes(code)) return "Smá væta. Mjög íslenskt.";
+  if(tmax<=4) return "Hotties í vöðluskóna. Treystu mér.";
+  if(code===0 && wind<5) return "Sólgleraugu — laxinn sér þig annars.";
+  if(tmax>=13 && wind<5) return "Mýið mætir í veisluna. Net með.";
+  if(code<=2) return "Þetta lofar góðu. Ekki klúðra því.";
+  return "Þokkalegt. Íslenskt þokkalegt.";
+}
+function tripTip(days){
+  const anyRain=days.some(d=>d.precip>=2 || [65,82,95,96,99,61,63,80,81].includes(d.code));
+  const cold=Math.min(...days.map(d=>d.tmin))<=4;
+  const windy=days.some(d=>d.wind>=11);
+  const calmWarm=days.some(d=>d.tmax>=13 && d.wind<5);
+  const tips=[];
+  if(anyRain) tips.push("spáin lofar bleytu — regngallinn efst í töskuna");
+  if(cold) tips.push("það verður kalt á morgnana, taktu ullina og hotties");
+  if(windy) tips.push("hvasst einhverja daga, þéttur fatnaður");
+  if(calmWarm) tips.push("logn og hlýindi þýðir mý — flugnanetið með");
+  if(!tips.length) return "Spáin er meinleysisleg. Pakkaðu samt regngallanum, þú veist hvernig þetta er.";
+  return "Miðað við spána: " + tips.join("; ") + ".";
+}
+
+const grid=document.getElementById("wxGrid");
+function skeleton(){ grid.innerHTML = Array.from({length:6}).map(()=>'<div class="skel"></div>').join(""); document.getElementById("wxTip").textContent=""; document.getElementById("flyTip").innerHTML=""; }
+
+async function goWeather(){
+  let lat, lon, placeName;
+  if(sel.value==="__search"){
+    const q=(searchBox.value||"").trim();
+    if(!q){ searchBox.focus(); return; }
+    skeleton();
+    try{
+      const g=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=1&language=is&format=json`).then(r=>r.json());
+      if(!g.results||!g.results.length){ grid.innerHTML=`<p class="wx-msg">Fann ekki «${escapeHtml(q)}». Prófaðu annað nafn.</p>`; return; }
+      lat=g.results[0].latitude; lon=g.results[0].longitude;
+      placeName=[g.results[0].name, g.results[0].admin1].filter(Boolean).join(", ");
+    }catch(e){ wxError(); return; }
+  } else {
+    [lat,lon]=sel.value.split(",").map(Number);
+    placeName=sel.options[sel.selectedIndex].text;
+    state.loc=sel.value; saveState();
+  }
+  fetchForecast(lat,lon,placeName);
+}
+
+async function fetchForecast(lat,lon,placeName){
+  skeleton();
+  document.getElementById("wxPlace").textContent="";
+  const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}`
+    +`&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,precipitation_sum,precipitation_probability_max`
+    +`&timezone=auto&forecast_days=6&wind_speed_unit=ms`;
+  try{
+    const d=await fetch(url).then(r=>r.json());
+    const dl=d.daily;
+    const days=dl.time.map((t,i)=>({
+      date:t, code:dl.weather_code[i], tmax:Math.round(dl.temperature_2m_max[i]),
+      tmin:Math.round(dl.temperature_2m_min[i]), wind:Math.round(dl.wind_speed_10m_max[i]),
+      precip:dl.precipitation_sum[i]||0, pp:dl.precipitation_probability_max?.[i]
+    }));
+    renderForecast(days, placeName);
+  }catch(e){ wxError(); }
+}
+
+function flyOfDay(d){
+  const rain = d.precip>=1 || [61,63,65,80,81,82,51,53,55,95,96,99].includes(d.code);
+  const clear = d.code<=1;
+  const overcast = (d.code>=2 && d.code<=3) || [45,48].includes(d.code);
+  const windy = d.wind>=10;
+  const warmCalm = d.tmax>=13 && d.wind<5;
+  if(rain) return {name:"Stærri, bjartari túpa", why:"Væta og líklegur vöxtur — fiskurinn sér betur stóra, litríka flugu (t.d. Collie Dog eða Snælda í stærri kanti)."};
+  if(clear && warmCalm) return {name:"Lítil hitch-túpa", why:"Bjart og lygnt — fíngerðar flugur og hitch á yfirborði (Sunray í minni stærð, Black Sheep #14)."};
+  if(clear) return {name:"Minni, dekkri fluga", why:"Heiðskírt — haltu þig við smærri, dekkri flugur (Frances #12–14)."};
+  if(windy) return {name:"Þyngri túpa", why:"Hvasst — þyngri/stærri túpa kastast betur og heldur sér í straumnum."};
+  if(overcast) return {name:"Klassísk meðalstærð", why:"Alskýjað — meðalstórar Norðurárflugur virka vel (Snælda, Frances #10–12)."};
+  return {name:"Frances eða Snælda", why:"Þokkalegar aðstæður — klassísku flugurnar í meðalstærð standa fyrir sínu."};
+}
+
+function renderForecast(days, placeName){
+  document.getElementById("wxPlace").textContent=placeName;
+  const today=new Date(); today.setHours(0,0,0,0);
+  grid.innerHTML = days.map((d,i)=>{
+    const dt=new Date(d.date+"T00:00:00");
+    const diff=Math.round((dt-today)/86400000);
+    const dow = diff===0?"Í dag": diff===1?"Á morgun": DOW[dt.getDay()];
+    const [desc,emoji]=WMO[d.code]||["—","🌡️"];
+    const dd=dt.getDate()+"."+(dt.getMonth()+1)+".";
+    const rain = (d.pp!=null && d.pp>0) ? `${d.pp}% væta` : (d.precip>0?`${d.precip.toFixed(1)} mm`:"þurrt");
+    return `<div class="day${diff===0?' today':''}" title="${desc}">
+      <div class="dow">${dow}</div><div class="date">${dd}</div>
+      <div class="emoji">${emoji}</div>
+      <div class="temps">${d.tmax}°<span class="lo"> / ${d.tmin}°</span></div>
+      <div class="meta">💨 ${d.wind} m/s · ${rain}</div>
+      <div class="joke">${dayJoke(d.code,d.tmax,d.wind,d.precip)}</div>
+    </div>`;
+  }).join("");
+  document.getElementById("wxTip").textContent=tripTip(days);
+  const f=flyOfDay(days[0]);
+  document.getElementById("flyTip").innerHTML=`<span class="nm">🪰 Fluga dagsins: ${escapeHtml(f.name)}</span><span class="why">${escapeHtml(f.why)}</span>`;
+}
+
+function wxError(){
+  grid.innerHTML=`<p class="wx-msg">Næ ekki í spána í augnablikinu. Veðurstofan svarar líklega betur — <a href="https://www.vedur.is" target="_blank" rel="noopener">vedur.is</a>.</p>`;
+  document.getElementById("wxTip").textContent="";
+  document.getElementById("flyTip").innerHTML="";
+}
+
+/* ------------- RESOURCES ------------- */
+document.getElementById("links").innerHTML = LINKS.map(l=>
+  `<a href="${l.u}" target="_blank" rel="noopener">
+     <span class="lk-ico">${l.ico}</span>
+     <span><strong style="font-weight:600;font-size:13.5px">${escapeHtml(l.t)}</strong><small>${escapeHtml(l.s)}</small></span>
+   </a>`).join("");
+
+/* ------------- INIT ------------- */
+function refreshWeatherFromState(){
+  const opt=[...sel.options].find(o=>o.value===state.loc);
+  if(opt){ sel.value=state.loc; searchBox.style.display="none"; }
+  const v=(sel.value==="__search"?"64.77,-21.52":sel.value);
+  const [lat,lon]=v.split(",").map(Number);
+  fetchForecast(lat,lon, sel.options[sel.selectedIndex].text);
+}
+
+(async function init(){
+  loadState(); loadSyncCode();
+  if(state.loc){ const opt=[...sel.options].find(o=>o.value===state.loc); if(opt) sel.value=state.loc; }
+  render();
+  if(syncCode){ setSyncDot("on"); await pullSync(); }
+  refreshWeatherFromState();
+})();
+</script>
+</body>
+</html>
