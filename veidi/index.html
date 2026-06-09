@@ -131,6 +131,7 @@
   .day .temps .lo{color:var(--mist-dim);font-weight:500}
   .day .meta{font-size:11px;color:var(--mist-dim);margin-top:3px}
   .day .joke{font-size:11px;color:var(--gold);margin-top:6px;line-height:1.3;min-height:14px}
+  .day .fly-name{font-size:10px;color:var(--moss);margin-top:5px;padding-top:5px;border-top:1px solid rgba(155,184,146,.18);line-height:1.3}
   .day.today{border-color:var(--gold);box-shadow:0 0 0 2px rgba(233,196,106,.25)}
   .wx-msg{font-size:14px;color:var(--mist-dim);padding:6px 2px}
   .wx-msg a{color:var(--salmon)}
@@ -758,6 +759,7 @@ function renderForecast(days, placeName){
       <div class="temps">${d.tmax}°<span class="lo"> / ${d.tmin}°</span></div>
       <div class="meta">💨 ${d.wind} m/s · ${rain}</div>
       <div class="joke">${dayJoke(d.code,d.tmax,d.wind,d.precip)}</div>
+      <div class="fly-name">🪰 ${escapeHtml(flyOfDay(d).name)}</div>
     </div>`;
   }).join("");
   document.getElementById("wxTip").textContent=tripTip(days);
