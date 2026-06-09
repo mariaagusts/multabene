@@ -239,6 +239,59 @@
     .river{height:56px}.fish{width:40px}
     .wrap{padding:20px 14px 70px}
   }
+
+  /* ---------- remaining items panel ---------- */
+  .remain-fab{
+    position:fixed;bottom:22px;right:20px;z-index:35;
+    background:var(--panel);border:1px solid var(--line);border-radius:999px;
+    padding:10px 16px 10px 12px;color:var(--mist);font:600 13px/1 'Inter',sans-serif;
+    cursor:pointer;box-shadow:0 4px 24px rgba(0,0,0,.45);
+    display:flex;align-items:center;gap:9px;transition:.15s;
+  }
+  .remain-fab:hover{background:var(--panel-2);transform:translateY(-1px)}
+  .fab-badge{
+    background:var(--salmon);color:#2a1411;border-radius:999px;
+    min-width:22px;height:22px;display:grid;place-items:center;
+    font-size:12px;padding:0 5px;font-weight:700;
+  }
+  .remain-fab.all-done .fab-badge{background:var(--moss);color:#0c1a0f}
+  .panel-backdrop{
+    position:fixed;inset:0;background:rgba(6,14,18,.5);backdrop-filter:blur(2px);
+    z-index:44;opacity:0;pointer-events:none;transition:opacity .28s;
+  }
+  .panel-backdrop.show{opacity:1;pointer-events:all}
+  .slide-panel{
+    position:fixed;top:0;right:0;bottom:0;width:min(360px,100vw);
+    background:linear-gradient(180deg,#1a3d48,#132f39);
+    border-left:1px solid var(--line);
+    transform:translateX(110%);
+    transition:transform .32s cubic-bezier(.32,.72,0,1);
+    z-index:45;display:flex;flex-direction:column;
+    box-shadow:-12px 0 48px rgba(0,0,0,.45);
+  }
+  .slide-panel.open{transform:translateX(0)}
+  .panel-hd{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 16px 14px;border-bottom:1px solid var(--line);flex-shrink:0;
+  }
+  .panel-hd h3{font-family:'Fraunces',serif;font-weight:600;font-size:19px;margin:0;color:var(--mist);display:flex;align-items:center;gap:8px}
+  .panel-n{font-size:12px;color:var(--mist-dim);background:rgba(255,255,255,.08);border-radius:999px;padding:2px 8px;font-weight:600}
+  .panel-close-btn{background:none;border:none;color:var(--mist-dim);font-size:24px;cursor:pointer;line-height:1;padding:0 2px}
+  .panel-close-btn:hover{color:var(--mist)}
+  .panel-bd{flex:1;overflow-y:auto;padding:12px 14px 24px}
+  .panel-group-hd{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mist-dim);font-weight:600;padding:14px 0 6px}
+  .panel-group:first-child .panel-group-hd{padding-top:4px}
+  .panel-row{
+    display:flex;align-items:center;gap:9px;
+    padding:8px 10px;background:var(--river-deep);border:1px solid transparent;
+    border-radius:9px;margin-bottom:5px;font-size:14px;color:var(--mist);
+    cursor:pointer;transition:background .12s,border-color .12s,opacity .2s,transform .2s;
+  }
+  .panel-row:hover{border-color:var(--line);background:rgba(31,70,81,.8)}
+  .panel-row-box{flex:0 0 auto;width:18px;height:18px;border-radius:5px;border:2px solid var(--mist-dim)}
+  .panel-row.gone{opacity:0;transform:translateX(14px)}
+  .panel-empty{text-align:center;color:var(--mist-dim);padding:40px 0;font-size:14px}
+  .panel-empty .big{font-size:36px;display:block;margin-bottom:10px}
 </style>
 </head>
 <body>
@@ -312,6 +365,18 @@
   </div>
 
   <p class="credit">Þétt pökkun, strekktir taumar! <em>Góða veiði.</em> 🎣</p>
+</div>
+
+<button class="remain-fab" id="remainFab" aria-label="Eftir að pakka">
+  📦 Eftir<span class="fab-badge" id="fabBadge">—</span>
+</button>
+<div class="panel-backdrop" id="panelBackdrop"></div>
+<div class="slide-panel" id="slidePanel" role="complementary" aria-label="Eftir að pakka">
+  <div class="panel-hd">
+    <h3>📦 Eftir að pakka<span class="panel-n" id="panelN"></span></h3>
+    <button class="panel-close-btn" id="panelCloseBtn" aria-label="Loka">×</button>
+  </div>
+  <div class="panel-bd" id="panelBd"></div>
 </div>
 
 <div class="overlay" id="syncOverlay">
@@ -503,7 +568,66 @@ document.getElementById("helpBtn").onclick=()=>document.getElementById("helpOver
 document.querySelectorAll(".overlay").forEach(o=>{
   o.addEventListener("click",e=>{ if(e.target===o||e.target.hasAttribute("data-close")) o.classList.remove("show"); });
 });
-document.addEventListener("keydown",e=>{ if(e.key==="Escape") document.querySelectorAll(".overlay.show").forEach(o=>o.classList.remove("show")); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ document.querySelectorAll(".overlay.show").forEach(o=>o.classList.remove("show")); closePanel(); } });
+
+/* ------------- REMAINING ITEMS PANEL ------------- */
+function renderRemainingPanel(){
+  const bd=document.getElementById("panelBd");
+  const nEl=document.getElementById("panelN");
+  const badge=document.getElementById("fabBadge");
+  const fab=document.getElementById("remainFab");
+  if(!bd) return;
+  const delSet=new Set(state.deleted);
+  const remaining=ITEMS.filter(i=>!delSet.has(i.id)&&!state.checked[i.id]);
+  const n=remaining.length;
+  if(nEl) nEl.textContent=n?" "+n:"";
+  if(badge) badge.textContent=n||"✓";
+  if(fab) fab.classList.toggle("all-done",n===0);
+  if(n===0){
+    bd.innerHTML='<div class="panel-empty"><span class="big">🎣</span>Allt pakkað!<br>Góða veiði.</div>';
+    return;
+  }
+  bd.innerHTML="";
+  CATEGORIES.forEach(cat=>{
+    const catItems=remaining.filter(i=>i.cat===cat.id);
+    if(!catItems.length) return;
+    const grp=document.createElement("div");
+    grp.className="panel-group";
+    grp.innerHTML=`<div class="panel-group-hd">${cat.ico} ${cat.name}</div>`;
+    catItems.forEach(it=>{
+      const {text,maybe}=splitMaybe(it.label);
+      const row=document.createElement("div");
+      row.className="panel-row";
+      row.dataset.id=it.id;
+      row.innerHTML=`<span class="panel-row-box"></span>${escapeHtml(text)}${maybe?' <span class="maybe">kann</span>':''}`;
+      grp.appendChild(row);
+    });
+    bd.appendChild(grp);
+  });
+}
+function closePanel(){
+  document.getElementById("slidePanel").classList.remove("open");
+  document.getElementById("panelBackdrop").classList.remove("show");
+}
+document.getElementById("remainFab").addEventListener("click",()=>{
+  document.getElementById("slidePanel").classList.add("open");
+  document.getElementById("panelBackdrop").classList.add("show");
+});
+document.getElementById("panelCloseBtn").addEventListener("click",closePanel);
+document.getElementById("panelBackdrop").addEventListener("click",closePanel);
+document.getElementById("panelBd").addEventListener("click",e=>{
+  const row=e.target.closest(".panel-row");
+  if(!row) return;
+  const id=row.dataset.id;
+  state.checked[id]=true;
+  const mainRow=[...listsEl.querySelectorAll(".item")].find(el=>el.dataset.id===id);
+  if(mainRow) mainRow.classList.add("done");
+  row.classList.add("gone");
+  refreshCounts();
+  updateProgress();
+  saveState();
+  setTimeout(()=>renderRemainingPanel(),200);
+});
 
 /* ------------- helpers ------------- */
 function uid(){ return "c"+Math.random().toString(36).slice(2,8); }
@@ -562,6 +686,7 @@ function render(){
   });
   updateProgress();
   renderTrash();
+  renderRemainingPanel();
   saveState();
 }
 
@@ -613,6 +738,7 @@ listsEl.addEventListener("click", e=>{
     // update the category count + progress without full re-render for snappiness
     refreshCounts();
     updateProgress();
+    renderRemainingPanel();
     saveState();
   }
 });
