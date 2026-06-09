@@ -146,7 +146,7 @@
   .fly-row.match{background:rgba(233,196,106,.08);border-radius:8px;padding:7px 9px;margin:-7px -9px}
   .fly-row.match .nm{color:var(--gold)}
   .fly-row .tag{font-size:10px;color:#23170a;background:var(--gold);border-radius:5px;padding:1px 6px;margin-left:7px;font-weight:600;vertical-align:middle}
-  .day .flyname{font-size:11px;color:var(--gold);margin-top:6px;line-height:1.25;font-weight:600;border-top:1px solid rgba(233,196,106,.16);padding-top:6px}
+  .day .flyname{font-size:11px;color:var(--moss);margin-top:6px;line-height:1.25;font-weight:600;border-top:1px solid rgba(155,184,146,.2);padding-top:6px}
 
   /* ---------- list items ---------- */
   .cols{column-width:240px;column-gap:14px}
@@ -326,14 +326,14 @@
   <div class="modal" role="dialog" aria-label="Leiðbeiningar">
     <button class="close" data-close>×</button>
     <h3><span class="ic">?</span> Hvernig samstilling virkar</h3>
-    <p>Samstilling tengir tækin þín saman svo sami listi — með hökum, útstrikunum og því sem þú bættir við — birtist á þeim öllum.</p>
+    <p>Samstilling tengir tækin þín saman svo sami listi, með hökum, útstrikunum og því sem þú bættir við, birtist á þeim öllum.</p>
     <ol class="steps">
       <li>Á fyrsta tækinu: smelltu á <b>☁️ Samstilla</b> og svo <b>Búa til samstillingarkóða</b>.</li>
       <li>Afritaðu kóðann sem birtist.</li>
       <li>Á hinu tækinu (t.d. símanum): opnaðu síðuna, smelltu á <b>☁️ Samstilla</b>, límdu kóðann og smelltu á <b>Tengja með kóða</b>.</li>
       <li>Það er allt og sumt. Breytingar skila sér sjálfkrafa milli tækja þegar síðan er opnuð eða uppfærð.</li>
     </ol>
-    <p style="font-size:12.5px;color:#7c989f">Kóðinn geymir bara pökkunarlistann. Geymdu hann hjá þér — hver sem hefur kóðann getur séð og breytt listanum.</p>
+    <p style="font-size:12.5px;color:#7c989f">Kóðinn geymir bara pökkunarlistann. Geymdu hann hjá þér. Hver sem hefur kóðann getur séð og breytt listanum.</p>
   </div>
 </div>
 
@@ -378,7 +378,7 @@ const PEP = [
   [0,   "Taskan pakkar sér ekki sjálf."],
   [10,  "Byrjað! Laxinn lyftir brúninni."],
   [30,  "Þetta er að mjakast. Sporðurinn dillast."],
-  [50,  "Hálfnað verk þá hafið er — eða svo segir máltækið."],
+  [50,  "Hálfnað verk þá hafið er, eða svo segir máltækið."],
   [70,  "Komið vel á veg. Stöngin bíður spennt."],
   [90,  "Næstum því! Ekki gleyma flugunum, í alvöru."],
   [100, "Þú ert klár í ána! Renndu í hann fyrir okkur. 🐟"],
@@ -408,7 +408,7 @@ function setSyncDot(s){
 }
 function fmtCode(c){ return (c||"").replace(/(.{4})/g,"$1 ").trim(); }
 
-/* cloud ops — free JSON store, no key (jsonblob.com) */
+/* cloud ops,free JSON store, no key (jsonblob.com) */
 async function createSync(){
   try{
     const res=await fetch(SYNC_BASE,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(syncPayload())});
@@ -476,7 +476,7 @@ function renderSyncBody(){
     b.querySelector("#discBtn").onclick=()=>{ if(confirm("Aftengja þetta tæki? Listinn helst en hættir að samstillast.")) disconnectSync(); };
   } else {
     b.innerHTML=`
-      <p>Tengdu tölvuna og símann saman svo sami pökkunarlisti — með hökum og öllu — birtist á báðum.</p>
+      <p>Tengdu tölvuna og símann saman svo sami pökkunarlisti, með hökum og öllu, birtist á báðum.</p>
       <button class="btn gold full" id="createBtn">Búa til samstillingarkóða</button>
       <div class="or">eða</div>
       <input type="text" id="codeInput" placeholder="Límdu kóða frá hinu tækinu" autocomplete="off">
@@ -552,7 +552,7 @@ function render(){
       cols.appendChild(row);
     });
     if(items.length===0){
-      cols.innerHTML='<p class="wx-msg" style="padding:4px 2px">Tómt hólf. Allt pakkað eða allt strikað út — hvort tveggja telst sigur.</p>';
+      cols.innerHTML='<p class="wx-msg" style="padding:4px 2px">Tómt hólf. Allt pakkað eða allt strikað út, hvort tveggja telst sigur.</p>';
     }
     listsEl.appendChild(card);
   });
@@ -583,7 +583,7 @@ function updateProgress(){
 function renderTrash(){
   const el=document.getElementById("trash");
   const n=state.deleted.length;
-  el.innerHTML = n? `🗑️ Strikað út: ${n} ${n===1?"hlutur":"hlutir"} — <a id="restore">endurheimta allt</a>` : "";
+  el.innerHTML = n? `🗑️ Strikað út: ${n} ${n===1?"hlutur":"hlutir"},<a id="restore">endurheimta allt</a>` : "";
   const r=document.getElementById("restore");
   if(r) r.onclick=()=>{ state.deleted=[]; render(); };
 }
@@ -661,11 +661,11 @@ const WMO = {
 const DOW=["Sun","Mán","Þri","Mið","Fim","Fös","Lau"];
 
 function dayJoke(code, tmax, wind, precip){
-  if(wind>=12) return "Haltu í stöngina — og húfuna.";
+  if(wind>=12) return "Haltu í stöngina, og húfuna.";
   if(precip>=3 || [65,82,95,96,99].includes(code)) return "Regngallinn, ekki bara vöðlurnar.";
   if([61,63,80,81,51,53,55].includes(code)) return "Smá væta. Mjög íslenskt.";
   if(tmax<=4) return "Hotties í vöðluskóna. Treystu mér.";
-  if(code===0 && wind<5) return "Sólgleraugu — laxinn sér þig annars.";
+  if(code===0 && wind<5) return "Sólgleraugu, laxinn sér þig annars.";
   if(tmax>=13 && wind<5) return "Mýið mætir í veisluna. Net með.";
   if(code<=2) return "Þetta lofar góðu. Ekki klúðra því.";
   return "Þokkalegt. Íslenskt þokkalegt.";
@@ -676,10 +676,10 @@ function tripTip(days){
   const windy=days.some(d=>d.wind>=11);
   const calmWarm=days.some(d=>d.tmax>=13 && d.wind<5);
   const tips=[];
-  if(anyRain) tips.push("spáin lofar bleytu — regngallinn efst í töskuna");
+  if(anyRain) tips.push("spáin lofar bleytu, regngallinn efst í töskuna");
   if(cold) tips.push("það verður kalt á morgnana, taktu ullina og hotties");
   if(windy) tips.push("hvasst einhverja daga, þéttur fatnaður");
-  if(calmWarm) tips.push("logn og hlýindi þýðir mý — flugnanetið með");
+  if(calmWarm) tips.push("logn og hlýindi þýðir mý, flugnanetið með");
   if(!tips.length) return "Spáin er meinleysisleg. Pakkaðu samt regngallanum, þú veist hvernig þetta er.";
   return "Miðað við spána: " + tips.join("; ") + ".";
 }
@@ -726,12 +726,12 @@ async function fetchForecast(lat,lon,placeName){
 }
 
 const FLY_CATEGORIES = [
-  { id:"bright",    name:"Stærri, bjartari túpa", why:"Væta og líklegur vöxtur — fiskurinn sér betur stóra, litríka flugu (t.d. Collie Dog eða Snælda í stærri kanti)." },
-  { id:"hitch",     name:"Lítil hitch-túpa",      why:"Bjart og lygnt — fíngerðar flugur og hitch á yfirborði (Sunray í minni stærð, Black Sheep #14)." },
-  { id:"darksmall", name:"Minni, dekkri fluga",   why:"Heiðskírt en svalt eða hvassara — smærri, dekkri flugur (Frances #12–14)." },
-  { id:"heavy",     name:"Þyngri túpa",           why:"Hvasst — þyngri/stærri túpa kastast betur og heldur sér í straumnum." },
-  { id:"classic",   name:"Klassísk meðalstærð",   why:"Alskýjað — meðalstórar Norðurárflugur virka vel (Snælda, Frances #10–12)." },
-  { id:"default",   name:"Frances eða Snælda",    why:"Þokkalegar aðstæður — klassísku flugurnar í meðalstærð standa fyrir sínu." },
+  { id:"bright",    name:"Stærri, bjartari túpa", why:"Væta og líklegur vöxtur, fiskurinn sér betur stóra, litríka flugu (t.d. Collie Dog eða Snælda í stærri kanti)." },
+  { id:"hitch",     name:"Lítil hitch-túpa",      why:"Bjart og lygnt, fíngerðar flugur og hitch á yfirborði (Sunray í minni stærð, Black Sheep #14)." },
+  { id:"darksmall", name:"Minni, dekkri fluga",   why:"Heiðskírt en svalt eða hvassara, smærri, dekkri flugur (Frances #12-14)." },
+  { id:"heavy",     name:"Þyngri túpa",           why:"Hvasst, þyngri/stærri túpa kastast betur og heldur sér í straumnum." },
+  { id:"classic",   name:"Klassísk meðalstærð",   why:"Alskýjað, meðalstórar Norðurárflugur virka vel (Snælda, Frances #10-12)." },
+  { id:"default",   name:"Frances eða Snælda",    why:"Þokkalegar aðstæður, klassísku flugurnar í meðalstærð standa fyrir sínu." },
 ];
 function flyIdForDay(d){
   const rain = d.precip>=1 || [61,63,65,80,81,82,51,53,55,95,96,99].includes(d.code);
@@ -751,7 +751,7 @@ function renderFlyLegend(todayId){
   const box=document.getElementById("flyBox"); if(!box) return;
   box.innerHTML = '<div class="fly-title">🪰 Flugutillögur eftir aðstæðum</div><div class="fly-list">'
     + FLY_CATEGORIES.map(c=>
-        `<div class="fly-row${c.id===todayId?' match':''}"><span class="nm">${escapeHtml(c.name)}${c.id===todayId?' <span class="tag">í dag</span>':''}</span><span class="why">${escapeHtml(c.why)}</span></div>`
+        `<div class="fly-row${c.id===todayId?' match':''}"><span class="nm">${escapeHtml(c.name)}</span><span class="why">${escapeHtml(c.why)}</span></div>`
       ).join("") + '</div>';
 }
 
@@ -780,7 +780,7 @@ function renderForecast(days, placeName){
 }
 
 function wxError(){
-  grid.innerHTML=`<p class="wx-msg">Næ ekki í spána í augnablikinu. Veðurstofan svarar líklega betur — <a href="https://www.vedur.is" target="_blank" rel="noopener">vedur.is</a>.</p>`;
+  grid.innerHTML=`<p class="wx-msg">Næ ekki í spána í augnablikinu. Veðurstofan svarar líklega betur,<a href="https://www.vedur.is" target="_blank" rel="noopener">vedur.is</a>.</p>`;
   document.getElementById("wxTip").textContent="";
   document.getElementById("flyBox").innerHTML="";
 }
