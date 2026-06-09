@@ -460,11 +460,11 @@ function loadState(){
   try{ const raw=localStorage.getItem(KEY); if(raw) state=Object.assign(state,JSON.parse(raw)); }catch(e){}
 }
 function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
-function saveState(){ saveLocal(); schedulePush(); }
+function saveState(){ state.ts=Date.now(); saveLocal(); schedulePush(); }
 
 function loadSyncCode(){ try{ syncCode=localStorage.getItem(SYNC_KEY)||null; }catch(e){} }
 function storeSyncCode(){ try{ syncCode?localStorage.setItem(SYNC_KEY,syncCode):localStorage.removeItem(SYNC_KEY); }catch(e){} }
-function syncPayload(){ return {checked:state.checked, deleted:state.deleted, custom:state.custom, loc:state.loc}; }
+function syncPayload(){ return {checked:state.checked, deleted:state.deleted, custom:state.custom, loc:state.loc, ts:state.ts||0}; }
 
 function setSyncDot(s){
   const dot=document.getElementById("syncDot"), lbl=document.getElementById("syncLbl");
@@ -523,6 +523,8 @@ async function pullSync(){
     if(!r.ok){ setSyncDot("err"); return; }
     const remote=await r.json();
     if(!remote) return;
+    // Keep local state if it's newer than what Firebase has
+    if((state.ts||0) > (remote.ts||0)){ setSyncDot("on"); schedulePush(); return; }
     state=Object.assign({checked:{},deleted:[],custom:[],loc:state.loc},remote);
     saveLocal(); render(); setSyncDot("on");
   }catch(e){ setSyncDot("err"); }
