@@ -606,7 +606,7 @@ function renderRemainingPanel(){
       const row=document.createElement("div");
       row.className="panel-row";
       row.dataset.id=it.id;
-      row.innerHTML=`<span class="panel-row-box"></span>${escapeHtml(text)}${maybe?' <span class="maybe">kann</span>':''}`;
+      row.innerHTML=`<span class="panel-row-box"></span>${escapeHtml(text)}`;
       grp.appendChild(row);
     });
     bd.appendChild(grp);
