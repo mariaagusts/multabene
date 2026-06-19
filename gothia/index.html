@@ -1004,7 +1004,7 @@
       </div>
 
       <div class="pktools">
-        <button id="pkOpenRemaining" type="button">🎒 Eftir að pakka <span class="n" id="pkRemCount">0</span></button>
+        <button id="pkOpenRemaining" type="button" style="display:none">🎒 Eftir að pakka <span class="n" id="pkRemCount">0</span></button>
         <button id="pkOpenSync" type="button">📲 Tengja síma / annað tæki</button>
       </div>
 
@@ -3565,7 +3565,7 @@ var qrcode = function() {
     var remaining=[]; allBoxes.forEach(function(b,i){ if(!b.checked) remaining.push(i); });
     remCountEl.textContent=remaining.length;
     remBtn.classList.toggle('done',remaining.length===0);
-    if(panel.classList.contains('open')) buildPanel(remaining);
+    buildPanel(remaining);
   }
   function buildPanel(remaining){
     if(remaining.length===0){
@@ -3588,9 +3588,10 @@ var qrcode = function() {
     var i=parseInt(btn.getAttribute('data-i'),10);
     if(allBoxes[i]){ allBoxes[i].checked=true; update(); }
   });
-  function openPanel(){ renderRemaining(); buildPanel(allBoxes.map(function(b,i){return b.checked?-1:i;}).filter(function(i){return i>=0;})); panel.classList.add('open'); panel.setAttribute('aria-hidden','false'); scrim.classList.add('show'); }
-  function closeOverlays(){ panel.classList.remove('open'); panel.setAttribute('aria-hidden','true'); syncCard.classList.remove('open'); scrim.classList.remove('show'); }
-  remBtn.addEventListener('click',openPanel);
+  function closeOverlays(){ syncCard.classList.remove('open'); scrim.classList.remove('show'); }
+  // Panel is always visible — open immediately, no scrim
+  panel.classList.add('open'); panel.setAttribute('aria-hidden','false');
+  renderRemaining();
   document.getElementById('pkPanelClose').addEventListener('click',closeOverlays);
   scrim.addEventListener('click',closeOverlays);
   document.addEventListener('keydown',function(e){ if(e.key==='Escape')closeOverlays(); });
@@ -3694,7 +3695,7 @@ window.addEventListener('load', function() {
 <aside class="pkpanel" id="pkPanel" aria-hidden="true">
   <div class="pkpanel-head">
     <h3>🎒 Eftir að pakka</h3>
-    <button class="x" id="pkPanelClose" aria-label="Loka">✕</button>
+    <button class="x" id="pkPanelClose" aria-label="Loka" style="display:none">✕</button>
   </div>
   <div class="pkpanel-sub" id="pkPanelSub">Hér birtist það sem á eftir að pakka. Smelltu á atriði til að haka við það.</div>
   <div class="pkpanel-body" id="pkPanelBody"></div>
