@@ -3466,16 +3466,16 @@ var qrcode = function() {
     });
   });
   var ball=document.getElementById('pkball'),count=document.getElementById('pkcount'),phrase=document.getElementById('pkphrase');
-  var PHRASES=['','Góður varnarleikur!','Frábær sending!','Kominn á miðvöll!','Einn á móti einum!','Skot á mark!','MARK!'];
+  var PHRASES=['','Þvílík markvarsla!','Góður varnarleikur!','Frábær sending!','Kominn á miðvöll!','Einn á móti einum!','Skot á mark!','MARK!'];
   function update(){
     var done=allBoxes.filter(function(b){return b.checked;}).length;
     var tot=allBoxes.length;
     ball.style.left=(5+(tot?done/tot*82:0))+'%';
-    var tier=Math.min(Math.floor(done/5),6);
+    var tier=Math.min(Math.floor(done/4),7);
     var p=PHRASES[tier];
     phrase.textContent=p;
     phrase.classList.toggle('show',p.length>0);
-    phrase.classList.toggle('mark',tier===6);
+    phrase.classList.toggle('mark',tier===7);
     count.textContent=done+' / '+tot;
     var st={}; allBoxes.forEach(function(b){if(b.checked)st[b.dataset.k]=1;});
     try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}
