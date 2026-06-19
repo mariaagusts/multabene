@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Barlow+Condensed:wght@500;600;700;800&family=Barlow+Semi+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 <style>
   :root{
     --ink:#0E2C46;        /* deep stadium navy */
@@ -755,7 +756,7 @@
       <div class="info">
         <dl>
           <dt>📅 Fyrsta máltíð</dt><dd>Kvöldmatur á sunnudeginum 12. júlí (komu-/ferðadegi).</dd>
-          <dt>👩‍🍳 Fram að því</dt><dd>Liðstjórar sjá um morgunmat, hádegismat og millimál á ferðadeginum 12. júlí.</dd>
+          <dt>👩‍🍳 Fram að því</dt><dd>Liðstjórar sjá um millimál á ferðadeginum 12. júlí.</dd>
         </dl>
       </div>
       <div class="fx note" style="background:var(--gold-soft);color:#7A4A18;font-weight:600;font-style:normal">⚠️ Athugið: Þetta er eldri matseðill. Nýr matseðill verður birtur hér um leið og hann liggur fyrir.</div>
@@ -1018,6 +1019,20 @@
         <svg class="star" viewBox="0 0 24 24" fill="currentColor" style="margin-inline:auto;display:block"><path d="M12 1.6l2.95 6.34 6.95.74-5.18 4.7 1.46 6.86L12 17.9l-6.18 3.34 1.46-6.86L2.1 9.68l6.95-.74z"/></svg>
         <h3>Gangi ykkur vel!</h3>
         <p>Við hlökkum til að sjá stelpurnar skína á Gothia Cup 2026. Förum sem einn hópur og sýnum Stjörnuna á besta mögulega hátt! ⭐</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 12. KORT ============ -->
+  <section id="s12" class="reveal" data-nav="Kort" data-title="Staðsetningarkort">
+    <div class="sec-head"><div class="sec-badge"><b>12</b><svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.6l2.95 6.34 6.95.74-5.18 4.7 1.46 6.86L12 17.9l-6.18 3.34 1.46-6.86L2.1 9.68l6.95-.74z"/></svg></div><h2>Staðsetningarkort</h2></div>
+    <div class="card">
+      <p style="margin-bottom:16px">Kort af Gautaborg með öllum mikilvægum stöðum ferðarinnar. Smelltu á prik til að sjá upplýsingar.</p>
+      <div id="gothia-map" style="height:480px;border-radius:10px;overflow:hidden;border:1px solid var(--line)"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:14px;font-size:14px;color:var(--muted)">
+        <span><span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:#D6981F;vertical-align:middle;margin-right:5px"></span>Hótel</span>
+        <span><span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:#2C6CA0;vertical-align:middle;margin-right:5px"></span>Leikjavellir</span>
+        <span><span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:#2E8B6E;vertical-align:middle;margin-right:5px"></span>Viðburðir</span>
       </div>
     </div>
   </section>
