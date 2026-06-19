@@ -407,6 +407,12 @@
     box-shadow:var(--shadow-lg);z-index:61;transform:translateX(105%);transition:transform .28s cubic-bezier(.4,0,.2,1);
     display:flex;flex-direction:column}
   .pkpanel.open{transform:none}
+  /* desktop: always-visible sidebar, no drawer needed */
+  @media(min-width:900px){
+    .pkpanel{transform:none !important}
+    #pkOpenRemaining{display:none !important}
+    #pkPanelClose{display:none !important}
+  }
   .pkpanel-head{background:var(--ink);color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px}
   .pkpanel-head h3{margin:0;font-family:"Barlow Condensed";font-weight:800;text-transform:uppercase;letter-spacing:.03em;font-size:20px;display:flex;align-items:center;gap:9px}
   .pkpanel-head .x{background:rgba(255,255,255,.14);border:none;color:#fff;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:18px;line-height:1}
@@ -1004,7 +1010,7 @@
       </div>
 
       <div class="pktools">
-        <button id="pkOpenRemaining" type="button" style="display:none">🎒 Eftir að pakka <span class="n" id="pkRemCount">0</span></button>
+        <button id="pkOpenRemaining" type="button">🎒 Eftir að pakka <span class="n" id="pkRemCount">0</span></button>
         <button id="pkOpenSync" type="button">📲 Tengja síma / annað tæki</button>
       </div>
 
@@ -3395,7 +3401,7 @@ var qrcode = function() {
 <aside class="pkpanel" id="pkPanel" aria-hidden="true">
   <div class="pkpanel-head">
     <h3>🎒 Eftir að pakka</h3>
-    <button class="x" id="pkPanelClose" aria-label="Loka" style="display:none">✕</button>
+    <button class="x" id="pkPanelClose" aria-label="Loka">✕</button>
   </div>
   <div class="pkpanel-sub" id="pkPanelSub">Hér birtist það sem á eftir að pakka. Smelltu á atriði til að haka við það.</div>
   <div class="pkpanel-body" id="pkPanelBody"></div>
@@ -3575,7 +3581,7 @@ var qrcode = function() {
     var remaining=[]; allBoxes.forEach(function(b,i){ if(!b.checked) remaining.push(i); });
     remCountEl.textContent=remaining.length;
     remBtn.classList.toggle('done',remaining.length===0);
-    buildPanel(remaining);
+    if(panel.classList.contains('open')||window.innerWidth>=900) buildPanel(remaining);
   }
   function buildPanel(remaining){
     if(remaining.length===0){
@@ -3598,13 +3604,13 @@ var qrcode = function() {
     var i=parseInt(btn.getAttribute('data-i'),10);
     if(allBoxes[i]){ allBoxes[i].checked=true; update(); }
   });
-  function closeOverlays(){ syncCard.classList.remove('open'); scrim.classList.remove('show'); }
-  // Panel is always visible — open immediately, no scrim
-  panel.classList.add('open'); panel.setAttribute('aria-hidden','false');
-  renderRemaining();
+  function openPanel(){ renderRemaining(); buildPanel(allBoxes.map(function(b,i){return b.checked?-1:i;}).filter(function(i){return i>=0;})); panel.classList.add('open'); panel.setAttribute('aria-hidden','false'); scrim.classList.add('show'); }
+  function closeOverlays(){ panel.classList.remove('open'); panel.setAttribute('aria-hidden','true'); syncCard.classList.remove('open'); scrim.classList.remove('show'); }
+  remBtn.addEventListener('click',openPanel);
   document.getElementById('pkPanelClose').addEventListener('click',closeOverlays);
   scrim.addEventListener('click',closeOverlays);
   document.addEventListener('keydown',function(e){ if(e.key==='Escape')closeOverlays(); });
+  renderRemaining();
 
   // ---- sync code (hex-nibble bitfield + item count, fully offline) ----
   function encodeState(){
