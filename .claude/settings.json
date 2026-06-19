@@ -1,0 +1,51 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/María Björg/Documents/GitHub/kvedjur//**)",
+      "Read(//c/Users/María Björg/Documents/GitHub/**)",
+      "Read(//c/Users/María Björg/Desktop/Claude Cowork/**)",
+      "Read(//mnt/c/Users/María Björg/Documents/**)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\María Björg\\\\Documents\\\\GitHub\" | Where-Object { $_.Name -match \"multa\" -or $_.Name -match \"mba\" } | Select-Object Name)",
+      "Read(//c/Users/Mar�a Bj�rg/Desktop/Claude Cowork/**)",
+      "Read(//c/Users/Mar�a Bj�rg/Documents/**)",
+      "PowerShell($path = [System.IO.Path]::Combine\\($env:USERPROFILE, \"Documents\", \"GitHub\"\\); Get-ChildItem $path | Select-Object Name)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(gh repo *)",
+      "Bash(git remote *)",
+      "Bash(rm \"c:\\\\Users\\\\María Björg\\\\Documents\\\\GitHub\\\\multabene\\\\.git\\\\index.lock\")",
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(xxd stjarnan/stjarnan-logo.png)",
+      "Read(//c/Users/María Björg/Downloads/**)",
+      "Bash(Copy-Item \"c:\\\\Users\\\\María Björg\\\\Downloads\\\\veidipokkun \\(1\\).html\" \"c:\\\\Users\\\\María Björg\\\\Documents\\\\GitHub\\\\multabene\\\\veidi\\\\index.html\")",
+      "Bash(cp \"c:\\\\Users\\\\María Björg\\\\Downloads\\\\veidipokkun \\(1\\).html\" \"c:\\\\Users\\\\María Björg\\\\Documents\\\\GitHub\\\\multabene\\\\veidi\\\\index.html\")",
+      "Bash(git pull *)",
+      "WebFetch(domain:jsonblob.com)",
+      "WebSearch",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" -X POST \"https://jsonblob.com/api/jsonBlob\" -H \"Content-Type: application/json\" -H \"Accept: application/json\" -d '{\"test\":true}')",
+      "Bash(curl -s -i -X POST \"https://jsonblob.com/api/jsonBlob\" -H \"Content-Type: application/json\" -H \"Accept: application/json\" -H \"Origin: https://multabene.is\" -d '{\"test\":true}')",
+      "Bash(curl -s -i -X OPTIONS \"https://jsonblob.com/api/jsonBlob\" -H \"Origin: https://multabene.is\" -H \"Access-Control-Request-Method: POST\" -H \"Access-Control-Request-Headers: Content-Type, Accept\")",
+      "Bash(curl -s -i -X POST \"https://jsonblob.com/api/jsonBlob\" -H \"Content-Type: application/json\" -H \"Accept: application/json\" -H \"Origin: https://example.com\" -d '{\"test\":true}')",
+      "Bash(curl -s \"https://min-timer-multabeneis-default-rtdb.europe-west1.firebasedatabase.app/veidi/TEST123.json\" -X PUT -H \"Content-Type: application/json\" -d '{\"test\":true}')",
+      "Bash(curl -s \"https://min-timer-multabeneis-default-rtdb.europe-west1.firebasedatabase.app/data/TEST123.json\" -X PUT -H \"Content-Type: application/json\" -d '{\"test\":true}')",
+      "Bash(curl -s \"https://min-timer-multabeneis-default-rtdb.europe-west1.firebasedatabase.app/data/TEST123.json\")",
+      "Bash(curl -s -I \"https://min-timer-multabeneis-default-rtdb.europe-west1.firebasedatabase.app/.json\")",
+      "Bash(curl -s \"https://min-timer-multabeneis-default-rtdb.europe-west1.firebasedatabase.app/veidi/TEST123.json\" -X DELETE)",
+      "Bash(curl -s -w \"\\\\n%{http_code}\" \"https://min-timer-multabeneis-default-rtdb.europe-west1.firebasedatabase.app/veidi/TEST999.json\" -X PUT -H \"Content-Type: application/json\" -d '{\"checked\":{\"a\":true},\"deleted\":[],\"custom\":[],\"loc\":\"64.77,-21.52\"}')",
+      "Bash(curl -s -w \"\\\\n%{http_code}\" \"https://min-timer-multabeneis-default-rtdb.europe-west1.firebasedatabase.app/veidi/TEST999.json\" -H \"Origin: https://multabene.is\")",
+      "Bash(curl -s -i -X OPTIONS \"https://min-timer-multabeneis-default-rtdb.europe-west1.firebasedatabase.app/veidi/TEST.json\" -H \"Origin: https://multabene.is\" -H \"Access-Control-Request-Method: PUT\" -H \"Access-Control-Request-Headers: Content-Type\")",
+      "Bash(curl -s -i -X PUT \"https://min-timer-multabeneis-default-rtdb.europe-west1.firebasedatabase.app/veidi/TEST999.json\" -H \"Content-Type: application/json\" -H \"Origin: https://multabene.is\" -d '{\"checked\":{\"a\":true},\"deleted\":[],\"custom\":[],\"loc\":\"64.77,-21.52\"}')",
+      "Bash(curl -s -w \"\\\\n%{http_code}\" -X PUT \"https://min-timer-multabeneis-default-rtdb.europe-west1.firebasedatabase.app/veidi/TEST999.json\" -H \"Content-Type: application/json\" -H \"Origin: https://multabene.is\" -d '{\"checked\":{\"graejur|Veiðistöng\":true,\"graejur|Flugur\":true},\"deleted\":[],\"custom\":[],\"loc\":\"64.77,-21.52\"}')",
+      "Bash(curl -s -I \"https://multabene.is/veidi/\")",
+      "Bash(curl -s -I \"https://www.multabene.is/veidi/\")",
+      "Bash(curl -s -i \"https://min-timer-multabeneis-default-rtdb.europe-west1.firebasedatabase.app/veidi/TEST999.json\" -H \"Origin: https://www.multabene.is\")",
+      "Bash(curl -s -i -X PUT \"https://min-timer-multabeneis-default-rtdb.europe-west1.firebasedatabase.app/veidi/TEST999.json\" -H \"Content-Type: application/json\" -H \"Origin: https://www.multabene.is\" -d '{\"checked\":{\"test\":true},\"deleted\":[],\"custom\":[],\"loc\":\"64.77,-21.52\"}')"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\María Björg\\Documents\\GitHub",
+      "C:\\Users\\Mar�a Bj�rg\\Documents\\GitHub\\multabene",
+      "c:\\Users\\María Björg\\Downloads"
+    ]
+  }
+}
