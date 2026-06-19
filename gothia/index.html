@@ -305,8 +305,11 @@
   .pkbar{position:sticky;top:60px;z-index:5;display:flex;align-items:center;gap:14px;
     background:var(--ink);color:#fff;border-radius:12px;padding:13px 20px;margin:6px 0 16px;box-shadow:var(--shadow)}
   .pkbar .lbl{font-family:"Barlow Condensed";font-weight:700;text-transform:uppercase;letter-spacing:.05em}
-  .pkbar .track{flex:1;height:9px;background:rgba(255,255,255,.16);border-radius:6px;overflow:hidden}
-  .pkbar .fill{height:100%;width:0;background:var(--gold);border-radius:6px;transition:width .35s ease}
+  .pk-field{flex:1;height:44px;background:repeating-linear-gradient(90deg,#297a2d 0px,#297a2d 22px,#2e8532 22px,#2e8532 44px);border-radius:8px;position:relative;border:2px solid rgba(255,255,255,.18);overflow:visible}
+  .pk-field::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1.5px;background:rgba(255,255,255,.32)}
+  .pk-field::after{content:'';position:absolute;left:50%;top:50%;width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(255,255,255,.32);transform:translate(-50%,-50%)}
+  .pk-ball{position:absolute;top:50%;left:5%;font-size:22px;line-height:1;transform:translate(-50%,-50%);transition:left .45s cubic-bezier(.4,0,.2,1);z-index:2;filter:drop-shadow(0 2px 4px rgba(0,0,0,.55))}
+  .pk-goal{position:absolute;right:-5px;top:50%;font-size:30px;line-height:1;transform:translateY(-50%);z-index:1}
   .pkbar .count{font-family:"Barlow Condensed";font-weight:800;font-size:19px;color:var(--gold);white-space:nowrap}
   .pkbar .reset{background:rgba(255,255,255,.12);border:none;color:#CFE0EF;font-family:"Barlow Condensed";
     font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:13px;padding:6px 11px;
@@ -943,11 +946,11 @@
   <section id="s11" class="reveal" data-nav="Pökkun" data-title="Pökkunarlisti">
     <div class="sec-head"><div class="sec-badge"><b>11</b><svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.6l2.95 6.34 6.95.74-5.18 4.7 1.46 6.86L12 17.9l-6.18 3.34 1.46-6.86L2.1 9.68l6.95-.74z"/></svg></div><h2>Pökkunarlisti</h2></div>
     <div class="card">
-      <p><strong>Munið að merkja allt vel!</strong> Hakaðu við hlutina jafnóðum og þú pakkar — staðan geymist sjálfkrafa í vafranum á þessu tæki. Notaðu <strong>„Tengja síma"</strong> til að færa stöðuna á milli tölvu og síma með kóða, og <strong>„Eftir að pakka"</strong> til að sjá aðeins það sem enn vantar.</p>
+      <p><strong>Munið að merkja allt vel!</strong> Hakaðu við hlutina jafnóðum og þú pakkar, staðan geymist sjálfkrafa í vafranum á þessu tæki. Notaðu <strong>„Tengja síma"</strong> til að færa stöðuna á milli tölvu og síma með kóða, og <strong>„Eftir að pakka"</strong> til að sjá aðeins það sem enn vantar.</p>
 
       <div class="pkbar">
         <span class="lbl">Pökkun</span>
-        <div class="track"><div class="fill" id="pkfill"></div></div>
+        <div class="pk-field"><span class="pk-ball" id="pkball">⚽</span><span class="pk-goal">🥅</span></div>
         <span class="count" id="pkcount">0 / 0</span>
         <button class="reset" id="pkreset">Núlla</button>
       </div>
@@ -3459,11 +3462,11 @@ var qrcode = function() {
       allBoxes.push(box);
     });
   });
-  var fill=document.getElementById('pkfill'),count=document.getElementById('pkcount');
+  var ball=document.getElementById('pkball'),count=document.getElementById('pkcount');
   function update(){
     var done=allBoxes.filter(function(b){return b.checked;}).length;
     var tot=allBoxes.length;
-    fill.style.width=(tot?Math.round(done/tot*100):0)+'%';
+    ball.style.left=(5+(tot?done/tot*82:0))+'%';
     count.textContent=done+' / '+tot;
     var st={}; allBoxes.forEach(function(b){if(b.checked)st[b.dataset.k]=1;});
     try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}
