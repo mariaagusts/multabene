@@ -1008,16 +1008,6 @@
         <button id="pkOpenSync" type="button">📲 Tengja síma / annað tæki</button>
       </div>
 
-      <!-- Remaining-items side panel -->
-      <div class="pkscrim" id="pkScrim"></div>
-      <aside class="pkpanel" id="pkPanel" aria-hidden="true">
-        <div class="pkpanel-head">
-          <h3>🎒 Eftir að pakka</h3>
-          <button class="x" id="pkPanelClose" aria-label="Loka">✕</button>
-        </div>
-        <div class="pkpanel-sub" id="pkPanelSub">Hér birtist það sem á eftir að pakka. Smelltu á atriði til að haka við það.</div>
-        <div class="pkpanel-body" id="pkPanelBody"></div>
-      </aside>
 
       <!-- Connect device (sync code) modal -->
       <div class="pksync-card" id="pkSync" role="dialog" aria-modal="true" aria-label="Tengja tæki">
@@ -3699,5 +3689,15 @@ window.addEventListener('load', function() {
   }, {threshold: 0.1}).observe(mapEl);
 });
 </script>
+<!-- Remaining-items side panel — must be direct child of body so position:fixed is not broken by parent transforms -->
+<div class="pkscrim" id="pkScrim"></div>
+<aside class="pkpanel" id="pkPanel" aria-hidden="true">
+  <div class="pkpanel-head">
+    <h3>🎒 Eftir að pakka</h3>
+    <button class="x" id="pkPanelClose" aria-label="Loka">✕</button>
+  </div>
+  <div class="pkpanel-sub" id="pkPanelSub">Hér birtist það sem á eftir að pakka. Smelltu á atriði til að haka við það.</div>
+  <div class="pkpanel-body" id="pkPanelBody"></div>
+</aside>
 </body>
 </html>
