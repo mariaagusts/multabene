@@ -310,6 +310,9 @@
   .pk-field::after{content:'';position:absolute;left:50%;top:50%;width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(255,255,255,.32);transform:translate(-50%,-50%)}
   .pk-ball{position:absolute;top:50%;left:5%;font-size:22px;line-height:1;transform:translate(-50%,-50%);transition:left .45s cubic-bezier(.4,0,.2,1);z-index:2;filter:drop-shadow(0 2px 4px rgba(0,0,0,.55))}
   .pk-goal{position:absolute;right:-5px;top:50%;font-size:30px;line-height:1;transform:translateY(-50%);z-index:1}
+  .pk-phrase{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:"Barlow Condensed";font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.92);text-shadow:0 1px 4px rgba(0,0,0,.6);white-space:nowrap;opacity:0;transition:opacity .4s;pointer-events:none;z-index:3}
+  .pk-phrase.show{opacity:1}
+  .pk-phrase.mark{font-size:17px;color:#FFD700;text-shadow:0 0 12px rgba(255,215,0,.7),0 1px 4px rgba(0,0,0,.7)}
   .pkbar .count{font-family:"Barlow Condensed";font-weight:800;font-size:19px;color:var(--gold);white-space:nowrap}
   .pkbar .reset{background:rgba(255,255,255,.12);border:none;color:#CFE0EF;font-family:"Barlow Condensed";
     font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:13px;padding:6px 11px;
@@ -950,7 +953,7 @@
 
       <div class="pkbar">
         <span class="lbl">Pökkun</span>
-        <div class="pk-field"><span class="pk-ball" id="pkball">⚽</span><span class="pk-goal">🥅</span></div>
+        <div class="pk-field"><span class="pk-ball" id="pkball">⚽</span><span class="pk-goal">🥅</span><span class="pk-phrase" id="pkphrase"></span></div>
         <span class="count" id="pkcount">0 / 0</span>
         <button class="reset" id="pkreset">Núlla</button>
       </div>
@@ -3462,11 +3465,17 @@ var qrcode = function() {
       allBoxes.push(box);
     });
   });
-  var ball=document.getElementById('pkball'),count=document.getElementById('pkcount');
+  var ball=document.getElementById('pkball'),count=document.getElementById('pkcount'),phrase=document.getElementById('pkphrase');
+  var PHRASES=['','Góður varnarleikur!','Frábær sending!','Kominn á miðvöll!','Á kassa marksins!','Skot á mark!','MARK!'];
   function update(){
     var done=allBoxes.filter(function(b){return b.checked;}).length;
     var tot=allBoxes.length;
     ball.style.left=(5+(tot?done/tot*82:0))+'%';
+    var tier=Math.min(Math.floor(done/5),6);
+    var p=PHRASES[tier];
+    phrase.textContent=p;
+    phrase.classList.toggle('show',p.length>0);
+    phrase.classList.toggle('mark',tier===6);
     count.textContent=done+' / '+tot;
     var st={}; allBoxes.forEach(function(b){if(b.checked)st[b.dataset.k]=1;});
     try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}
