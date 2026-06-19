@@ -279,6 +279,16 @@
   .teamcard .opps .op:first-of-type{border-top:none}
   .teamcard .opps .op .fl{font-size:15px}
   .teamcard .opps .op .venue{margin-left:auto;font-size:11.5px;color:var(--muted);font-family:"Barlow Condensed";font-weight:600;letter-spacing:.04em;white-space:nowrap}
+  .rostercard{background:#fff;border:1px solid var(--line);border-radius:13px;overflow:hidden;box-shadow:var(--shadow)}
+  .rostercard .rch{color:#fff;padding:10px 16px;font-family:"Barlow Condensed";font-weight:800;text-transform:uppercase;font-size:18px;letter-spacing:.02em;display:flex;justify-content:space-between;align-items:center}
+  .rostercard.t1 .rch{background:#2C6CA0} .rostercard.t2 .rch{background:#2E8B6E}
+  .rostercard.t3 .rch{background:#C9882A} .rostercard.t4 .rch{background:#7A4FA3}
+  .rostercard .rch small{font-size:12px;font-weight:600;letter-spacing:.06em;opacity:.9;text-align:right}
+  .rosterlist{padding:6px 16px 10px}
+  .rosterlist .rl-pending{padding:14px 0;color:var(--muted);font-size:14px;font-style:italic;text-align:center}
+  .rosterlist .player{display:flex;align-items:center;gap:10px;padding:5px 0;border-top:1px solid var(--line);color:var(--ink-2);font-weight:500;font-size:15px}
+  .rosterlist .player:first-of-type{border-top:none}
+  .rosterlist .player .pnum{font-family:"Barlow Condensed";font-weight:700;font-size:13px;color:var(--muted);width:16px;text-align:right;flex:none}
 
   /* image */
   figure{margin:14px 0;border-radius:13px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow)}
@@ -704,6 +714,34 @@
           </div>
         </div>
       </div>
+      <h3 class="sub" style="margin-top:28px">Leikmenn</h3>
+      <div class="lineup">
+        <div class="rostercard t1">
+          <div class="rch">Stjarnan 1 · U14<small>Girls 14</small></div>
+          <div class="rosterlist">
+            <div class="rl-pending">⏳ Liðsskipan birt 24. júní</div>
+          </div>
+        </div>
+        <div class="rostercard t2">
+          <div class="rch">Stjarnan 2 · U14<small>Girls 14</small></div>
+          <div class="rosterlist">
+            <div class="rl-pending">⏳ Liðsskipan birt 24. júní</div>
+          </div>
+        </div>
+        <div class="rostercard t3">
+          <div class="rch">Stjarnan 1 · U13<small>Girls 13</small></div>
+          <div class="rosterlist">
+            <div class="rl-pending">⏳ Liðsskipan birt 24. júní</div>
+          </div>
+        </div>
+        <div class="rostercard t4">
+          <div class="rch">Stjarnan 2 · U13<small>Girls 13</small></div>
+          <div class="rosterlist">
+            <div class="rl-pending">⏳ Liðsskipan birt 24. júní</div>
+          </div>
+        </div>
+      </div>
+
       <div class="info single"><span class="ic">💬</span><div><strong>Mikilvægt:</strong> Stelpurnar fara út sem einn hópur. Þó svo að þær fylgi sínu liði reyna þær að vera sem mest saman þvert á lið. Ferðin er félagsleg og langskemmtilegast að vera saman sem hópur.</div></div>
       <div class="info gold single"><span class="ic">⚽</span><div>Endilega reynum að horfa á leiki annarra Stjörnuliða ef hægt er!</div></div>
     </div>
