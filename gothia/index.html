@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Barlow+Condensed:wght@500;600;700;800&family=Barlow+Semi+Condensed:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
   :root{
     --ink:#0E2C46;        /* deep stadium navy */
@@ -3572,9 +3572,9 @@ var qrcode = function() {
   window.__pkRefresh();
 })();
 </script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN/WLs=" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-(function(){
+window.addEventListener('load', function() {
   var mapEl = document.getElementById('gothia-map');
   if (!mapEl || !window.L) return;
   var map = L.map('gothia-map', {scrollWheelZoom: false}).setView([57.710, 12.005], 12);
@@ -3609,8 +3609,11 @@ var qrcode = function() {
       .bindPopup('<b style="font-family:Barlow Condensed,sans-serif;font-size:16px">'+p.name+'</b><br><span style="font-size:13px;color:#5C7488">'+p.desc+'</span>')
       .addTo(map);
   });
-  map.once('focus', function() { map.scrollWheelZoom.enable(); });
-})();
+  map.once('click', function() { map.scrollWheelZoom.enable(); });
+  new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) { map.invalidateSize(); }
+  }, {threshold: 0.1}).observe(mapEl);
+});
 </script>
 </body>
 </html>
