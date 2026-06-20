@@ -410,9 +410,19 @@
   /* desktop: always-visible sidebar, no drawer needed */
   @media(min-width:900px){
     .pkpanel{transform:none !important}
+    .pkpanel.pk-collapsed{transform:translateX(100%) !important}
     #pkOpenRemaining{display:none !important}
     #pkPanelClose{display:none !important}
+    #pkMinBtn{display:flex !important}
+    .pk-tab{display:flex !important}
+    .pkpanel.pk-collapsed ~ .pk-tab,.pk-tab.pk-show{opacity:1;pointer-events:auto}
   }
+  #pkMinBtn{display:none;background:rgba(255,255,255,.14);border:none;color:#fff;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:18px;line-height:1;align-items:center;justify-content:center}
+  #pkMinBtn:hover{background:rgba(255,255,255,.26)}
+  .pk-tab{display:none;position:fixed;right:0;top:50%;transform:translateY(-50%);background:var(--ink);color:#fff;border:none;border-radius:10px 0 0 10px;padding:14px 7px;cursor:pointer;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s;flex-direction:column;align-items:center;gap:6px;box-shadow:var(--shadow-lg)}
+  .pk-tab .pk-tab-lbl{writing-mode:vertical-rl;font-family:"Barlow Condensed";font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+  .pk-tab .pk-tab-n{background:var(--gold);color:var(--ink);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+  .pk-tab.pk-show{opacity:1;pointer-events:auto}
   .pkpanel-head{background:var(--ink);color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px}
   .pkpanel-head h3{margin:0;font-family:"Barlow Condensed";font-weight:800;text-transform:uppercase;letter-spacing:.03em;font-size:20px;display:flex;align-items:center;gap:9px}
   .pkpanel-head .x{background:rgba(255,255,255,.14);border:none;color:#fff;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:18px;line-height:1}
@@ -3397,10 +3407,12 @@ var qrcode = function() {
 
 </script>
 <!-- Remaining-items side panel — direct body child so position:fixed works despite reveal transforms -->
+<button class="pk-tab" id="pkTab" aria-label="Opna pökkunarlista"><span class="pk-tab-lbl">Eftir að pakka</span><span class="pk-tab-n" id="pkTabN">0</span></button>
 <div class="pkscrim" id="pkScrim"></div>
 <aside class="pkpanel" id="pkPanel" aria-hidden="true">
   <div class="pkpanel-head">
     <h3>🎒 Eftir að pakka</h3>
+    <button id="pkMinBtn" aria-label="Minnka">›</button>
     <button class="x" id="pkPanelClose" aria-label="Loka">✕</button>
   </div>
   <div class="pkpanel-sub" id="pkPanelSub">Hér birtist það sem á eftir að pakka. Smelltu á atriði til að haka við það.</div>
@@ -3580,6 +3592,7 @@ var qrcode = function() {
   function renderRemaining(){
     var remaining=[]; allBoxes.forEach(function(b,i){ if(!b.checked) remaining.push(i); });
     remCountEl.textContent=remaining.length;
+    if(pkTabN) pkTabN.textContent=remaining.length;
     remBtn.classList.toggle('done',remaining.length===0);
     if(panel.classList.contains('open')||window.innerWidth>=900) buildPanel(remaining);
   }
@@ -3604,10 +3617,15 @@ var qrcode = function() {
     var i=parseInt(btn.getAttribute('data-i'),10);
     if(allBoxes[i]){ allBoxes[i].checked=true; update(); }
   });
+  var pkTab=document.getElementById('pkTab'), pkTabN=document.getElementById('pkTabN');
   function openPanel(){ renderRemaining(); buildPanel(allBoxes.map(function(b,i){return b.checked?-1:i;}).filter(function(i){return i>=0;})); panel.classList.add('open'); panel.setAttribute('aria-hidden','false'); scrim.classList.add('show'); }
   function closeOverlays(){ panel.classList.remove('open'); panel.setAttribute('aria-hidden','true'); syncCard.classList.remove('open'); scrim.classList.remove('show'); }
+  function collapsePanel(){ panel.classList.add('pk-collapsed'); pkTab.classList.add('pk-show'); }
+  function expandPanel(){ panel.classList.remove('pk-collapsed'); pkTab.classList.remove('pk-show'); renderRemaining(); }
   remBtn.addEventListener('click',openPanel);
   document.getElementById('pkPanelClose').addEventListener('click',closeOverlays);
+  document.getElementById('pkMinBtn').addEventListener('click',collapsePanel);
+  pkTab.addEventListener('click',expandPanel);
   scrim.addEventListener('click',closeOverlays);
   document.addEventListener('keydown',function(e){ if(e.key==='Escape')closeOverlays(); });
   renderRemaining();
