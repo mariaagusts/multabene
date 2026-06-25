@@ -458,8 +458,7 @@
   .pksync-card .x:hover{color:var(--ink)}
   .pksync-sec{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}
   .pksync-sec h4{margin:0 0 8px;font-family:"Barlow Condensed";font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:15px;color:var(--blue-2)}
-  #pkqr{display:flex;justify-content:center;margin:6px 0 10px}
-  #pkqr svg{width:170px;height:170px;border:1px solid var(--line);border-radius:10px;padding:8px;background:#fff}
+
   .pkcode{display:flex;gap:8px;align-items:stretch}
   .pkcode input{flex:1;font-family:"Barlow Condensed";font-weight:700;letter-spacing:.12em;font-size:19px;text-transform:uppercase;
     text-align:center;border:1.5px solid var(--line);border-radius:10px;padding:9px;color:var(--ink);background:var(--paper)}
@@ -1096,16 +1095,15 @@
       <div class="pksync-card" id="pkSync" role="dialog" aria-modal="true" aria-label="Tengja tæki">
         <button class="x" id="pkSyncClose" aria-label="Loka">✕</button>
         <h3>📲 Samstilla tæki</h3>
-        <p class="lead">Pökkunarlistinn geymist á hverju tæki fyrir sig. Til að færa stöðuna á milli tölvu og síma notarðu kóða — skannaðu QR-kóðann eða sláðu kóðann inn handvirkt.</p>
+        <p class="lead">Pökkunarlistinn geymist á hverju tæki fyrir sig. Til að færa stöðuna á milli tölvu og síma, afritaðu kóðann og sláðu hann inn á hinu tækinu.</p>
 
         <div class="pksync-sec" style="border-top:none;padding-top:0;margin-top:0">
-          <h4>Þetta tæki — deildu þessum kóða</h4>
-          <div id="pkqr"></div>
+          <h4>Þetta tæki, deildu þessum kóða</h4>
           <div class="pkcode">
             <input id="pkMyCode" readonly>
             <button class="act primary" id="pkCopy" type="button">Afrita</button>
           </div>
-          <p class="hint" id="pkCopyHint">Skannaðu QR-kóðann með hinu tækinu, eða afritaðu kóðann og sláðu hann inn þar.</p>
+          <p class="hint" id="pkCopyHint">Afritaðu kóðann og sláðu hann inn á hinu tækinu.</p>
         </div>
 
         <div class="pksync-sec">
@@ -3718,12 +3716,12 @@ var qrcode = function() {
     try{ var qr=qrcode(0,'M'); qr.addData(text); qr.make(); box.innerHTML=qr.createSvgTag({cellSize:4,margin:2,scalable:true}); }
     catch(err){ try{ var q2=qrcode(0,'M'); q2.addData(text); q2.make(); box.innerHTML=q2.createImgTag(4,2); }catch(e2){ box.style.display='none'; } }
   }
-  function refreshSync(){ var c=encodeState(); if(myCode){ myCode.value=c; } if(syncCard.classList.contains('open')) renderQR(c); }
+  function refreshSync(){ var c=encodeState(); if(myCode){ myCode.value=c; } }
 
   document.getElementById('pkOpenSync').addEventListener('click',function(){
-    refreshSync(); renderQR(encodeState());
+    refreshSync();
     syncCard.classList.add('open'); scrim.classList.add('show');
-    var hint=document.getElementById('pkCopyHint'); if(hint){hint.classList.remove('ok'); hint.textContent='Skannaðu QR-kóðann með hinu tækinu, eða afritaðu kóðann og sláðu hann inn þar.';}
+    var hint=document.getElementById('pkCopyHint'); if(hint){hint.classList.remove('ok'); hint.textContent='Afritaðu kóðann og sláðu hann inn á hinu tækinu.';}
   });
   document.getElementById('pkSyncClose').addEventListener('click',closeOverlays);
   document.getElementById('pkCopy').addEventListener('click',function(){
