@@ -1256,8 +1256,8 @@
   </section>
 
   <!-- ============ 12. KORT ============ -->
-  <section id="s13" class="reveal" data-nav="Niðurstöður" data-title="Leikjaniðurstöður">
-    <div class="sec-head"><div class="sec-badge"><b>13</b><svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.6l2.95 6.34 6.95.74-5.18 4.7 1.46 6.86L12 17.9l-6.18 3.34 1.46-6.86L2.1 9.68l6.95-.74z"/></svg></div><h2>Leikjaniðurstöður</h2></div>
+  <section id="s12" class="reveal" data-nav="Niðurstöður" data-title="Leikjaniðurstöður">
+    <div class="sec-head"><div class="sec-badge"><b>12</b><svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.6l2.95 6.34 6.95.74-5.18 4.7 1.46 6.86L12 17.9l-6.18 3.34 1.46-6.86L2.1 9.68l6.95-.74z"/></svg></div><h2>Leikjaniðurstöður</h2></div>
     <div class="card">
       <p style="color:var(--muted);font-size:13px">Skráðu niðurstöður leika hér. Geymd er staðan á þessu tæki (local storage). Notaðu samstillingaraðgerðina í pökkunarlistanum til að deila milli tækja.</p>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" id="resGrid">
@@ -1272,8 +1272,8 @@
     </div>
   </section>
 
-  <section id="s12" class="reveal" data-nav="Kort" data-title="Staðsetningarkort">
-    <div class="sec-head"><div class="sec-badge"><b>12</b><svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.6l2.95 6.34 6.95.74-5.18 4.7 1.46 6.86L12 17.9l-6.18 3.34 1.46-6.86L2.1 9.68l6.95-.74z"/></svg></div><h2>Staðsetningarkort</h2></div>
+  <section id="s13" class="reveal" data-nav="Kort" data-title="Staðsetningarkort">
+    <div class="sec-head"><div class="sec-badge"><b>13</b><svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.6l2.95 6.34 6.95.74-5.18 4.7 1.46 6.86L12 17.9l-6.18 3.34 1.46-6.86L2.1 9.68l6.95-.74z"/></svg></div><h2>Staðsetningarkort</h2></div>
     <div class="card">
       <p style="margin-bottom:16px">Kort af Gautaborg með öllum mikilvægum stöðum ferðarinnar. Smelltu á punktana til að sjá upplýsingar.</p>
       <div id="gothia-map" style="height:520px;border-radius:10px;overflow:hidden;border:1px solid var(--line)"></div>
@@ -3989,6 +3989,60 @@ function convCalc(){
     .catch(function(){
       document.getElementById("wxGrid").innerHTML="<p style=\"color:var(--muted);font-size:13px\">Þór svarar ekki. Reyndu aftur.</p>";
     });
+})();
+(function(){
+  var RTEAMS=[
+    {n:'Stjarnan 1',c:'U14',cl:'t1'},
+    {n:'Stjarnan 2',c:'U14',cl:'t2'},
+    {n:'Stjarnan 1',c:'U13',cl:'t3'},
+    {n:'Stjarnan 2',c:'U13',cl:'t4'}
+  ];
+  var RFIXTURES=[
+    [['Kalmar FF','Mán'],['Madrid Panthers','Þri'],['Marin FC 2','Mið']],
+    [['Jonsereds IF','Mán'],['Iconz Elite','Þri'],['Umeå IK FF','Mið']],
+    [['Hjuviks AIK','Mán'],['Prep Schools Lions White','Þri'],['Älvsjö AIK FF 1','Mið']],
+    [['IF Vardar','Mán'],['FCNE','Þri'],['Djurgårdens IF','Mið']]
+  ];
+  function rGetS(){try{return JSON.parse(localStorage.getItem('gothia_res')||'{}');}catch(e){return {};}}
+  window.rSave=function(ti,fi){
+    var gfEl=document.getElementById('rgf'+ti+'_'+fi),gaEl=document.getElementById('rga'+ti+'_'+fi);
+    if(!gfEl||!gaEl) return;
+    var s=rGetS(),key=ti+'_'+fi;
+    if(gfEl.value===''&&gaEl.value===''){delete s[key];}
+    else{s[key]={gf:parseInt(gfEl.value)||0,ga:parseInt(gaEl.value)||0};}
+    localStorage.setItem('gothia_res',JSON.stringify(s));
+    rUpdateTable();
+  };
+  function rUpdateTable(){
+    var tbody=document.getElementById('resTableBody');
+    if(!tbody) return;
+    var s=rGetS();
+    var stats=RTEAMS.map(function(t,ti){
+      var p=0,w=0,d=0,l=0,gf=0,ga=0;
+      RFIXTURES[ti].forEach(function(fx,fi){var sc=s[ti+'_'+fi];if(sc!=null){p++;gf+=sc.gf;ga+=sc.ga;if(sc.gf>sc.ga)w++;else if(sc.gf===sc.ga)d++;else l++;}});
+      return {t:t,p:p,w:w,d:d,l:l,gf:gf,ga:ga,pts:w*3+d};
+    });
+    stats.sort(function(a,b){return (b.pts-a.pts)||((b.gf-b.ga)-(a.gf-a.ga))||(b.gf-a.gf);});
+    tbody.innerHTML=stats.map(function(s){
+      return '<tr><td><span class="tt '+s.t.cl+'" style="font-size:10px;padding:1px 6px">'+s.t.n+' '+s.t.c+'</span></td><td>'+s.p+'</td><td>'+s.w+'</td><td>'+s.d+'</td><td>'+s.l+'</td><td>'+s.gf+'</td><td>'+s.ga+'</td><td class="res-pts">'+s.pts+'</td></tr>';
+    }).join('');
+  }
+  var grid=document.getElementById('resGrid');
+  if(!grid) return;
+  var s=rGetS();
+  grid.innerHTML=RTEAMS.map(function(t,ti){
+    var rows=RFIXTURES[ti].map(function(fx,fi){
+      var sc=s[ti+'_'+fi],gf=sc!=null?sc.gf:'',ga=sc!=null?sc.ga:'';
+      return '<div class="res-fixture"><div class="res-date">'+fx[1]+'</div><div class="res-opp">'+fx[0]+'</div>'
+        +'<input class="score-inp" id="rgf'+ti+'_'+fi+'" type="number" min="0" max="99"'+(gf!==''?' value="'+gf+'"':'')+' placeholder="-" oninput="rSave('+ti+','+fi+')">'
+        +'<span class="score-sep">:</span>'
+        +'<input class="score-inp" id="rga'+ti+'_'+fi+'" type="number" min="0" max="99"'+(ga!==''?' value="'+ga+'"':'')+' placeholder="-" oninput="rSave('+ti+','+fi+')">'
+        +'</div>';
+    }).join('');
+    return '<div style="background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px">'+
+      '<div class="res-team-hd"><span class="tt '+t.cl+'">'+t.n+' · '+t.c+'</span></div>'+rows+'</div>';
+  }).join('');
+  rUpdateTable();
 })();
 </script>
 </body>
