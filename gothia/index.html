@@ -3818,16 +3818,24 @@ window.addEventListener('load', function() {
 (function(){
   var WX={0:"☀️",1:"🌤️",2:"⛅",3:"🌥️",45:"🌫️",48:"🌫️",51:"🌦️",53:"🌦️",55:"🌦️",61:"🌧️",63:"🌧️",65:"🌧️",71:"🌨️",73:"🌨️",75:"🌨️",77:"🌨️",80:"🌦️",81:"🌦️",82:"🌦️",85:"🌨️",86:"🌨️",95:"⛈️",96:"⛈️",99:"⛈️"};
   var DAYS=["Sun","Mán","Þri","Mið","Fim","Fös","Lau"];
-  fetch("https://api.open-meteo.com/v1/forecast?latitude=57.7089&longitude=11.9746&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode&timezone=Europe%2FStockholm&start_date=2026-07-12&end_date=2026-07-19")
+  fetch("https://api.open-meteo.com/v1/forecast?latitude=57.7089&longitude=11.9746&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode&timezone=Europe%2FStockholm&forecast_days=16")
     .then(function(r){return r.json();})
     .then(function(d){
       var grid=document.getElementById("wxGrid");
-      if(!d.daily||!d.daily.time||!d.daily.time.length){
+      if(!d.daily||!d.daily.time){
         grid.innerHTML="<p style=\"color:var(--muted);font-size:13px\">Veðurspáin er ekki tiltæk enn. Reynið aftur nær ferðinni. (Gautaborg verður hlý. Við trúum því.)</p>";
         return;
       }
-      grid.innerHTML=d.daily.time.map(function(date,i){
-        var dt=new Date(date);
+      var filtered=d.daily.time.reduce(function(acc,date,i){
+        if(date>="2026-07-12"&&date<="2026-07-19") acc.push(i);
+        return acc;
+      },[]);
+      if(!filtered.length){
+        grid.innerHTML="<p style=\"color:var(--muted);font-size:13px\">Veðurspáin er ekki tiltæk enn. Reynið aftur nær ferðinni. (Gautaborg verður hlý. Við trúum því.)</p>";
+        return;
+      }
+      grid.innerHTML=filtered.map(function(i){
+        var dt=new Date(d.daily.time[i]);
         var day=DAYS[dt.getDay()];
         var dm=(dt.getDate())+"/"+(dt.getMonth()+1);
         var icon=WX[d.daily.weathercode[i]]||"🌡️";
