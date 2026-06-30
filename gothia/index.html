@@ -334,7 +334,6 @@
   .teamcard .opps .op .op-score:empty{display:none}
   .teamcard .opps .op .op-time{font-family:"Barlow Condensed";font-size:11px;color:var(--muted);font-weight:600;white-space:nowrap;min-width:54px}
   .group-table{margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
-  .group-table:empty{display:none}
   .gt-row{display:flex;align-items:center;gap:3px;padding:3px 0;font-size:12px;font-family:"Barlow Condensed";font-weight:600}
   .gt-head{font-size:10px;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:3px;margin-bottom:2px}
   .gt-rank{width:14px;color:var(--muted);font-size:11px;text-align:center}
@@ -4060,6 +4059,7 @@ function convCalc(){
     el.innerHTML=h;
   }
   }
+  for(var _gi=0;_gi<4;_gi++)renderStandings(_gi);
   db.ref("gothia/scores").on("value",function(snap){
     allSc.sc=snap.val()||{};
     for(var ti=0;ti<4;ti++){for(var fi=0;fi<3;fi++){
