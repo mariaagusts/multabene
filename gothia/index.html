@@ -236,6 +236,15 @@
   .fx.nearby .eye{opacity:.7;margin-right:2px}
   .pending{padding:13px 18px;background:#fff;border:1px dashed var(--line);border-radius:11px;
     color:var(--muted);font-style:italic;margin:8px 0}
+  /* weather widget */
+  .wx-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin:10px 0 4px}
+  @media(max-width:700px){.wx-grid{grid-template-columns:repeat(4,1fr)}}
+  .wx-day{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 4px;text-align:center}
+  .wx-date{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;line-height:1.4}
+  .wx-icon{font-size:22px;line-height:1.4}
+  .wx-hi{font-size:13px;font-weight:700;color:var(--ink)}
+  .wx-lo{font-size:11px;color:var(--muted)}
+  .wx-rain{font-size:10px;color:#4A90D9;margin-top:1px}
   /* team identity tags */
   .tt{display:inline-block;font-family:"Barlow Condensed";font-weight:700;font-size:12.5px;
     text-transform:uppercase;letter-spacing:.04em;color:#fff;border-radius:6px;padding:1px 8px;
@@ -622,6 +631,12 @@
   <!-- ============ 3. DAGSKRÁ ============ -->
   <section id="s3" class="reveal" data-nav="Dagskrá" data-title="Dagskrá">
     <div class="sec-head"><div class="sec-badge"><b>3</b><svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.6l2.95 6.34 6.95.74-5.18 4.7 1.46 6.86L12 17.9l-6.18 3.34 1.46-6.86L2.1 9.68l6.95-.74z"/></svg></div><h2>Dagskrá</h2></div>
+    <div class="card">
+      <h3 class="sub">🌤 Veðurspá · Gautaborg — við vonum það besta</h3>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:6px">Gautaborg í júlí er yfirleitt hlý og skemmtileg. Pakkið samt alltaf regnjakka — þetta er Skandinavía. <em>Spáin er áreiðanlegust u.þ.b. 5–7 dögum fyrir ferðina (12–19 júlí).</em></p>
+      <div id="wxGrid" class="wx-grid"><p style="color:var(--muted);font-size:13px">Spyr Þór um veðrið...</p></div>
+      <p style="font-size:11px;color:var(--muted);margin-top:2px">Heimild: Open-Meteo · uppfærist sjálfkrafa</p>
+    </div>
     <div class="card">
       <p style="color:var(--muted);font-style:italic">Dagskrá þessi er ekki tæmandi enda fjögur lið frá Stjörnunni. Riðlakeppnin fer fram mánudag til miðvikudags (3 leikir á lið). Úrslitakeppni og tímasetningar hennar birtast síðar.</p>
       <div style="display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 6px">
@@ -3799,6 +3814,33 @@ window.addEventListener('load', function() {
     if (entries[0].isIntersecting) { map.invalidateSize(); }
   }, {threshold: 0.1}).observe(mapEl);
 });
+<script>
+(function(){
+  var WX={0:"☀️",1:"🌤️",2:"⛅",3:"🌥️",45:"🌫️",48:"🌫️",51:"🌦️",53:"🌦️",55:"🌦️",61:"🌧️",63:"🌧️",65:"🌧️",71:"🌨️",73:"🌨️",75:"🌨️",77:"🌨️",80:"🌦️",81:"🌦️",82:"🌦️",85:"🌨️",86:"🌨️",95:"⛈️",96:"⛈️",99:"⛈️"};
+  var DAYS=["Sun","Mán","Þri","Mið","Fim","Fös","Lau"];
+  fetch("https://api.open-meteo.com/v1/forecast?latitude=57.7089&longitude=11.9746&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode&timezone=Europe%2FStockholm&start_date=2026-07-12&end_date=2026-07-19")
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var grid=document.getElementById("wxGrid");
+      if(!d.daily||!d.daily.time||!d.daily.time.length){
+        grid.innerHTML="<p style=\"color:var(--muted);font-size:13px\">Veðurspáin er ekki tiltæk enn — reynið aftur nær ferðinni. (Gautaborg verður hlý. Við trúum því.)</p>";
+        return;
+      }
+      grid.innerHTML=d.daily.time.map(function(date,i){
+        var dt=new Date(date);
+        var day=DAYS[dt.getDay()];
+        var dm=(dt.getDate())+"/"+(dt.getMonth()+1);
+        var icon=WX[d.daily.weathercode[i]]||"🌡️";
+        var hi=Math.round(d.daily.temperature_2m_max[i]);
+        var lo=Math.round(d.daily.temperature_2m_min[i]);
+        var rain=d.daily.precipitation_sum[i];
+        return "<div class=\"wx-day\"><div class=\"wx-date\">"+day+"<br>"+dm+"</div><div class=\"wx-icon\">"+icon+"</div><div class=\"wx-hi\">"+hi+"°</div><div class=\"wx-lo\">"+lo+"°</div>"+(rain>0.1?"<div class=\"wx-rain\">💧"+rain+"mm</div>":"")+"</div>";
+      }).join("");
+    })
+    .catch(function(){
+      document.getElementById("wxGrid").innerHTML="<p style=\"color:var(--muted);font-size:13px\">Þór svarar ekki. Reyndu aftur.</p>";
+    });
+})();
 </script>
 </body>
 </html>
