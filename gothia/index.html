@@ -3977,21 +3977,73 @@ function convCalc(){
       document.getElementById("wxGrid").innerHTML="<p style=\"color:var(--muted);font-size:13px\">Þór svarar ekki. Reyndu aftur.</p>";
     });
 })();
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<div id="adminPanel" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:3px solid #0D2340;padding:16px 16px 28px;z-index:9999;max-height:72vh;overflow-y:auto;box-shadow:0 -4px 24px rgba(0,0,0,.15)">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <strong style="font-family:'Barlow Condensed',sans-serif;font-size:20px;color:#0D2340;letter-spacing:.04em">⚽ ADMIN · Leikjaniðurstöður</strong>
+    <button onclick="document.getElementById('adminPanel').style.display='none'" style="background:none;border:none;font-size:22px;cursor:pointer;color:#999;line-height:1">✕</button>
+  </div>
+  <div id="adminFixtures"></div>
+  <p style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:#bbb;margin-top:14px;text-align:center">Tæmdu reiti og ýttu Vista til að eyða úrslitum</p>
+</div>
+<script>
 (function(){
-  var ADMIN_SCORES={};
-  var IDS=[
-    ['sc_0_0','sc_0_1','sc_0_2'],
-    ['sc_1_0','sc_1_1','sc_1_2'],
-    ['sc_2_0','sc_2_1','sc_2_2'],
-    ['sc_3_0','sc_3_1','sc_3_2']
-  ];
-  Object.keys(ADMIN_SCORES).forEach(function(key){
-    var parts=key.split('_'),ti=+parts[0],fi=+parts[1];
-    var el=document.getElementById(IDS[ti][fi]);
-    if(!el) return;
-    var sc=ADMIN_SCORES[key];
-    el.textContent=sc.gf+' : '+sc.ga+' 🔒';
+  var FB={
+    apiKey:"AIzaSyBiom-Y1P82AL1sH6lWtsbR56QUISViVu0",
+    authDomain:"multabene-gothia.firebaseapp.com",
+    databaseURL:"https://multabene-gothia-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId:"multabene-gothia",
+    storageBucket:"multabene-gothia.firebasestorage.app",
+    messagingSenderId:"948593700430",
+    appId:"1:948593700430:web:71211f54122b62fd521d1f"
+  };
+  firebase.initializeApp(FB);
+  var db=firebase.database();
+  var SC=[['sc_0_0','sc_0_1','sc_0_2'],['sc_1_0','sc_1_1','sc_1_2'],['sc_2_0','sc_2_1','sc_2_2'],['sc_3_0','sc_3_1','sc_3_2']];
+  var TEAMS=['Stjarnan 1 · U14','Stjarnan 2 · U14','Stjarnan 1 · U13','Stjarnan 2 · U13'];
+  var OPP=[['Kalmar FF','Madrid Panthers','Marin FC 2'],['Jonsereds IF','Iconz Elite','Umeå IK FF'],['Hjuviks AIK','Prep Schools Lions','Älvsjö AIK FF 1'],['IF Vardar','FCNE','Djurgårdens IF']];
+  var DAYS=['Mán','Þri','Mið'];
+  db.ref('gothia/scores').on('value',function(snap){
+    var s=snap.val()||{};
+    for(var ti=0;ti<4;ti++){for(var fi=0;fi<3;fi++){
+      var el=document.getElementById(SC[ti][fi]);if(!el)continue;
+      var k=ti+'_'+fi;
+      if(s[k]!=null){el.textContent=s[k].gf+':'+s[k].ga+' 🔒';}else{el.textContent='';}
+      var gi=document.getElementById('agf_'+ti+'_'+fi);
+      var gai=document.getElementById('aga_'+ti+'_'+fi);
+      if(gi&&s[k]!=null){gi.value=s[k].gf;gai.value=s[k].ga;}
+      else if(gi){gi.value='';gai.value='';}
+    }}
   });
+  window.adminSave=function(ti,fi){
+    var gf=document.getElementById('agf_'+ti+'_'+fi).value.trim();
+    var ga=document.getElementById('aga_'+ti+'_'+fi).value.trim();
+    if(gf===''||ga===''){db.ref('gothia/scores/'+ti+'_'+fi).remove();}
+    else{db.ref('gothia/scores/'+ti+'_'+fi).set({gf:+gf,ga:+ga});}
+  };
+  var isAdmin=window.location.search.indexOf('admin=Gothia2026')!==-1;
+  if(isAdmin){
+    document.getElementById('adminPanel').style.display='block';
+    var h='';
+    for(var ti=0;ti<4;ti++){
+      h+='<div style="margin-bottom:16px">'
+        +'<div style="font-family:Barlow Condensed,sans-serif;font-weight:700;font-size:12px;color:#0D2340;text-transform:uppercase;letter-spacing:.06em;padding-bottom:4px;border-bottom:2px solid #0D2340;margin-bottom:6px">'+TEAMS[ti]+'</div>';
+      for(var fi=0;fi<3;fi++){
+        h+='<div style="display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid #f0f0f0">'
+          +'<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;color:#aaa;width:26px">'+DAYS[fi]+'</span>'
+          +'<span style="flex:1;font-family:Barlow Condensed,sans-serif;font-size:14px">'+OPP[ti][fi]+'</span>'
+          +'<input id="agf_'+ti+'_'+fi+'" type="number" min="0" max="99" placeholder="-" style="width:40px;text-align:center;border:1px solid #ddd;border-radius:6px;padding:5px 2px;font-size:16px;font-weight:700">'
+          +'<span style="color:#ccc;font-size:13px">:</span>'
+          +'<input id="aga_'+ti+'_'+fi+'" type="number" min="0" max="99" placeholder="-" style="width:40px;text-align:center;border:1px solid #ddd;border-radius:6px;padding:5px 2px;font-size:16px;font-weight:700">'
+          +'<button onclick="adminSave('+ti+','+fi+')" style="background:#0D2340;color:#fff;border:none;border-radius:6px;padding:7px 11px;font-size:13px;font-family:Barlow Condensed,sans-serif;cursor:pointer;letter-spacing:.03em">Vista</button>'
+          +'</div>';
+      }
+      h+='</div>';
+    }
+    document.getElementById('adminFixtures').innerHTML=h;
+  }
 })();
 </script>
 </body>
