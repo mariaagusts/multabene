@@ -4049,12 +4049,16 @@ function convCalc(){
   function renderStandings(gi){
     var el=document.getElementById("gt_"+gi);if(!el)return;
     var st=calcStandings(gi);
-    var h="<div class=\\"gt-row gt-head\\"><span class=\\"gt-rank\\">#</span><span class=\\"gt-name\\">Lið</span><span class=\\"gt-num\\">L</span><span class=\\"gt-num\\">S</span><span class=\\"gt-num\\">J</span><span class=\\"gt-num\\">T</span><span class=\\"gt-num\\">M+</span><span class=\\"gt-num\\">M−</span><span class=\\"gt-num\\">MM</span><span class=\\"gt-pts\\">Stig</span></div>";
+    var Q=String.fromCharCode(34),H="gt-row",N="gt-num",R="gt-rank",TN="gt-name",P="gt-pts";
+    var h="<div class="+Q+H+" gt-head"+Q+"><span class="+Q+R+Q+">#</span><span class="+Q+TN+Q+">Lið</span><span class="+Q+N+Q+">L</span><span class="+Q+N+Q+">S</span><span class="+Q+N+Q+">J</span><span class="+Q+N+Q+">T</span><span class="+Q+N+Q+">M+</span><span class="+Q+N+Q+">M−</span><span class="+Q+N+Q+">MM</span><span class="+Q+P+Q+">Stig</span></div>";
     st.forEach(function(t,i){
       var star=t.name.indexOf("Stjarnan")===0;
-      h+="<div class=\\"gt-row\\"><span class=\\"gt-rank\\">"+(i+1)+"</span><span class=\\"gt-name"+(star?" gt-star":"")+"\\">"+t.name+"</span><span class=\\"gt-num\\">"+t.mp+"</span><span class=\\"gt-num\\">"+t.w+"</span><span class=\\"gt-num\\">"+t.d+"</span><span class=\\"gt-num\\">"+t.l+"</span><span class=\\"gt-num\\">"+t.gf+"</span><span class=\\"gt-num\\">"+t.ga+"</span><span class=\\"gt-num\\">"+(t.gd>0?"+":"")+t.gd+"</span><span class=\\"gt-pts\\">"+t.pts+"</span></div>";
+      var nc=TN+(star?" gt-star":"");
+      var gd=t.gd>0?"+"+t.gd:""+t.gd;
+      h+="<div class="+Q+H+Q+"><span class="+Q+R+Q+">"+(i+1)+"</span><span class="+Q+nc+Q+">"+t.name+"</span><span class="+Q+N+Q+">"+t.mp+"</span><span class="+Q+N+Q+">"+t.w+"</span><span class="+Q+N+Q+">"+t.d+"</span><span class="+Q+N+Q+">"+t.l+"</span><span class="+Q+N+Q+">"+t.gf+"</span><span class="+Q+N+Q+">"+t.ga+"</span><span class="+Q+N+Q+">"+gd+"</span><span class="+Q+P+Q+">"+t.pts+"</span></div>";
     });
     el.innerHTML=h;
+  }
   }
   db.ref("gothia/scores").on("value",function(snap){
     allSc.sc=snap.val()||{};
