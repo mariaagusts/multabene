@@ -632,8 +632,8 @@
   <section id="s3" class="reveal" data-nav="Dagskrá" data-title="Dagskrá">
     <div class="sec-head"><div class="sec-badge"><b>3</b><svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.6l2.95 6.34 6.95.74-5.18 4.7 1.46 6.86L12 17.9l-6.18 3.34 1.46-6.86L2.1 9.68l6.95-.74z"/></svg></div><h2>Dagskrá</h2></div>
     <div class="card">
-      <h3 class="sub">🌤 Veðurspá · Gautaborg — við vonum það besta</h3>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:6px">Gautaborg í júlí er yfirleitt hlý og skemmtileg. Pakkið samt alltaf regnjakka — þetta er Skandinavía. <em>Spáin er áreiðanlegust u.þ.b. 5–7 dögum fyrir ferðina (12–19 júlí).</em></p>
+      <h3 class="sub">🌤 Veðurspá · Gautaborg. Við vonum það besta!</h3>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:6px">Gautaborg í júlí er yfirleitt hlý og skemmtileg. Pakkið samt alltaf regnjakka. Þetta er Skandinavía. <em>Spáin er áreiðanlegust u.þ.b. 5–7 dögum fyrir ferðina (12–19 júlí).</em></p>
       <div id="wxGrid" class="wx-grid"><p style="color:var(--muted);font-size:13px">Spyr Þór um veðrið...</p></div>
       <p style="font-size:11px;color:var(--muted);margin-top:2px">Heimild: Open-Meteo · uppfærist sjálfkrafa</p>
     </div>
@@ -995,8 +995,8 @@
       <h3 class="sub">Viðurlög við brotum</h3>
       <p>Verði leikmaður uppvís að því að brjóta þessar reglur þá gilda eftirfarandi viðurlög:</p>
       <ul class="ticks">
-        <li><strong>🟡 Gult spjald — fyrsta brot:</strong> Hringt í foreldra og leikmaður situr á bekknum í næsta leik.</li>
-        <li class="key"><strong>🔴 Rautt spjald — annað brot:</strong> Leikmaður er sendur heim á kostnað foreldra.</li>
+        <li><strong>🟡 Gult spjald, fyrsta brot:</strong> Hringt í foreldra og leikmaður situr á bekknum í næsta leik.</li>
+        <li class="key"><strong>🔴 Rautt spjald, annað brot:</strong> Leikmaður er sendur heim á kostnað foreldra.</li>
         <p style="font-size:11px;color:var(--muted);margin-top:-4px;padding-left:4px"><em>Gul og rauð spjöld í leikjum eru ótengd þessum viðurlögum!</em></p>
       </ul>
       <p>Foreldrar skulu fara yfir þennan hegðunarsáttmála með leikmönnum.</p>
@@ -3687,7 +3687,7 @@ var qrcode = function() {
   function buildPanel(remaining){
     if(remaining.length===0){
       panelBody.innerHTML='<div class="pkrem-empty"><div class="big">🎉</div><p>Allt komið í töskuna!</p></div>';
-      panelSub.textContent='Ekkert eftir — vel gert!';
+      panelSub.textContent='Ekkert eftir. Vel gert!';
       return;
     }
     panelSub.textContent=remaining.length+' atriði eftir. Smelltu á atriði til að haka við það.';
@@ -3748,14 +3748,14 @@ var qrcode = function() {
   document.getElementById('pkSyncClose').addEventListener('click',closeOverlays);
   document.getElementById('pkCopy').addEventListener('click',function(){
     var hint=document.getElementById('pkCopyHint');
-    function done(){ if(hint){hint.classList.add('ok'); hint.textContent='✓ Kóði afritaður — límdu hann inn á hinu tækinu.'; } }
+    function done(){ if(hint){hint.classList.add('ok'); hint.textContent='✓ Kóði afritaður. Límdu hann inn á hinu tækinu.'; } }
     try{ navigator.clipboard.writeText(myCode.value).then(done,function(){ myCode.select(); document.execCommand&&document.execCommand('copy'); done(); }); }
     catch(e){ myCode.select(); try{document.execCommand('copy');done();}catch(_){} }
   });
   document.getElementById('pkApply').addEventListener('click',function(){
     var hint=document.getElementById('pkApplyHint');
     if(applyCode(inCode.value)){ if(hint){hint.classList.add('ok'); hint.textContent='✓ Staðan sótt og uppfærð.';} inCode.value=''; }
-    else if(hint){ hint.classList.remove('ok'); hint.style.color='#b4452a'; hint.textContent='Ógildur kóði — athugaðu hann og reyndu aftur.'; }
+    else if(hint){ hint.classList.remove('ok'); hint.style.color='#b4452a'; hint.textContent='Ógildur kóði, athugaðu hann og reyndu aftur.'; }
   });
   inCode.addEventListener('keydown',function(e){ if(e.key==='Enter')document.getElementById('pkApply').click(); });
 
@@ -3823,7 +3823,7 @@ window.addEventListener('load', function() {
     .then(function(d){
       var grid=document.getElementById("wxGrid");
       if(!d.daily||!d.daily.time||!d.daily.time.length){
-        grid.innerHTML="<p style=\"color:var(--muted);font-size:13px\">Veðurspáin er ekki tiltæk enn — reynið aftur nær ferðinni. (Gautaborg verður hlý. Við trúum því.)</p>";
+        grid.innerHTML="<p style=\"color:var(--muted);font-size:13px\">Veðurspáin er ekki tiltæk enn. Reynið aftur nær ferðinni. (Gautaborg verður hlý. Við trúum því.)</p>";
         return;
       }
       grid.innerHTML=d.daily.time.map(function(date,i){
