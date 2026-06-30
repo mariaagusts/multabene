@@ -3998,6 +3998,7 @@ function convCalc(){
     });
 })();
 (function(){
+  var ADMIN_SCORES={};
   var RTEAMS=[
     {n:'Stjarnan 1',c:'U14',cl:'t1'},
     {n:'Stjarnan 2',c:'U14',cl:'t2'},
@@ -4011,10 +4012,13 @@ function convCalc(){
     [['IF Vardar','Mán'],['FCNE','Þri'],['Djurgårdens IF','Mið']]
   ];
   function rGetS(){try{return JSON.parse(localStorage.getItem('gothia_res')||'{}');}catch(e){return {};}}
+  function rGetScore(ti,fi){var key=ti+'_'+fi;if(ADMIN_SCORES[key]!==undefined)return{sc:ADMIN_SCORES[key],locked:true};var s=rGetS();if(s[key]!==undefined)return{sc:s[key],locked:false};return null;}
   window.rSave=function(ti,fi){
+    var key=ti+'_'+fi;
+    if(ADMIN_SCORES[key]!==undefined) return;
     var gfEl=document.getElementById('rgf'+ti+'_'+fi),gaEl=document.getElementById('rga'+ti+'_'+fi);
     if(!gfEl||!gaEl) return;
-    var s=rGetS(),key=ti+'_'+fi;
+    var s=rGetS();
     if(gfEl.value===''&&gaEl.value===''){delete s[key];}
     else{s[key]={gf:parseInt(gfEl.value)||0,ga:parseInt(gaEl.value)||0};}
     localStorage.setItem('gothia_res',JSON.stringify(s));
@@ -4023,10 +4027,9 @@ function convCalc(){
   function rUpdateTable(){
     var tbody=document.getElementById('resTableBody');
     if(!tbody) return;
-    var s=rGetS();
     var stats=RTEAMS.map(function(t,ti){
       var p=0,w=0,d=0,l=0,gf=0,ga=0;
-      RFIXTURES[ti].forEach(function(fx,fi){var sc=s[ti+'_'+fi];if(sc!=null){p++;gf+=sc.gf;ga+=sc.ga;if(sc.gf>sc.ga)w++;else if(sc.gf===sc.ga)d++;else l++;}});
+      RFIXTURES[ti].forEach(function(fx,fi){var r=rGetScore(ti,fi);if(r){p++;gf+=r.sc.gf;ga+=r.sc.ga;if(r.sc.gf>r.sc.ga)w++;else if(r.sc.gf===r.sc.ga)d++;else l++;}});
       return {t:t,p:p,w:w,d:d,l:l,gf:gf,ga:ga,pts:w*3+d};
     });
     stats.sort(function(a,b){return (b.pts-a.pts)||((b.gf-b.ga)-(a.gf-a.ga))||(b.gf-a.gf);});
@@ -4036,18 +4039,21 @@ function convCalc(){
   }
   var grid=document.getElementById('resGrid');
   if(!grid) return;
-  var s=rGetS();
   grid.innerHTML=RTEAMS.map(function(t,ti){
     var rows=RFIXTURES[ti].map(function(fx,fi){
-      var sc=s[ti+'_'+fi],gf=sc!=null?sc.gf:'',ga=sc!=null?sc.ga:'';
-      return '<div class="res-fixture"><div class="res-date">'+fx[1]+'</div><div class="res-opp">'+fx[0]+'</div>'
-        +'<input class="score-inp" id="rgf'+ti+'_'+fi+'" type="number" min="0" max="99"'+(gf!==''?' value="'+gf+'"':'')+' placeholder="-" oninput="rSave('+ti+','+fi+')">'
+      var r=rGetScore(ti,fi),locked=r&&r.locked;
+      var gf=r?r.sc.gf:'',ga=r?r.sc.ga:'';
+      var dis=locked?' disabled style="background:#eef2f7;color:var(--muted);cursor:not-allowed"':'';
+      var oi=locked?'':' oninput="rSave('+ti+','+fi+')"';
+      return '<div class="res-fixture"><div class="res-date">'+fx[1]+'</div>'
+        +'<div class="res-opp">'+fx[0]+(locked?' <span style="font-size:10px">🔒</span>':'')+'</div>'
+        +'<input class="score-inp" id="rgf'+ti+'_'+fi+'" type="number" min="0" max="99"'+(r!==null?' value="'+gf+'"':'')+' placeholder="-"'+dis+oi+'>'
         +'<span class="score-sep">:</span>'
-        +'<input class="score-inp" id="rga'+ti+'_'+fi+'" type="number" min="0" max="99"'+(ga!==''?' value="'+ga+'"':'')+' placeholder="-" oninput="rSave('+ti+','+fi+')">'
+        +'<input class="score-inp" id="rga'+ti+'_'+fi+'" type="number" min="0" max="99"'+(r!==null?' value="'+ga+'"':'')+' placeholder="-"'+dis+oi+'>'
         +'</div>';
     }).join('');
-    return '<div style="background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px">'+
-      '<div class="res-team-hd"><span class="tt '+t.cl+'">'+t.n+' · '+t.c+'</span></div>'+rows+'</div>';
+    return '<div style="background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px">'
+      +'<div class="res-team-hd"><span class="tt '+t.cl+'">'+t.n+' · '+t.c+'</span></div>'+rows+'</div>';
   }).join('');
   rUpdateTable();
 })();
