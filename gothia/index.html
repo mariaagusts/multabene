@@ -3719,7 +3719,7 @@ var qrcode = function() {
     });
   });
   var ball=document.getElementById('pkball'),count=document.getElementById('pkcount'),phrase=document.getElementById('pkphrase');
-  var PHRASES=['','Þvílík markvarsla!','Góður varnarleikur!','Frábær sending!','Yfir miðlínu!','Einn á móti einum!','Skot á mark!','MARK!'];
+  var PHRASES=['','Leikurinn er hafinn! Stelpurnar mættar dýrvitlausar til leiks.','Gríðarlega flott vörn, engin leið í gegn!','Þvílík markvarsla! Haldið hreinu!','Spilið rúllar vel, boltinn mjakast upp völlinn.','Frábær sending inn á miðjuna!','Yfir miðlínuna! Nú fer að reyna á sóknina.','Flott samspil, spilað á milli kanta!','Ein á móti einum! Hún sólar varnarmanninn!','Komnar djúpt inn á teiginn hjá Svíunum!','Skot á mark! Þetta er hættulegt...','Boltinn stefnir í hornið, markvörðurinn skutlar sér...','MARK! Boltinn er í netinu! 🎉'];
   var prevTier=-1;
   function fireConfetti(){
     var canvas=document.getElementById('pk-confetti');
@@ -3747,13 +3747,13 @@ var qrcode = function() {
   function update(){
     var done=allBoxes.filter(function(b){return b.checked;}).length;
     var tot=allBoxes.length;
-    var pct=tot?done/tot:0;var tier=done===tot?7:Math.min(Math.floor(pct*7),6);
-    ball.style.left=(tier===7?'100%':(5+(tot?done/tot*82:0))+'%');
+    var tier=done===tot?12:Math.min(Math.floor(done/3),11);
+    ball.style.left=(tier===12?'100%':(5+(tot?done/tot*82:0))+'%');
     var p=PHRASES[tier];
     phrase.textContent=p;
     phrase.classList.toggle('show',p.length>0);
-    phrase.classList.toggle('mark',tier===7);
-    if(tier===7&&prevTier<7)fireConfetti();
+    phrase.classList.toggle('mark',tier===12);
+    if(tier===12&&prevTier<12)fireConfetti();
     prevTier=tier;
     count.textContent=done+' / '+tot;
     var st={}; allBoxes.forEach(function(b){if(b.checked)st[b.dataset.k]=1;});
