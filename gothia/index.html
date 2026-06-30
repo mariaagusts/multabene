@@ -1230,6 +1230,11 @@
         <div class="pkitems" data-group></div>
       </div>
 
+      <div class="pkgroup">
+        <h3>🥅 Síðustu 5 prósentin</h3>
+        <div class="pkitems" data-group></div>
+      </div>
+
       <div class="finale">
         <svg class="star" viewBox="0 0 24 24" fill="currentColor" style="margin-inline:auto;display:block"><path d="M12 1.6l2.95 6.34 6.95.74-5.18 4.7 1.46 6.86L12 17.9l-6.18 3.34 1.46-6.86L2.1 9.68l6.95-.74z"/></svg>
         <h3>Gangi ykkur vel!</h3>
@@ -3684,6 +3689,13 @@ var qrcode = function() {
       ['Sólgleraugu',0],
       ['Merkta netapoka fyrir óhreint',0],
       ['Spil, bók o.fl. fyrir frítímann',0]
+    ],
+    [ // Síðustu 5 prósentin
+      ['Brjálað keppnisskap (nóg af því)',0],
+      ['Auka lungu (fyrir seinni hálfleikinn)',0],
+      ['Röddin (til að öskra liðið áfram)',0],
+      ['Þolinmæði (fyrir rútuferðirnar)',0],
+      ['Sigurviljinn (eina sem skiptir máli)',0]
     ]
   ];
   var CHK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>';
@@ -3735,7 +3747,7 @@ var qrcode = function() {
   function update(){
     var done=allBoxes.filter(function(b){return b.checked;}).length;
     var tot=allBoxes.length;
-    var tier=Math.min(Math.floor(done/4),7);
+    var pct=tot?done/tot:0;var tier=done===tot?7:Math.min(Math.floor(pct*7),6);
     ball.style.left=(tier===7?'100%':(5+(tot?done/tot*82:0))+'%');
     var p=PHRASES[tier];
     phrase.textContent=p;
@@ -3754,7 +3766,7 @@ var qrcode = function() {
   update();
 
   // ---- remaining-items side panel + device sync ----
-  var GNAMES=['📋 Skjöl og kort','⚽ Íþróttabúnaður','👗 Föt og fatnaður','🧴 Hreinlæti og heilsa','🔌 Tæki og annað'];
+  var GNAMES=['📋 Skjöl og kort','⚽ Íþróttabúnaður','👗 Föt og fatnaður','🧴 Hreinlæti og heilsa','🔌 Tæki og annað','🥅 Síðustu 5 prósentin'];
   var FLAT=[]; GROUPS.forEach(function(items,gi){items.forEach(function(it){FLAT.push({gi:gi,label:it[0],flag:it[1]});});});
 
   var panel=document.getElementById('pkPanel'),
