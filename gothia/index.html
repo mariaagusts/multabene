@@ -3947,7 +3947,7 @@ var SEK_ISK=null;
       if(d.result!=="success"||!d.rates||!d.rates.ISK) throw new Error();
       SEK_ISK=d.rates.ISK;
       var el=document.getElementById("convRate");
-      if(el) el.textContent="1 SEK = "+SEK_ISK.toFixed(1)+" ISK (gengi "+d.time_last_update_utc.slice(0,16)+")";
+      if(el){var dt=new Date(d.time_last_update_utc);var DAYS=["Sunnudagur","Mánudagur","Þriðjudagur","Miðvikudagur","Fimmtudagur","Föstudagur","Laugardagur"];var MONTHS=["jan.","feb.","mar.","apr.","maí","jún.","júl.","ág.","sep.","okt.","nóv.","des."];var ds=DAYS[dt.getUTCDay()]+", "+dt.getUTCDate()+". "+MONTHS[dt.getUTCMonth()]+" "+dt.getUTCFullYear();el.textContent="1 SEK = "+SEK_ISK.toFixed(1)+" ISK (gengi "+ds+")";}
     })
     .catch(function(){
       SEK_ISK=18.2;
