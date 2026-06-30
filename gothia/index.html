@@ -3940,14 +3940,19 @@ window.addEventListener('load', function() {
 })();
 var SEK_ISK=null;
 (function(){
-  fetch("https://api.frankfurter.app/latest?from=SEK&to=ISK")
+  fetch("https://open.er-api.com/v6/latest/SEK")
     .then(function(r){return r.json();})
     .then(function(d){
+      if(d.result!=="success"||!d.rates||!d.rates.ISK) throw new Error();
       SEK_ISK=d.rates.ISK;
       var el=document.getElementById("convRate");
-      if(el) el.textContent="1 SEK = "+SEK_ISK.toFixed(1)+" ISK (gengi "+d.date+")";
+      if(el) el.textContent="1 SEK = "+SEK_ISK.toFixed(1)+" ISK (gengi "+d.time_last_update_utc.slice(0,16)+")";
     })
-    .catch(function(){var el=document.getElementById("convRate");if(el)el.textContent="Ekki tókst að sækja gengi.";});
+    .catch(function(){
+      SEK_ISK=18.2;
+      var el=document.getElementById("convRate");
+      if(el) el.textContent="1 SEK ≈ 18.2 ISK (áætlað gengi, nettengist ekki)";
+    });
 })();
 function convCalc(){
   var sek=parseFloat(document.getElementById("convSek").value)||0;
