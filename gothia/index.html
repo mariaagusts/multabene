@@ -236,6 +236,18 @@
   .fx.nearby .eye{opacity:.7;margin-right:2px}
   .pending{padding:13px 18px;background:#fff;border:1px dashed var(--line);border-radius:11px;
     color:var(--muted);font-style:italic;margin:8px 0}
+  /* phrases + converter */
+  .phrase-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+  @media(max-width:600px){.phrase-grid{grid-template-columns:1fr}}
+  .phrase-card{background:#F5F8FB;border:1px solid var(--line);border-radius:9px;padding:9px 12px}
+  .phrase-card .sv{font-weight:700;color:var(--blue);font-size:14px}
+  .phrase-card .is{font-size:12px;color:var(--muted);margin-top:1px}
+  .phrase-section{font-family:"Barlow Condensed";font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:12px 0 4px}
+  .conv-wrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .conv-wrap input{font-size:20px;font-weight:700;font-family:"Barlow Condensed";width:130px;border:2px solid var(--line);border-radius:9px;padding:8px 12px;color:var(--ink)}
+  .conv-wrap input:focus{outline:none;border-color:var(--blue)}
+  .conv-result{font-family:"Barlow Condensed";font-size:26px;font-weight:800;color:var(--gold)}
+  .conv-rate{font-size:11px;color:var(--muted);margin-top:2px}
   /* countdown */
   .cd-wrap{background:linear-gradient(135deg,#0D2340 0%,#1B3A5C 100%);border-radius:14px;padding:20px 16px;text-align:center;margin-bottom:0}
   .cd-label{font-family:"Barlow Condensed";font-weight:700;font-size:15px;color:#BFD3E8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
@@ -1058,6 +1070,48 @@
       <h3 class="sub">🏟 Keppnissvæði</h3>
       <p>Leikið er víðsvegar í Gautaborg og sérhverju aðliggjandi svæði. Vellirnir skiptast niður eftir hverfum: Centrum, Öster, Hisingen, Frölunda, Mölndal, Alingsås og Kungsbacka. Miðstöð mótsins er staðsett á <a href="https://www.google.com/maps/search/?api=1&query=Heden%20G%C3%B6teborg" target="_blank" rel="noopener" style="color:var(--blue)">Heden Center 📍</a> í hjarta miðbæjarins, sem er handan við hornið frá hóteli liðsins.</p>
       <p>Heden er hjarta Gothia Cup, en þar er að finna upplýsingamiðstöð og höfuðstöðvar mótsins alla vikuna. Svæðið er miðsvæðis í Gautaborg, í stuttri göngufjarlægð frá Ullevi-leikvanginum þar sem opnunarhátíðin fer fram, og Avenyn, aðalgötu borgarinnar. Á Heden er jafnframt reist glæsilegt veitingasvæði (Food Court) og verslunin Gothia Store, þar sem hægt er að festa kaup á íþróttafatnaði og opinberum minjagripum mótsins.</p>
+
+      <h3 class="sub">🇸🇪 Gagnlegar sænskar setningar</h3>
+      <div class="phrase-grid">
+        <div><div class="phrase-section">Almenn samskipti</div>
+          <div class="phrase-card"><div class="sv">Hej! / Hej då!</div><div class="is">Halló! / Bless!</div></div>
+          <div class="phrase-card" style="margin-top:8px"><div class="sv">Tack (så mycket)!</div><div class="is">Þakka þér (kærlega)!</div></div>
+          <div class="phrase-card" style="margin-top:8px"><div class="sv">Förlåt / Ursäkta</div><div class="is">Fyrirgefðu</div></div>
+          <div class="phrase-card" style="margin-top:8px"><div class="sv">Jag förstår inte</div><div class="is">Ég skil ekki</div></div>
+          <div class="phrase-card" style="margin-top:8px"><div class="sv">Talar du engelska?</div><div class="is">Talar þú ensku?</div></div>
+        </div>
+        <div><div class="phrase-section">Í búð og veitingastað</div>
+          <div class="phrase-card"><div class="sv">Hur mycket kostar det?</div><div class="is">Hvað kostar þetta?</div></div>
+          <div class="phrase-card" style="margin-top:8px"><div class="sv">Kan jag betala med kort?</div><div class="is">Get ég greitt með korti?</div></div>
+          <div class="phrase-card" style="margin-top:8px"><div class="sv">En glass, tack</div><div class="is">Einn ís, takk</div></div>
+          <div class="phrase-card" style="margin-top:8px"><div class="sv">Vatten / Menyn, tack</div><div class="is">Vatn / Matseðillinn, takk</div></div>
+          <div class="phrase-card" style="margin-top:8px"><div class="sv">Var är toaletten?</div><div class="is">Hvar er klósettið?</div></div>
+        </div>
+        <div><div class="phrase-section">Á leikvangi</div>
+          <div class="phrase-card"><div class="sv">Bra jobbat! / Bra kämpat!</div><div class="is">Vel gert!</div></div>
+          <div class="phrase-card" style="margin-top:8px"><div class="sv">Kämpa! / Heja!</div><div class="is">Berðu þig! / Heya!</div></div>
+          <div class="phrase-card" style="margin-top:8px"><div class="sv">Nästan! / Otur!</div><div class="is">Næstum! / Ólán!</div></div>
+        </div>
+        <div><div class="phrase-section">Á hótelinu</div>
+          <div class="phrase-card"><div class="sv">God natt!</div><div class="is">Góða nótt!</div></div>
+          <div class="phrase-card" style="margin-top:8px"><div class="sv">God morgon!</div><div class="is">Góðan daginn!</div></div>
+          <div class="phrase-card" style="margin-top:8px"><div class="sv">Kan jag få nyckeln?</div><div class="is">Má ég fá lykillinn?</div></div>
+        </div>
+      </div>
+
+      <h3 class="sub" style="margin-top:20px">💱 Gjaldmiðlabreytir · SEK í ISK</h3>
+      <div class="conv-wrap">
+        <div>
+          <input type="number" id="convSek" placeholder="SEK" oninput="convCalc()" min="0">
+          <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:3px">Sænskar krónur</div>
+        </div>
+        <div style="font-size:24px;color:var(--muted)">=</div>
+        <div>
+          <div class="conv-result" id="convIsk">--</div>
+          <div style="font-size:11px;color:var(--muted)">Íslenskar krónur</div>
+        </div>
+      </div>
+      <div class="conv-rate" id="convRate">Sæki gengi...</div>
 
       <h3 class="sub">📺 Leikir sýndir beint</h3>
       <p>Hægt er að horfa á streymi frá flestum leikjum og kaupa bæði staka leiki og pass sem gildir fyrir allt mótið. Aðgangur á síðu mótsins.</p>
@@ -3853,6 +3907,24 @@ window.addEventListener('load', function() {
   }
   tickCd(); setInterval(tickCd,1000);
 })();
+var SEK_ISK=null;
+(function(){
+  fetch("https://api.frankfurter.app/latest?from=SEK&to=ISK")
+    .then(function(r){return r.json();})
+    .then(function(d){
+      SEK_ISK=d.rates.ISK;
+      var el=document.getElementById("convRate");
+      if(el) el.textContent="1 SEK = "+SEK_ISK.toFixed(1)+" ISK (gengi "+d.date+")";
+    })
+    .catch(function(){var el=document.getElementById("convRate");if(el)el.textContent="Ekki tókst að sækja gengi.";});
+})();
+function convCalc(){
+  var sek=parseFloat(document.getElementById("convSek").value)||0;
+  var el=document.getElementById("convIsk");
+  if(!el) return;
+  if(!SEK_ISK){el.textContent="...";return;}
+  el.textContent=Math.round(sek*SEK_ISK).toLocaleString("is-IS")+" kr";
+}
 (function(){
   var WX={0:"☀️",1:"🌤️",2:"⛅",3:"🌥️",45:"🌫️",48:"🌫️",51:"🌦️",53:"🌦️",55:"🌦️",61:"🌧️",63:"🌧️",65:"🌧️",71:"🌨️",73:"🌨️",75:"🌨️",77:"🌨️",80:"🌦️",81:"🌦️",82:"🌦️",85:"🌨️",86:"🌨️",95:"⛈️",96:"⛈️",99:"⛈️"};
   var DAYS=["Sun","Mán","Þri","Mið","Fim","Fös","Lau"];
