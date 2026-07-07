@@ -694,7 +694,7 @@
       <h3 class="sub">🌤 Veðurspá · Gautaborg. Við vonum það besta!</h3>
       <p style="font-size:12px;color:var(--muted);margin-bottom:6px">Gautaborg í júlí er yfirleitt hlý og skemmtileg. Pakkið samt alltaf regnjakka. Þetta er Skandinavía. <em>Spáin er áreiðanlegust u.þ.b. 5–7 dögum fyrir ferðina (12–19 júlí).</em></p>
       <div id="wxGrid" class="wx-grid"><p style="color:var(--muted);font-size:13px">Spyr Þór um veðrið...</p></div>
-      <p style="font-size:11px;color:var(--muted);margin-top:2px">Heimild: Open-Meteo · uppfærist sjálfkrafa</p>
+      <p style="font-size:11px;color:var(--muted);margin-top:2px">Heimild: Open-Meteo · meðaltal ECMWF, GFS &amp; GEM líkana · uppfærist sjálfkrafa</p>
     </div>
     <div class="card">
       <p style="color:var(--muted);font-style:italic">Dagskrá þessi er ekki tæmandi enda fjögur lið frá Stjörnunni. Riðlakeppnin fer fram mánudag til miðvikudags (3 leikir á lið). Úrslitakeppni og tímasetningar hennar birtast síðar.</p>
@@ -3980,13 +3980,28 @@ function convCalc(){
 (function(){
   var WX={0:"☀️",1:"🌤️",2:"⛅",3:"🌥️",45:"🌫️",48:"🌫️",51:"🌦️",53:"🌦️",55:"🌦️",61:"🌧️",63:"🌧️",65:"🌧️",71:"🌨️",73:"🌨️",75:"🌨️",77:"🌨️",80:"🌦️",81:"🌦️",82:"🌦️",85:"🌨️",86:"🌨️",95:"⛈️",96:"⛈️",99:"⛈️"};
   var DAYS=["Sun","Mán","Þri","Mið","Fim","Fös","Lau"];
-  fetch("https://api.open-meteo.com/v1/forecast?latitude=57.7089&longitude=11.9746&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode&timezone=Europe%2FStockholm&forecast_days=16")
+  var MODELS=["ecmwf_ifs025","gfs_seamless","gem_seamless"];
+  fetch("https://api.open-meteo.com/v1/forecast?latitude=57.7089&longitude=11.9746&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode&timezone=Europe%2FStockholm&forecast_days=16&models="+MODELS.join(","))
     .then(function(r){return r.json();})
     .then(function(d){
       var grid=document.getElementById("wxGrid");
       if(!d.daily||!d.daily.time){
         grid.innerHTML="<p style=\"color:var(--muted);font-size:13px\">Veðurspáin er ekki tiltæk enn. Reynið aftur nær ferðinni. (Gautaborg verður hlý. Við trúum því.)</p>";
         return;
+      }
+      // meðaltal yfir líkönin (sleppir gildum sem vantar í einstök líkön)
+      function avg(base,i){
+        var s=0,n=0;
+        MODELS.forEach(function(m){var a=d.daily[base+"_"+m]; if(a&&a[i]!=null){s+=a[i];n++;}});
+        return n?s/n:null;
+      }
+      // veðurtákn: miðgildi (consensus) líkananna
+      function code(i){
+        var c=[];
+        MODELS.forEach(function(m){var a=d.daily["weathercode_"+m]; if(a&&a[i]!=null)c.push(a[i]);});
+        if(!c.length)return null;
+        c.sort(function(x,y){return x-y;});
+        return c[Math.floor((c.length-1)/2)];
       }
       var filtered=d.daily.time.reduce(function(acc,date,i){
         if(date>="2026-07-12"&&date<="2026-07-19") acc.push(i);
@@ -4000,11 +4015,11 @@ function convCalc(){
         var dt=new Date(d.daily.time[i]);
         var day=DAYS[dt.getDay()];
         var dm=(dt.getDate())+"/"+(dt.getMonth()+1);
-        var icon=WX[d.daily.weathercode[i]]||"🌡️";
-        var hi=Math.round(d.daily.temperature_2m_max[i]);
-        var lo=Math.round(d.daily.temperature_2m_min[i]);
-        var rain=d.daily.precipitation_sum[i];
-        return "<div class=\"wx-day\"><div class=\"wx-date\">"+day+"<br>"+dm+"</div><div class=\"wx-icon\">"+icon+"</div><div class=\"wx-hi\">"+hi+"°</div><div class=\"wx-lo\">"+lo+"°</div>"+(rain>0.1?"<div class=\"wx-rain\">💧"+rain+"mm</div>":"")+"</div>";
+        var icon=WX[code(i)]||"🌡️";
+        var hi=Math.round(avg("temperature_2m_max",i));
+        var lo=Math.round(avg("temperature_2m_min",i));
+        var rain=avg("precipitation_sum",i);
+        return "<div class=\"wx-day\"><div class=\"wx-date\">"+day+"<br>"+dm+"</div><div class=\"wx-icon\">"+icon+"</div><div class=\"wx-hi\">"+hi+"°</div><div class=\"wx-lo\">"+lo+"°</div>"+(rain>0.1?"<div class=\"wx-rain\">💧"+rain.toFixed(1)+"mm</div>":"")+"</div>";
       }).join("");
     })
     .catch(function(){
