@@ -3990,16 +3990,17 @@ function convCalc(){
         grid.innerHTML="<p style=\"color:var(--muted);font-size:13px\">Veðurspáin er ekki tiltæk enn. Reynið aftur nær ferðinni. (Gautaborg verður hlý. Við trúum því.)</p>";
         return;
       }
-      // meðaltal yfir líkönin (sleppir gildum sem vantar í einstök líkön)
+      // meðaltal yfir líkönin — notað fyrir hita (raunhæft að meðaltala hitastig)
       function avg(base,i){
         var s=0,n=0;
         MODELS.forEach(function(m){var a=d.daily[base+"_"+m]; if(a&&a[i]!=null){s+=a[i];n++;}});
         return n?s/n:null;
       }
-      // veðurtákn: miðgildi (consensus) líkananna
-      function code(i){
+      // miðgildi (consensus) — notað fyrir úrkomu og veðurtákn, svo eitt blautt
+      // líkan (ECMWF) dragi ekki alla dagana í rigningu eins og meðaltal gerir
+      function med(base,i){
         var c=[];
-        MODELS.forEach(function(m){var a=d.daily["weathercode_"+m]; if(a&&a[i]!=null)c.push(a[i]);});
+        MODELS.forEach(function(m){var a=d.daily[base+"_"+m]; if(a&&a[i]!=null)c.push(a[i]);});
         if(!c.length)return null;
         c.sort(function(x,y){return x-y;});
         return c[Math.floor((c.length-1)/2)];
@@ -4016,10 +4017,10 @@ function convCalc(){
         var dt=new Date(d.daily.time[i]);
         var day=DAYS[dt.getDay()];
         var dm=(dt.getDate())+"/"+(dt.getMonth()+1);
-        var icon=WX[code(i)]||"🌡️";
+        var icon=WX[med("weathercode",i)]||"🌡️";
         var hi=Math.round(avg("temperature_2m_max",i));
         var lo=Math.round(avg("temperature_2m_min",i));
-        var rain=avg("precipitation_sum",i);
+        var rain=med("precipitation_sum",i);
         return "<div class=\"wx-day\"><div class=\"wx-date\">"+day+"<br>"+dm+"</div><div class=\"wx-icon\">"+icon+"</div><div class=\"wx-hi\">"+hi+"°</div><div class=\"wx-lo\">"+lo+"°</div>"+(rain>0.1?"<div class=\"wx-rain\">💧"+rain.toFixed(1)+"mm</div>":"")+"</div>";
       }).join("");
     })
