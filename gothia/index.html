@@ -292,6 +292,7 @@
   .fx .opp{font-family:"Barlow Semi Condensed";font-weight:700;font-size:18px;color:var(--ink-2)}
   .fx .opp .me{color:var(--blue)}
   .fx .opp .vs{color:var(--gold-deep);margin:0 5px;font-weight:600}
+  .fx .opp .vs.vs-score{color:var(--blue);font-weight:800;background:var(--gold-soft);border-radius:5px;padding:1px 7px}
   @media(max-width:560px){
     .fx{grid-template-columns:64px 1fr;gap:8px 11px}
     .fx .right{grid-column:1/-1;align-items:flex-start;text-align:left;flex-direction:row;flex-wrap:wrap;
@@ -716,10 +717,10 @@
         <div class="fxday-h"><span class="ic">⚽</span> Mánudagur 13. júlí <span class="tag">Mót hefst · Riðlar</span></div>
         <div class="fxlist">
           <div class="fx note">Sameiginlegur morgunmatur á hóteli (líkt og alla aðra morgna). Liðsstjórar fara með liðunum og sjá um skráningu á mótið ef þess þarf.</div>
-          <div class="fx"><span class="time">11:00</span><span class="opp">Jonsereds IF <span class="vs">–</span> <span class="me">Stjarnan 2</span></span><span class="right"><span class="tt t2">U14 · Riðill 6</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.73424866657612,12.014797893923784" target="_blank" rel="noopener">Gamlestadsvallen 1 <span class="pin">📍</span></a></span></span></div>
-          <div class="fx"><span class="time">13:50</span><span class="opp">Kalmar FF <span class="vs">–</span> <span class="me">Stjarnan 1</span></span><span class="right"><span class="tt t1">U14 · Riðill 5</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.73793573955654,12.040739723569446" target="_blank" rel="noopener">Kviberg 6 <span class="pin">📍</span></a></span></span></div>
-          <div class="fx"><span class="time">14:00</span><span class="opp">Hjuviks AIK <span class="vs">–</span> <span class="me">Stjarnan 1</span></span><span class="right"><span class="tt t3">U13 · Riðill 2</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.701747595263434,11.97804621099042" target="_blank" rel="noopener">Heden 3 – Fortum <span class="pin">📍</span></a></span></span></div>
-          <div class="fx"><span class="time">14:40</span><span class="opp">IF Vardar <span class="vs">–</span> <span class="me">Stjarnan 2</span></span><span class="right"><span class="tt t4">U13 · Riðill 3</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.67498139655395,11.881861379760107" target="_blank" rel="noopener">Hagenplan <span class="pin">📍</span></a></span></span></div>
+          <div class="fx"><span class="time">11:00</span><span class="opp">Jonsereds IF <span class="vs" data-k="1_0" data-flip="1">–</span> <span class="me">Stjarnan 2</span></span><span class="right"><span class="tt t2">U14 · Riðill 6</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.73424866657612,12.014797893923784" target="_blank" rel="noopener">Gamlestadsvallen 1 <span class="pin">📍</span></a></span></span></div>
+          <div class="fx"><span class="time">13:50</span><span class="opp">Kalmar FF <span class="vs" data-k="0_0" data-flip="1">–</span> <span class="me">Stjarnan 1</span></span><span class="right"><span class="tt t1">U14 · Riðill 5</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.73793573955654,12.040739723569446" target="_blank" rel="noopener">Kviberg 6 <span class="pin">📍</span></a></span></span></div>
+          <div class="fx"><span class="time">14:00</span><span class="opp">Hjuviks AIK <span class="vs" data-k="2_0" data-flip="1">–</span> <span class="me">Stjarnan 1</span></span><span class="right"><span class="tt t3">U13 · Riðill 2</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.701747595263434,11.97804621099042" target="_blank" rel="noopener">Heden 3 – Fortum <span class="pin">📍</span></a></span></span></div>
+          <div class="fx"><span class="time">14:40</span><span class="opp">IF Vardar <span class="vs" data-k="3_0" data-flip="1">–</span> <span class="me">Stjarnan 2</span></span><span class="right"><span class="tt t4">U13 · Riðill 3</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.67498139655395,11.881861379760107" target="_blank" rel="noopener">Hagenplan <span class="pin">📍</span></a></span></span></div>
           <div class="fx note" style="background:var(--gold-soft);color:#7A4A18;font-weight:600;font-style:normal">🎉 Opnunarhátíð á <a href="https://www.google.com/maps/search/?api=1&query=57.70637417308924,11.980094611433227" target="_blank" rel="noopener" style="color:#B47E12;font-weight:700">Ullevi Stadium</a> kl. 20:00 (hlið opnar 18:30). Engar töskur/bakpokar leyfðir.</div>
         </div>
       </div>
@@ -727,10 +728,10 @@
       <div class="fxday">
         <div class="fxday-h"><span class="ic">⚽</span> Þriðjudagur 14. júlí <span class="tag">Riðlar</span></div>
         <div class="fxlist">
-          <div class="fx"><span class="time">10:30</span><span class="opp"><span class="me">Stjarnan 2</span> <span class="vs">–</span> FCNE</span><span class="right"><span class="tt t4">U13 · Riðill 3</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.701747595263434,11.97804621099042" target="_blank" rel="noopener">Heden 3 – Fortum <span class="pin">📍</span></a></span></span></div>
-          <div class="fx"><span class="time">11:50</span><span class="opp"><span class="me">Stjarnan 1</span> <span class="vs">–</span> Madrid Panthers</span><span class="right"><span class="tt t1">U14 · Riðill 5</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.74338062189707,12.044433374622747" target="_blank" rel="noopener">Kviberg 15 <span class="pin">📍</span></a></span></span></div>
-          <div class="fx"><span class="time">12:50</span><span class="opp"><span class="me">Stjarnan 2</span> <span class="vs">–</span> Iconz Elite</span><span class="right"><span class="tt t2">U14 · Riðill 6</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.73424866657612,12.014797893923784" target="_blank" rel="noopener">Gamlestadsvallen 2 <span class="pin">📍</span></a></span></span></div>
-          <div class="fx"><span class="time">13:00</span><span class="opp"><span class="me">Stjarnan 1</span> <span class="vs">–</span> Prep Schools Lions White</span><span class="right"><span class="tt t3">U13 · Riðill 2</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.67498139655395,11.881861379760107" target="_blank" rel="noopener">Hagenplan <span class="pin">📍</span></a></span></span></div>
+          <div class="fx"><span class="time">10:30</span><span class="opp"><span class="me">Stjarnan 2</span> <span class="vs" data-k="3_1" data-flip="0">–</span> FCNE</span><span class="right"><span class="tt t4">U13 · Riðill 3</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.701747595263434,11.97804621099042" target="_blank" rel="noopener">Heden 3 – Fortum <span class="pin">📍</span></a></span></span></div>
+          <div class="fx"><span class="time">11:50</span><span class="opp"><span class="me">Stjarnan 1</span> <span class="vs" data-k="0_1" data-flip="0">–</span> Madrid Panthers</span><span class="right"><span class="tt t1">U14 · Riðill 5</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.74338062189707,12.044433374622747" target="_blank" rel="noopener">Kviberg 15 <span class="pin">📍</span></a></span></span></div>
+          <div class="fx"><span class="time">12:50</span><span class="opp"><span class="me">Stjarnan 2</span> <span class="vs" data-k="1_1" data-flip="0">–</span> Iconz Elite</span><span class="right"><span class="tt t2">U14 · Riðill 6</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.73424866657612,12.014797893923784" target="_blank" rel="noopener">Gamlestadsvallen 2 <span class="pin">📍</span></a></span></span></div>
+          <div class="fx"><span class="time">13:00</span><span class="opp"><span class="me">Stjarnan 1</span> <span class="vs" data-k="2_1" data-flip="0">–</span> Prep Schools Lions White</span><span class="right"><span class="tt t3">U13 · Riðill 2</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.67498139655395,11.881861379760107" target="_blank" rel="noopener">Hagenplan <span class="pin">📍</span></a></span></span></div>
           <div class="fx nearby"><span class="eye">👀</span> Önnur Stjörnulið nálægt: <b>stúlknalið Stjörnunnar (stúlkur 16)</b> spila á <a href="https://www.google.com/maps/search/?api=1&query=57.701747595263434,11.97804621099042" target="_blank" rel="noopener">Heden 4</a> kl. 17:40 um kvöldið, steinsnar frá hótelinu. Tilvalið að kíkja og styðja.</div>
           <div class="fx note" style="background:var(--gold-soft);color:#7A4A18;font-weight:600;font-style:normal">🎉 Leaders party fyrir fararstjóra liða kl. 19:00–24:00. Foreldrar standa vaktina með liðunum á meðan.</div>
         </div>
@@ -739,10 +740,10 @@
       <div class="fxday">
         <div class="fxday-h"><span class="ic">⚽</span> Miðvikudagur 15. júlí <span class="tag">Riðlar</span></div>
         <div class="fxlist">
-          <div class="fx"><span class="time">10:40</span><span class="opp">Älvsjö AIK FF 1 <span class="vs">–</span> <span class="me">Stjarnan 1</span></span><span class="right"><span class="tt t3">U13 · Riðill 2</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.67498139655395,11.881861379760107" target="_blank" rel="noopener">Hagenplan <span class="pin">📍</span></a></span></span></div>
-          <div class="fx"><span class="time">13:40</span><span class="opp">Umeå IK FF <span class="vs">–</span> <span class="me">Stjarnan 2</span></span><span class="right"><span class="tt t2">U14 · Riðill 6</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.70301028396487,12.14964906441779" target="_blank" rel="noopener">Öjersjö IP <span class="pin">📍</span></a></span></span></div>
-          <div class="fx"><span class="time">13:50</span><span class="opp">Djurgårdens IF <span class="vs">–</span> <span class="me">Stjarnan 2</span></span><span class="right"><span class="tt t4">U13 · Riðill 3</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.681155695333594,11.982550550924525" target="_blank" rel="noopener">Guldheden Södra <span class="pin">📍</span></a></span></span></div>
-          <div class="fx"><span class="time">13:50</span><span class="opp">Marin FC 2 <span class="vs">–</span> <span class="me">Stjarnan 1</span></span><span class="right"><span class="tt t1">U14 · Riðill 5</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.73424866657612,12.014797893923784" target="_blank" rel="noopener">Gamlestadsvallen 1 <span class="pin">📍</span></a></span></span></div>
+          <div class="fx"><span class="time">10:40</span><span class="opp">Älvsjö AIK FF 1 <span class="vs" data-k="2_2" data-flip="1">–</span> <span class="me">Stjarnan 1</span></span><span class="right"><span class="tt t3">U13 · Riðill 2</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.67498139655395,11.881861379760107" target="_blank" rel="noopener">Hagenplan <span class="pin">📍</span></a></span></span></div>
+          <div class="fx"><span class="time">13:40</span><span class="opp">Umeå IK FF <span class="vs" data-k="1_2" data-flip="1">–</span> <span class="me">Stjarnan 2</span></span><span class="right"><span class="tt t2">U14 · Riðill 6</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.70301028396487,12.14964906441779" target="_blank" rel="noopener">Öjersjö IP <span class="pin">📍</span></a></span></span></div>
+          <div class="fx"><span class="time">13:50</span><span class="opp">Djurgårdens IF <span class="vs" data-k="3_2" data-flip="1">–</span> <span class="me">Stjarnan 2</span></span><span class="right"><span class="tt t4">U13 · Riðill 3</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.681155695333594,11.982550550924525" target="_blank" rel="noopener">Guldheden Södra <span class="pin">📍</span></a></span></span></div>
+          <div class="fx"><span class="time">13:50</span><span class="opp">Marin FC 2 <span class="vs" data-k="0_2" data-flip="1">–</span> <span class="me">Stjarnan 1</span></span><span class="right"><span class="tt t1">U14 · Riðill 5</span><span class="venue"><a href="https://www.google.com/maps/search/?api=1&query=57.73424866657612,12.014797893923784" target="_blank" rel="noopener">Gamlestadsvallen 1 <span class="pin">📍</span></a></span></span></div>
           <div class="pending" style="border-top:none;border-radius:0">Riðlakeppni lýkur. Örlítill (en ólíklegur) möguleiki að útsláttarkeppni hefjist fyrir einhver lið hér um kvöldið.</div>
           <div class="fx note" style="background:var(--gold-soft);color:#7A4A18;font-weight:600;font-style:normal">🎉 Dúllubarsveisla í Gautaborg kl. 18:00. Öllu Stjörnufólki úr öllum flokkum er boðið að mæta (4. fl. kvk. og 3. fl. kvk. og 3. fl. kk., en hvert foreldri/leikmaður greiðir fyrir sig). Ein stór veisla á <a href="https://contrastgbg.se" target="_blank" rel="noopener" style="color:#B47E12;font-weight:700">Contrast Public House</a>. Matur og drykkir í boði, stórt útisvæði og notalegt að innan. Allir mæta á sínum forsendum, frá ungabörnum til gamalmenna! ⚽💙</div>
         </div>
@@ -4090,6 +4091,16 @@ function convCalc(){
     el.innerHTML=h;
   }
   for(var _gi=0;_gi<4;_gi++)renderStandings(_gi);
+  function renderScheduleScores(){
+    var els=document.querySelectorAll(".fx .opp .vs[data-k]");
+    for(var i=0;i<els.length;i++){
+      var el=els[i],s=allSc.sc[el.getAttribute("data-k")];
+      if(s!=null){
+        el.textContent=el.getAttribute("data-flip")==="1"?(s.ga+"–"+s.gf):(s.gf+"–"+s.ga);
+        el.classList.add("vs-score");
+      }else{el.textContent="–";el.classList.remove("vs-score");}
+    }
+  }
   db.ref("gothia/scores").on("value",function(snap){
     allSc.sc=snap.val()||{};
     for(var ti=0;ti<4;ti++){for(var fi=0;fi<3;fi++){
@@ -4099,6 +4110,7 @@ function convCalc(){
       var gi=document.getElementById("agf_"+ti+"_"+fi),gai=document.getElementById("aga_"+ti+"_"+fi);
       if(gi&&s[k]!=null){gi.value=s[k].gf;gai.value=s[k].ga;}else if(gi){gi.value="";gai.value="";}
     }}
+    renderScheduleScores();
     for(var gi2=0;gi2<4;gi2++)renderStandings(gi2);
   });
   db.ref("gothia/group").on("value",function(snap){
