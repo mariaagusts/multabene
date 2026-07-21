@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multabene · Gothia Cup: Réttur ykkar eftir flugtafir</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3F1EC;
+    --paper-stub:#EAEBEA;
+    --ink:#182233;
+    --blue:#1D4C78;
+    --blue-dark:#123354;
+    --gold:#C8963E;
+    --stamp:#B5432E;
+    --line:#C4C7C6;
+    --mono:'IBM Plex Mono', ui-monospace, monospace;
+    --serif:'Source Serif 4', Georgia, serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation:none !important; transition:none !important;}
+  }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--serif);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--blue-dark);}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+
+  /* ---------- header / hero: boarding pass ---------- */
+  header.pass{
+    background:var(--blue);
+    color:var(--paper);
+    padding:36px 0 0;
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    opacity:.85;
+    display:flex;
+    justify-content:space-between;
+    padding-bottom:18px;
+  }
+  .route{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    font-family:var(--mono);
+    font-weight:700;
+    font-size:clamp(40px, 9vw, 68px);
+    letter-spacing:.02em;
+    padding-bottom:8px;
+  }
+  .route .plane{
+    flex:1;
+    height:2px;
+    background:repeating-linear-gradient(to right, var(--paper) 0 10px, transparent 10px 18px);
+    position:relative;
+    top:-4px;
+  }
+  .hero-title{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:clamp(26px, 4.6vw, 38px);
+    line-height:1.2;
+    max-width:16ch;
+    margin:14px 0 10px;
+  }
+  .hero-sub{
+    max-width:52ch;
+    font-size:17px;
+    opacity:.95;
+    margin-bottom:22px;
+  }
+  .stamp{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-family:var(--mono);
+    font-weight:700;
+    font-size:14px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    border:2px solid var(--gold);
+    color:var(--gold);
+    padding:8px 14px;
+    border-radius:3px;
+    transform:rotate(-2deg);
+    margin-bottom:28px;
+  }
+  nav.tabs{
+    display:flex;
+    gap:0;
+    overflow-x:auto;
+    border-top:1px solid rgba(246,243,236,.25);
+    font-family:var(--mono);
+    font-size:12.5px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+  nav.tabs a{
+    color:var(--paper);
+    text-decoration:none;
+    opacity:.75;
+    padding:14px 16px;
+    white-space:nowrap;
+    border-right:1px solid rgba(246,243,236,.2);
+  }
+  nav.tabs a:hover, nav.tabs a:focus-visible{opacity:1; background:rgba(246,243,236,.08);}
+
+  /* ---------- stub sections ---------- */
+  .stub{
+    background:var(--paper-stub);
+    padding:40px 0 44px;
+  }
+  .stub.alt{background:var(--paper);}
+  .stub-label{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--blue-dark);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .stub-label::before{
+    content:"";
+    width:8px;height:8px;
+    background:var(--gold);
+    border-radius:50%;
+    display:inline-block;
+  }
+  h2{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:clamp(22px,3.4vw,28px);
+    margin:0 0 16px;
+  }
+  p{margin:0 0 14px;}
+  .lead{font-size:17.5px;}
+
+  table.fares{
+    width:100%;
+    border-collapse:collapse;
+    font-family:var(--mono);
+    font-size:14px;
+    margin:20px 0 8px;
+  }
+  table.fares th, table.fares td{
+    text-align:left;
+    padding:10px 12px;
+    border-bottom:1px solid var(--line);
+  }
+  table.fares th{
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--blue-dark);
+  }
+  tr.highlight td{
+    background:var(--blue);
+    color:var(--paper);
+    font-weight:600;
+  }
+  tr.highlight td:first-child{border-radius:3px 0 0 3px;}
+  tr.highlight td:last-child{border-radius:0 3px 3px 0;}
+
+  .note{
+    border-left:3px solid var(--gold);
+    background:rgba(200,150,62,.08);
+    padding:12px 16px;
+    font-size:15px;
+    margin:18px 0;
+  }
+
+  /* steps */
+  .gates{
+    list-style:none;
+    margin:24px 0 0;
+    padding:0;
+  }
+  .gate{
+    display:grid;
+    grid-template-columns:64px 1fr;
+    gap:16px;
+    padding:18px 0;
+    border-top:1px dashed var(--line);
+  }
+  .gate:first-child{border-top:none;}
+  .gate-num{
+    font-family:var(--mono);
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:.06em;
+    color:var(--blue-dark);
+  }
+  .gate-num small{display:block; font-weight:400; opacity:.7; margin-top:2px;}
+  .gate h3{
+    font-family:var(--serif);
+    font-size:17px;
+    font-weight:600;
+    margin:0 0 4px;
+  }
+  .gate p{font-size:15px; margin:0;}
+
+  /* lookup tool */
+  .lookup-field label{
+    display:block;
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--blue-dark);
+    margin-bottom:8px;
+  }
+  select#nafnval{
+    width:100%;
+    font-family:var(--serif);
+    font-size:17px;
+    padding:12px 14px;
+    border:1.5px solid var(--ink);
+    border-radius:4px;
+    background:var(--paper);
+    color:var(--ink);
+    appearance:none;
+    background-image:linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+    background-position: calc(100% - 22px) center, calc(100% - 16px) center;
+    background-size:6px 6px, 6px 6px;
+    background-repeat:no-repeat;
+  }
+  #result{
+    display:none;
+    margin-top:24px;
+    border:1.5px solid var(--ink);
+    border-radius:6px;
+    overflow:hidden;
+    background:var(--paper);
+  }
+  #result.show{display:block;}
+  .result-head{
+    background:var(--ink);
+    color:var(--paper);
+    padding:14px 18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-family:var(--mono);
+    font-size:12.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+  .result-body{padding:18px;}
+  .kv-row{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    padding:8px 0;
+    border-bottom:1px dashed var(--line);
+    font-family:var(--mono);
+    font-size:13.5px;
+  }
+  .kv-row:last-of-type{border-bottom:none;}
+  .kv-row span:first-child{color:#7A7565;}
+  .kv-row span:last-child{font-weight:600; text-align:right;}
+  .flag{
+    display:inline-block;
+    margin-top:10px;
+    background:var(--stamp);
+    color:var(--paper);
+    font-family:var(--mono);
+    font-size:12px;
+    font-weight:600;
+    padding:4px 10px;
+    border-radius:3px;
+  }
+  .claim-text{
+    margin-top:16px;
+    background:var(--paper-stub);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:16px;
+    font-size:14.5px;
+    white-space:pre-line;
+  }
+  .copy-btn{
+    margin-top:12px;
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    background:var(--blue);
+    color:var(--paper);
+    border:none;
+    padding:10px 16px;
+    border-radius:4px;
+    cursor:pointer;
+  }
+  .copy-btn:hover{background:var(--blue-dark);}
+  .copy-btn.copied{background:var(--gold);}
+  .privacy-note{
+    font-size:13px;
+    color:#7A7565;
+    margin-top:10px;
+  }
+
+  /* evidence screenshots */
+  .evidence-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(160px,1fr));
+    gap:14px;
+    margin-top:14px;
+  }
+  .evidence-card{
+    display:block;
+    text-decoration:none;
+    color:var(--ink);
+    border:1.5px solid var(--ink);
+    border-radius:6px;
+    overflow:hidden;
+    background:var(--paper);
+    transition:transform .12s ease;
+  }
+  .evidence-card:hover{transform:translateY(-2px);}
+  .evidence-card img{
+    display:block;
+    width:100%;
+    height:140px;
+    object-fit:cover;
+    object-position:top;
+    border-bottom:1.5px solid var(--ink);
+  }
+  .evidence-card span{
+    display:block;
+    padding:10px 12px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    line-height:1.4;
+  }
+  .evidence-card span small{
+    color:var(--blue-dark);
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    font-weight:600;
+  }
+
+  footer{
+    padding:28px 0 40px;
+    font-family:var(--mono);
+    font-size:12px;
+    color:#7A7565;
+    text-align:center;
+  }
+  .barcode{
+    height:34px;
+    background:repeating-linear-gradient(to right, var(--ink) 0 2px, transparent 2px 5px, var(--ink) 5px 6px, transparent 6px 10px);
+    opacity:.75;
+    margin:18px 0;
+  }
+
+  a:focus-visible, button:focus-visible{outline:2px solid var(--blue-dark); outline-offset:3px;}
+
+  /* ---------- password lock screen ---------- */
+  #lock-screen{
+    position:fixed; inset:0; z-index:100;
+    background:var(--blue);
+    display:flex; align-items:center; justify-content:center;
+    padding:24px;
+  }
+  .lock-box{
+    max-width:360px; width:100%;
+    background:var(--paper);
+    border-radius:8px;
+    padding:32px 28px;
+    text-align:center;
+  }
+  .lock-eyebrow{
+    font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--blue-dark); margin-bottom:14px;
+  }
+  .lock-title{
+    font-family:var(--serif); font-weight:600; font-size:26px; margin:0 0 10px; color:var(--ink);
+  }
+  .lock-sub{font-size:14.5px; color:#7A7565; margin:0 0 20px;}
+  #lock-form{display:flex; flex-direction:column; gap:10px;}
+  #lock-input{
+    font-family:var(--serif); font-size:16px; padding:12px 14px;
+    border:1.5px solid var(--ink); border-radius:4px; text-align:center;
+  }
+  #lock-form button{
+    font-family:var(--mono); font-size:13px; letter-spacing:.04em; text-transform:uppercase;
+    background:var(--blue); color:var(--paper); border:none; padding:12px 16px; border-radius:4px; cursor:pointer;
+  }
+  #lock-form button:hover{background:var(--blue-dark);}
+  .lock-error{display:none; color:var(--stamp); font-size:13.5px; margin:14px 0 0;}
+</style>
+</head>
+<body>
+
+<div id="lock-screen">
+  <div class="lock-box">
+    <div class="lock-eyebrow">Multabene · Foreldrahandbók</div>
+    <h1 class="lock-title">Aðgangsorð</h1>
+    <p class="lock-sub">Þessi síða er eingöngu ætluð foreldrum liðanna. Sláið inn aðgangsorðið sem þið fenguð sent.</p>
+    <form id="lock-form" autocomplete="off">
+      <input type="password" id="lock-input" placeholder="Aðgangsorð" autocomplete="off" required>
+      <button type="submit">Opna síðu</button>
+    </form>
+    <p class="lock-error" id="lock-error">Rangt aðgangsorð, reynið aftur.</p>
+  </div>
+</div>
+
+<div id="page-content" style="display:none">
+
+<header class="pass">
+  <div class="wrap">
+    <div class="eyebrow">
+      <span>Multabene · Foreldrahandbók</span>
+      <span>Gothia Cup 2026</span>
+    </div>
+    <div class="route">
+      <span>GOT</span>
+      <span class="plane"></span>
+      <span>KEF</span>
+    </div>
+    <h1 class="hero-title">Réttindi ykkar vegna seinkunar á flugi</h1>
+    <p class="hero-sub">Stuttur leiðarvísir fyrir foreldra stelpnanna sem lentu í röskun og endurbókunum á heimleiðinni frá Gautaborg: hvað reglurnar segja og hvernig þið sækið um bætur, skref fyrir skref.</p>
+    <div class="stamp">Allt að 400 € á farþega</div>
+  </div>
+  <nav class="tabs">
+    <a href="#finna">Finna minn texta</a>
+    <a href="#retturinn">Rétturinn ykkar</a>
+    <a href="#skref">Skref fyrir skref</a>
+  </nav>
+</header>
+
+<section id="finna" class="stub">
+  <div class="wrap">
+    <div class="stub-label">Uppflettitól</div>
+    <h2>Finnið upplýsingar barnsins ykkar</h2>
+    <p class="lead">Veljið nafn barnsins úr listanum til að sjá bókunarnúmerið og fá tilbúinn texta til að líma inn í umsóknina hjá Icelandair.</p>
+
+    <div class="lookup-field">
+      <label for="nafnval">Nafn farþega</label>
+      <select id="nafnval">
+        <option value="">Veljið nafn</option>
+      </select>
+    </div>
+
+    <div id="result">
+      <div class="result-head">
+        <span id="result-nafn">·</span>
+        <span id="result-lid">·</span>
+      </div>
+      <div class="result-body">
+        <div class="kv-row"><span>Bókunarnúmer</span><span id="result-bokun">·</span></div>
+        <div class="kv-row"><span>Rafmiðanúmer (ETKT)</span><span id="result-etkt">·</span></div>
+        <div class="kv-row"><span>Upprunalegt flug</span><span id="result-flug1">·</span></div>
+        <div class="kv-row"><span>Endurbókun</span><span id="result-flug2">·</span></div>
+        <div class="kv-row"><span>Endanlegt flug</span><span id="result-flug3">·</span></div>
+        <div class="kv-row"><span>Koma til Íslands</span><span id="result-koma">·</span></div>
+        <div id="result-flag"></div>
+
+        <div class="claim-text" id="claim-text"></div>
+        <button class="copy-btn" id="copy-btn" type="button">Afrita texta</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="retturinn" class="stub alt">
+  <div class="wrap">
+    <div class="stub-label">Löggjöfin</div>
+    <h2>Rétturinn ykkar í stuttu máli</h2>
+    <p>Reglugerð (EB) nr. 261/2004 gildir um allt flug sem leggur af stað frá flugvelli innan ESB/EES-svæðisins, þar á meðal Svíþjóð, óháð því hvar flugfélagið er skráð.</p>
+    <p>Upphæð bótanna fer eftir vegalengd flugsins:</p>
+    <table class="fares">
+      <thead>
+        <tr><th>Vegalengd</th><th>Bætur á farþega</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Allt að 1.500 km</td><td>250 €</td></tr>
+        <tr class="highlight"><td>1.500–3.500 km (Gautaborg–Ísland er hér)</td><td>400 €</td></tr>
+        <tr><td>Yfir 3.500 km (utan ESB)</td><td>600 €</td></tr>
+      </tbody>
+    </table>
+    <p>Auk peningabóta eiga farþegar rétt á umönnun á meðan beðið er: mat og drykkjum, hótelgistingu ef gista þarf yfir nótt, akstri milli flugvallar og hótels, auk aðgangs að fjarskiptum (tvö símtöl eða tölvupósta), allt án endurgjalds frá flugfélaginu. Ef þið þurftuð að reiða þennan kostnað fram sjálf á félagið að endurgreiða hann.</p>
+    <div class="note">Flugfélag getur aðeins undanskilið sig bótaskyldu ef það sýnir fram á að röskunin hafi stafað af „óviðráðanlegum aðstæðum" (t.d. dæmigerðu óveðri eða verkfalli sem félagið gat með engu móti stýrt). Icelandair hefur hins vegar þegar staðfest skriflega í tilkynningum til farþega að aflýsingin hafi stafað af tæknilegri bilun („technical failure"). Samkvæmt dómaframkvæmd ESB-dómstólsins teljast tæknibilanir almennt <strong>ekki</strong> til óviðráðanlegra aðstæðna. Þessi undanþága ætti því ekki að eiga við í ykkar máli.</div>
+    <p>Að auki hefur þeirri hugmynd verið hent fram hvort stelpurnar ættu rétt á 800 € þar sem tveimur flugum var aflýst áður en það þriðja var sett á til að sækja stelpurnar.</p>
+    <div class="note">Bæturnar í reglugerðinni eru föst, flöt upphæð sem miðast við röskunina á leiðinni að lokaáfangastað, ekki við fjölda aflýstra flugleggja eða endurbókana. Þótt tvö flug hafi verið aflýst áður en það þriðja loks komst á loft, telst þetta ein samfelld röskun á sömu ferð, og því ber félaginu að greiða eina bótaupphæð á hvern farþega samkvæmt 7. gr. reglugerðarinnar, hér 400 €. Til að 800 € ættu við þyrfti annaðhvort að vera um tvær aðskildar, ótengdar bókanir að ræða sem hvor um sig teldist sjálfstæð ferðaröskun, eða flugleið sem félli í hærri fjarlægðarflokk. Hvorugt á við í þessu máli.</div>
+  </div>
+</section>
+
+<section id="skref" class="stub">
+  <div class="wrap">
+    <div class="stub-label">Ferlið</div>
+    <h2>Svona sækið þið um bætur, skref fyrir skref</h2>
+    <ol class="gates">
+      <li class="gate">
+        <div class="gate-num">SKREF 01<small>undirbúningur</small></div>
+        <div>
+          <h3>Sækið textann ykkar</h3>
+          <p>Farið upp í „Finna minn texta" hér ofar á síðunni, veljið nafn barnsins úr fellilistanum og afritið tilbúinn umsóknartexta með einum smelli á „Afrita texta". Hafið einnig til taks kvittanir fyrir mat eða öðrum útlögðum kostnaði sem féll til á meðan biðinni stóð.</p>
+        </div>
+      </li>
+      <li class="gate">
+        <div class="gate-num">SKREF 02<small>síða</small></div>
+        <div>
+          <h3>Farið inn á kvörtunarsíðu Icelandair</h3>
+          <p>Flugið var bókað í gegnum ferðaskrifstofu (þriðja aðila). Notið því <a href="https://www.icelandair.com/support/contact/flight-disruption-claims/" target="_blank" rel="noopener">icelandair.com/support/contact/flight-disruption-claims</a>, sem er sérstakt eyðublað fyrir bókanir sem gerðar eru utan vef Icelandair. Notið upplýsingar úr skrefi 1 til að fylla út efstu reitina.</p>
+        </div>
+      </li>
+      <li class="gate">
+        <div class="gate-num">SKREF 03<small>flokkun</small></div>
+        <div>
+          <h3>Veljið réttan flokk (tvisvar ef þörf krefur)</h3>
+          <p>Veljið fyrst flokkinn „EU Compensation" og sendið umsóknina inn. Ef barnið á kvittanir fyrir útlögðum kostnaði (veitingar), farið þá aftur inn á síðuna og veljið flokkinn „Delay / Cancellation Assistance". Þetta eru tvær aðskildar umsóknir sem þarf að senda inn hvora í sínu lagi. Notist við flugnúmerið FI383 í umsókninni.</p>
+        </div>
+      </li>
+      <li class="gate">
+        <div class="gate-num">SKREF 04<small>eyðublað</small></div>
+        <div>
+          <h3>Fyllið út fyrir hvern farþega</h3>
+          <p>Hvert barn og fullorðinn með eigin farmiða þarf sína eigin umsókn. Foreldri eða forráðamaður fyllir út og undirritar fyrir hönd barnsins.</p>
+        </div>
+      </li>
+      <li class="gate">
+        <div class="gate-num">SKREF 05<small>upphæð</small></div>
+        <div>
+          <h3>Tilgreinið kröfuna skýrt</h3>
+          <p>Tilgreinið skýrt að þið óskið eftir 400 € á farþega samkvæmt 7. gr. reglugerðar (EB) nr. 261/2004 og lýsið ferðaröskuninni (upphaflegu flugi, endurbókunum og heildartöf) í fáum setningum. Þið getið límt tilbúna textann sem þið afrituðuð í tólinu hér að ofan beint inn í þennan reit.</p>
+        </div>
+      </li>
+      <li class="gate">
+        <div class="gate-num">SKREF 06<small>fylgigögn</small></div>
+        <div>
+          <h3>Hlaðið upp gögnum</h3>
+          <p>Látið fylgja brottfararspjöld og kvittanir fyrir útlögðum kostnaði.</p>
+        </div>
+      </li>
+      <li class="gate">
+        <div class="gate-num">SKREF 07<small>eftirfylgni</small></div>
+        <div>
+          <h3>Sendið inn og vistið staðfestingu</h3>
+          <p>Vistið staðfestingarnúmer eða tölvupóst. Svar getur tekið nokkrar vikur, stundum lengur ef álag er mikið hjá félaginu.</p>
+        </div>
+      </li>
+      <li class="gate">
+        <div class="gate-num">SKREF 08<small>ef þarf</small></div>
+        <div>
+          <h3>Ef félagið hafnar eða svarar ekki</h3>
+          <p>Sendið kvörtun til Samgöngustofu eða leitið til óháðrar bótaþjónustu. Slíkir aðilar taka málið að sér gegn 15–25% þóknun af bótunum.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+</div>
+
+<script>
+/* ======================================================================
+   AÐGANGSORÐ FYRIR SÍÐUNA
+   ======================================================================
+   Breytið lykilorðinu hér að neðan. ATH: Þetta er EINGÖNGU sjónræn hindrun,
+   ekki alvöru öryggi — lykilorðið er sýnilegt hverjum sem skoðar
+   frumkóða síðunnar (Skoða síðu / View Page Source). Notið þetta til að
+   halda leitarvélum og tilviljanakenndum gestum úti, ekki sem vörn gegn
+   einhverjum sem raunverulega reynir að komast inn.
+   ====================================================================== */
+  const SITE_PASSWORD = "gothia2026";
+
+  const lockScreen = document.getElementById('lock-screen');
+  const pageContent = document.getElementById('page-content');
+  const lockForm = document.getElementById('lock-form');
+  const lockInput = document.getElementById('lock-input');
+  const lockError = document.getElementById('lock-error');
+
+  lockForm.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    if(lockInput.value === SITE_PASSWORD){
+      lockScreen.style.display = 'none';
+      pageContent.style.display = 'block';
+      try { sessionStorage.setItem('gothia-unlocked', '1'); } catch(err) {}
+    } else {
+      lockError.style.display = 'block';
+      lockInput.value = '';
+      lockInput.focus();
+    }
+  });
+
+  // Halda síðunni opinni það sem eftir er af vafralotunni svo fólk þurfi
+  // ekki að slá inn lykilorðið á hverri undirsíðu/endurhleðslu.
+  try {
+    if (sessionStorage.getItem('gothia-unlocked') === '1') {
+      lockScreen.style.display = 'none';
+      pageContent.style.display = 'block';
+    }
+  } catch(err) {}
+</script>
+
+<script>
+/* ======================================================================
+   GÖGN: UPPFÆRIÐ HÉR ÞEGAR TAFLAN BREYTIST
+   ======================================================================
+   Kennitölur eru VÍSVITANDI ekki með hér, af persónuverndarástæðum þar
+   sem þetta er opinber vefsíða. Notið nafn + bókunarnúmer til að
+   staðfesta rétta manneskju.
+
+   Til að bæta við / breyta farþega, afritið línu og breytið gildunum:
+   { nafn:"Fornafn Eftirnafn", lid:"S1 U14", bokunarnumer:"85XWPO", kvittanir:false, etkt:"" }
+
+   "kvittanir:true" = viðkomandi er merktur í dálki G ("Útlagður
+   kostnaður / kvittanir?") í upprunalegu töflunni.
+
+   "etkt" = rafmiðanúmerið (byrjar á "108-...", sést á brottfararspjaldinu).
+   Skilið því eftir tómt ("") þar til þið hafið fengið númerið fyrir
+   viðkomandi, annars skrifið það inn milli gæsalappanna, t.d.
+   etkt:"10826127906501"
+   ====================================================================== */
+
+  // Sameiginlegur ferill hvers bókunarhóps: ferðaröskunin sjálf.
+  // Ef hópar fá staðfestar, ólíkar upplýsingar, bætið við nýjum lykli
+  // (t.d. "78NTVI") með sínum eigin gildum í staðinn fyrir "VANTAR".
+  const ferlar = {
+    "85XWPO": {
+      legs: [
+        {numer:"FI383", dags:"19. júlí 2026", timi:"18:45 CEST", stada:"Aflýst"},
+        {numer:"FI385", dags:"20. júlí 2026", timi:"16:05 CEST", stada:"Aflýst"},
+        {numer:"FI387", dags:"21. júlí 2026", timi:"01:20 CEST", stada:"Flogið"}
+      ],
+      komaDags: "21. júlí 2026",
+      komaTimi: "02:07 GMT",
+      heildartof: "um 30 klst. og 22 mín"
+    },
+    // ÁGISKUN: Icelandair tölvupóstur staðfestir að 78NTVI fékk sömu
+    // FI383 aflýsingu og 85XWPO. Gert er ráð fyrir að báðir hópar hafi
+    // endað á sama endanlega flugi (FI387). STAÐFESTIÐ þetta með
+    // brottfararspjaldi eða tölvupósti fyrir Valdísi/Maríu Björg áður
+    // en umsókn er send inn.
+    "78NTVI": {
+      legs: [
+        {numer:"FI383", dags:"19. júlí 2026", timi:"18:45 CEST", stada:"Aflýst (staðfest af Icelandair sem tæknileg ástæða)"},
+        {numer:"FI385", dags:"20. júlí 2026", timi:"16:05 CEST", stada:"Seinkað/aflýst (staðfestið nákvæma útkomu)"},
+        {numer:"FI387", dags:"21. júlí 2026", timi:"01:20 CEST", stada:"Flogið (óstaðfest fyrir þennan hóp, athugið brottfararspjald)"}
+      ],
+      komaDags: "21. júlí 2026",
+      komaTimi: "02:07 GMT (óstaðfest fyrir þennan hóp)",
+      heildartof: "um 30 klst. og 22 mín (óstaðfest fyrir þennan hóp, sama og 85XWPO ef sömu flug)"
+    }
+  };
+
+  const farthegar = [
+    {nafn:"Alexandra Helga Arnarsdóttir", lid:"S1 U14", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676398"},
+    {nafn:"Anna Guðrún Sigfúsdóttir", lid:"S1 U13", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676479"},
+    {nafn:"Ásthildur Eva Sigurðardóttir", lid:"U14 2", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676481"},
+    {nafn:"Aþena Lillý Pálsdóttir", lid:"S1 U13", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676421"},
+    {nafn:"Bríet Þóra Davíðsdóttir", lid:"S1 U13", bokunarnumer:"85XWPO", kvittanir:true, etkt:"1082612676419"},
+    {nafn:"Brynja Kristín Eiríksdóttir", lid:"S2 U13", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676423"},
+    {nafn:"Daney Lára Berentsdóttir", lid:"U14 2", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676402"},
+    {nafn:"Erla Ýr Gunnarsdóttir", lid:"U14 2", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676435"},
+    {nafn:"Freyja Sjöfn Gunnarsdóttir", lid:"U14 2", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676436"},
+    {nafn:"Glódís Káradóttir", lid:"S1 U13", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676462"},
+    {nafn:"Halla Dís Þórðardóttir", lid:"S2 U13", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676493"},
+    {nafn:"Helga Guðrún Finnsdóttir", lid:"S1 U14", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676427"},
+    {nafn:"Hendrikka G. Sigurðardóttir", lid:"S1 U13", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676482"},
+    {nafn:"Ingibjörg Isebarn Daníelsdóttir", lid:"U14 2", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676411"},
+    {nafn:"Írena Sóldís Martin", lid:"S1 U13", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676418"},
+    {nafn:"Íris Lind Hauksdóttir", lid:"S1 U14", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676445"},
+    {nafn:"Íris María Árnadóttir", lid:"S2 U13", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676397"},
+    {nafn:"Jana Rós Bjarkadóttir", lid:"S2 U13", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676405"},
+    {nafn:"Katla Gunnarsdóttir", lid:"S1 U13", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676437"},
+    {nafn:"Katrín Jóna Jónsdóttir", lid:"U14 2", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676458"},
+    {nafn:"Katrín Lilja Tulinius", lid:"S2 U13", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676496"},
+    {nafn:"Klara Sól Guðjónsdóttir", lid:"S1 U13", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676431"},
+    {nafn:"Lára Björg Sigurðardóttir", lid:"S1 U13", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676483"},
+    {nafn:"Paula Marie Moreno Monsalve", lid:"S1 U14", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676465"},
+    {nafn:"Ragnhildur K. Sigurjónsdóttir", lid:"S2 U13", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676484"},
+    {nafn:"Rebekka Dís Erlendsdóttir", lid:"S2 U13", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676426"},
+    {nafn:"Ríkey Ósk Baldursdóttir", lid:"S1 U14", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676401"},
+    {nafn:"Svava Dan Johansen Edwald", lid:"S1 U14", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676454"},
+    {nafn:"Thelma Lind Heimisdóttir", lid:"S1 U14", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676447"},
+    {nafn:"Theodóra Lind Birgisdóttir", lid:"S1 U14", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676403"},
+    {nafn:"Unnur Ágústa Kvaran", lid:"U14 2", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676464"},
+    {nafn:"Valdís Eva Margeirsdóttir", lid:"U14 2", bokunarnumer:"78NTVI", kvittanir:false, etkt:"1082612679065"},
+    {nafn:"Védís Birna Aðalheiðardóttir", lid:"S2 U13", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676393"},
+    {nafn:"Þórgunnur Kara Halldórsdóttir", lid:"S1 U14", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676441"},
+    {nafn:"Þórunn Ósk Sveinsdóttir", lid:"S2 U13", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676490"},
+    {nafn:"Hulda María Stefánsdóttir", lid:"Fararstjóri", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676487"},
+    {nafn:"Rakel Steinarsdóttir", lid:"Fararstjóri", bokunarnumer:"85XWPO", kvittanir:true, etkt:"1082612676488"},
+    {nafn:"Stefanía Ásgeirsdóttir", lid:"Fararstjóri", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676399"},
+    {nafn:"Gyða Dan Johansen", lid:"Fararstjóri", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676455"},
+    {nafn:"María Björg Ágústsdóttir", lid:"Fararstjóri", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676395"},
+    {nafn:"Sigríður Ásdís Jónsdóttir", lid:"Fararstjóri", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676460"}, // lid ágiskun - staðfestið
+    {nafn:"Fríða Margrét Almarsdóttir", lid:"Þjálfari", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676396"},
+    {nafn:"Matt Furtek", lid:"Þjálfari", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676428"},
+    {nafn:"Andri Freyr Björgvinsson", lid:"Þjálfari", bokunarnumer:"85XWPO", kvittanir:false, etkt:"1082612676407"}
+  ];
+
+  /* ===================== EKKI ÞARF AÐ BREYTA HÉR FYRIR NEÐAN ===================== */
+
+  const select = document.getElementById('nafnval');
+  const teamGroups = {};
+  farthegar
+    .slice()
+    .sort((a,b)=>a.nafn.localeCompare(b.nafn,'is'))
+    .forEach(p=>{
+      if(!teamGroups[p.lid]) teamGroups[p.lid] = [];
+      teamGroups[p.lid].push(p);
+    });
+  Object.keys(teamGroups).sort().forEach(lid=>{
+    const og = document.createElement('optgroup');
+    og.label = lid;
+    teamGroups[lid].forEach(p=>{
+      const opt = document.createElement('option');
+      opt.value = p.nafn;
+      opt.textContent = p.nafn;
+      og.appendChild(opt);
+    });
+    select.appendChild(og);
+  });
+
+  const result = document.getElementById('result');
+  const copyBtn = document.getElementById('copy-btn');
+
+  function legLine(leg){
+    return `${leg.numer} · ${leg.dags}, kl. ${leg.timi} (${leg.stada})`;
+  }
+
+  select.addEventListener('change', ()=>{
+    const p = farthegar.find(x=>x.nafn === select.value);
+    if(!p){ result.classList.remove('show'); return; }
+    const f = ferlar[p.bokunarnumer] || {
+      legs:[{numer:"VANTAR",dags:"",timi:"",stada:""},{numer:"VANTAR",dags:"",timi:"",stada:""},{numer:"VANTAR",dags:"",timi:"",stada:""}],
+      komaDags:"VANTAR", komaTimi:"", heildartof:"VANTAR"
+    };
+
+    document.getElementById('result-nafn').textContent = p.nafn;
+    document.getElementById('result-lid').textContent = p.lid;
+    document.getElementById('result-bokun').textContent = p.bokunarnumer;
+    document.getElementById('result-etkt').textContent = p.etkt && p.etkt.trim() ? p.etkt : "Vantar enn";
+    document.getElementById('result-flug1').textContent = legLine(f.legs[0]);
+    document.getElementById('result-flug2').textContent = legLine(f.legs[1]);
+    document.getElementById('result-flug3').textContent = legLine(f.legs[2]);
+    document.getElementById('result-koma').textContent = `${f.komaDags}, kl. ${f.komaTimi}`;
+
+    const flagEl = document.getElementById('result-flag');
+    flagEl.innerHTML = p.kvittanir
+      ? '<span class="flag">Kvittanir skráðar. Bætið þeim við umsóknina.</span>'
+      : '';
+
+    const claim =
+`Upprunalegt flug: ${f.legs[0].numer}, Gautaborg (GOT) til Keflavíkur (KEF), áætluð brottför ${f.legs[0].dags}, kl. ${f.legs[0].timi}.
+
+Vegna seinkunar/aflýsinga á þessu flugi var farþeginn settur á þrjú mismunandi flug áður en komist var á áfangastað. Heildartöf frá upprunalegum áætluðum komutíma til raunverulegs komutíma var ${f.heildartof}.
+
+Flug 1: ${legLine(f.legs[0])}
+Flug 2: ${legLine(f.legs[1])}
+Flug 3: ${legLine(f.legs[2])}
+Raunveruleg koma til Íslands: ${f.komaDags}, kl. ${f.komaTimi}
+
+Í tilkynningum frá Icelandair um bæði FI383 og FI385 (bókunarnúmer 78NTVI og 85XWPO) er ástæðan gefin upp sem „technical reasons" (tæknileg ástæða). Slík ástæða telst almennt ekki til „óviðráðanlegra aðstæðna" í skilningi 5. gr. reglugerðarinnar, og því ber félaginu að greiða bætur að fullu.
+
+Á grundvelli reglugerðar (EB) nr. 261/2004, 7. gr., er farið fram á bætur að upphæð 400 evrur, þar sem flugleiðin Gautaborg til Íslands fellur undir milliflokkinn (1.500 til 3.500 km).
+
+Að auki er farið fram á endurgreiðslu á kostnaði sem féll til vegna umönnunar sem félagið átti að tryggja skv. 9. gr. reglugerðarinnar (matur, hótelgisting, samgöngur milli flugvallar og gistingar, símtöl/tölvupóstar), en var ekki veitt/nægjanlega veitt af félaginu.${p.kvittanir ? ' Kvittanir fylgja með.' : ''}
+
+Farþegi sem sækir um: ${p.nafn}
+Bókunarnúmer: ${p.bokunarnumer}${p.etkt && p.etkt.trim() ? `\nRafmiðanúmer (ETKT): ${p.etkt}` : ''}`;
+
+    document.getElementById('claim-text').textContent = claim;
+    copyBtn.textContent = 'Afrita texta';
+    copyBtn.classList.remove('copied');
+    result.classList.add('show');
+  });
+
+  copyBtn.addEventListener('click', ()=>{
+    const text = document.getElementById('claim-text').textContent;
+    navigator.clipboard.writeText(text).then(()=>{
+      copyBtn.textContent = 'Afritað ✓';
+      copyBtn.classList.add('copied');
+      setTimeout(()=>{ copyBtn.textContent = 'Afrita texta'; copyBtn.classList.remove('copied'); }, 2000);
+    });
+  });
+</script>
+</body>
+</html>
