@@ -29,6 +29,12 @@
   .toc{text-align:center;margin:26px 0 8px;font-size:14px;color:var(--soft)}
   .toc a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
   .toc a:hover{border-bottom-color:var(--accent)}
+  .sidetoc{position:fixed;top:96px;left:max(16px, calc(50% - 590px));width:200px;
+    font-size:13px}
+  .sidetoc a{display:block;color:var(--soft);text-decoration:none;padding:6px 2px;
+    border-bottom:1px solid var(--line);transition:.15s}
+  .sidetoc a:hover{color:var(--ink);border-bottom-color:var(--accent)}
+  @media(max-width:1180px){.sidetoc{display:none}}
   .warn{max-width:560px;margin:26px auto 0;background:var(--notebg);border:1px solid var(--line);
         padding:12px 16px;font-size:13.5px;color:var(--soft)}
   hr{border:0;border-top:1px solid var(--line);margin:34px 0}
@@ -97,6 +103,25 @@
   </div>
 </header>
 
+<nav class="sidetoc" aria-label="Efnisyfirlit">
+  <div class="is">
+    <a href="#is-ep1">1. Farþegaskráin</a>
+    <a href="#is-ep2">2. Gangavörðurinn</a>
+    <a href="#is-ep3">3. Blekaðar</a>
+    <a href="#is-ep4">4. Gula spjaldið</a>
+    <a href="#is-ep5">5. Eftirlitsaðgerðin</a>
+    <a href="#is-ep6">6. Vaktalok</a>
+  </div>
+  <div class="en">
+    <a href="#ep1">1. The Manifest</a>
+    <a href="#ep2">2. The Corridor Guard</a>
+    <a href="#ep3">3. Blekaðar</a>
+    <a href="#ep4">4. The Yellow Card</a>
+    <a href="#ep5">5. Operation Oversight</a>
+    <a href="#ep6">6. End of Watch</a>
+  </div>
+</nav>
+
 <div class="wrap">
 
   <div class="cover">
@@ -111,8 +136,6 @@
        and must be replaced before this page is shared beyond the group.</div>
     <div class="warn is"><strong>Vinnuskjal.</strong> Öll nöfn eru raunveruleg og til bráðabirgða —
        þeim verður að skipta út áður en síðan fer út fyrir hópinn.</div>
-    <p class="toc is"><a href="#is-ep1">1. Farþegalistinn</a> · <a href="#is-ep2">2. Gangavörðurinn</a> · <a href="#is-ep3">3. Blekaðar</a> · <a href="#is-ep4">4. Gula spjaldið</a> · <a href="#is-ep5">5. Eftirlitsaðgerðin</a> · <a href="#is-ep6">6. Vaktalok</a></p>
-    <p class="toc en"><a href="#ep1">1. The Manifest</a> · <a href="#ep2">2. The Corridor Guard</a> · <a href="#ep3">3. Blekaðar</a> · <a href="#ep4">4. The Yellow Card</a> · <a href="#ep5">5. Operation Oversight</a> · <a href="#ep6">6. End of Watch</a></p>
   </div>
 
   <div class="en">
@@ -872,17 +895,28 @@
 <p class="cue"><strong>STEFANÍA</strong></p>
 <p class="dial">There's no corridor guard.</p>
 <p class="cue"><strong>HULDA</strong></p>
-<p class="dial">Steffý.</p>
+<p class="dial">It's fabrication of an authority figure.</p>
+<p class="action"><em>At that exact moment MARÍA appears around the corner with her clipboard. She stops dead when she sees Stefanía — wet-haired, in a towel.</em></p>
+<p class="cue"><strong>MARÍA</strong></p>
+<p class="paren"><em>(eyes darting, straightening the clipboard)</em></p>
+<p class="dial">Steffý? I was — I was just coming to check whether your room needed anything. For the checklist. Any... shower gel, or... towels?</p>
 <p class="cue"><strong>STEFANÍA</strong></p>
-<p class="dial">It's a preventive measure.</p>
+<p class="paren"><em>(looking at her, completely flat)</em></p>
+<p class="dial">There's no shower, María. The water just comes out of the wall.</p>
+<p class="cue"><strong>MARÍA</strong></p>
+<p class="paren"><em>(charmed by the composure)</em></p>
+<p class="dial">Right... of course.</p>
 <p class="cue"><strong>HULDA</strong></p>
-<p class="dial">It's fabrication of an authority figure. Technically it's entrapment.</p>
+<p class="paren"><em>(looks at María, takes the toothbrush out of her mouth, whispers)</em></p>
+<p class="dial">María, she's in a towel. It's eleven o'clock. You don't need to log this on the schedule.</p>
+<p class="cue"><strong>MARÍA</strong></p>
+<p class="paren"><em>(too fast, backing away)</em></p>
+<p class="dial">I was just following up on the fire exits!</p>
+<p class="action"><em>María turns and walks off fast. Hulda and Stefanía watch her go.</em></p>
+<p class="cue"><strong>HULDA</strong></p>
+<p class="dial">It's like she's got a built-in sensor for whenever you're not in full uniform.</p>
 <p class="cue"><strong>STEFANÍA</strong></p>
-<p class="dial">Are you telling me I'm violating the proportionality principle on thirteen-year-olds?</p>
-<p class="cue"><strong>HULDA</strong></p>
-<p class="paren"><em>(considering it)</em></p>
-<p class="dial">...I wouldn't prosecute.</p>
-<p class="action"><em>They walk on. Behind them, all down the corridor, the sound of doors very quietly clicking shut.</em></p>
+<p class="dial">Go to sleep, Hulda.</p>
 <p class="slug"><strong>SMASH TO TITLE:</strong></p>
 <p class="bigtitle">MÖGGURNAR</p>
 <hr>
@@ -2902,7 +2936,7 @@
 <article class="episode" id="is-ep1">
 <p class="bigtitle">MÖGGURNAR</p>
 <p class="subtitle"><em>(Mömmulöggurnar)</em></p>
-<p class="subtitle"><strong>1. þáttur — „Fartskráin"</strong></p>
+<p class="subtitle"><strong>1. þáttur — „Farþegaskráin"</strong></p>
 <p class="subtitle">Íslensk útgáfa handrits</p>
 <p class="subtitle">Sex þátta sería · 28 mín</p>
 <hr>
@@ -3655,17 +3689,28 @@
 <p class="cue"><strong>STEFANÍA</strong></p>
 <p class="dial">Það er enginn gangavörður.</p>
 <p class="cue"><strong>HULDA</strong></p>
-<p class="dial">Steffý.</p>
+<p class="dial">Þetta er tilbúningur á yfirvaldi.</p>
+<p class="action"><em>Í sömu svifum birtist MARÍA handan við hornið með skrifbrettið sitt. Hún stoppar steinrennd þegar hún sér Stefaníu — með blautt hárið og í slopp.</em></p>
+<p class="cue"><strong>MARÍA</strong></p>
+<p class="paren"><em>(augun glotta, réttir úr skrifbrettinu)</em></p>
+<p class="dial">Steffý? Ég var... ég var einmitt að koma til að athuga hvort það vantaði eitthvað á herbergið hjá þér. Fyrir gátlistann. Einhverjar... sturtusápur eða... handklæði?</p>
 <p class="cue"><strong>STEFANÍA</strong></p>
-<p class="dial">Þetta er forvarnaraðgerð.</p>
+<p class="paren"><em>(horfir á hana, alveg flöt)</em></p>
+<p class="dial">Það er engin sturta, María. Vatnið kemur bara úr veggnum.</p>
+<p class="cue"><strong>MARÍA</strong></p>
+<p class="paren"><em>(heilluð af yfirveguninni)</em></p>
+<p class="dial">Já... auðvitað.</p>
 <p class="cue"><strong>HULDA</strong></p>
-<p class="dial">Þetta er tilbúningur á yfirvaldi. Það er tæknilega tálbeitubrot.</p>
+<p class="paren"><em>(lítur á Maríu, tekur tannburstann úr munninum og hvíslar)</em></p>
+<p class="dial">María, hún er í slopp. Og klukkan er ellefu. Þú þarft ekki að skrá þetta á dagskrána.</p>
+<p class="cue"><strong>MARÍA</strong></p>
+<p class="paren"><em>(of hratt, bakkar)</em></p>
+<p class="dial">Ég var bara að fylgja eftir öryggisútgöngunum!</p>
+<p class="action"><em>María snýr sér við og gengur hratt í burtu. Hulda og Stefanía horfa á eftir henni.</em></p>
+<p class="cue"><strong>HULDA</strong></p>
+<p class="dial">Það er eins og hún hafi innbyggðan nemara á það þegar þú ert ekki í fullum einkennisbúningi.</p>
 <p class="cue"><strong>STEFANÍA</strong></p>
-<p class="dial">Áttu við að ég sé að brjóta meðalhófsregluna á þrettán ára börnum?</p>
-<p class="cue"><strong>HULDA</strong></p>
-<p class="paren"><em>(hugsar sig um)</em></p>
-<p class="dial">...Ég myndi ekki kæra það.</p>
-<p class="action"><em>Þær ganga áfram. Að baki þeirra, alla leið niður ganginn, heyrist í hurðum sem smellast mjög hljóðlega aftur.</em></p>
+<p class="dial">Farðu að sofa, Hulda.</p>
 <p class="slug"><strong>SMELLT Á TITIL:</strong></p>
 <p class="bigtitle">MÖGGURNAR</p>
 <hr>
