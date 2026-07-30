@@ -57,7 +57,32 @@
   body:not(.lang-is) .is{display:none}
   footer{max-width:760px;margin:0 auto;padding:24px 18px;color:var(--soft);
          font-size:13px;text-align:center;border-top:1px solid var(--line)}
-  @media print{header{position:static}.langbtn{display:none}}
+  @media print{header{position:static}.langbtn{display:none}.episode{display:block !important}}
+
+  /* ---------- one-episode-at-a-time view ---------- */
+  .episode{display:none}
+  .episode.active{display:block}
+  .sidetoc a.active{color:var(--ink);font-weight:700;border-bottom-color:var(--accent)}
+  .ep-nav{display:flex;justify-content:space-between;gap:12px;margin:26px 0 4px}
+  .ep-nav a{font-family:inherit;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--soft);text-decoration:none;border:1px solid var(--line);
+    padding:7px 12px;border-radius:4px;transition:.15s}
+  .ep-nav a:hover{color:var(--ink);border-color:var(--accent)}
+  .ep-nav .spacer{flex:1}
+
+  /* ---------- speaker colours ---------- */
+  .cue[class*="spk-"] strong::before{content:"";display:inline-block;width:7px;height:7px;
+    border-radius:50%;background:currentColor;margin-right:6px;vertical-align:middle}
+  .cue.spk-maria strong{color:#1f6f6b}
+  .cue.spk-hulda strong{color:#a9720d}
+  .cue.spk-gyda strong{color:#7b4b94}
+  .cue.spk-sigga strong{color:#3b6ea5}
+  .cue.spk-stefania strong{color:#3f7d43}
+  .cue.spk-unnur strong{color:#a8446b}
+  .cue.spk-susanna strong{color:#4a5a8a}
+  .cue.spk-rakel strong{color:#7a6a1f}
+  .cue.spk-georg strong{color:#5c6b73}
+  .cue.spk-magnus strong{color:#6b5344}
 
   /* ---------- password gate ---------- */
   #gate{position:fixed;inset:0;z-index:100;background:var(--paper);
@@ -1646,6 +1671,70 @@
 <p class="dial">This is completely calm.</p>
 <p class="cue"><strong>GEORG</strong></p>
 <p class="dial">This is very calm.</p>
+<hr>
+<p class="slug"><strong>INT. ROOM 640-SOMETHING — TUESDAY, 22:50</strong></p>
+<p class="action"><em>Súsanna and Unnur. The night after the party. The washing machine on the bathroom floor, full of pink t-shirts.</em></p>
+<p class="action"><em>Súsanna turns it on.</em></p>
+<p class="action"><em>The sound it makes is not a washing-machine sound. It's loud, wavering, complaining.</em></p>
+<p class="action"><em>Unnur looks at it.</em></p>
+<p class="cue"><strong>UNNUR</strong></p>
+<p class="dial">What is that.</p>
+<p class="cue"><strong>SÚSANNA</strong></p>
+<p class="dial">It's her.</p>
+<p class="cue"><strong>UNNUR</strong></p>
+<p class="dial">That is not a washing-machine sound.</p>
+<p class="cue"><strong>SÚSANNA</strong></p>
+<p class="dial">She's small.</p>
+<p class="action"><em>The sound continues. It gets louder.</em></p>
+<p class="cue"><strong>UNNUR</strong></p>
+<p class="dial">Súsanna.</p>
+<p class="cue"><strong>SÚSANNA</strong></p>
+<p class="dial">She's on the final spin.</p>
+<p class="action"><em>A knock. Hard.</em></p>
+<p class="action"><em>They freeze.</em></p>
+<p class="action"><em>Súsanna opens the door. The security guard.</em></p>
+<p class="cue"><strong>SECURITY GUARD</strong></p>
+<p class="dial">Good evening.</p>
+<p class="cue"><strong>SÚSANNA</strong></p>
+<p class="dial">Good evening.</p>
+<p class="action"><em>Silence. The machine wails behind her.</em></p>
+<p class="cue"><strong>SECURITY GUARD</strong></p>
+<p class="dial">Do you have a cat?</p>
+<p class="action"><em>A long silence.</em></p>
+<p class="cue"><strong>SÚSANNA</strong></p>
+<p class="dial">No.</p>
+<p class="action"><em>Silence.</em></p>
+<p class="cue"><strong>SECURITY GUARD</strong></p>
+<p class="dial">Pets are not permitted at the hotel.</p>
+<p class="cue"><strong>SÚSANNA</strong></p>
+<p class="dial">I know.</p>
+<p class="cue"><strong>SECURITY GUARD</strong></p>
+<p class="dial">There's been a complaint.</p>
+<p class="action"><em>Unnur, further back in the room, without getting up:</em></p>
+<p class="cue"><strong>UNNUR</strong></p>
+<p class="dial">It's a washing machine.</p>
+<p class="action"><em>He looks at her.</em></p>
+<p class="action"><em>He looks at Súsanna.</em></p>
+<p class="action"><em>He looks past them, at the bathroom floor, at the bucket that is shaking and wailing.</em></p>
+<p class="action"><em>A long silence.</em></p>
+<p class="cue"><strong>SECURITY GUARD</strong></p>
+<p class="dial">Okay.</p>
+<p class="action"><em>He leaves.</em></p>
+<p class="action"><em>Súsanna closes the door.</em></p>
+<p class="action"><em>The machine finishes its cycle and falls silent.</em></p>
+<p class="cue"><strong>UNNUR</strong></p>
+<p class="dial">That was María's fault.</p>
+<p class="cue"><strong>SÚSANNA</strong></p>
+<p class="dial">Yes.</p>
+<p class="action"><em>And the confirmation lands on the screen an hour later, in the chat — nobody says it out loud:</em></p>
+<div class="chat">
+<p><strong>SÚSANNA:</strong> The corridor guard came to ask if we had a cat</p>
+<p><strong>STEFANÍA:</strong> What</p>
+<p><strong>SÚSANNA:</strong> The washing machine</p>
+<p><strong>MARÍA:</strong> Mine does this too</p>
+<p><strong>SÚSANNA:</strong> Why didn't you tell me</p>
+<p><strong>MARÍA:</strong> I didn't know it was a problem</p>
+</div>
 <hr>
 <p class="slug"><strong>INT. SCANDIC CROWN — SIXTH FLOOR CORRIDOR — 23:15</strong></p>
 <p class="action"><em>The corridor is empty. Completely.</em></p>
@@ -4481,6 +4570,70 @@
 <p class="cue"><strong>GEORG</strong></p>
 <p class="dial">Þetta er mjög rólegt.</p>
 <hr>
+<p class="slug"><strong>INNI. HERBERGI 640-EITTHVAÐ — ÞRIÐJUDAGUR, 22:50</strong></p>
+<p class="action"><em>Súsanna og Unnur. Kvöldið eftir partýið. Þvottavélin á baðherbergisgólfinu, full af bleikum bolum.</em></p>
+<p class="action"><em>Súsanna kveikir á henni.</em></p>
+<p class="action"><em>Hljóðið sem kemur er ekki þvottavélarhljóð. Það er hátt, sveiflandi, kvartandi.</em></p>
+<p class="action"><em>Unnur horfir á það.</em></p>
+<p class="cue"><strong>UNNUR</strong></p>
+<p class="dial">Hvað er þetta.</p>
+<p class="cue"><strong>SÚSANNA</strong></p>
+<p class="dial">Það er hún.</p>
+<p class="cue"><strong>UNNUR</strong></p>
+<p class="dial">Þetta er ekki þvottavélarhljóð.</p>
+<p class="cue"><strong>SÚSANNA</strong></p>
+<p class="dial">Hún er lítil.</p>
+<p class="action"><em>Hljóðið heldur áfram. Það hækkar.</em></p>
+<p class="cue"><strong>UNNUR</strong></p>
+<p class="dial">Súsanna.</p>
+<p class="cue"><strong>SÚSANNA</strong></p>
+<p class="dial">Hún er á lokahringnum.</p>
+<p class="action"><em>Bankað. Fast.</em></p>
+<p class="action"><em>Þær frjósa.</em></p>
+<p class="action"><em>Súsanna opnar. Öryggisvörðurinn.</em></p>
+<p class="cue"><strong>ÖRYGGISVÖRÐUR</strong></p>
+<p class="dial">Góða kvöldið.</p>
+<p class="cue"><strong>SÚSANNA</strong></p>
+<p class="dial">Góða kvöldið.</p>
+<p class="action"><em>Þögn. Vélin vælir bak við hana.</em></p>
+<p class="cue"><strong>ÖRYGGISVÖRÐUR</strong></p>
+<p class="dial">Eruð þið með kött?</p>
+<p class="action"><em>Löng þögn.</em></p>
+<p class="cue"><strong>SÚSANNA</strong></p>
+<p class="dial">Nei.</p>
+<p class="action"><em>Þögn.</em></p>
+<p class="cue"><strong>ÖRYGGISVÖRÐUR</strong></p>
+<p class="dial">Það er ekki heimilt að hafa dýr á hótelinu.</p>
+<p class="cue"><strong>SÚSANNA</strong></p>
+<p class="dial">Ég veit.</p>
+<p class="cue"><strong>ÖRYGGISVÖRÐUR</strong></p>
+<p class="dial">Það hefur komið kvörtun.</p>
+<p class="action"><em>Unnur, aftar í herberginu, án þess að standa upp:</em></p>
+<p class="cue"><strong>UNNUR</strong></p>
+<p class="dial">Það er þvottavél.</p>
+<p class="action"><em>Hann horfir á hana.</em></p>
+<p class="action"><em>Hann horfir á Súsönnu.</em></p>
+<p class="action"><em>Hann horfir fram hjá þeim, á baðherbergisgólfið, á fötuna sem er að hristast og væla.</em></p>
+<p class="action"><em>Löng þögn.</em></p>
+<p class="cue"><strong>ÖRYGGISVÖRÐUR</strong></p>
+<p class="dial">Ókei.</p>
+<p class="action"><em>Hann fer.</em></p>
+<p class="action"><em>Súsanna lokar hurðinni.</em></p>
+<p class="action"><em>Vélin klárar hringinn og þagnar.</em></p>
+<p class="cue"><strong>UNNUR</strong></p>
+<p class="dial">Það var Maríu að kenna.</p>
+<p class="cue"><strong>SÚSANNA</strong></p>
+<p class="dial">Já.</p>
+<p class="action"><em>Og borgunin kemur á skjánum, klukkutíma síðar, í spjallinu — enginn nefnir hana upphátt:</em></p>
+<div class="chat">
+<p><strong>SÚSANNA:</strong> Gangavörðurinn kom að spyrja hvort við værum með kött</p>
+<p><strong>STEFANÍA:</strong> Hvað</p>
+<p><strong>SÚSANNA:</strong> Þvottavélin</p>
+<p><strong>MARÍA:</strong> Mín gerir þetta líka</p>
+<p><strong>SÚSANNA:</strong> Af hverju sagðirðu mér það ekki</p>
+<p><strong>MARÍA:</strong> Ég vissi ekki að það væri vandamál</p>
+</div>
+<hr>
 <p class="slug"><strong>INNI. SCANDIC CROWN — GANGUR Á SJÖTTU HÆÐ — 23:15</strong></p>
 <p class="action"><em>Gangurinn er tómur. Fullkomlega.</em></p>
 <p class="action"><em>Georg lítur á Magnús. Þeir eru sigursælir.</em></p>
@@ -5858,6 +6011,104 @@ document.body.classList.add('lang-is');
       }
     });
   });
+})();
+
+// ---------- speaker colour-coding ----------
+(function(){
+  var SPEAKERS = {
+    'MARÍA':'spk-maria', 'HULDA':'spk-hulda', 'GYÐA':'spk-gyda',
+    'SIGRÍÐUR ÁSDÍS':'spk-sigga', 'STEFANÍA':'spk-stefania', 'UNNUR':'spk-unnur',
+    'SÚSANNA':'spk-susanna', 'RAKEL':'spk-rakel', 'GEORG':'spk-georg', 'MAGNÚS':'spk-magnus'
+  };
+  document.querySelectorAll('.cue strong').forEach(function(el){
+    var cls = SPEAKERS[el.textContent.trim().toUpperCase()];
+    if (cls) el.parentElement.classList.add(cls);
+  });
+})();
+
+// ---------- one-episode-at-a-time navigation ----------
+(function(){
+  var EP_COUNT = 6;
+  var currentEp = 1;
+
+  function prefix(){
+    return document.body.classList.contains('lang-is') ? 'is-ep' : 'ep';
+  }
+
+  function showEpisode(n, opts){
+    opts = opts || {};
+    if (n < 1) n = 1;
+    if (n > EP_COUNT) n = EP_COUNT;
+    var pfx = prefix();
+    document.querySelectorAll('.episode').forEach(function(a){ a.classList.remove('active'); });
+    var target = document.getElementById(pfx + n);
+    if (target) target.classList.add('active');
+    document.querySelectorAll('.sidetoc a').forEach(function(a){
+      a.classList.toggle('active', a.getAttribute('href') === '#' + pfx + n);
+    });
+    currentEp = n;
+    try { localStorage.setItem('baltasar-ep', n); } catch(e){}
+    if (!opts.noHash) {
+      try { history.replaceState(null, '', '#' + pfx + n); } catch(e){}
+    }
+    if (!opts.noScroll) {
+      window.scrollTo(0, 0);
+    }
+  }
+
+  // build prev/next buttons at the bottom of every episode
+  ['ep', 'is-ep'].forEach(function(pfx){
+    var isIs = pfx === 'is-ep';
+    for (var n = 1; n <= EP_COUNT; n++){
+      var art = document.getElementById(pfx + n);
+      if (!art) continue;
+      var nav = document.createElement('div');
+      nav.className = 'ep-nav';
+      var prevBit = n > 1
+        ? '<a href="#' + pfx + (n-1) + '" data-nav="' + (n-1) + '">' + (isIs ? '← Fyrri þáttur' : '← Previous episode') + '</a>'
+        : '<span></span>';
+      var nextBit = n < EP_COUNT
+        ? '<a href="#' + pfx + (n+1) + '" data-nav="' + (n+1) + '">' + (isIs ? 'Næsti þáttur →' : 'Next episode →') + '</a>'
+        : '<span></span>';
+      nav.innerHTML = prevBit + '<span class="spacer"></span>' + nextBit;
+      art.appendChild(nav);
+    }
+  });
+
+  document.querySelectorAll('.ep-nav a').forEach(function(a){
+    a.addEventListener('click', function(ev){
+      ev.preventDefault();
+      showEpisode(parseInt(this.getAttribute('data-nav'), 10));
+    });
+  });
+
+  document.querySelectorAll('.sidetoc a').forEach(function(a){
+    a.addEventListener('click', function(ev){
+      ev.preventDefault();
+      var m = this.getAttribute('href').match(/(\d+)$/);
+      if (m) showEpisode(parseInt(m[1], 10));
+    });
+  });
+
+  // wrap setLang so switching language keeps the same episode number
+  var baseSetLang = window.setLang;
+  window.setLang = function(l){
+    baseSetLang(l);
+    showEpisode(currentEp, {noScroll:true});
+  };
+
+  // initial episode: URL hash, else last-read episode, else 1
+  var startN = 1;
+  var hashMatch = location.hash.match(/(\d+)$/);
+  if (hashMatch) {
+    startN = parseInt(hashMatch[1], 10);
+  } else {
+    try {
+      var saved = localStorage.getItem('baltasar-ep');
+      if (saved) startN = parseInt(saved, 10);
+    } catch(e){}
+  }
+  showEpisode(startN, {noScroll:true, noHash:true});
 })();
 </script>
 </body>
