@@ -38,7 +38,19 @@
   .sidetoc a:hover{color:var(--ink);border-bottom-color:var(--accent)}
   .sidetoc .season{display:block;margin:16px 0 4px;font-size:11px;letter-spacing:.1em;
     color:var(--soft);text-transform:uppercase}
-  @media(max-width:1180px){.sidetoc{display:none}}
+  .menubtn{display:none;font:inherit;font-size:13px;letter-spacing:.08em;border:1px solid var(--line);
+    background:transparent;color:var(--soft);padding:4px 12px;cursor:pointer;border-radius:3px}
+  @media(max-width:1180px){
+    .menubtn{display:inline-block}
+    .sidetoc{display:none;position:fixed;inset:0;z-index:20;width:auto;
+      background:var(--paper);padding:76px 24px 24px;overflow-y:auto}
+    .sidetoc.open{display:block}
+    .sidetoc a{padding:11px 2px;font-size:16px}
+    .sidetoc .mobileclose{display:block;position:absolute;top:14px;right:18px;
+      font:inherit;font-size:20px;border:1px solid var(--line);background:transparent;
+      color:var(--ink);width:36px;height:36px;border-radius:3px;cursor:pointer}
+  }
+  .sidetoc .mobileclose{display:none}
   .warn{max-width:560px;margin:14px auto 0;background:var(--notebg);border:1px solid var(--line);
         padding:10px 14px;font-size:13.5px;color:var(--soft)}
   hr{border:0;border-top:1px solid var(--line);margin:18px 0}
@@ -127,12 +139,16 @@
   <div class="bar">
     <h1><a href="/baltasar">MÖGGURNAR</a></h1>
     <div class="spacer"></div>
+    <button class="menubtn" id="btn-menu" onclick="toggleMobileMenu()">
+      <span class="is">☰ Kaflar</span><span class="en">☰ Episodes</span>
+    </button>
     <button class="langbtn active" id="btn-is" onclick="setLang('is')">ÍS</button>
     <button class="langbtn" id="btn-en" onclick="setLang('en')">EN</button>
   </div>
 </header>
 
 <nav class="sidetoc" aria-label="Efnisyfirlit">
+  <button class="mobileclose" onclick="toggleMobileMenu()" aria-label="Loka">✕</button>
   <div class="is">
     <a href="#is-ep1">1. Farþegaskráin</a>
     <a href="#is-ep2">2. Gangavörðurinn</a>
@@ -3695,7 +3711,7 @@
 <p class="action"><em>She finishes the circle and sits down.</em></p>
 <p class="cue"><strong>SIGRÍÐUR ÁSDÍS</strong> <span class="cuex"><em>(CONT'D)</em></span></p>
 <p class="dial">Eight.</p>
-<p class="action"><em>Wide shot: the fire, the river, the trolley parked at an angle no trolley should be parked at, a travel washing machine with socks in it, and eight women who came here to switch off and brought the entire operation with them instead.</em></p>
+<p class="action"><em>Wide shot: the fire, the river, the trolley parked at an angle no trolley should be parked at, a travel washing machine with socks in it, and eight women who came here to switch off but brought the watch with them.</em></p>
 <p class="slug"><strong>CUT TO BLACK.</strong></p>
 <p class="slug"><strong>END OF EPISODE ONE.</strong></p>
 <hr>
@@ -7222,7 +7238,7 @@
 <p class="action"><em>Hún klárar hringinn og sest.</em></p>
 <p class="cue"><strong>SIGRÍÐUR ÁSDÍS</strong> <span class="cuex"><em>(áfram)</em></span></p>
 <p class="dial">Átta.</p>
-<p class="action"><em>Vítt skot: eldurinn, áin, vagninn hallandi í horni sem enginn vagn ætti að standa í, ferðaþvottavél með sokkum í, og átta konur sem komu hingað til að slökkva á sér og tóku í staðinn allt batteríið með sér.</em></p>
+<p class="action"><em>Vítt skot: eldurinn, áin, vagninn hallandi í horni sem enginn vagn ætti að standa í, ferðaþvottavél með sokkum í, og átta konur sem komu hingað til að slökkva á sér en tóku vaktina með sér.</em></p>
 <p class="slug"><strong>KLIPPT Í SVART.</strong></p>
 <p class="slug"><strong>LOK FYRSTA ÞÁTTAR.</strong></p>
 <hr>
@@ -7368,8 +7384,13 @@ document.body.classList.add('lang-is');
       ev.preventDefault();
       var m = this.getAttribute('href').match(/(\d+)$/);
       if (m) showEpisode(parseInt(m[1], 10));
+      document.querySelector('.sidetoc').classList.remove('open');
     });
   });
+
+  window.toggleMobileMenu = function(){
+    document.querySelector('.sidetoc').classList.toggle('open');
+  };
 
   // wrap setLang so switching language keeps the same episode number
   var baseSetLang = window.setLang;
