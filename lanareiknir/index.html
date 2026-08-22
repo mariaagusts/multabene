@@ -461,12 +461,21 @@ const VIEWS=[
 ];
 
 /* ============ Sviðsmyndir (Dæmi A og B) ============ */
-const RENT_TAX=0.22*0.75;   // 16,5% — 22% fjármagnstekjuskattur af 75% leigutekna (frá 2026)
+const RENT_TAX=0.22*0.75;   // 16,5% — 22% fjármagnstekjuskattur af 75% leigutekna (frá 2026, samningur skráður í leiguskrá HMS)
+const RENT_TAX_FULL=0.22;   // óskráður samningur: ekkert frítekjumark — 22% af allri leigunni
+const RENT_KINDS={
+  hms:{label:'leigusamningur skráður í leiguskrá HMS', tax:RENT_TAX, pct:'16,5%'},
+  heimili:{label:'heimilisfólk — þátttaka í heimilishaldi', tax:0, pct:'0%'},
+};
+const rentKindOf=r=>RENT_KINDS[r.kind]?r.kind:'hms';
+const rentTaxOf=r=>(r.rent||0)*RENT_KINDS[rentKindOf(r)].tax;
 const grossRent=S=>S.hasRentals?S.rentals.reduce((a,r)=>a+(r.rent||0),0):0;
-const netRent=S=>grossRent(S)*(1-RENT_TAX);
+const rentTax=S=>S.hasRentals?S.rentals.reduce((a,r)=>a+rentTaxOf(r),0):0;
+const netRent=S=>grossRent(S)-rentTax(S);
+const incomeOffset=S=>netRent(S)+(S.otherIncome||0);   // leigutekjur nettó + aðrar nettótekjur
 function newScenario(key){
   return {key, loans:[], rentals:[], hasRentals:false, nextId:1, currentView:'balance',
-    inflation:5.3, income1:0, income2:0, firstBuyer:false,
+    inflation:5.3, income1:0, income2:0, otherIncome:0, firstBuyer:false,
     results:[], baseline:[], horizon:360, root:null};
 }
 let A=newScenario('A'), B=null;
@@ -498,6 +507,9 @@ function scenarioShell(S, title, removable){
         <div class="field"><label>Útborguð laun — aðili 2</label>
           <div class="inputrow"><input type="text" data-r="income2" inputmode="numeric" value="${S.income2?nf.format(S.income2):''}" placeholder="valfrjálst"><span class="unit">kr./mán.</span></div>
           <div class="hint">Ef tvö standa að láninu — annars autt.</div></div>
+        <div class="field"><label>Aðrar tekjur á mánuði — nettó</label>
+          <div class="inputrow"><input type="text" data-r="otherIncome" inputmode="numeric" value="${S.otherIncome?nf.format(S.otherIncome):''}" placeholder="valfrjálst"><span class="unit">kr./mán.</span></div>
+          <div class="hint">T.d. bætur, meðlag eða þátttaka í heimilishaldi — eins og upphæðin skilar sér í vasann. Dregst frá greiðslunni í niðurstöðunni en telst ekki með í 35% viðmiðinu.</div></div>
         <div class="field" style="grid-column:span 2"><label>Áætluð ársverðbólga</label>
           <div class="inputrow" style="max-width:180px"><input type="number" data-r="inflation" value="${S.inflation}" step="0.1" min="0" max="99"><span class="unit">%</span></div>
           <div class="preset-row">
@@ -514,7 +526,7 @@ function scenarioShell(S, title, removable){
       </div>
       <div class="card" style="margin-top:14px; padding:16px 18px" data-r="rentwrap"${S.hasRentals?'':' hidden'}>
         <div class="eyebrow" style="margin-bottom:4px">Leigutekjur — valfrjálst</div>
-        <p class="hint" style="margin:0 0 4px; max-width:75ch">Ertu með útleiguíbúð í húsinu? Settu inn mánaðarleigu skv. þinglýstum leigusamningi. Reiknivélin dregur frá 16,5% skatt (fjármagnstekjuskattur er 22% og frá 2026 eru 75% leigutekna af íbúðarhúsnæði skattskyld) og sýnir hver greiðslan af lánunum er eftir að nettóleigan hefur verið tekin inn í dæmið. Gildir um leigu skv. húsaleigulögum, að hámarki tvær íbúðir. Leigutekjurnar breyta ekki 35% viðmiðinu hér að neðan — lánveitendur meta þær með ólíkum hætti í greiðslumati.</p>
+        <p class="hint" style="margin:0 0 4px; max-width:75ch">Ertu með útleiguíbúð í húsinu? Settu inn mánaðarleiguna. Reiknivélin dregur frá 16,5% skatt (fjármagnstekjuskattur er 22% og frá 2026 eru 75% leigutekna af íbúðarhúsnæði skattskyld) og sýnir hver greiðslan af lánunum er eftir að nettóleigan hefur verið tekin inn í dæmið. Frítekjumarkið (16,5%) gildir þegar leigan fellur undir húsaleigulög, samningurinn er skráður í leiguskrá HMS og íbúðirnar eru ekki fleiri en tvær — útleiga til leigjanda er skattskyld óháð skráningu. Greiðsla frá heimilisfólki — t.d. uppkomnu barni í kjallaraíbúðinni — telst þátttaka í heimilishaldi og er ekki skattskyld leigutekja; veldu þá þann flokk. Leigutekjurnar breyta ekki 35% viðmiðinu hér að neðan — lánveitendur meta þær með ólíkum hætti í greiðslumati.</p>
         <div data-r="rentals"></div>
         <button type="button" class="table-toggle" style="margin-top:10px" data-r="addRental">+ Bæta við leiguíbúð</button>
         <div data-r="rentSummary" style="margin-top:10px; font-size:13.5px; color:var(--ink-2)"></div>
@@ -572,7 +584,7 @@ function mountScenario(S, hostId, title, removable){
     });
   });
   syncPresets();
-  ['income1','income2'].forEach(f=>{
+  ['income1','income2','otherIncome'].forEach(f=>{
     const el=S.$(f);
     el.addEventListener('input',()=>{liveFormat(el);S[f]=parseAmount(el.value);recalc(S);});
   });
@@ -638,23 +650,28 @@ function renderRentals(S){
   S.rentals.forEach(r=>{
     const row=document.createElement('div');
     row.className='rental-row';
+    const kind=rentKindOf(r);
     row.innerHTML=`
-      <input type="text" style="max-width:140px" value="${esc(r.name)}" aria-label="Heiti íbúðar" data-rf="name">
-      <div class="inputrow" style="flex:1;min-width:180px;max-width:260px"><input type="text" inputmode="numeric" data-rf="rent" value="${r.rent?nf.format(r.rent):''}" placeholder="mánaðarleiga"><span class="unit">kr./mán.</span></div>
+      <input type="text" style="max-width:130px" value="${esc(r.name)}" aria-label="Heiti íbúðar" data-rf="name">
+      <div class="inputrow" style="flex:0 1 200px;min-width:160px"><input type="text" inputmode="numeric" data-rf="rent" value="${r.rent?nf.format(r.rent):''}" placeholder="kr. á mánuði"><span class="unit">kr./mán.</span></div>
+      <select data-rf="kind" style="flex:1;min-width:230px;max-width:360px" title="Skráður leigusamningur nýtur frítekjumarks (16,5% skattur); greiðsla heimilisfólks fyrir þátttöku í heimilishaldi er ekki skattskyld leigutekja">
+        ${Object.entries(RENT_KINDS).map(([k,v])=>`<option value="${k}"${k===kind?' selected':''}>${v.label} (${v.pct} skattur)</option>`).join('')}
+      </select>
       <button class="loan-del" title="Fjarlægja íbúð" aria-label="Fjarlægja íbúð">×</button>`;
     row.querySelector('[data-rf="name"]').addEventListener('input',e=>{r.name=e.target.value;saveState();});
     const rentEl=row.querySelector('[data-rf="rent"]');
     rentEl.addEventListener('input',()=>{liveFormat(rentEl);r.rent=parseAmount(rentEl.value);recalc(S);});
+    row.querySelector('[data-rf="kind"]').addEventListener('change',e=>{r.kind=e.target.value;recalc(S);});
     row.querySelector('.loan-del').addEventListener('click',()=>{S.rentals=S.rentals.filter(x=>x.id!==r.id);renderRentals(S);recalc(S);});
     host.appendChild(row);
   });
 }
 function renderRentSummary(S){
   const el=S.$('rentSummary'); if(!el) return;
-  const g=grossRent(S);
-  el.innerHTML=g>0
-    ?`Leigutekjur alls <b>${kr(g)}</b> á mánuði − skattur (16,5%) <b>${kr(g*RENT_TAX)}</b> = <b style="color:var(--good-text)">${kr(netRent(S))}</b> nettó á mánuði.`
-    :'';
+  const g=grossRent(S), tax=rentTax(S);
+  if(!(g>0)){el.innerHTML='';return;}
+  const pcts=[...new Set(S.rentals.filter(r=>r.rent>0).map(r=>RENT_KINDS[rentKindOf(r)].pct))];
+  el.innerHTML=`Leigutekjur alls <b>${kr(g)}</b> á mánuði − skattur (${pcts.join(' / ')}) <b>${kr(tax)}</b> = <b style="color:var(--good-text)">${kr(netRent(S))}</b> nettó á mánuði.`;
 }
 
 /* ============ Lánakort ============ */
@@ -786,9 +803,10 @@ function renderTiles(S){
   let html=`
     <div class="card tile" style="border-top:3px solid var(--s1)"><div class="eyebrow">Tekið að láni</div><div class="big">${kr(t.principal)}</div><div class="sub">${S.results.length} ${S.results.length===1?'lán':'lán samtals'}</div></div>
     <div class="card tile" style="border-top:3px solid var(--s3)"><div class="eyebrow">Greiðslan á mánuði</div><div class="big">${kr(t.first)}</div><div class="sub">fyrsta greiðsla allra lána</div></div>`;
-  const nr=netRent(S);
-  if(nr>0){
-    html+=`<div class="card tile" style="border-top:3px solid var(--s5)"><div class="eyebrow">Greiðslan eftir leigutekjur</div><div class="big">${kr(Math.max(0,t.first-nr))}</div><div class="sub">${nr>=t.first?kr(nr)+' nettóleigutekjur standa undir allri greiðslunni — og gott betur':kr(nr)+' nettóleigutekjur á mánuði dragast frá'}</div></div>`;
+  const nr=netRent(S), off=incomeOffset(S);
+  if(off>0){
+    const offLabel=nr>0&&S.otherIncome>0?'leigu- og aukatekjur':nr>0?'leigutekjur':'aukatekjur';
+    html+=`<div class="card tile" style="border-top:3px solid var(--s5)"><div class="eyebrow">Greiðslan eftir ${offLabel}</div><div class="big">${kr(Math.max(0,t.first-off))}</div><div class="sub">${off>=t.first?kr(off)+' á mánuði standa undir allri greiðslunni — og gott betur':kr(off)+' nettó á mánuði dragast frá'}</div></div>`;
   }
   html+=`
     <div class="card tile" style="border-top:3px solid var(--s2)"><div class="eyebrow">Raunkostnaðurinn</div><div class="big">${kr(t.costReal)}</div><div class="sub">það sem lánin kosta umfram lánsupphæðina, á verðlagi dagsins í dag</div></div>
@@ -798,7 +816,7 @@ function renderTiles(S){
   }
   S.$('tiles').innerHTML=html;
   S.$('plain').innerHTML=S.results.length
-    ?`Lánin eru samtals <b>${kr(t.principal)}</b> og greiðslan af þeim er um <b>${kr(t.first)} á mánuði</b> til að byrja með. Á verðlagi dagsins í dag kosta þau um <b>${kr(t.costReal)}</b> í vexti og verðbætur yfir allan lánstímann.${nr>0?` Með <b>${kr(nr)}</b> í nettóleigutekjur á mánuði er greiðslan í raun um <b>${kr(Math.max(0,t.first-nr))} á mánuði</b>.`:''}`
+    ?`Lánin eru samtals <b>${kr(t.principal)}</b> og greiðslan af þeim er um <b>${kr(t.first)} á mánuði</b> til að byrja með. Á verðlagi dagsins í dag kosta þau um <b>${kr(t.costReal)}</b> í vexti og verðbætur yfir allan lánstímann.${off>0?` Með <b>${kr(off)}</b> í nettótekjur á móti (leiga og aðrar tekjur) er greiðslan í raun um <b>${kr(Math.max(0,t.first-off))} á mánuði</b>.`:''}`
     :'Bættu við láni í skrefi 2 til að sjá niðurstöðuna.';
   S.$('costnote').innerHTML=S.results.length
     ?`Á pappírunum verður samtalan hærri — greitt alls um <b>${kr(t.paid)}</b>, þar af <b>${kr(t.cost)}</b> í vexti og verðbætur. En sú tala safnast yfir ${Math.round(t.payoff/12)} ár og er í krónum framtíðarinnar, sem verða minna virði en krónur dagsins í dag — launin hækka alla jafna í takt við verðlagið á sama tíma. Þess vegna er raunkostnaðurinn hér að ofan réttari mælikvarði á það sem lánin kosta þig í alvöru.`
@@ -1001,6 +1019,7 @@ function diffScenarios(){
   if(incA!==incB) rows.push({label:'Útborguð laun', txt:kr(incA)+' → '+kr(incB)});
   if(A.firstBuyer!==B.firstBuyer) rows.push({label:'Fyrstu kaupendur', txt:(A.firstBuyer?'já':'nei')+' → '+(B.firstBuyer?'já':'nei')});
   if(Math.round(grossRent(A))!==Math.round(grossRent(B))) rows.push({label:'Leigutekjur (brúttó)', txt:kr(grossRent(A))+' → '+kr(grossRent(B))});
+  if((A.otherIncome||0)!==(B.otherIncome||0)) rows.push({label:'Aðrar tekjur (nettó)', txt:kr(A.otherIncome||0)+' → '+kr(B.otherIncome||0)});
   const n=Math.max(A.loans.length,B.loans.length);
   for(let i=0;i<n;i++){
     const a=A.loans[i], b=B.loans[i];
@@ -1039,7 +1058,7 @@ function renderCompare(){
   const rows=[
     {label:'Heildarhöfuðstóll', a:tA.principal, b:tB.principal, fmt:kr},
     {label:'Greiðslubyrði á mánuði (fyrsta greiðsla)', a:tA.first, b:tB.first, fmt:kr, lowerBetter:true},
-    (netRent(A)>0||netRent(B)>0)?{label:'Greiðslan eftir leigutekjur', a:Math.max(0,tA.first-netRent(A)), b:Math.max(0,tB.first-netRent(B)), fmt:kr, lowerBetter:true}:null,
+    (incomeOffset(A)>0||incomeOffset(B)>0)?{label:'Greiðslan eftir leigu- og aukatekjur', a:Math.max(0,tA.first-incomeOffset(A)), b:Math.max(0,tB.first-incomeOffset(B)), fmt:kr, lowerBetter:true}:null,
     {label:'Greiðslubyrði skv. forsendum SBÍ', a:tA.sbi, b:tB.sbi, fmt:kr, lowerBetter:true},
     incomeA&&incomeB?{label:'Greiðslubyrðarhlutfall', a:tA.sbi/incomeA*100, b:tB.sbi/incomeB*100, fmt:pct, lowerBetter:true}:null,
     {label:'Raunkostnaður (á verðlagi dagsins)', a:tA.costReal, b:tB.costReal, fmt:kr, lowerBetter:true},
@@ -1079,12 +1098,13 @@ function renderCompare(){
 
 /* ============ Vistun ============ */
 function packScen(S){
-  return {loans:S.loans,rentals:S.rentals,hasRentals:S.hasRentals,nextId:S.nextId,inflation:S.inflation,income1:S.income1,income2:S.income2,firstBuyer:S.firstBuyer,view:S.currentView};
+  return {loans:S.loans,rentals:S.rentals,hasRentals:S.hasRentals,nextId:S.nextId,inflation:S.inflation,income1:S.income1,income2:S.income2,otherIncome:S.otherIncome,firstBuyer:S.firstBuyer,view:S.currentView};
 }
 function unpackScen(S,d){
   S.loans=d.loans||[]; S.rentals=d.rentals||[]; S.hasRentals=!!d.hasRentals;
   S.nextId=d.nextId||S.loans.length+S.rentals.length+1;
   S.inflation=d.inflation??4; S.income1=d.income1||0; S.income2=d.income2||0;
+  S.otherIncome=d.otherIncome||0;
   S.firstBuyer=!!d.firstBuyer; S.currentView=d.view||'balance';
 }
 function saveState(){
