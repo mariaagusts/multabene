@@ -341,13 +341,13 @@ footer a{color:var(--ink-2)}
       <div class="didyou"><span class="dy-title">„Fastir“ vextir eru sjaldnast fastir út lánstímann</span>
         Óverðtryggð lán bera oft fasta vexti í 3–5 ár í senn; að þeim tíma liðnum endurskoðast þeir miðað við markaðinn og greiðslan getur tekið stökk. Prófaðu í dæmi B hvað gerist við hærri vexti — það er álagsprófið sem margir sleppa.</div>
       <div class="didyou"><span class="dy-title">Stytta lánstímann eða lækka greiðsluna?</span>
-        Sama aukagreiðslan sparar mun meira ef hún styttir lánstímann en ef hún lækkar greiðsluna — styttri tími þýðir færri mánuði af vöxtum og verðbótum. Valmyndin „Aukagreiðslur eiga að …“ á lánakortinu leyfir þér að bera þetta saman.</div>
+        Sama aukagreiðslan sparar mun meira ef hún styttir lánstímann. Ástæðan: þegar greiðslan lækkar í staðinn skilar ávinningurinn sér jafnóðum til baka til þín sem lægri mánaðargreiðsla — þú leggur þá í raun minna inn á lánið í hverjum mánuði og höfuðstóllinn lækkar hægar. „Stytta“ tryggir að hver einasta aukakróna endi í höfuðstólnum. Valmyndin „Aukagreiðslur eiga að …“ á lánakortinu leyfir þér að bera þetta saman.</div>
       <div class="didyou"><span class="dy-title">Eignamyndun er hæg í byrjun</span>
-        Fyrstu árin fer stór hluti greiðslunnar í vexti og verðbætur en aðeins lítill hluti í að lækka höfuðstólinn. Flipinn „Skuldin (á verðlagi dagsins í dag)“ sýnir raunverulegu eignamyndunina — og hvers vegna hún tekur við sér seinni hluta lánstímans.</div>
+        Fyrstu árin fer stór hluti greiðslunnar í vexti og verðbætur en aðeins lítill hluti í að lækka höfuðstólinn. En hver króna sem þú greiðir aukalega fer beint í höfuðstólinn og flýtir eignamynduninni frá fyrsta degi — aukagreiðslur bíta einmitt fastast fyrstu árin, meðan höfuðstóllinn er hæstur. Flipinn „Skuldin (á verðlagi dagsins í dag)“ sýnir raunverulegu eignamyndunina — og hvers vegna hún tekur við sér seinni hluta lánstímans.</div>
       <div class="didyou"><span class="dy-title">Fyrstu kaupendur fá rýmri mörk</span>
         Við kaup á fyrstu eign má greiðslubyrðarhlutfallið fara í 40% í stað 35%, og veðsetningarhlutfallið í allt að 90% af kaupverði í stað 80% (frá október 2025). Hakaðu við „fyrstu eign“ í skrefi 1 til að reikna með 40% viðmiðinu.</div>
       <div class="didyou"><span class="dy-title">35% reglan er viðmið — ekki greiðslumat</span>
-        Lánveitandinn gerir alltaf sitt eigið greiðslumat þar sem framfærslukostnaður, aðrar skuldir og fleira kemur inn í myndina. Reglan setur þak, en það er ekki sjálfgefið að lán fáist upp að því — og undanþáguheimildir geta í einstaka tilfellum náð aðeins yfir það.</div>
+        Reglan er sett af Seðlabanka Íslands, ekki lánveitendum — hún leggur öllum lánveitendum sama þakið, óháð því hjá hverjum þú tekur lánið. Lánveitandinn gerir svo alltaf sitt eigið greiðslumat þar sem framfærslukostnaður, aðrar skuldir og fleira kemur inn í myndina, og það er ekki sjálfgefið að lán fáist alveg upp að þakinu — undanþáguheimildir geta þó í einstaka tilfellum náð aðeins yfir það.</div>
     </div>
   </section>
 
@@ -469,12 +469,15 @@ const RENT_KINDS={
 };
 const rentKindOf=r=>RENT_KINDS[r.kind]?r.kind:'hms';
 const rentTaxOf=r=>(r.rent||0)*RENT_KINDS[rentKindOf(r)].tax;
+// Nettóleigutekjur af skráðum samningum — mega teljast til ráðstöfunartekna í 35%-viðmiðinu
+const netRentHms=S=>S.hasRentals?S.rentals.filter(r=>rentKindOf(r)==='hms').reduce((a,r)=>a+(r.rent||0)*(1-RENT_TAX),0):0;
+const dstiIncome=S=>S.income1+S.income2+(S.rentInDsti?netRentHms(S):0);
 const grossRent=S=>S.hasRentals?S.rentals.reduce((a,r)=>a+(r.rent||0),0):0;
 const rentTax=S=>S.hasRentals?S.rentals.reduce((a,r)=>a+rentTaxOf(r),0):0;
 const netRent=S=>grossRent(S)-rentTax(S);
 const incomeOffset=S=>netRent(S)+(S.otherIncome||0);   // leigutekjur nettó + aðrar nettótekjur
 function newScenario(key){
-  return {key, loans:[], rentals:[], hasRentals:false, nextId:1, currentView:'balance',
+  return {key, loans:[], rentals:[], hasRentals:false, rentInDsti:false, nextId:1, currentView:'balance',
     inflation:5.3, income1:0, income2:0, otherIncome:0, firstBuyer:false,
     results:[], baseline:[], horizon:360, root:null};
 }
@@ -526,10 +529,11 @@ function scenarioShell(S, title, removable){
       </div>
       <div class="card" style="margin-top:14px; padding:16px 18px" data-r="rentwrap"${S.hasRentals?'':' hidden'}>
         <div class="eyebrow" style="margin-bottom:4px">Leigutekjur — valfrjálst</div>
-        <p class="hint" style="margin:0 0 4px; max-width:75ch">Ertu með útleiguíbúð í húsinu? Settu inn mánaðarleiguna. Reiknivélin dregur frá 16,5% skatt (fjármagnstekjuskattur er 22% og frá 2026 eru 75% leigutekna af íbúðarhúsnæði skattskyld) og sýnir hver greiðslan af lánunum er eftir að nettóleigan hefur verið tekin inn í dæmið. Frítekjumarkið (16,5%) gildir þegar leigan fellur undir húsaleigulög, samningurinn er skráður í leiguskrá HMS og íbúðirnar eru ekki fleiri en tvær — útleiga til leigjanda er skattskyld óháð skráningu. Greiðsla frá heimilisfólki — t.d. uppkomnu barni í kjallaraíbúðinni — telst þátttaka í heimilishaldi og er ekki skattskyld leigutekja; veldu þá þann flokk. Leigutekjurnar breyta ekki 35% viðmiðinu hér að neðan — lánveitendur meta þær með ólíkum hætti í greiðslumati.</p>
+        <p class="hint" style="margin:0 0 4px; max-width:75ch">Ertu með útleiguíbúð í húsinu? Settu inn mánaðarleiguna. Reiknivélin dregur frá 16,5% skatt (fjármagnstekjuskattur er 22% og frá 2026 eru 75% leigutekna af íbúðarhúsnæði skattskyld) og sýnir hver greiðslan af lánunum er eftir að nettóleigan hefur verið tekin inn í dæmið. Frítekjumarkið (16,5%) gildir þegar leigan fellur undir húsaleigulög, samningurinn er skráður í leiguskrá HMS og íbúðirnar eru ekki fleiri en tvær — útleiga til leigjanda er skattskyld óháð skráningu. Greiðsla frá heimilisfólki — t.d. uppkomnu barni í kjallaraíbúðinni — telst þátttaka í heimilishaldi og er ekki skattskyld leigutekja; veldu þá þann flokk.</p>
         <div data-r="rentals"></div>
         <button type="button" class="table-toggle" style="margin-top:10px" data-r="addRental">+ Bæta við leiguíbúð</button>
         <div data-r="rentSummary" style="margin-top:10px; font-size:13.5px; color:var(--ink-2)"></div>
+        <label class="check" style="margin-top:6px"><input type="checkbox" data-r="rentInDsti"${S.rentInDsti?' checked':''}><span>Telja nettóleigutekjur af skráðum samningum með í ráðstöfunartekjum í 35%-viðmiðinu<br><small style="color:var(--muted)">Ráðstöfunartekjur skv. lögum nr. 118/2016 eru ekki bundnar við launatekjur, svo lánveitendur mega telja staðfestar leigutekjur með — en meta það hver með sínum hætti. Greiðsla heimilisfólks telst ekki með.</small></span></label>
       </div>
     </section>
     <section>
@@ -595,6 +599,7 @@ function mountScenario(S, hostId, title, removable){
     if(S.hasRentals&&!S.rentals.length){S.rentals.push({id:S.nextId++,name:'Íbúð 1',rent:0});renderRentals(S);}
     recalc(S);
   });
+  S.$('rentInDsti').addEventListener('change',e=>{S.rentInDsti=e.target.checked;recalc(S);});
   S.$('addRental').addEventListener('click',()=>{
     S.rentals.push({id:S.nextId++,name:'Íbúð '+(S.rentals.length+1),rent:0});
     renderRentals(S); recalc(S);
@@ -835,7 +840,8 @@ function renderTiles(S){
 }
 function renderSbi(S){
   const el=S.$('sbi');
-  const income=S.income1+S.income2;
+  const income=dstiIncome(S);
+  const rentPart=S.rentInDsti?netRentHms(S):0;
   const cap=S.firstBuyer?40:35;
   const sbiTotal=S.results.reduce((a,r)=>a+r.sbi,0);
   const infobox=`<div class="infobox"><b>Forsendur Seðlabankans</b> (reglur nr. 1130/2025): viðmiðunargreiðslan er jafngreiðslulán með a.m.k. 5,5% vöxtum og að hámarki 40 ára lánstíma sé lánið óverðtryggt, en a.m.k. 3% vöxtum og að hámarki 25 ára lánstíma sé það verðtryggt — þess vegna getur hlutfallið verið hærra en raungreiðslan þín segir til um. Niðurstaðan er til glöggvunar og kemur ekki í stað greiðslumats lánveitanda.</div>`;
@@ -872,7 +878,7 @@ function renderSbi(S){
       <div class="meter-mark" style="left:${cap/scaleMax*100}%"><span>hámark ${cap}%</span></div>
     </div>
     <div class="meter-scale"><span>0%</span><span>${scaleMax}%</span></div>
-    <p class="sbi-detail">Viðmiðunargreiðslubyrði skv. forsendum Seðlabankans er <b>${kr(sbiTotal)}</b> á mánuði af <b>${kr(income)}</b> ráðstöfunartekjum.
+    <p class="sbi-detail">Viðmiðunargreiðslubyrði skv. forsendum Seðlabankans er <b>${kr(sbiTotal)}</b> á mánuði af <b>${kr(income)}</b> ráðstöfunartekjum${rentPart>0?` (þar af <b>${kr(rentPart)}</b> nettóleigutekjur af skráðum samningum)`:''}.
     ${ok
       ?`Svigrúmið upp að hámarkinu er <b>${kr(room)}</b> á mánuði í viðbótargreiðslubyrði.`
       :`Til að komast innan marka þyrfti greiðslubyrðin að lækka um <b>${kr(-room)}</b> á mánuði — eða tekjurnar að hækka um <b>${kr(sbiTotal/(cap/100)-income)}</b>.`}</p>
@@ -1031,6 +1037,7 @@ function diffScenarios(){
   if(A.firstBuyer!==B.firstBuyer) rows.push({label:'Fyrstu kaupendur', txt:(A.firstBuyer?'já':'nei')+' → '+(B.firstBuyer?'já':'nei')});
   if(Math.round(grossRent(A))!==Math.round(grossRent(B))) rows.push({label:'Leigutekjur (brúttó)', txt:kr(grossRent(A))+' → '+kr(grossRent(B))});
   if((A.otherIncome||0)!==(B.otherIncome||0)) rows.push({label:'Aðrar tekjur (nettó)', txt:kr(A.otherIncome||0)+' → '+kr(B.otherIncome||0)});
+  if(!!A.rentInDsti!==!!B.rentInDsti) rows.push({label:'Leigutekjur í 35%-viðmiði', txt:(A.rentInDsti?'já':'nei')+' → '+(B.rentInDsti?'já':'nei')});
   const n=Math.max(A.loans.length,B.loans.length);
   for(let i=0;i<n;i++){
     const a=A.loans[i], b=B.loans[i];
@@ -1065,7 +1072,7 @@ function renderCompare(){
   sec.hidden=false;
   renderCompareDiff();
   const tA=scenTotals(A), tB=scenTotals(B);
-  const incomeA=A.income1+A.income2, incomeB=B.income1+B.income2;
+  const incomeA=dstiIncome(A), incomeB=dstiIncome(B);
   const rows=[
     {label:'Heildarhöfuðstóll', a:tA.principal, b:tB.principal, fmt:kr},
     {label:'Greiðslubyrði á mánuði (fyrsta greiðsla)', a:tA.first, b:tB.first, fmt:kr, lowerBetter:true},
@@ -1109,10 +1116,10 @@ function renderCompare(){
 
 /* ============ Vistun ============ */
 function packScen(S){
-  return {loans:S.loans,rentals:S.rentals,hasRentals:S.hasRentals,nextId:S.nextId,inflation:S.inflation,income1:S.income1,income2:S.income2,otherIncome:S.otherIncome,firstBuyer:S.firstBuyer,view:S.currentView};
+  return {loans:S.loans,rentals:S.rentals,hasRentals:S.hasRentals,rentInDsti:S.rentInDsti,nextId:S.nextId,inflation:S.inflation,income1:S.income1,income2:S.income2,otherIncome:S.otherIncome,firstBuyer:S.firstBuyer,view:S.currentView};
 }
 function unpackScen(S,d){
-  S.loans=d.loans||[]; S.rentals=d.rentals||[]; S.hasRentals=!!d.hasRentals;
+  S.loans=d.loans||[]; S.rentals=d.rentals||[]; S.hasRentals=!!d.hasRentals; S.rentInDsti=!!d.rentInDsti;
   S.nextId=d.nextId||S.loans.length+S.rentals.length+1;
   S.inflation=d.inflation??4; S.income1=d.income1||0; S.income2=d.income2||0;
   S.otherIncome=d.otherIncome||0;
