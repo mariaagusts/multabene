@@ -1,0 +1,869 @@
+<!doctype html>
+<html lang="is">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ræð ég við lánið?</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<style>
+:root{
+  --bg:#f2f5f5; --surface:#fcfdfd; --surface-2:#eef2f2;
+  --ink:#101a1f; --ink-2:#4c5a60; --muted:#87949a;
+  --hairline:#dde4e4; --baseline:#c2cbcc; --grid:#e6ebeb;
+  --accent:#1c5cab; --accent-ink:#fff; --accent-soft:#e3edf9;
+  --good:#0ca30c; --good-text:#006300; --bad:#d03b3b; --bad-text:#b32626;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4; --s6:#008300;
+  --shadow:0 1px 2px rgba(16,26,31,.05),0 4px 16px rgba(16,26,31,.06);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1113; --surface:#191d1f; --surface-2:#22272a;
+    --ink:#f2f4f4; --ink-2:#b9c2c6; --muted:#8d979b;
+    --hairline:#2b3134; --baseline:#3a4144; --grid:#242a2d;
+    --accent:#5598e7; --accent-ink:#0e1113; --accent-soft:#1c2d42;
+    --good:#0ca30c; --good-text:#3ec43e; --bad:#e66767; --bad-text:#ef8f8f;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#00a300;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1113; --surface:#191d1f; --surface-2:#22272a;
+  --ink:#f2f4f4; --ink-2:#b9c2c6; --muted:#8d979b;
+  --hairline:#2b3134; --baseline:#3a4144; --grid:#242a2d;
+  --accent:#5598e7; --accent-ink:#0e1113; --accent-soft:#1c2d42;
+  --good:#0ca30c; --good-text:#3ec43e; --bad:#e66767; --bad-text:#ef8f8f;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#00a300;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px; margin:0 auto; padding:0 20px 80px}
+header.masthead{padding:44px 0 8px}
+.masthead h1{
+  font-family:"Bricolage Grotesque","Public Sans",system-ui,sans-serif;
+  font-weight:700; font-size:clamp(30px,5vw,44px); line-height:1.05;
+  margin:0 0 10px; letter-spacing:-.01em; text-wrap:balance;
+}
+.masthead p{margin:0; color:var(--ink-2); max-width:62ch}
+section{margin-top:34px}
+h2{
+  font-family:"Bricolage Grotesque","Public Sans",system-ui,sans-serif;
+  font-weight:600; font-size:21px; margin:0 0 4px; letter-spacing:-.005em;
+}
+.sec-sub{color:var(--ink-2); margin:0 0 16px; font-size:14px; max-width:70ch}
+.card{background:var(--surface); border:1px solid var(--hairline); border-radius:10px; box-shadow:var(--shadow)}
+.eyebrow{font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+
+/* --- Dæmi (sviðsmyndir) --- */
+.scenario{border-top:2px solid var(--hairline); margin-top:44px; padding-top:6px}
+.scenario-head{display:flex; align-items:center; gap:12px; margin-top:22px}
+.scenario-tag{
+  font-family:"Bricolage Grotesque",system-ui,sans-serif; font-weight:700; font-size:15px;
+  background:var(--ink); color:var(--bg); border-radius:7px; padding:3px 11px; letter-spacing:.02em;
+}
+.scenario-head h2{margin:0; font-size:24px}
+.scenario-remove{
+  margin-left:auto; border:1px solid var(--hairline); background:var(--surface); color:var(--ink-2);
+  font:inherit; font-size:12.5px; font-weight:600; padding:5px 12px; border-radius:8px; cursor:pointer;
+}
+.scenario-remove:hover{color:var(--bad-text); border-color:var(--bad-text)}
+.compare-cta{margin-top:36px; text-align:center}
+.compare-cta button{
+  border:1.5px dashed var(--baseline); background:none; color:var(--ink-2);
+  font:inherit; font-weight:600; font-size:15px; cursor:pointer;
+  padding:16px 28px; border-radius:10px; width:100%;
+}
+.compare-cta button:hover{border-color:var(--accent); color:var(--accent); background:var(--accent-soft)}
+.compare-cta .cta-sub{display:block; font-weight:400; font-size:12.5px; color:var(--muted); margin-top:4px}
+
+/* --- Forsendur --- */
+.assumptions{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; padding:18px}
+.field label{display:block; font-size:12.5px; font-weight:600; color:var(--ink-2); margin-bottom:5px}
+.field .hint{font-size:11.5px; color:var(--muted); margin-top:4px; line-height:1.35}
+.inputrow{display:flex; align-items:center; gap:6px}
+input[type=text],input[type=number],select{
+  width:100%; padding:8px 10px; font:inherit; color:var(--ink);
+  background:var(--bg); border:1px solid var(--hairline); border-radius:7px;
+  font-variant-numeric:tabular-nums;
+}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
+.unit{color:var(--muted); font-size:13px; white-space:nowrap}
+.check{display:flex; align-items:flex-start; gap:9px; padding:8px 0; cursor:pointer; user-select:none}
+.check input{width:17px; height:17px; accent-color:var(--accent); margin:2px 0 0; flex:none}
+.check span{font-size:14px}
+
+/* --- Lán --- */
+.loans{display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:16px}
+.loan-card{padding:16px 18px 14px; position:relative; border-top:3px solid var(--loan-color,var(--accent))}
+.loan-head{display:flex; align-items:center; gap:10px; margin-bottom:12px}
+.loan-dot{width:10px;height:10px;border-radius:50%;background:var(--loan-color,var(--accent));flex:none}
+.loan-head input{font-weight:600; border-color:transparent; background:transparent; padding:4px 6px; margin-left:-6px}
+.loan-head input:hover{border-color:var(--hairline)}
+.loan-del{
+  margin-left:auto; border:none; background:none; color:var(--muted); cursor:pointer;
+  font-size:18px; line-height:1; padding:4px 6px; border-radius:6px;
+}
+.loan-del:hover{color:var(--bad-text); background:var(--surface-2)}
+.loan-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px 12px}
+.loan-grid .full{grid-column:1 / -1}
+.loan-stats{
+  margin-top:14px; padding-top:12px; border-top:1px solid var(--hairline);
+  display:grid; grid-template-columns:1fr 1fr; gap:8px 12px; font-size:13px;
+}
+.loan-stats div span{display:block; color:var(--muted); font-size:11.5px}
+.loan-stats div b{font-variant-numeric:tabular-nums; font-weight:600}
+.add-loan{
+  border:1.5px dashed var(--baseline); border-radius:10px; background:none;
+  color:var(--ink-2); font:inherit; font-weight:600; cursor:pointer;
+  min-height:120px; display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.add-loan:hover{border-color:var(--accent); color:var(--accent); background:var(--accent-soft)}
+.add-loan .plus{font-size:22px; line-height:1}
+
+/* --- Samantekt --- */
+.tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px}
+.tile{padding:16px 18px}
+.tile .eyebrow{margin-bottom:6px}
+.tile .big{
+  font-size:clamp(21px,2.6vw,27px); font-weight:700; line-height:1.15;
+  letter-spacing:-.01em; font-variant-numeric:tabular-nums;
+}
+.tile .sub{color:var(--muted); font-size:12.5px; margin-top:3px}
+.pill{
+  display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600;
+  padding:3px 10px; border-radius:99px; margin-top:8px;
+}
+.pill.ok{background:color-mix(in srgb,var(--good) 14%,transparent); color:var(--good-text)}
+.pill.bad{background:color-mix(in srgb,var(--bad) 14%,transparent); color:var(--bad-text)}
+
+/* --- SBÍ meter --- */
+.sbi-card{padding:20px 22px; margin-top:14px}
+.meter{position:relative; height:14px; border-radius:99px; background:var(--surface-2); margin:26px 0 8px}
+.meter-fill{position:absolute; inset:0 auto 0 0; border-radius:99px; background:var(--accent); min-width:4px; transition:width .25s}
+.meter-fill.over{background:var(--bad)}
+.meter-mark{position:absolute; top:-7px; bottom:-7px; width:2px; background:var(--ink); opacity:.75}
+.meter-mark span{
+  position:absolute; top:-20px; left:50%; transform:translateX(-50%);
+  font-size:11px; font-weight:600; color:var(--ink-2); white-space:nowrap;
+}
+.meter-scale{display:flex; justify-content:space-between; color:var(--muted); font-size:11px; font-variant-numeric:tabular-nums}
+.sbi-detail{margin-top:14px; font-size:13.5px; color:var(--ink-2); max-width:75ch}
+.sbi-detail b{color:var(--ink); font-variant-numeric:tabular-nums}
+.infobox{
+  margin-top:16px; padding:12px 15px; border-radius:8px;
+  background:var(--accent-soft); border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);
+  font-size:13px; line-height:1.5; color:var(--ink-2); max-width:75ch;
+}
+.infobox b{color:var(--ink)}
+
+/* --- Línurit --- */
+.tabs{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px}
+.tab{
+  border:1px solid var(--hairline); background:var(--surface); color:var(--ink-2);
+  font:inherit; font-size:13px; font-weight:600; padding:6px 13px; border-radius:99px; cursor:pointer;
+}
+.tab[aria-selected=true]{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+.chart-card{padding:18px 18px 12px}
+.chart-note{font-size:12.5px; color:var(--muted); margin:2px 0 10px}
+svg.chart{width:100%; display:block; overflow:visible}
+svg.chart text{font-family:"Public Sans",system-ui,sans-serif}
+.legend{display:flex; flex-wrap:wrap; gap:14px; padding:10px 4px 4px; font-size:12.5px; color:var(--ink-2)}
+.legend .sw{display:inline-block; width:14px; height:3px; border-radius:2px; vertical-align:middle; margin-right:6px}
+.tooltip{
+  position:fixed; pointer-events:none; z-index:10; display:none;
+  background:var(--surface); border:1px solid var(--hairline); border-radius:8px;
+  box-shadow:var(--shadow); padding:9px 12px; font-size:12.5px; min-width:200px;
+}
+.tooltip .tt-title{font-weight:700; margin-bottom:5px}
+.tooltip .tt-row{display:flex; align-items:center; gap:8px; padding:1px 0}
+.tooltip .tt-row .tt-name{flex:1}
+.tooltip .tt-row b{font-variant-numeric:tabular-nums; font-weight:600}
+
+/* --- Tafla --- */
+.table-toggle{
+  margin-top:14px; border:1px solid var(--hairline); background:var(--surface);
+  color:var(--ink-2); font:inherit; font-size:13px; font-weight:600;
+  padding:7px 14px; border-radius:8px; cursor:pointer;
+}
+.table-toggle:hover{color:var(--accent); border-color:var(--accent)}
+.table-scroll{overflow-x:auto; margin-top:12px}
+table.yearly{border-collapse:collapse; width:100%; min-width:680px; font-size:13px}
+.yearly th{
+  text-align:right; font-weight:600; color:var(--ink-2); font-size:12px;
+  padding:8px 10px; border-bottom:1.5px solid var(--baseline); white-space:nowrap;
+}
+.yearly th:first-child,.yearly td:first-child{text-align:left}
+.yearly td{padding:7px 10px; text-align:right; border-bottom:1px solid var(--grid); font-variant-numeric:tabular-nums}
+.yearly tr:hover td{background:var(--surface-2)}
+
+/* --- Samanburður --- */
+.compare-table-wrap{overflow-x:auto}
+table.compare{border-collapse:collapse; width:100%; min-width:560px; font-size:14px}
+.compare th{
+  text-align:right; font-weight:600; color:var(--ink-2); font-size:12.5px;
+  padding:10px 12px; border-bottom:1.5px solid var(--baseline); white-space:nowrap;
+}
+.compare th:first-child,.compare td:first-child{text-align:left}
+.compare td{padding:9px 12px; text-align:right; border-bottom:1px solid var(--grid); font-variant-numeric:tabular-nums}
+.compare td.better{color:var(--good-text); font-weight:600}
+.compare .delta{color:var(--muted); font-size:13px}
+
+/* --- Skýringar --- */
+.explain{padding:22px 24px}
+.explain h3{font-family:"Bricolage Grotesque",system-ui,sans-serif; font-size:16.5px; margin:18px 0 6px}
+.explain h3:first-child{margin-top:0}
+.explain p{margin:0 0 10px; color:var(--ink-2); max-width:72ch}
+.explain a{color:var(--accent)}
+footer{margin-top:30px; color:var(--muted); font-size:12.5px; max-width:75ch}
+footer a{color:var(--ink-2)}
+@media (max-width:560px){ .loan-grid{grid-template-columns:1fr} }
+@media (prefers-reduced-motion: reduce){ *{transition:none !important} }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <h1>Ræð ég við lánið?</h1>
+    <p>Settu inn lánin þín — verðtryggð og óverðtryggð — og sjáðu greiðslubyrðina, þróun höfuðstólsins og hvort þau standist 35%&nbsp;reglu Seðlabankans um greiðslubyrði fasteignalána. Þú getur líka sett upp tvö dæmi og borið þau saman.</p>
+  </header>
+
+  <div id="scenarioA"></div>
+
+  <div class="compare-cta" id="compareCta">
+    <button id="addScenarioB">+ Bera saman annað dæmi
+      <span class="cta-sub">Settu upp aðra samsetningu lána — aðra vexti, verðbólgu eða aukagreiðslur — og fáðu samanburð.</span>
+    </button>
+  </div>
+
+  <div id="scenarioB"></div>
+
+  <section id="compareSec" hidden>
+    <div class="scenario" style="margin-top:44px">
+      <div class="scenario-head"><h2>Samanburður á dæmunum</h2></div>
+      <p class="sec-sub" style="margin-top:8px">Lykiltölur beggja dæma hlið við hlið. Lægri talan er merkt græn þar sem lægra er betra.</p>
+      <div class="card" style="padding:6px 12px 2px"><div class="compare-table-wrap" id="compareTable"></div></div>
+      <div class="card chart-card" style="margin-top:16px">
+        <div class="tabs" role="tablist" id="cmpTabs"></div>
+        <p class="chart-note" id="cmpNote"></p>
+        <svg class="chart" id="cmpChart" height="300" role="img" aria-label="Samanburðarlínurit dæma A og B"></svg>
+        <div class="legend" id="cmpLegend"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 style="margin-top:44px">Hvernig er reiknað?</h2>
+    <div class="card explain">
+      <h3>Verðtryggð lán</h3>
+      <p>Höfuðstóll verðtryggðs láns fylgir vísitölu neysluverðs: í hverjum mánuði hækkar hann um verðbólgu mánaðarins (verðbætur) áður en vextir og afborgun reiknast. Vextirnir eru raunvextir og reiknast af verðbættum höfuðstól. Greiðslan er því lægri í upphafi en af sambærilegu óverðtryggðu láni, en hún hækkar í takt við verðbólguna — og fyrstu árin geta eftirstöðvar á nafnverði hækkað þrátt fyrir að greitt sé af láninu, því verðbæturnar eru hærri en afborgunin. Á föstu verðlagi lækkar skuldin þó frá fyrsta degi. Í jafngreiðsluláni (annuitet) er greiðslan fastur „raunkróna“-fjöldi sem verðbætist; í láni með jöfnum afborgunum greiðist höfuðstóllinn jafnt niður og greiðslubyrðin er hæst fyrst. Útreikningsaðferðin hér hefur verið sannreynd upp á krónu við talnadæmi Neytendastofu um þróun höfuðstóls verðtryggðra lána.</p>
+      <h3>35% regla Seðlabankans</h3>
+      <p>Samkvæmt reglum Seðlabanka Íslands um hámark greiðslubyrðar fasteignalána (nr. 1130/2025, áður nr. 701/2022) má mánaðarleg greiðslubyrði fasteignalána að hámarki vera <b>35% af mánaðarlegum ráðstöfunartekjum</b> — útborguðum launum — og <b>40% hjá fyrstu kaupendum</b>. Greiðslubyrðin í því mati er ekki raungreiðslan af láninu þínu heldur stöðluð viðmiðunargreiðsla: jafngreiðslulán með að hámarki 40 ára lánstíma og að lágmarki 5,5% vöxtum sé lánið óverðtryggt, en að hámarki 25 ára lánstíma og að lágmarki 3% vöxtum sé það verðtryggt. Séu raunverulegir vextir eða lánstími strangari en viðmiðin gilda þau raunverulegu. Reiknivélin notar þessar forsendur. Lánveitendur hafa þrönga undanþáguheimild (allt að 10% útlána á ársfjórðungi frá október 2025), svo niðurstaðan hér er viðmið en ekki endanlegt greiðslumat.</p>
+      <h3>Fyrirvarar</h3>
+      <p>Reiknivélin gerir ráð fyrir jafnri verðbólgu allan lánstímann, föstum vöxtum og engum lántöku- eða greiðslugjöldum. Vaxtabætur, sérstakur húsnæðisstuðningur og skattaáhrif eru ekki með. Niðurstöðurnar eru til glöggvunar og koma ekki í stað greiðslumats lánveitanda eða fjármálaráðgjafar.</p>
+    </div>
+    <footer>
+      Heimildir: <a href="https://sedlabanki.is/fjarmalastodugleiki/thjodhagsvarud/lanthegaskilyrdi-fasteignalana/">Lánþegaskilyrði fasteignalána — Seðlabanki Íslands</a> ·
+      <a href="https://island.is/stjornartidindi/nr/9f1e3801-ae61-482e-be85-52357f2df26a">Reglur nr. 1130/2025 um hámark greiðslubyrðar fasteignalána</a> ·
+      <a href="https://sedlabanki.is/frettir-og-utgefid-efni/grein/yfirlysing-fjarmalastodugleikanefndar-31-oktober-2025">Yfirlýsing fjármálastöðugleikanefndar 31. október 2025</a> ·
+      <a href="https://www.neytendastofa.is/library/Files/Neytendarettarsvid/Neytendafraedsla/%C3%9Er%C3%B3un-h%C3%B6fu%C3%B0st%C3%B3ls.pdf">Neytendastofa — Þróun höfuðstóls (talnadæmi)</a>
+    </footer>
+  </section>
+</div>
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+/* ============ Útreikningskjarni (sannreyndur við dæmi Neytendastofu) ============ */
+function annuity(monthlyRate, months, principal){
+  if(months<=0) return principal;
+  if(monthlyRate===0) return principal/months;
+  const q=Math.pow(1+monthlyRate,months);
+  return principal*monthlyRate*q/(q-1);
+}
+function simulateLoan(loan, inflationPct, maxMonths){
+  const r=(loan.rate/100)/12;
+  const n=Math.round(loan.years*12);
+  const inflM=Math.pow(1+inflationPct/100,1/12)-1;
+  const useIndex=loan.indexed;
+  let balance=loan.principal, indexFactor=1;
+  const basePayment=loan.paymentType==='annuitet'?annuity(r,n,loan.principal):null;
+  const baseInstal=loan.principal/n;
+  const out={months:[],totalPaid:0,totalInterest:0,totalIndexation:0,payoffMonth:null,firstPayment:0};
+  let remaining=n;
+  for(let m=1;m<=maxMonths;m++){
+    if(balance<=0.005){out.months.push({payment:0,interest:0,indexation:0,principalPaid:0,balance:0,balanceReal:0});continue;}
+    let indexation=0;
+    indexFactor*=(1+inflM);
+    if(useIndex){indexation=balance*inflM;balance+=indexation;}
+    const interest=balance*r;
+    let scheduled;
+    if(loan.paymentType==='annuitet'){
+      scheduled=loan.extraMode==='laekka'
+        ?annuity(r,Math.max(remaining,1),balance)
+        :basePayment*(useIndex?indexFactor:1);
+    }else{
+      const instal=loan.extraMode==='laekka'
+        ?balance/Math.max(remaining,1)
+        :baseInstal*(useIndex?indexFactor:1);
+      scheduled=instal+interest;
+    }
+    let extra=loan.extraMonthly||0;
+    if(loan.lumpAmount&&loan.lumpMonth===m) extra+=loan.lumpAmount;
+    let payment=scheduled+extra;
+    const maxPay=balance+interest;
+    if(payment>=maxPay) payment=maxPay;
+    const principalPaid=payment-interest;
+    balance-=principalPaid;
+    remaining--;
+    out.totalPaid+=payment;
+    out.totalInterest+=interest;
+    out.totalIndexation+=indexation;
+    if(m===1) out.firstPayment=payment;
+    if(balance<=0.005&&out.payoffMonth===null){balance=0;out.payoffMonth=m;}
+    out.months.push({payment,interest,indexation,principalPaid,balance:Math.max(balance,0),balanceReal:Math.max(balance,0)/indexFactor});
+  }
+  if(out.payoffMonth===null&&balance>0.005) out.payoffMonth=maxMonths;
+  return out;
+}
+/* Reglur SBÍ nr. 1130/2025: jafngreiðsluviðmið, óvtr ≥5,5% & ≤40 ár, vtr ≥3% & ≤25 ár */
+function sbiPayment(loan){
+  const rate=loan.indexed?Math.max(loan.rate,3):Math.max(loan.rate,5.5);
+  const years=loan.indexed?Math.min(loan.years,25):Math.min(loan.years,40);
+  return annuity((rate/100)/12,Math.round(years*12),loan.principal);
+}
+
+/* ============ Hjálp ============ */
+const nf={format:x=>String(Math.round(x)).replace(/\B(?=(\d{3})+(?!\d))/g,'.')};
+const kr=x=>nf.format(x)+' kr.';
+const pct=x=>(Math.round(x*10)/10).toFixed(1).replace('.',',')+'%';
+function mkr(x){
+  const m=x/1e6;
+  return (m>=100?String(Math.round(m)):(Math.round(m*10)/10).toString().replace('.',',')) +' m.kr.';
+}
+function parseAmount(str){return parseInt(String(str).replace(/[^\d]/g,''),10)||0;}
+function liveFormat(el){
+  const v=parseAmount(el.value); const s=v?nf.format(v):'';
+  if(el.value!==s) el.value=s;
+}
+function yearsMonths(months){
+  const y=Math.floor(months/12),m=months%12;
+  if(y===0) return m+' mán.';
+  return y+' ár'+(m?' og '+m+' mán.':'');
+}
+const SERIES=['--s1','--s2','--s3','--s4','--s5','--s6'];
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const VIEWS=[
+  {id:'balance', label:'Eftirstöðvar (nafnverð)', note:'Eftirstöðvar lánanna í krónum hvers tíma. Verðtryggður höfuðstóll getur hækkað fyrstu árin þótt greitt sé af láninu.'},
+  {id:'balanceReal', label:'Eftirstöðvar (fast verðlag)', note:'Eftirstöðvar staðvirtar til verðlags dagsins í dag — raunveruleg skuldastaða, samanburðarhæf milli verðtryggðra og óverðtryggðra lána.'},
+  {id:'payment', label:'Greiðslubyrði á mánuði', note:'Samanlögð mánaðargreiðsla í krónum hvers tíma. Greiðslur verðtryggðra lána hækka með verðbólgunni.'},
+  {id:'cost', label:'Vextir og verðbætur', note:'Uppsafnaðir vextir og verðbætur frá töku lánanna. Brotalínan sýnir samtöluna án aukagreiðslna, sé þeim bætt við.'},
+];
+
+/* ============ Sviðsmyndir (Dæmi A og B) ============ */
+function newScenario(key){
+  return {key, loans:[], nextId:1, currentView:'balance',
+    inflation:4, income1:0, income2:0, firstBuyer:false,
+    results:[], baseline:[], horizon:360, root:null};
+}
+let A=newScenario('A'), B=null;
+
+function defaultLoan(S, indexed){
+  return {id:S.nextId++, name:'Lán '+(S.loans.length+1),
+    indexed:!!indexed, paymentType:'annuitet',
+    principal:indexed?30000000:20000000, rate:indexed?4.0:8.0, years:30,
+    extraMonthly:0, lumpAmount:0, lumpYear:0, extraMode:'stytta'};
+}
+
+function scenarioShell(S, title, removable){
+  return `
+  <div class="scenario">
+    <div class="scenario-head">
+      <span class="scenario-tag">Dæmi ${S.key}</span><h2>${title}</h2>
+      ${removable?'<button class="scenario-remove" data-r="remove">Fjarlægja dæmi B</button>':''}
+    </div>
+    <section>
+      <h2 style="font-size:18px">Forsendur</h2>
+      <p class="sec-sub">Verðbólgan gildir fyrir verðtryggingu og staðvirðingu. Launin eru útborguð laun (ráðstöfunartekjur) — samanlögð ef tveir taka lánið.</p>
+      <div class="card assumptions">
+        <div class="field"><label>Áætluð ársverðbólga</label>
+          <div class="inputrow"><input type="number" data-r="inflation" value="${S.inflation}" step="0.1" min="0" max="99"><span class="unit">%</span></div>
+          <div class="hint">Verðbólgumarkmið Seðlabankans er 2,5%.</div></div>
+        <div class="field"><label>Útborguð laun — aðili 1</label>
+          <div class="inputrow"><input type="text" data-r="income1" inputmode="numeric" value="${S.income1?nf.format(S.income1):''}" placeholder="t.d. 550.000"><span class="unit">kr./mán.</span></div></div>
+        <div class="field"><label>Útborguð laun — aðili 2</label>
+          <div class="inputrow"><input type="text" data-r="income2" inputmode="numeric" value="${S.income2?nf.format(S.income2):''}" placeholder="valfrjálst"><span class="unit">kr./mán.</span></div></div>
+        <div class="field"><label class="check"><input type="checkbox" data-r="firstBuyer"${S.firstBuyer?' checked':''}><span>Fyrstu kaupendur<br><small style="color:var(--muted)">Hámarkið hækkar úr 35% í 40%</small></span></label></div>
+      </div>
+    </section>
+    <section>
+      <h2 style="font-size:18px">Lánin</h2>
+      <p class="sec-sub">Bættu við eins mörgum lánum og þú vilt. Vextir verðtryggðra lána eru raunvextir sem leggjast ofan á verðbætur.</p>
+      <div class="loans" data-r="loans"></div>
+    </section>
+    <section>
+      <h2 style="font-size:18px">Samantekt</h2>
+      <div class="tiles" data-r="tiles"></div>
+      <div class="card sbi-card" data-r="sbi"></div>
+    </section>
+    <section>
+      <h2 style="font-size:18px">Þróun lánanna</h2>
+      <p class="sec-sub">Færðu músina yfir línuritið til að sjá stöðu á hverjum tíma.</p>
+      <div class="card chart-card">
+        <div class="tabs" role="tablist" data-r="tabs"></div>
+        <p class="chart-note" data-r="note"></p>
+        <svg class="chart" data-r="chart" height="340" role="img" aria-label="Línurit um þróun lánanna í dæmi ${S.key}"></svg>
+        <div class="legend" data-r="legend"></div>
+      </div>
+      <button class="table-toggle" data-r="tableToggle" aria-expanded="false">Sýna árlega töflu</button>
+      <div class="table-scroll" data-r="tableWrap" hidden></div>
+    </section>
+  </div>`;
+}
+
+function mountScenario(S, hostId, title, removable){
+  const host=document.getElementById(hostId);
+  host.innerHTML=scenarioShell(S,title,removable);
+  S.root=host;
+  S.$=sel=>host.querySelector('[data-r="'+sel+'"]');
+  S.$('inflation').addEventListener('input',e=>{S.inflation=parseFloat(e.target.value)||0;recalc(S);});
+  ['income1','income2'].forEach(f=>{
+    const el=S.$(f);
+    el.addEventListener('input',()=>{liveFormat(el);S[f]=parseAmount(el.value);recalc(S);});
+  });
+  S.$('firstBuyer').addEventListener('change',e=>{S.firstBuyer=e.target.checked;recalc(S);});
+  S.$('tableToggle').addEventListener('click',function(){
+    const wrap=S.$('tableWrap');
+    wrap.hidden=!wrap.hidden;
+    this.setAttribute('aria-expanded',String(!wrap.hidden));
+    this.textContent=wrap.hidden?'Sýna árlega töflu':'Fela árlega töflu';
+    renderTable(S);
+  });
+  if(removable){
+    host.querySelector('[data-r="remove"]').addEventListener('click',()=>{
+      B=null;
+      host.innerHTML='';
+      document.getElementById('compareSec').hidden=true;
+      document.getElementById('compareCta').style.display='';
+      saveState();
+    });
+  }
+  renderLoans(S);
+  recalc(S);
+}
+
+/* ============ Lánakort ============ */
+function renderLoans(S){
+  const hostL=S.$('loans');
+  hostL.innerHTML='';
+  S.loans.forEach((loan,i)=>{
+    const color='var('+SERIES[i%SERIES.length]+')';
+    const card=document.createElement('div');
+    card.className='card loan-card';
+    card.style.setProperty('--loan-color',color);
+    card.innerHTML=`
+      <div class="loan-head">
+        <span class="loan-dot"></span>
+        <input type="text" data-f="name" value="${esc(loan.name)}" aria-label="Heiti láns">
+        <button class="loan-del" title="Fjarlægja lán" aria-label="Fjarlægja lán">×</button>
+      </div>
+      <div class="loan-grid">
+        <div class="field"><label>Tegund</label>
+          <select data-f="indexed">
+            <option value="1"${loan.indexed?' selected':''}>Verðtryggt</option>
+            <option value="0"${!loan.indexed?' selected':''}>Óverðtryggt</option>
+          </select></div>
+        <div class="field"><label>Greiðslufyrirkomulag</label>
+          <select data-f="paymentType">
+            <option value="annuitet"${loan.paymentType==='annuitet'?' selected':''}>Jafnar greiðslur</option>
+            <option value="jafnar"${loan.paymentType==='jafnar'?' selected':''}>Jafnar afborganir</option>
+          </select></div>
+        <div class="field"><label>Höfuðstóll / eftirstöðvar</label>
+          <div class="inputrow"><input type="text" inputmode="numeric" data-f="principal" value="${nf.format(loan.principal)}"><span class="unit">kr.</span></div>
+          <div class="hint">Fyrir eldra lán: núverandi eftirstöðvar og árin sem eftir eru.</div></div>
+        <div class="field"><label>${loan.indexed?'Vextir (raunvextir)':'Vextir (nafnvextir)'}</label>
+          <div class="inputrow"><input type="number" step="0.05" min="0" max="30" data-f="rate" value="${loan.rate}"><span class="unit">%</span></div></div>
+        <div class="field"><label>Lánstími</label>
+          <div class="inputrow"><input type="number" step="1" min="1" max="50" data-f="years" value="${loan.years}"><span class="unit">ár</span></div></div>
+        <div class="field"><label>Aukagreiðsla á mánuði</label>
+          <div class="inputrow"><input type="text" inputmode="numeric" data-f="extraMonthly" value="${loan.extraMonthly?nf.format(loan.extraMonthly):''}" placeholder="0"><span class="unit">kr.</span></div></div>
+        <div class="field"><label>Eingreiðsla</label>
+          <div class="inputrow"><input type="text" inputmode="numeric" data-f="lumpAmount" value="${loan.lumpAmount?nf.format(loan.lumpAmount):''}" placeholder="0"><span class="unit">kr.</span></div></div>
+        <div class="field"><label>Eingreiðsla eftir</label>
+          <div class="inputrow"><input type="number" step="1" min="1" max="50" data-f="lumpYear" value="${loan.lumpYear||''}" placeholder="ár nr."><span class="unit">ár</span></div></div>
+        <div class="field full"><label>Aukagreiðslur eiga að …</label>
+          <select data-f="extraMode">
+            <option value="stytta"${loan.extraMode==='stytta'?' selected':''}>stytta lánstímann (greiðslan helst)</option>
+            <option value="laekka"${loan.extraMode==='laekka'?' selected':''}>lækka greiðsluna (lánstíminn helst)</option>
+          </select></div>
+      </div>
+      <div class="loan-stats" data-stats></div>`;
+    card.querySelectorAll('[data-f]').forEach(el=>{
+      const f=el.dataset.f;
+      el.addEventListener(el.tagName==='SELECT'?'change':'input',()=>{
+        if(f==='name') loan.name=el.value;
+        else if(f==='indexed'){loan.indexed=el.value==='1'; renderLoans(S);}
+        else if(f==='paymentType') loan.paymentType=el.value;
+        else if(f==='extraMode') loan.extraMode=el.value;
+        else if(f==='rate') loan.rate=parseFloat(el.value)||0;
+        else if(f==='years') loan.years=Math.max(1,parseFloat(el.value)||1);
+        else if(f==='lumpYear') loan.lumpYear=Math.max(0,parseFloat(el.value)||0);
+        else loan[f]=parseAmount(el.value);
+        recalc(S);
+      });
+      if(el.getAttribute('inputmode')==='numeric') el.addEventListener('input',()=>liveFormat(el));
+    });
+    card.querySelector('.loan-del').addEventListener('click',()=>{
+      S.loans=S.loans.filter(l=>l.id!==loan.id);
+      renderLoans(S); recalc(S);
+    });
+    hostL.appendChild(card);
+  });
+  const add=document.createElement('button');
+  add.className='add-loan';
+  add.innerHTML='<span class="plus">+</span> Bæta við láni';
+  add.addEventListener('click',()=>{S.loans.push(defaultLoan(S,S.loans.length%2===0)); renderLoans(S); recalc(S);});
+  hostL.appendChild(add);
+}
+
+/* ============ Endurreikningur ============ */
+function recalc(S){
+  if(!S||!S.root) return;
+  S.horizon=Math.max(12,...S.loans.map(l=>Math.round(l.years*12)),12);
+  S.results=S.loans.map(l=>({
+    loan:l,
+    sim:simulateLoan({...l,lumpMonth:l.lumpYear?Math.round(l.lumpYear*12):0},S.inflation,S.horizon),
+    sbi:sbiPayment(l),
+  }));
+  S.baseline=S.loans.map(l=>(!l.extraMonthly&&!l.lumpAmount)?null
+    :simulateLoan({...l,extraMonthly:0,lumpAmount:0,lumpMonth:0},S.inflation,S.horizon));
+  renderLoanStats(S); renderTiles(S); renderSbi(S); renderChart(S); renderTable(S);
+  renderCompare(); saveState();
+}
+function renderLoanStats(S){
+  S.root.querySelectorAll('.loan-card').forEach((card,i)=>{
+    const r=S.results[i]; if(!r) return;
+    card.querySelector('[data-stats]').innerHTML=`
+      <div><span>Fyrsta greiðsla</span><b>${kr(r.sim.firstPayment)}</b></div>
+      <div><span>Greiðslubyrði skv. SBÍ</span><b>${kr(r.sbi)}</b></div>
+      <div><span>Uppgreitt eftir</span><b>${yearsMonths(r.sim.payoffMonth)}</b></div>
+      <div><span>Vextir + verðbætur alls</span><b>${kr(r.sim.totalInterest+r.sim.totalIndexation)}</b></div>`;
+  });
+}
+function scenTotals(S){
+  const t={principal:0,first:0,cost:0,paid:0,baseCost:0,payoff:0,basePayoff:0,sbi:0};
+  S.results.forEach((r,i)=>{
+    t.principal+=r.loan.principal;
+    t.first+=r.sim.firstPayment;
+    t.cost+=r.sim.totalInterest+r.sim.totalIndexation;
+    t.paid+=r.sim.totalPaid;
+    t.sbi+=r.sbi;
+    t.payoff=Math.max(t.payoff,r.sim.payoffMonth);
+    const b=S.baseline[i];
+    t.baseCost+=b?b.totalInterest+b.totalIndexation:r.sim.totalInterest+r.sim.totalIndexation;
+    t.basePayoff=Math.max(t.basePayoff,b?b.payoffMonth:r.sim.payoffMonth);
+  });
+  return t;
+}
+function renderTiles(S){
+  const t=scenTotals(S);
+  const saved=t.baseCost-t.cost;
+  let html=`
+    <div class="card tile"><div class="eyebrow">Heildarhöfuðstóll</div><div class="big">${kr(t.principal)}</div><div class="sub">${S.loans.length} ${S.loans.length===1?'lán':'lán samtals'}</div></div>
+    <div class="card tile"><div class="eyebrow">Greiðslubyrði á mánuði</div><div class="big">${kr(t.first)}</div><div class="sub">fyrsta greiðsla allra lána</div></div>
+    <div class="card tile"><div class="eyebrow">Vextir og verðbætur alls</div><div class="big">${kr(t.cost)}</div><div class="sub">greitt alls ${kr(t.paid)} yfir lánstímann</div></div>`;
+  if(saved>1){
+    html+=`<div class="card tile"><div class="eyebrow">Aukagreiðslur spara</div><div class="big" style="color:var(--good-text)">${kr(saved)}</div><div class="sub">og stytta lánstímann um ${yearsMonths(t.basePayoff-t.payoff)}</div></div>`;
+  }
+  S.$('tiles').innerHTML=html;
+}
+function renderSbi(S){
+  const el=S.$('sbi');
+  const income=S.income1+S.income2;
+  const cap=S.firstBuyer?40:35;
+  const sbiTotal=S.results.reduce((a,r)=>a+r.sbi,0);
+  const infobox=`<div class="infobox"><b>Forsendur Seðlabankans</b> (reglur nr. 1130/2025): viðmiðunargreiðslan er jafngreiðslulán með a.m.k. 5,5% vöxtum og að hámarki 40 ára lánstíma sé lánið óverðtryggt, en a.m.k. 3% vöxtum og að hámarki 25 ára lánstíma sé það verðtryggt — þess vegna getur hlutfallið verið hærra en raungreiðslan þín segir til um. Niðurstaðan er til glöggvunar og kemur ekki í stað greiðslumats lánveitanda.</div>`;
+  if(!income){
+    el.innerHTML=`<div class="eyebrow">${cap}% regla Seðlabankans</div>
+      <p class="sbi-detail" style="margin-top:8px">Settu inn útborguð laun hér að ofan til að sjá hvort lánin standist regluna. Viðmiðunargreiðslubyrði lánanna skv. forsendum Seðlabankans er <b>${kr(sbiTotal)}</b> á mánuði.</p>${infobox}`;
+    return;
+  }
+  const ratio=sbiTotal/income*100;
+  const ok=ratio<=cap+1e-9;
+  const scaleMax=Math.max(50,Math.ceil(ratio/10)*10);
+  const room=income*cap/100-sbiTotal;
+  el.innerHTML=`
+    <div class="eyebrow">${cap}% regla Seðlabankans — greiðslubyrðarhlutfall</div>
+    <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-top:6px">
+      <div style="font-size:27px;font-weight:700;font-variant-numeric:tabular-nums">${pct(ratio)}</div>
+      <span class="pill ${ok?'ok':'bad'}">${ok?'✓ Innan marka':'✕ Yfir hámarki'}</span>
+    </div>
+    <div class="meter">
+      <div class="meter-fill${ok?'':' over'}" style="width:${Math.min(100,ratio/scaleMax*100)}%"></div>
+      <div class="meter-mark" style="left:${cap/scaleMax*100}%"><span>hámark ${cap}%</span></div>
+    </div>
+    <div class="meter-scale"><span>0%</span><span>${scaleMax}%</span></div>
+    <p class="sbi-detail">Viðmiðunargreiðslubyrði skv. forsendum Seðlabankans er <b>${kr(sbiTotal)}</b> á mánuði af <b>${kr(income)}</b> ráðstöfunartekjum.
+    ${ok
+      ?`Svigrúmið upp að hámarkinu er <b>${kr(room)}</b> á mánuði í viðbótargreiðslubyrði.`
+      :`Til að komast innan marka þyrfti greiðslubyrðin að lækka um <b>${kr(-room)}</b> á mánuði — eða tekjurnar að hækka um <b>${kr(sbiTotal/(cap/100)-income)}</b>.`}</p>
+    ${infobox}`;
+}
+
+/* ============ Línurit ============ */
+function buildSeries(S, view){
+  const s=[];
+  S.results.forEach((r,i)=>{
+    const color=css(SERIES[i%SERIES.length]);
+    let vals;
+    if(view==='cost'){
+      let acc=0;
+      vals=r.sim.months.map(m=>{acc+=m.interest+m.indexation;return acc;});
+    }else{
+      vals=r.sim.months.map(m=>view==='balance'?m.balance:view==='balanceReal'?m.balanceReal:m.payment);
+    }
+    s.push({name:r.loan.name,color,values:vals});
+  });
+  if(S.results.length>1){
+    const tot=S.results[0].sim.months.map((_,mi)=>s.reduce((a,se)=>a+se.values[mi],0));
+    s.push({name:'Samtals',color:css('--ink'),values:tot,bold:true});
+  }
+  if(view==='cost'&&S.baseline.some(b=>b)){
+    const accs=S.results.map(()=>0);
+    const vals=S.results[0].sim.months.map((_,mi)=>{
+      S.results.forEach((r,i)=>{
+        const src=S.baseline[i]?S.baseline[i].months[mi]:r.sim.months[mi];
+        accs[i]+=src.interest+src.indexation;
+      });
+      return accs.reduce((a,b)=>a+b,0);
+    });
+    s.push({name:'Án aukagreiðslna',color:css('--muted'),values:vals,dash:true});
+  }
+  return s;
+}
+function drawChart(svg, legendEl, series, nM, height){
+  const W=svg.clientWidth||960, H=height||340;
+  svg.setAttribute('viewBox','0 0 '+W+' '+H);
+  const padL=64,padR=16,padT=14,padB=30;
+  const maxY=Math.max(1,...series.map(s=>Math.max(...s.values)))*1.06;
+  const x=m=>padL+(m/nM)*(W-padL-padR);
+  const y=v=>padT+(1-v/maxY)*(H-padT-padB);
+  let g='';
+  const step=niceStep(maxY/4.5);
+  for(let v=0;v<=maxY;v+=step){
+    g+=`<line x1="${padL}" y1="${y(v)}" x2="${W-padR}" y2="${y(v)}" stroke="${css('--grid')}" stroke-width="1"/>`;
+    g+=`<text x="${padL-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="${css('--muted')}" style="font-variant-numeric:tabular-nums">${mkr(v)}</text>`;
+  }
+  const yrStep=nM/12>25?10:5;
+  for(let yr=0;yr<=nM/12;yr+=yrStep){
+    const xx=x(yr*12);
+    g+=`<line x1="${xx}" y1="${H-padB}" x2="${xx}" y2="${H-padB+4}" stroke="${css('--baseline')}" stroke-width="1"/>`;
+    g+=`<text x="${xx}" y="${H-padB+18}" text-anchor="middle" font-size="11" fill="${css('--muted')}">${yr===0?'Í dag':yr+' ár'}</text>`;
+  }
+  g+=`<line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="${css('--baseline')}" stroke-width="1"/>`;
+  series.forEach(s=>{
+    let d='';
+    s.values.forEach((v,mi)=>{d+=(mi===0?'M':'L')+x(mi+1).toFixed(1)+','+y(v).toFixed(1);});
+    g+=`<path d="${d}" fill="none" stroke="${s.color}" stroke-width="${s.bold?2.5:2}"${s.dash?' stroke-dasharray="5 4"':''} stroke-linejoin="round" stroke-linecap="round"/>`;
+  });
+  g+=`<line data-xh x1="0" y1="${padT}" x2="0" y2="${H-padB}" stroke="${css('--baseline')}" stroke-width="1" style="display:none"/>`;
+  g+=`<rect data-hit x="${padL}" y="${padT}" width="${W-padL-padR}" height="${H-padT-padB}" fill="transparent"/>`;
+  svg.innerHTML=g;
+  legendEl.innerHTML=series.map(s=>`<span><span class="sw" style="${s.dash?'height:0;border-top:2px dashed '+s.color:'background:'+s.color}"></span>${esc(s.name)}</span>`).join('');
+  attachHover(svg,{x,padL,padR,W,nM,series});
+}
+function niceStep(raw){
+  const mag=Math.pow(10,Math.floor(Math.log10(raw)));
+  const n=raw/mag;
+  return (n<=1?1:n<=2?2:n<=5?5:10)*mag;
+}
+function attachHover(svg, geom){
+  const hit=svg.querySelector('[data-hit]');
+  const xh=svg.querySelector('[data-xh]');
+  const tt=document.getElementById('tooltip');
+  if(!hit) return;
+  function onMove(ev){
+    const pt=svg.createSVGPoint();
+    const e=ev.touches?ev.touches[0]:ev;
+    pt.x=e.clientX; pt.y=e.clientY;
+    const p=pt.matrixTransform(svg.getScreenCTM().inverse());
+    let mi=Math.round((p.x-geom.padL)/(geom.W-geom.padL-geom.padR)*geom.nM);
+    mi=Math.max(1,Math.min(geom.nM,mi));
+    xh.setAttribute('x1',geom.x(mi)); xh.setAttribute('x2',geom.x(mi));
+    xh.style.display='';
+    const yr=Math.floor((mi-1)/12), mo=((mi-1)%12)+1;
+    const rows=geom.series.map(s=>`<div class="tt-row"><span style="color:${s.color}">●</span><span class="tt-name">${esc(s.name)}</span><b>${kr(s.values[mi-1])}</b></div>`).join('');
+    tt.innerHTML=`<div class="tt-title">Eftir ${yr} ár og ${mo} mán.</div>${rows}`;
+    tt.style.display='block';
+    const tw=tt.offsetWidth,th=tt.offsetHeight;
+    let lx=e.clientX+16, ly=e.clientY-th/2;
+    if(lx+tw>window.innerWidth-8) lx=e.clientX-tw-16;
+    ly=Math.max(8,Math.min(window.innerHeight-th-8,ly));
+    tt.style.left=lx+'px'; tt.style.top=ly+'px';
+  }
+  function onLeave(){xh.style.display='none';tt.style.display='none';}
+  hit.addEventListener('mousemove',onMove);
+  hit.addEventListener('touchmove',onMove,{passive:true});
+  hit.addEventListener('mouseleave',onLeave);
+  hit.addEventListener('touchend',onLeave);
+}
+function renderTabsInto(el, current, onPick){
+  el.innerHTML='';
+  VIEWS.forEach(v=>{
+    const b=document.createElement('button');
+    b.className='tab'; b.setAttribute('role','tab');
+    b.setAttribute('aria-selected',v.id===current?'true':'false');
+    b.textContent=v.label;
+    b.addEventListener('click',()=>onPick(v.id));
+    el.appendChild(b);
+  });
+}
+function renderChart(S){
+  renderTabsInto(S.$('tabs'),S.currentView,id=>{S.currentView=id;renderChart(S);saveState();});
+  S.$('note').textContent=VIEWS.find(v=>v.id===S.currentView).note;
+  if(!S.results.length){S.$('chart').innerHTML='';S.$('legend').innerHTML='';return;}
+  drawChart(S.$('chart'),S.$('legend'),buildSeries(S,S.currentView),S.horizon,340);
+}
+
+/* ============ Árleg tafla ============ */
+function renderTable(S){
+  const wrap=S.$('tableWrap');
+  if(wrap.hidden||!S.results.length){if(wrap.hidden)wrap.innerHTML='';return;}
+  const years=Math.ceil(S.horizon/12);
+  let rows='';
+  for(let yr=0;yr<years;yr++){
+    let paid=0,interest=0,indexation=0,principal=0,endBal=0,endBalReal=0;
+    S.results.forEach(r=>{
+      for(let m=yr*12;m<Math.min((yr+1)*12,S.horizon);m++){
+        const rec=r.sim.months[m];
+        paid+=rec.payment; interest+=rec.interest; indexation+=rec.indexation; principal+=rec.principalPaid;
+      }
+      const last=r.sim.months[Math.min((yr+1)*12,S.horizon)-1];
+      endBal+=last.balance; endBalReal+=last.balanceReal;
+    });
+    if(paid<1&&endBal<1&&yr>0) break;
+    rows+=`<tr><td>Ár ${yr+1}</td><td>${nf.format(paid)}</td><td>${nf.format(interest)}</td><td>${nf.format(indexation)}</td><td>${nf.format(principal)}</td><td>${nf.format(endBal)}</td><td>${nf.format(endBalReal)}</td></tr>`;
+  }
+  wrap.innerHTML=`<table class="yearly">
+    <thead><tr><th>Tímabil</th><th>Greitt alls (kr.)</th><th>Vextir (kr.)</th><th>Verðbætur (kr.)</th><th>Afborgun (kr.)</th><th>Eftirstöðvar (kr.)</th><th>Eftirstöðvar á f. verðlagi (kr.)</th></tr></thead>
+    <tbody>${rows}</tbody></table>`;
+}
+
+/* ============ Samanburður A vs B ============ */
+let cmpView='balance';
+function renderCompare(){
+  const sec=document.getElementById('compareSec');
+  if(!B||!B.root){sec.hidden=true;return;}
+  sec.hidden=false;
+  const tA=scenTotals(A), tB=scenTotals(B);
+  const incomeA=A.income1+A.income2, incomeB=B.income1+B.income2;
+  const rows=[
+    {label:'Heildarhöfuðstóll', a:tA.principal, b:tB.principal, fmt:kr},
+    {label:'Greiðslubyrði á mánuði (fyrsta greiðsla)', a:tA.first, b:tB.first, fmt:kr, lowerBetter:true},
+    {label:'Greiðslubyrði skv. forsendum SBÍ', a:tA.sbi, b:tB.sbi, fmt:kr, lowerBetter:true},
+    incomeA&&incomeB?{label:'Greiðslubyrðarhlutfall', a:tA.sbi/incomeA*100, b:tB.sbi/incomeB*100, fmt:pct, lowerBetter:true}:null,
+    {label:'Vextir og verðbætur alls', a:tA.cost, b:tB.cost, fmt:kr, lowerBetter:true},
+    {label:'Greitt alls yfir lánstímann', a:tA.paid, b:tB.paid, fmt:kr, lowerBetter:true},
+    {label:'Öll lán uppgreidd eftir', a:tA.payoff, b:tB.payoff, fmt:yearsMonths, lowerBetter:true},
+  ].filter(Boolean);
+  document.getElementById('compareTable').innerHTML=`<table class="compare">
+    <thead><tr><th></th><th>Dæmi A</th><th>Dæmi B</th><th>Munur (B − A)</th></tr></thead>
+    <tbody>${rows.map(r=>{
+      const aBest=r.lowerBetter&&r.a<r.b-0.5, bBest=r.lowerBetter&&r.b<r.a-0.5;
+      const d=r.b-r.a;
+      const dTxt=r.fmt===pct?(d>0?'+':'−')+pct(Math.abs(d))
+        :r.fmt===yearsMonths?(d>0?'+':'−')+yearsMonths(Math.abs(Math.round(d)))
+        :(d>0?'+':'−')+kr(Math.abs(d));
+      return `<tr><td>${r.label}</td><td${aBest?' class="better"':''}>${r.fmt(r.a)}</td><td${bBest?' class="better"':''}>${r.fmt(r.b)}</td><td class="delta">${Math.abs(d)<0.5?'—':dTxt}</td></tr>`;
+    }).join('')}</tbody></table>`;
+  // Samanburðarlínurit: samtala hvors dæmis
+  renderTabsInto(document.getElementById('cmpTabs'),cmpView,id=>{cmpView=id;renderCompare();saveState();});
+  document.getElementById('cmpNote').textContent=VIEWS.find(v=>v.id===cmpView).note.replace('Brotalínan sýnir samtöluna án aukagreiðslna, sé þeim bætt við.','');
+  const nM=Math.max(A.horizon,B.horizon);
+  const totalOf=(S)=>{
+    const per=buildSeries(S,cmpView).filter(s=>!s.dash);
+    const tot=per.find(s=>s.bold)||per[0];
+    const vals=[];
+    for(let mi=0;mi<nM;mi++){
+      if(tot&&mi<tot.values.length) vals.push(tot.values[mi]);
+      else vals.push(cmpView==='cost'&&tot?tot.values[tot.values.length-1]:0);
+    }
+    return vals;
+  };
+  if(A.results.length&&B.results.length){
+    drawChart(document.getElementById('cmpChart'),document.getElementById('cmpLegend'),
+      [{name:'Dæmi A — samtals',color:css('--s1'),values:totalOf(A)},
+       {name:'Dæmi B — samtals',color:css('--s2'),values:totalOf(B)}],nM,300);
+  }
+}
+
+/* ============ Vistun ============ */
+function packScen(S){
+  return {loans:S.loans,nextId:S.nextId,inflation:S.inflation,income1:S.income1,income2:S.income2,firstBuyer:S.firstBuyer,view:S.currentView};
+}
+function unpackScen(S,d){
+  S.loans=d.loans||[]; S.nextId=d.nextId||S.loans.length+1;
+  S.inflation=d.inflation??4; S.income1=d.income1||0; S.income2=d.income2||0;
+  S.firstBuyer=!!d.firstBuyer; S.currentView=d.view||'balance';
+}
+function saveState(){
+  try{
+    localStorage.setItem('lanareiknir-v2',JSON.stringify({A:packScen(A),B:B?packScen(B):null,cmpView}));
+  }catch(e){}
+}
+function loadState(){
+  try{
+    const s=JSON.parse(localStorage.getItem('lanareiknir-v2'));
+    if(s&&s.A&&Array.isArray(s.A.loans)&&s.A.loans.length){
+      unpackScen(A,s.A);
+      if(s.B){B=newScenario('B');unpackScen(B,s.B);}
+      cmpView=s.cmpView||'balance';
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+
+/* ============ Ræsing ============ */
+document.getElementById('addScenarioB').addEventListener('click',()=>{
+  B=newScenario('B');
+  // Byrjum á afriti af dæmi A svo aðeins þurfi að breyta því sem á að bera saman
+  unpackScen(B,JSON.parse(JSON.stringify(packScen(A))));
+  document.getElementById('compareCta').style.display='none';
+  mountScenario(B,'scenarioB','Til samanburðar',true);
+  document.getElementById('compareSec').hidden=false;
+  renderCompare(); saveState();
+  document.getElementById('scenarioB').scrollIntoView({behavior:'smooth',block:'start'});
+});
+let resizeTimer=null;
+window.addEventListener('resize',()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer=setTimeout(()=>{renderChart(A);if(B&&B.root)renderChart(B);renderCompare();},150);
+});
+if(window.matchMedia){
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{
+    renderChart(A);if(B&&B.root)renderChart(B);renderCompare();
+  });
+}
+if(!loadState()){
+  A.loans=[defaultLoan(A,true)];
+  A.loans.push(defaultLoan(A,false));
+  A.loans[0].name='Verðtryggt lán'; A.loans[1].name='Óverðtryggt lán';
+}
+mountScenario(A,'scenarioA','Lánin mín',false);
+if(B){
+  document.getElementById('compareCta').style.display='none';
+  mountScenario(B,'scenarioB','Til samanburðar',true);
+}
+</script>
+
+</body>
+</html>
