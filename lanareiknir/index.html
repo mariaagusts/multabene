@@ -485,7 +485,7 @@ let A=newScenario('A'), B=null;
 
 function defaultLoan(S, indexed){
   return {id:S.nextId++, name:'Lán '+(S.loans.length+1),
-    indexed:!!indexed, paymentType:'annuitet',
+    indexed:!!indexed, paymentType:'annuitet', lansved:false,
     principal:0, rate:0, years:0,
     extraMonthly:0, lumpAmount:0, lumpYear:0, extraMode:'stytta'};
 }
@@ -638,8 +638,7 @@ function mountScenario(S, hostId, title, removable){
       document.getElementById('compareSec').hidden=true;
       document.getElementById('compareCta').style.display='';
       A=newScenario('A');
-      A.loans=[defaultLoan(A,true)]; A.loans.push(defaultLoan(A,false));
-      A.loans[0].name='Verðtryggt lán'; A.loans[1].name='Óverðtryggt lán';
+      A.loans=[defaultLoan(A,true)];
       mountScenario(A,'scenarioA','Lánin mín',false);
       window.scrollTo({top:0,behavior:'smooth'});
     });
@@ -723,12 +722,14 @@ function renderLoans(S){
             <option value="stytta"${loan.extraMode==='stytta'?' selected':''}>stytta lánstímann (greiðslan helst)</option>
             <option value="laekka"${loan.extraMode==='laekka'?' selected':''}>lækka greiðsluna (lánstíminn helst)</option>
           </select></div>
+        <div class="field full"><label class="check" style="padding:2px 0 0"><input type="checkbox" data-f="lansved"${loan.lansved?' checked':''}><span>Á lánsveði / tekið af öðrum — en þið greiðið af því<br><small style="color:var(--muted)">Telst með í mánaðarlegri greiðslubyrði og afganginum af launum, en ekki í 35%-viðmiði Seðlabankans.</small></span></label></div>
       </div>
       <div class="loan-stats" data-stats></div>`;
     card.querySelectorAll('[data-f]').forEach(el=>{
       const f=el.dataset.f;
       el.addEventListener(el.tagName==='SELECT'?'change':'input',()=>{
         if(f==='name') loan.name=el.value;
+        else if(f==='lansved') loan.lansved=el.checked;
         else if(f==='indexed'){
           loan.indexed=el.value==='1';
           // uppfærum sjálfvirk heiti ("Lán 2", "Verðtryggt lán" …) svo kortið fylgi tegundinni;
@@ -790,7 +791,7 @@ function renderLoanStats(S){
     }
     card.querySelector('[data-stats]').innerHTML=`
       <div><span>Fyrsta greiðsla</span><b>${kr(r.sim.firstPayment)}</b></div>
-      <div><span>Greiðslubyrði skv. SBÍ</span><b>${kr(r.sbi)}</b></div>
+      <div><span>Greiðslubyrði skv. SBÍ</span><b>${r.loan.lansved?'utan viðmiðs (lánsveð)':kr(r.sbi)}</b></div>
       <div><span>Uppgreitt eftir</span><b>${yearsMonths(r.sim.payoffMonth)}</b></div>
       <div><span>Raunkostnaður (verðlag dagsins)</span><b>${kr(r.sim.totalPaidReal-r.loan.principal)}</b></div>`;
   });
@@ -803,7 +804,7 @@ function scenTotals(S){
     t.cost+=r.sim.totalInterest+r.sim.totalIndexation;
     t.paid+=r.sim.totalPaid;
     t.paidReal+=r.sim.totalPaidReal;
-    t.sbi+=r.sbi;
+    t.sbi+=r.loan.lansved?0:r.sbi;
     t.payoff=Math.max(t.payoff,r.sim.payoffMonth);
     const b=S.baseline[i];
     t.baseCost+=b?b.totalInterest+b.totalIndexation:r.sim.totalInterest+r.sim.totalIndexation;
@@ -824,6 +825,11 @@ function renderTiles(S){
     const offLabel=nr>0&&S.otherIncome>0?'leigu- og aukatekjur':nr>0?'leigutekjur':'aukatekjur';
     html+=`<div class="card tile" style="border-top:3px solid var(--s5)"><div class="eyebrow">Greiðslan eftir ${offLabel}</div><div class="big">${kr(Math.max(0,t.first-off))}</div><div class="sub">${off>=t.first?kr(off)+' á mánuði standa undir allri greiðslunni — og gott betur':kr(off)+' nettó á mánuði dragast frá'}</div></div>`;
   }
+  const totalIncome=S.income1+S.income2+off;
+  if(totalIncome>0){
+    const left=totalIncome-t.first;
+    html+=`<div class="card tile" style="border-top:3px solid var(--s6)"><div class="eyebrow">Afgangur eftir greiðslu lána</div><div class="big"${left<0?' style="color:var(--bad-text)"':''}>${kr(left)}</div><div class="sub">af ${kr(totalIncome)} heildartekjum á mánuði, eftir greiðslur allra lána — líka þeirra utan 35%-viðmiðsins</div></div>`;
+  }
   html+=`
     <div class="card tile" style="border-top:3px solid var(--s2)"><div class="eyebrow">Raunkostnaðurinn</div><div class="big">${kr(t.costReal)}</div><div class="sub">það sem lánin kosta umfram lánsupphæðina, á verðlagi dagsins í dag</div></div>
     <div class="card tile" style="border-top:3px solid var(--s4)"><div class="eyebrow">Heildarkostnaður yfir lánstímann</div><div class="big">${kr(t.cost)}</div><div class="sub">vextir og verðbætur í krónum framtíðar — greitt alls ${kr(t.paid)}</div></div>`;
@@ -843,7 +849,8 @@ function renderSbi(S){
   const income=dstiIncome(S);
   const rentPart=S.rentInDsti?netRentHms(S):0;
   const cap=S.firstBuyer?40:35;
-  const sbiTotal=S.results.reduce((a,r)=>a+r.sbi,0);
+  const sbiTotal=S.results.reduce((a,r)=>a+(r.loan.lansved?0:r.sbi),0);
+  const lansvedPay=S.results.reduce((a,r)=>a+(r.loan.lansved?r.sim.firstPayment:0),0);
   const infobox=`<div class="infobox"><b>Forsendur Seðlabankans</b> (reglur nr. 1130/2025): viðmiðunargreiðslan er jafngreiðslulán með a.m.k. 5,5% vöxtum og að hámarki 40 ára lánstíma sé lánið óverðtryggt, en a.m.k. 3% vöxtum og að hámarki 25 ára lánstíma sé það verðtryggt — þess vegna getur hlutfallið verið hærra en raungreiðslan þín segir til um. Niðurstaðan er til glöggvunar og kemur ekki í stað greiðslumats lánveitanda.</div>`;
   if(!S.results.length){
     el.className='card sbi-card';
@@ -882,6 +889,7 @@ function renderSbi(S){
     ${ok
       ?`Svigrúmið upp að hámarkinu er <b>${kr(room)}</b> á mánuði í viðbótargreiðslubyrði.`
       :`Til að komast innan marka þyrfti greiðslubyrðin að lækka um <b>${kr(-room)}</b> á mánuði — eða tekjurnar að hækka um <b>${kr(sbiTotal/(cap/100)-income)}</b>.`}
+    ${lansvedPay>0?` Lán á lánsveði (<b>${kr(lansvedPay)}</b> á mánuði) standa utan viðmiðsins en eru inni í greiðslubyrðartölunum hér að neðan.`:''}
     ${!S.rentInDsti&&netRentHms(S)>0?`<br><br><b>Ábending:</b> Þú ert með <b>${kr(netRentHms(S))}</b> í nettóleigutekjur af HMS-skráðum samningum sem telja ekki með í viðmiðinu eins og er — hakaðu við í leigutekjuhlutanum í skrefi 1 til að sjá áhrifin (hlutfallið yrði þá <b>${pct(sbiTotal/(income+netRentHms(S))*100)}</b>).`:''}</p>
     ${infobox}`;
 }
@@ -1047,6 +1055,7 @@ function diffScenarios(){
     const ch=[];
     if(a.indexed!==b.indexed) ch.push('tegund: '+loanTypeName(a)+' → '+loanTypeName(b));
     if(a.paymentType!==b.paymentType) ch.push('greiðslufyrirkomulag: '+payTypeName(a)+' → '+payTypeName(b));
+    if(!!a.lansved!==!!b.lansved) ch.push('lánsveð: '+(a.lansved?'já':'nei')+' → '+(b.lansved?'já':'nei'));
     if(a.principal!==b.principal) ch.push('höfuðstóll: '+kr(a.principal)+' → '+kr(b.principal));
     if(a.rate!==b.rate) ch.push('vextir: '+pctPlain(a.rate)+' → '+pctPlain(b.rate));
     if(a.years!==b.years) ch.push('lánstími: '+a.years+' ár → '+b.years+' ár');
@@ -1078,6 +1087,7 @@ function renderCompare(){
     {label:'Heildarhöfuðstóll', a:tA.principal, b:tB.principal, fmt:kr},
     {label:'Greiðslubyrði á mánuði (fyrsta greiðsla)', a:tA.first, b:tB.first, fmt:kr, lowerBetter:true},
     (incomeOffset(A)>0||incomeOffset(B)>0)?{label:'Greiðslan eftir leigu- og aukatekjur', a:Math.max(0,tA.first-incomeOffset(A)), b:Math.max(0,tB.first-incomeOffset(B)), fmt:kr, lowerBetter:true}:null,
+    (A.income1+A.income2+incomeOffset(A)>0&&B.income1+B.income2+incomeOffset(B)>0)?{label:'Afgangur eftir greiðslu lána', a:A.income1+A.income2+incomeOffset(A)-tA.first, b:B.income1+B.income2+incomeOffset(B)-tB.first, fmt:kr, higherBetter:true}:null,
     {label:'Greiðslubyrði skv. forsendum SBÍ', a:tA.sbi, b:tB.sbi, fmt:kr, lowerBetter:true},
     incomeA&&incomeB?{label:'Greiðslubyrðarhlutfall', a:tA.sbi/incomeA*100, b:tB.sbi/incomeB*100, fmt:pct, lowerBetter:true}:null,
     {label:'Raunkostnaður (á verðlagi dagsins)', a:tA.costReal, b:tB.costReal, fmt:kr, lowerBetter:true},
@@ -1087,7 +1097,8 @@ function renderCompare(){
   document.getElementById('compareTable').innerHTML=`<table class="compare">
     <thead><tr><th></th><th>Dæmi A</th><th>Dæmi B</th><th>Munur (B − A)</th></tr></thead>
     <tbody>${rows.map(r=>{
-      const aBest=r.lowerBetter&&r.a<r.b-0.5, bBest=r.lowerBetter&&r.b<r.a-0.5;
+      const aBest=(r.lowerBetter&&r.a<r.b-0.5)||(r.higherBetter&&r.a>r.b+0.5);
+      const bBest=(r.lowerBetter&&r.b<r.a-0.5)||(r.higherBetter&&r.b>r.a+0.5);
       const d=r.b-r.a;
       const dTxt=r.fmt===pct?(d>0?'+':'−')+pct(Math.abs(d))
         :r.fmt===yearsMonths?(d>0?'+':'−')+yearsMonths(Math.abs(Math.round(d)))
@@ -1168,8 +1179,6 @@ if(window.matchMedia){
 }
 if(!loadState()){
   A.loans=[defaultLoan(A,true)];
-  A.loans.push(defaultLoan(A,false));
-  A.loans[0].name='Verðtryggt lán'; A.loans[1].name='Óverðtryggt lán';
 }
 mountScenario(A,'scenarioA','Lánin mín',false);
 if(B){
