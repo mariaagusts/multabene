@@ -724,7 +724,18 @@ function renderLoans(S){
       const f=el.dataset.f;
       el.addEventListener(el.tagName==='SELECT'?'change':'input',()=>{
         if(f==='name') loan.name=el.value;
-        else if(f==='indexed'){loan.indexed=el.value==='1'; renderLoans(S);}
+        else if(f==='indexed'){
+          loan.indexed=el.value==='1';
+          // uppfærum sjálfvirk heiti ("Lán 2", "Verðtryggt lán" …) svo kortið fylgi tegundinni;
+          // eigin nöfn notandans fá að standa
+          if(/^(Verðtryggt lán|Óverðtryggt lán|Lán \d+)( \d+)?$/.test(loan.name.trim())){
+            const base=loan.indexed?'Verðtryggt lán':'Óverðtryggt lán';
+            let name=base, i=2;
+            while(S.loans.some(l=>l!==loan&&l.name===name)) name=base+' '+(i++);
+            loan.name=name;
+          }
+          renderLoans(S);
+        }
         else if(f==='paymentType') loan.paymentType=el.value;
         else if(f==='extraMode') loan.extraMode=el.value;
         else if(f==='rate') loan.rate=parseFloat(el.value)||0;
