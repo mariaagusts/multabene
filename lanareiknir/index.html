@@ -477,7 +477,7 @@ const rentTax=S=>S.hasRentals?S.rentals.reduce((a,r)=>a+rentTaxOf(r),0):0;
 const netRent=S=>grossRent(S)-rentTax(S);
 const incomeOffset=S=>netRent(S)+(S.otherIncome||0);   // leigutekjur nettó + aðrar nettótekjur
 function newScenario(key){
-  return {key, loans:[], rentals:[], hasRentals:false, rentInDsti:false, nextId:1, currentView:'balance',
+  return {key, loans:[], rentals:[], hasRentals:false, rentInDsti:true, nextId:1, currentView:'balance',
     inflation:5.3, income1:0, income2:0, otherIncome:0, firstBuyer:false,
     results:[], baseline:[], horizon:360, root:null};
 }
@@ -881,7 +881,8 @@ function renderSbi(S){
     <p class="sbi-detail">Viðmiðunargreiðslubyrði skv. forsendum Seðlabankans er <b>${kr(sbiTotal)}</b> á mánuði af <b>${kr(income)}</b> ráðstöfunartekjum${rentPart>0?` (þar af <b>${kr(rentPart)}</b> nettóleigutekjur af skráðum samningum)`:''}.
     ${ok
       ?`Svigrúmið upp að hámarkinu er <b>${kr(room)}</b> á mánuði í viðbótargreiðslubyrði.`
-      :`Til að komast innan marka þyrfti greiðslubyrðin að lækka um <b>${kr(-room)}</b> á mánuði — eða tekjurnar að hækka um <b>${kr(sbiTotal/(cap/100)-income)}</b>.`}</p>
+      :`Til að komast innan marka þyrfti greiðslubyrðin að lækka um <b>${kr(-room)}</b> á mánuði — eða tekjurnar að hækka um <b>${kr(sbiTotal/(cap/100)-income)}</b>.`}
+    ${!S.rentInDsti&&netRentHms(S)>0?`<br><br><b>Ábending:</b> Þú ert með <b>${kr(netRentHms(S))}</b> í nettóleigutekjur af HMS-skráðum samningum sem telja ekki með í viðmiðinu eins og er — hakaðu við í leigutekjuhlutanum í skrefi 1 til að sjá áhrifin (hlutfallið yrði þá <b>${pct(sbiTotal/(income+netRentHms(S))*100)}</b>).`:''}</p>
     ${infobox}`;
 }
 
@@ -1119,7 +1120,8 @@ function packScen(S){
   return {loans:S.loans,rentals:S.rentals,hasRentals:S.hasRentals,rentInDsti:S.rentInDsti,nextId:S.nextId,inflation:S.inflation,income1:S.income1,income2:S.income2,otherIncome:S.otherIncome,firstBuyer:S.firstBuyer,view:S.currentView};
 }
 function unpackScen(S,d){
-  S.loans=d.loans||[]; S.rentals=d.rentals||[]; S.hasRentals=!!d.hasRentals; S.rentInDsti=!!d.rentInDsti;
+  S.loans=d.loans||[]; S.rentals=d.rentals||[]; S.hasRentals=!!d.hasRentals;
+  S.rentInDsti=d.rentInDsti===undefined?true:!!d.rentInDsti;
   S.nextId=d.nextId||S.loans.length+S.rentals.length+1;
   S.inflation=d.inflation??4; S.income1=d.income1||0; S.income2=d.income2||0;
   S.otherIncome=d.otherIncome||0;
