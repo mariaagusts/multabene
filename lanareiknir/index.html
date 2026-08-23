@@ -82,7 +82,23 @@ h2{
 /* --- Dæmi (sviðsmyndir) --- */
 .scenario{border-top:2px solid var(--hairline); margin-top:44px; padding-top:6px}
 .scenario-head{display:flex; align-items:center; gap:12px; margin-top:22px; flex-wrap:wrap}
-.scenario-head .btns{margin-left:auto; display:flex; gap:8px; flex-wrap:wrap}
+.scenario-head .btns{margin-left:auto; display:flex; gap:8px; flex-wrap:wrap; position:relative; align-items:center}
+.help-dot{
+  width:25px; height:25px; border-radius:50%; flex:none;
+  border:1px solid var(--hairline); background:var(--surface); color:var(--ink-2);
+  font:inherit; font-size:13px; font-weight:700; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; padding:0;
+}
+.help-dot:hover{color:var(--accent); border-color:var(--accent)}
+.help-pop{
+  position:absolute; top:calc(100% + 8px); right:0; z-index:20;
+  width:min(360px, 86vw); background:var(--surface); border:1px solid var(--hairline);
+  border-radius:10px; box-shadow:var(--shadow); padding:13px 16px;
+  font-size:12.5px; font-weight:400; color:var(--ink-2); line-height:1.55; text-align:left;
+}
+.help-pop b{color:var(--ink)}
+.help-pop p{margin:0 0 8px}
+.help-pop p:last-child{margin-bottom:0}
 .scenario-tag{
   font-family:"Bricolage Grotesque",system-ui,sans-serif; font-weight:700; font-size:15px;
   background:var(--ink); color:var(--bg); border-radius:7px; padding:3px 11px; letter-spacing:.02em;
@@ -534,6 +550,12 @@ function scenarioShell(S, title, removable){
             <button class="scenario-remove" data-r="import" title="Les inn .json-afrit sem var vistað áður">Opna afrit</button>
             <input type="file" data-r="importFile" accept=".json,application/json" hidden>
             <button class="scenario-remove" data-r="reset" title="Núllstilla reiknivélina og byrja upp á nýtt">Hreinsa allt</button>
+            <button class="help-dot" data-r="btnhelp" aria-label="Hvernig virka þessir hnappar?" title="Hvernig virka þessir hnappar?">?</button>
+            <div class="help-pop" data-r="btnpop" hidden>
+              <p><b>Deila hlekk</b> pakkar öllum forsendunum þínum saman í slóðina sjálfa og afritar hana. Sendu hlekkinn (t.d. í tölvupósti eða skilaboðum) og reiknivélin opnast nákvæmlega eins hjá viðtakandanum — ekkert vistast á netinu, gögnin ferðast bara í hlekknum. Hlekkurinn er skyndimynd: breytingar sem þú gerir eftir á fylgja ekki með.</p>
+              <p><b>Vista afrit</b> hleður lítilli skrá niður á tölvuna þína með öllum forsendunum, og <b>Opna afrit</b> les hana inn aftur — gott til að geyma stöðuna eða flytja hana milli tölva.</p>
+              <p><b>Hreinsa allt</b> núllstillir reiknivélina svo hægt sé að byrja upp á nýtt.</p>
+            </div>
           </div>`}
     </div>
     <section>
@@ -721,6 +743,12 @@ function mountScenario(S, hostId, title, removable){
     const impBtn=host.querySelector('[data-r="import"]'), impFile=host.querySelector('[data-r="importFile"]');
     impBtn.addEventListener('click',()=>impFile.click());
     impFile.addEventListener('change',()=>{if(impFile.files[0]) importStateFile(impFile.files[0],impBtn); impFile.value='';});
+    const helpBtn=host.querySelector('[data-r="btnhelp"]'), helpPop=host.querySelector('[data-r="btnpop"]');
+    helpBtn.addEventListener('click',e=>{e.stopPropagation(); helpPop.hidden=!helpPop.hidden;});
+    document.addEventListener('click',e=>{
+      if(!helpPop.isConnected) return;
+      if(!helpPop.hidden&&!helpPop.contains(e.target)&&e.target!==helpBtn) helpPop.hidden=true;
+    });
   }
   renderLoans(S);
   recalc(S);
