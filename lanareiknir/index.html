@@ -496,7 +496,8 @@ const rentTax=S=>S.hasRentals?S.rentals.reduce((a,r)=>a+rentTaxOf(r),0):0;
 const netRent=S=>grossRent(S)-rentTax(S);
 const incomeOffset=S=>netRent(S)+(S.otherIncome||0);   // leigutekjur nettó + aðrar nettótekjur
 function newScenario(key){
-  return {key, loans:[], rentals:[], hasRentals:false, rentInDsti:true, fixed:[], hasFixed:false, nextId:1, currentView:'balance',
+  return {key, loans:[], rentals:[], hasRentals:false, rentInDsti:true, fixed:[], hasFixed:false,
+    hasLtv:false, priceBuy:0, priceAssess:0, nextId:1, currentView:'balance',
     inflation:5.3, income1:0, income2:0, otherIncome:0, firstBuyer:false,
     results:[], baseline:[], horizon:360, root:null};
 }
@@ -552,7 +553,8 @@ function scenarioShell(S, title, removable){
           <div class="hint">Veldu viðmið eða skrifaðu eigin tölu. Viðmiðin eru reiknuð úr vísitölu neysluverðs Hagstofunnar, m.v. mitt ár 2026.</div></div>
         <div class="field"><label class="check"><input type="checkbox" data-r="firstBuyer"${S.firstBuyer?' checked':''}><span>Við erum að kaupa fyrstu eign<br><small style="color:var(--muted)">Þá má greiðslubyrðin fara í 40% í stað 35%</small></span></label>
         <label class="check"><input type="checkbox" data-r="hasRentals"${S.hasRentals?' checked':''}><span>Ég er með útleiguíbúð í húsinu<br><small style="color:var(--muted)">Opnar reit fyrir leigutekjur</small></span></label>
-        <label class="check"><input type="checkbox" data-r="hasFixed"${S.hasFixed?' checked':''}><span>Við erum með fastar mánaðarlegar skuldbindingar<br><small style="color:var(--muted)">T.d. meðlag eða rekstrarleigu bíls</small></span></label></div>
+        <label class="check"><input type="checkbox" data-r="hasFixed"${S.hasFixed?' checked':''}><span>Við erum með fastar mánaðarlegar skuldbindingar<br><small style="color:var(--muted)">T.d. meðlag eða rekstrarleigu bíls</small></span></label>
+        <label class="check"><input type="checkbox" data-r="hasLtv"${S.hasLtv?' checked':''}><span>Sýna veðhlutfall eignarinnar<br><small style="color:var(--muted)">Opnar reit fyrir kaupverð og fasteignamat</small></span></label></div>
       </div>
       <div class="card" style="margin-top:14px; padding:16px 18px" data-r="rentwrap"${S.hasRentals?'':' hidden'}>
         <div class="eyebrow" style="margin-bottom:4px">Leigutekjur — valfrjálst</div>
@@ -568,6 +570,16 @@ function scenarioShell(S, title, removable){
         <div data-r="fixedList"></div>
         <button type="button" class="table-toggle" style="margin-top:10px" data-r="addFixed">+ Bæta við skuldbindingu</button>
         <div data-r="fixedSummary" style="margin-top:10px; font-size:13.5px; color:var(--ink-2)"></div>
+      </div>
+      <div class="card" style="margin-top:14px; padding:16px 18px" data-r="ltvwrap"${S.hasLtv?'':' hidden'}>
+        <div class="eyebrow" style="margin-bottom:4px">Verðmæti eignarinnar — fyrir veðhlutfall</div>
+        <p class="hint" style="margin:0 0 10px; max-width:75ch">Settu inn kaupverð og/eða nýjasta fasteignamat — veðhlutfallið birtist þá í niðurstöðunni. Aðeins fasteignalánin sjálf telja í veðhlutfallinu; lán á lánsveði, bílalán og önnur lán telja ekki. Hámark skv. reglum Seðlabankans er 80% af verðmæti eignar, en 90% fyrir fyrstu kaupendur (frá október 2025).</p>
+        <div class="assumptions" style="padding:0; box-shadow:none; border:none; background:none">
+          <div class="field"><label>Kaupverð</label>
+            <div class="inputrow"><input type="text" data-r="priceBuy" inputmode="numeric" value="${S.priceBuy?nf.format(S.priceBuy):''}" placeholder="valfrjálst"><span class="unit">kr.</span></div></div>
+          <div class="field"><label>Fasteignamat</label>
+            <div class="inputrow"><input type="text" data-r="priceAssess" inputmode="numeric" value="${S.priceAssess?nf.format(S.priceAssess):''}" placeholder="valfrjálst"><span class="unit">kr.</span></div></div>
+        </div>
       </div>
     </section>
     <section>
@@ -585,6 +597,7 @@ function scenarioShell(S, title, removable){
       </div></div>
       <p class="plain-summary" data-r="plain"></p>
       <div class="card sbi-card" data-r="sbi"></div>
+      <div class="card sbi-card" data-r="ltvcard" hidden style="margin-top:14px"></div>
       <div class="tiles" data-r="tiles" style="margin-top:14px"></div>
       <p class="sec-sub" data-r="costnote" style="margin-top:12px; margin-bottom:0; font-size:13px"></p>
     </section>
@@ -622,7 +635,7 @@ function mountScenario(S, hostId, title, removable){
     });
   });
   syncPresets();
-  ['income1','income2','otherIncome'].forEach(f=>{
+  ['income1','income2','otherIncome','priceBuy','priceAssess'].forEach(f=>{
     const el=S.$(f);
     el.addEventListener('input',()=>{liveFormat(el);S[f]=parseAmount(el.value);recalc(S);});
   });
@@ -634,6 +647,11 @@ function mountScenario(S, hostId, title, removable){
     recalc(S);
   });
   S.$('rentInDsti').addEventListener('change',e=>{S.rentInDsti=e.target.checked;recalc(S);});
+  S.$('hasLtv').addEventListener('change',e=>{
+    S.hasLtv=e.target.checked;
+    S.$('ltvwrap').hidden=!S.hasLtv;
+    recalc(S);
+  });
   S.$('hasFixed').addEventListener('change',e=>{
     S.hasFixed=e.target.checked;
     S.$('fixedwrap').hidden=!S.hasFixed;
@@ -855,7 +873,7 @@ function recalc(S){
   }));
   S.baseline=valid.map(l=>(!l.extraMonthly&&!l.lumpAmount)?null
     :simulateLoan({...l,extraMonthly:0,lumpAmount:0,lumpMonth:0},S.inflation,S.horizon));
-  renderLoanStats(S); renderRentSummary(S); renderFixedSummary(S); renderTiles(S); renderSbi(S); renderChart(S); renderTable(S);
+  renderLoanStats(S); renderRentSummary(S); renderFixedSummary(S); renderTiles(S); renderSbi(S); renderLtv(S); renderChart(S); renderTable(S);
   renderCompare(); saveState();
 }
 function renderLoanStats(S){
@@ -970,6 +988,39 @@ function renderSbi(S){
     ${outPay>0?` Lán utan viðmiðsins — á lánsveði, bílalán og önnur lán (<b>${kr(outPay)}</b> á mánuði) — eru samt inni í greiðslubyrðartölunum og afganginum hér að neðan.`:''}
     ${!S.rentInDsti&&netRentHms(S)>0?`<br><br><b>Ábending:</b> Þú ert með <b>${kr(netRentHms(S))}</b> í nettóleigutekjur af HMS-skráðum samningum sem telja ekki með í viðmiðinu eins og er — hakaðu við í leigutekjuhlutanum í skrefi 1 til að sjá áhrifin (hlutfallið yrði þá <b>${pct(sbiTotal/(income+netRentHms(S))*100)}</b>).`:''}</p>
     ${infobox}`;
+}
+
+/* ============ Veðhlutfall ============ */
+const fasteignPrincipal=S=>S.results.reduce((a,r)=>a+(catOf(r.loan)==='fasteign'?r.loan.principal:0),0);
+function renderLtv(S){
+  const el=S.$('ltvcard'); if(!el) return;
+  const P=fasteignPrincipal(S);
+  const primary=S.priceBuy||S.priceAssess;
+  if(!S.hasLtv||!primary||!P){el.hidden=true;return;}
+  el.hidden=false;
+  const cap=S.firstBuyer?90:80;
+  const ratio=P/primary*100;
+  const ok=ratio<=cap+1e-9;
+  const scaleMax=Math.max(100,Math.ceil(ratio/10)*10);
+  el.className='card sbi-card '+(ok?'ok':'bad');
+  const both=S.priceBuy>0&&S.priceAssess>0;
+  el.innerHTML=`
+    <div class="eyebrow">Veðhlutfall eignarinnar</div>
+    <div class="verdict-line ${ok?'ok':'bad'}">${ok
+      ?'Innan marka — lánin rúmast á eigninni.'
+      :'Yfir hámarki — lánin eru of há miðað við verðmæti eignarinnar.'}</div>
+    <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:8px">
+      <div style="font-size:27px;font-weight:700;font-variant-numeric:tabular-nums">${pct(ratio)}</div>
+      <span style="color:var(--ink-2);font-size:14px">af ${S.priceBuy?'kaupverði':'fasteignamati'} er veðsett</span>
+      <span class="pill ${ok?'ok':'bad'}">${ok?'✓':'✕'} hámarkið er ${cap}%</span>
+    </div>
+    <div class="meter">
+      <div class="meter-fill${ok?'':' over'}" style="width:${Math.min(100,ratio/scaleMax*100)}%"></div>
+      <div class="meter-mark" style="left:${cap/scaleMax*100}%"><span>hámark ${cap}%</span></div>
+    </div>
+    <div class="meter-scale"><span>0%</span><span>${scaleMax}%</span></div>
+    <p class="sbi-detail">Fasteignalánin eru samtals <b>${kr(P)}</b> á móti <b>${kr(primary)}</b> ${S.priceBuy?'kaupverði':'fasteignamati'}${both?` — miðað við fasteignamatið (${kr(S.priceAssess)}) er hlutfallið <b>${pct(P/S.priceAssess*100)}</b>`:''}.
+    Lán á lánsveði, bílalán og önnur lán telja ekki í veðhlutfallinu. Hámark skv. reglum Seðlabankans er 80% af verðmæti eignar en 90% fyrir fyrstu kaupendur (frá október 2025) — lánveitendur setja auk þess eigin vaxtaþrep eftir veðhlutfalli.</p>`;
 }
 
 /* ============ Línurit ============ */
@@ -1126,6 +1177,7 @@ function diffScenarios(){
   if((A.otherIncome||0)!==(B.otherIncome||0)) rows.push({label:'Aðrar tekjur (nettó)', txt:kr(A.otherIncome||0)+' → '+kr(B.otherIncome||0)});
   if(!!A.rentInDsti!==!!B.rentInDsti) rows.push({label:'Leigutekjur í 35%-viðmiði', txt:(A.rentInDsti?'já':'nei')+' → '+(B.rentInDsti?'já':'nei')});
   if(Math.round(fixedTotal(A))!==Math.round(fixedTotal(B))) rows.push({label:'Fastar skuldbindingar', txt:kr(fixedTotal(A))+' → '+kr(fixedTotal(B))});
+  if((A.priceBuy||A.priceAssess||0)!==(B.priceBuy||B.priceAssess||0)) rows.push({label:'Verðmæti eignar', txt:kr(A.priceBuy||A.priceAssess||0)+' → '+kr(B.priceBuy||B.priceAssess||0)});
   const n=Math.max(A.loans.length,B.loans.length);
   for(let i=0;i<n;i++){
     const a=A.loans[i], b=B.loans[i];
@@ -1171,6 +1223,7 @@ function renderCompare(){
     incomeA&&incomeB?{label:'Greiðslubyrðarhlutfall', a:tA.sbi/incomeA*100, b:tB.sbi/incomeB*100, fmt:pct, lowerBetter:true}:null,
     {label:'Raunkostnaður (á verðlagi dagsins)', a:tA.costReal, b:tB.costReal, fmt:kr, lowerBetter:true},
     {label:'Greitt alls (krónur framtíðar)', a:tA.paid, b:tB.paid, fmt:kr, lowerBetter:true},
+    (A.hasLtv&&(A.priceBuy||A.priceAssess)&&B.hasLtv&&(B.priceBuy||B.priceAssess))?{label:'Veðhlutfall eignar', a:fasteignPrincipal(A)/(A.priceBuy||A.priceAssess)*100, b:fasteignPrincipal(B)/(B.priceBuy||B.priceAssess)*100, fmt:pct, lowerBetter:true}:null,
     {label:'Öll lán uppgreidd eftir', a:tA.payoff, b:tB.payoff, fmt:yearsMonths, lowerBetter:true},
   ].filter(Boolean);
   document.getElementById('compareTable').innerHTML=`<table class="compare">
@@ -1207,11 +1260,12 @@ function renderCompare(){
 
 /* ============ Vistun ============ */
 function packScen(S){
-  return {loans:S.loans,rentals:S.rentals,hasRentals:S.hasRentals,rentInDsti:S.rentInDsti,fixed:S.fixed,hasFixed:S.hasFixed,nextId:S.nextId,inflation:S.inflation,income1:S.income1,income2:S.income2,otherIncome:S.otherIncome,firstBuyer:S.firstBuyer,view:S.currentView};
+  return {loans:S.loans,rentals:S.rentals,hasRentals:S.hasRentals,rentInDsti:S.rentInDsti,fixed:S.fixed,hasFixed:S.hasFixed,hasLtv:S.hasLtv,priceBuy:S.priceBuy,priceAssess:S.priceAssess,nextId:S.nextId,inflation:S.inflation,income1:S.income1,income2:S.income2,otherIncome:S.otherIncome,firstBuyer:S.firstBuyer,view:S.currentView};
 }
 function unpackScen(S,d){
   S.loans=d.loans||[]; S.rentals=d.rentals||[]; S.hasRentals=!!d.hasRentals;
   S.fixed=d.fixed||[]; S.hasFixed=!!d.hasFixed;
+  S.hasLtv=!!d.hasLtv; S.priceBuy=d.priceBuy||0; S.priceAssess=d.priceAssess||0;
   S.rentInDsti=d.rentInDsti===undefined?true:!!d.rentInDsti;
   S.nextId=d.nextId||S.loans.length+S.rentals.length+1;
   S.inflation=d.inflation??4; S.income1=d.income1||0; S.income2=d.income2||0;
