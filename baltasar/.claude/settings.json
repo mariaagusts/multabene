@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git push *)",
+      "Bash(node \"C:\\\\Users\\\\MARABJ~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Mar-a-Bj-rg-Documents-GitHub-multabene-baltasar\\\\de4cc278-6b3a-4ce9-9472-a68d1d0e5a72\\\\scratchpad\\\\split.js\")",
+      "Read(//tmp/**)",
+      "Bash(bc)"
+    ]
+  }
+}
