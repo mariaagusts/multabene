@@ -132,7 +132,8 @@ input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid 
 .unit{color:var(--muted); font-size:13px; white-space:nowrap}
 .check{display:flex; align-items:flex-start; gap:9px; padding:8px 0; cursor:pointer; user-select:none}
 .check input{width:17px; height:17px; accent-color:var(--accent); margin:2px 0 0; flex:none}
-.check span{font-size:14px}
+.check span{font-size:14px; font-weight:700}
+.check span small{font-weight:400}
 .preset-row{display:flex; flex-wrap:wrap; gap:6px; margin-top:9px}
 .preset{
   font:inherit; font-size:12px; font-weight:600; padding:4px 11px; border-radius:99px;
@@ -381,6 +382,8 @@ footer a{color:var(--ink-2)}
         Margir skipta húsnæðisfjármögnuninni í tvö lán, verðtryggt og óverðtryggt, til að fá í senn viðráðanlega greiðslubyrði og vörn gegn verðbólgusveiflum — helmingarnir bregðast ólíkt við þegar verðbólgan breytist. Settu upp blönduna sem tvö lán hér að ofan og berðu hana saman við hreina leið í dæmi B.</div>
       <div class="didyou"><span class="dy-title">Séreignarsparnaður inn á lánið — óskattlagðar krónur</span>
         Skattfrjáls ráðstöfun séreignarsparnaðar inn á höfuðstól húsnæðisláns er eitt hagstæðasta úrræðið sem völ er á og borgar sig nær undantekningarlaust sé það ekki fullnýtt: iðgjaldið þitt og mótframlag launagreiðandans fara <b>óskattlögð</b> beint í höfuðstólinn — sömu krónur væru annars skattlagðar sem tekjur við útgreiðslu síðar. Hámarkið hefur verið 500.000 kr. á ári fyrir einstakling og 750.000 kr. fyrir samskattað fólk, og Alþingi lögfesti framhald úrræðisins 2026 (gildistaka 1. október; sækja þarf um hjá Skattinum fyrir 1. desember 2026 vegna iðgjalda ársins). Prófaðu að setja upphæðina sem mánaðarlega aukagreiðslu hér að ofan og sjáðu sparnaðinn.</div>
+      <div class="didyou"><span class="dy-title">Frítekjumark leigutekna miðast við tvær íbúðir</span>
+        Hagstæði 16,5%-skatturinn á leigutekjur gildir aðeins ef útleigðar íbúðir eru <b>ekki fleiri en tvær</b> og samningarnir skráðir í leiguskrá HMS. Sé þriðja íbúðin leigð út fellur frítekjumarkið brott — þá reiknast 22% fjármagnstekjuskattur af <b>öllum</b> leigutekjunum, ekki bara af þriðju íbúðinni — og við þann fjölda getur útleigan talist atvinnurekstur með enn annarri skattmeðferð. Allar leigutekjur eru skattskyldar óháð því hvort samningi er þinglýst eða hann skráður. Fyrir fólk með fleiri en tvær íbúðir í útleigu borgar sig að fá skattaráðgjöf áður en gengið er frá kaupum.</div>
       <div class="didyou"><span class="dy-title">35% reglan er viðmið — ekki greiðslumat</span>
         Reglan er sett af Seðlabanka Íslands, ekki lánveitendum — hún leggur öllum lánveitendum sama þakið, óháð því hjá hverjum þú tekur lánið. Lánveitandinn gerir svo alltaf sitt eigið greiðslumat þar sem framfærslukostnaður, aðrar skuldir og fleira kemur inn í myndina, og það er ekki sjálfgefið að lán fáist alveg upp að þakinu — undanþáguheimildir geta þó í einstaka tilfellum náð aðeins yfir það.</div>
       <div class="didyou"><span class="dy-title">Hvernig fer greiðslumatið sjálft fram?</span>
@@ -516,7 +519,7 @@ const netRent=S=>grossRent(S)-rentTax(S);
 const incomeOffset=S=>netRent(S)+(S.otherIncome||0);   // leigutekjur nettó + aðrar nettótekjur
 function newScenario(key){
   return {key, loans:[], rentals:[], hasRentals:false, rentInDsti:true, fixed:[], hasFixed:false,
-    hasLtv:false, priceBuy:0, priceAssess:0, nextId:1, currentView:'balance',
+    hasLtv:false, priceBuy:0, priceAssess:0, priceRental:0, nextId:1, currentView:'balance',
     inflation:5.3, income1:0, income2:0, otherIncome:0, firstBuyer:false,
     results:[], baseline:[], horizon:360, root:null};
 }
@@ -530,12 +533,13 @@ function defaultLoan(S, indexed){
 }
 const loanValid=l=>l.principal>0&&l.years>0;
 const LOAN_CATS={
-  fasteign:'Fasteignalán — innan 35%-viðmiðs Seðlabankans',
+  fasteign:'Fasteignalán á aðalhúsnæði — innan 35%-viðmiðs',
+  leigueign:'Fasteignalán á útleigueign — innan 35%-viðmiðs',
   lansved:'Á lánsveði / tekið af öðrum — utan 35%-viðmiðs',
   annad:'Bílalán, námslán eða annað lán — utan 35%-viðmiðs',
 };
 const catOf=l=>LOAN_CATS[l.cat]?l.cat:(l.lansved?'lansved':'fasteign');
-const inSbi=l=>catOf(l)==='fasteign';
+const inSbi=l=>{const c=catOf(l);return c==='fasteign'||c==='leigueign';};
 
 function scenarioShell(S, title, removable){
   return `
@@ -605,20 +609,23 @@ function scenarioShell(S, title, removable){
         <div data-r="fixedSummary" style="margin-top:10px; font-size:13.5px; color:var(--ink-2)"></div>
       </div>
       <div class="card" style="margin-top:14px; padding:16px 18px" data-r="ltvwrap"${S.hasLtv?'':' hidden'}>
-        <div class="eyebrow" style="margin-bottom:4px">Verðmæti eignarinnar — fyrir veðhlutfall</div>
-        <p class="hint" style="margin:0 0 10px; max-width:75ch">Settu inn kaupverð og/eða nýjasta fasteignamat — veðhlutfallið birtist þá í niðurstöðunni. Aðeins fasteignalánin sjálf telja í veðhlutfallinu; lán á lánsveði, bílalán og önnur lán telja ekki. Hámark skv. reglum Seðlabankans er 80% af verðmæti eignar, en 90% fyrir fyrstu kaupendur (frá október 2025).</p>
+        <div class="eyebrow" style="margin-bottom:4px">Verðmæti eignanna — fyrir veðhlutfall</div>
+        <p class="hint" style="margin:0 0 10px; max-width:75ch">Settu inn kaupverð og/eða nýjasta fasteignamat aðalhúsnæðisins — veðhlutfallið birtist þá í niðurstöðunni. Ef þú átt aðra fasteign í útleigu, settu verðmæti hennar líka inn: hún hefur sitt eigið veðrými, og lán merkt „fasteignalán á útleigueign“ í skrefi 2 hvíla á henni. Lán á lánsveði, bílalán og önnur lán telja hvergi í veðhlutfalli. Hámark skv. reglum Seðlabankans er 80% af verðmæti eignar, en 90% fyrir fyrstu kaupendur (frá október 2025).</p>
         <div class="assumptions" style="padding:0; box-shadow:none; border:none; background:none">
-          <div class="field"><label>Kaupverð</label>
+          <div class="field"><label>Kaupverð aðalhúsnæðis</label>
             <div class="inputrow"><input type="text" data-r="priceBuy" inputmode="numeric" value="${S.priceBuy?nf.format(S.priceBuy):''}" placeholder="valfrjálst"><span class="unit">kr.</span></div></div>
-          <div class="field"><label>Fasteignamat</label>
+          <div class="field"><label>Fasteignamat aðalhúsnæðis</label>
             <div class="inputrow"><input type="text" data-r="priceAssess" inputmode="numeric" value="${S.priceAssess?nf.format(S.priceAssess):''}" placeholder="valfrjálst"><span class="unit">kr.</span></div></div>
+          <div class="field"><label>Verðmæti útleigueignar</label>
+            <div class="inputrow"><input type="text" data-r="priceRental" inputmode="numeric" value="${S.priceRental?nf.format(S.priceRental):''}" placeholder="valfrjálst"><span class="unit">kr.</span></div>
+            <div class="hint">Kaupverð eða fasteignamat eignarinnar sem er í útleigu.</div></div>
         </div>
       </div>
     </section>
     <section>
       <div class="step-head"><span class="step-num">2</span><div>
         <h2 style="font-size:18px">Lánin þín</h2>
-        <p class=”sec-sub”>Skráðu hvert lán fyrir sig — tölurnar standa á lánayfirlitinu í heimabankanum eða í tilboði lánveitandans. Notaðu „+” til að bæta við fleiri lánum, og smelltu á heiti láns til að gefa því eigið nafn, t.d. „Íbúðalánið” eða „Bíllinn”. Reitir merktir <span class=”req”>*</span> eru nauðsynlegir svo hægt sé að reikna lánið — allt annað er valkvætt.</p>
+        <p class="sec-sub">Skráðu hvert lán fyrir sig — tölurnar standa á lánayfirlitinu í heimabankanum eða í tilboði lánveitandans. Notaðu „+“ til að bæta við fleiri lánum, og smelltu á heiti láns til að gefa því eigið nafn, t.d. „Íbúðalánið“ eða „Bíllinn“. Reitir merktir <span class="req">*</span> eru nauðsynlegir svo hægt sé að reikna lánið — allt annað er valkvætt.</p>
       </div></div>
       <div class="loans" data-r="loans"></div>
       ${removable?'':`<div class="didyou"><span class="dy-tag">Vissir þú?</span>Þú mátt alltaf greiða aukalega inn á lánin þín — <b>líka þau verðtryggðu</b>. Það er útbreiddur misskilningur að það borgi sig ekki að greiða inn á verðtryggt lán: hver króna sem þú greiðir aukalega lækkar höfuðstólinn strax, og þar með bæði vextina og verðbæturnar sem annars hefðu reiknast á hann út lánstímann. Prófaðu að setja tölu í „Aukagreiðsla á mánuði“ hér að ofan og sjáðu í samantektinni hvað hún sparar þér. (Sum óverðtryggð lán með föstum vöxtum bera uppgreiðslugjald — kannaðu skilmálana hjá lánveitandanum.)</div>`}
@@ -668,7 +675,7 @@ function mountScenario(S, hostId, title, removable){
     });
   });
   syncPresets();
-  ['income1','income2','otherIncome','priceBuy','priceAssess'].forEach(f=>{
+  ['income1','income2','otherIncome','priceBuy','priceAssess','priceRental'].forEach(f=>{
     const el=S.$(f);
     el.addEventListener('input',()=>{liveFormat(el);S[f]=parseAmount(el.value);recalc(S);});
   });
@@ -855,7 +862,7 @@ function renderLoans(S){
             <option value="laekka"${loan.extraMode==='laekka'?' selected':''}>lækka greiðsluna (lánstíminn helst)</option>
           </select></div>
         <div class="field full"><label>Flokkur láns</label>
-          <select data-f="cat" title="Reglur Seðlabankans um 35% greiðslubyrðarhlutfall gilda aðeins um fasteignalán lántakans sjálfs. Lán utan viðmiðsins telja samt með í mánaðarlegri greiðslubyrði og afganginum af launum.">
+          <select data-f="cat" title="Flokkurinn ræður tvennu: hvort lánið telst í 35%-viðmiði Seðlabankans (öll fasteignalán þín gera það, líka á útleigueign) og á hvaða veðrými það hvílir — aðalhúsnæði, útleigueign eða lánsveði annarra. Lán utan viðmiðsins telja samt með í mánaðarlegri greiðslubyrði og afganginum af launum.">
             ${Object.entries(LOAN_CATS).map(([k,v])=>`<option value="${k}"${k===catOf(loan)?' selected':''}>${v}</option>`).join('')}
           </select></div>
       </div>
@@ -1035,36 +1042,48 @@ function renderSbi(S){
 }
 
 /* ============ Veðhlutfall ============ */
-const fasteignPrincipal=S=>S.results.reduce((a,r)=>a+(catOf(r.loan)==='fasteign'?r.loan.principal:0),0);
+const principalOn=(S,cat)=>S.results.reduce((a,r)=>a+(catOf(r.loan)===cat?r.loan.principal:0),0);
+const fasteignPrincipal=S=>principalOn(S,'fasteign');
 function renderLtv(S){
   const el=S.$('ltvcard'); if(!el) return;
-  const P=fasteignPrincipal(S);
-  const primary=S.priceBuy||S.priceAssess;
-  if(!S.hasLtv||!primary||!P){el.hidden=true;return;}
+  const Pm=principalOn(S,'fasteign'), Pr=principalOn(S,'leigueign');
+  const mainVal=S.priceBuy||S.priceAssess;
+  const blocks=[];
+  if(S.hasLtv&&mainVal>0&&Pm>0) blocks.push({
+    name:'Aðalhúsnæðið', P:Pm, val:mainVal, cap:S.firstBuyer?90:80,
+    valLabel:S.priceBuy?'kaupverði':'fasteignamati',
+    extra:(S.priceBuy>0&&S.priceAssess>0)?` — miðað við fasteignamatið (${kr(S.priceAssess)}) er hlutfallið <b>${pct(Pm/S.priceAssess*100)}</b>`:'',
+  });
+  if(S.hasLtv&&S.priceRental>0&&Pr>0) blocks.push({
+    name:'Útleigueignin', P:Pr, val:S.priceRental, cap:80, valLabel:'verðmæti', extra:'',
+  });
+  if(!blocks.length){el.hidden=true;return;}
   el.hidden=false;
-  const cap=S.firstBuyer?90:80;
-  const ratio=P/primary*100;
-  const ok=ratio<=cap+1e-9;
-  const scaleMax=Math.max(100,Math.ceil(ratio/10)*10);
-  el.className='card sbi-card '+(ok?'ok':'bad');
-  const both=S.priceBuy>0&&S.priceAssess>0;
-  el.innerHTML=`
-    <div class="eyebrow">Veðhlutfall eignarinnar</div>
-    <div class="verdict-line ${ok?'ok':'bad'}">${ok
-      ?'Innan marka — lánin rúmast á eigninni.'
-      :'Yfir hámarki — lánin eru of há miðað við verðmæti eignarinnar.'}</div>
-    <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:8px">
-      <div style="font-size:27px;font-weight:700;font-variant-numeric:tabular-nums">${pct(ratio)}</div>
-      <span style="color:var(--ink-2);font-size:14px">af ${S.priceBuy?'kaupverði':'fasteignamati'} er veðsett</span>
-      <span class="pill ${ok?'ok':'bad'}">${ok?'✓':'✕'} hámarkið er ${cap}%</span>
-    </div>
-    <div class="meter">
-      <div class="meter-fill${ok?'':' over'}" style="width:${Math.min(100,ratio/scaleMax*100)}%"></div>
-      <div class="meter-mark" style="left:${cap/scaleMax*100}%"><span>hámark ${cap}%</span></div>
-    </div>
-    <div class="meter-scale"><span>0%</span><span>${scaleMax}%</span></div>
-    <p class="sbi-detail">Fasteignalánin eru samtals <b>${kr(P)}</b> á móti <b>${kr(primary)}</b> ${S.priceBuy?'kaupverði':'fasteignamati'}${both?` — miðað við fasteignamatið (${kr(S.priceAssess)}) er hlutfallið <b>${pct(P/S.priceAssess*100)}</b>`:''}.
-    Lán á lánsveði, bílalán og önnur lán telja ekki í veðhlutfallinu. Hámark skv. reglum Seðlabankans er 80% af verðmæti eignar en 90% fyrir fyrstu kaupendur (frá október 2025) — lánveitendur setja auk þess eigin vaxtaþrep eftir veðhlutfalli.</p>`;
+  const allOk=blocks.every(b=>b.P/b.val*100<=b.cap+1e-9);
+  el.className='card sbi-card '+(allOk?'ok':'bad');
+  el.innerHTML=`<div class="eyebrow">Veðhlutfall eignanna</div>
+    <div class="verdict-line ${allOk?'ok':'bad'}">${allOk
+      ?'Innan marka — lánin rúmast á '+(blocks.length>1?'eignunum':'eigninni')+'.'
+      :'Yfir hámarki — lánin eru of há miðað við verðmæti '+(blocks.length>1?'eignanna':'eignarinnar')+'.'}</div>`
+    +blocks.map(b=>{
+      const ratio=b.P/b.val*100, ok=ratio<=b.cap+1e-9, scaleMax=Math.max(100,Math.ceil(ratio/10)*10);
+      return `
+      <div style="margin-top:12px">
+        <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+          <b style="font-size:14.5px">${b.name}</b>
+          <div style="font-size:23px;font-weight:700;font-variant-numeric:tabular-nums">${pct(ratio)}</div>
+          <span style="color:var(--ink-2);font-size:13.5px">af ${b.valLabel} er veðsett</span>
+          <span class="pill ${ok?'ok':'bad'}" style="margin-top:0">${ok?'✓':'✕'} hámarkið er ${b.cap}%</span>
+        </div>
+        <div class="meter" style="margin:24px 0 6px">
+          <div class="meter-fill${ok?'':' over'}" style="width:${Math.min(100,ratio/scaleMax*100)}%"></div>
+          <div class="meter-mark" style="left:${b.cap/scaleMax*100}%"><span>hámark ${b.cap}%</span></div>
+        </div>
+        <div class="meter-scale"><span>0%</span><span>${scaleMax}%</span></div>
+        <p class="sbi-detail" style="margin-top:8px">Lánin á ${b.name==='Aðalhúsnæðið'?'aðalhúsnæðinu':'útleigueigninni'} eru samtals <b>${kr(b.P)}</b> á móti <b>${kr(b.val)}</b>${b.extra}.</p>
+      </div>`;
+    }).join('')
+    +`<p class="sbi-detail" style="margin-top:12px">Hvor eign hefur sitt eigið veðrými — lán á útleigueigninni notar ekki veðrými aðalhúsnæðisins, en telst samt með í 35%-viðmiðinu eins og önnur fasteignalán þín. Lán á lánsveði, bílalán og önnur lán telja hvergi í veðhlutfalli. Hámark skv. reglum Seðlabankans er 80% af verðmæti eignar (90% fyrir fyrstu kaupendur á aðalhúsnæði, frá október 2025) — lánveitendur setja auk þess eigin mörk og vaxtaþrep, oft strangari á útleigueignir.</p>`;
 }
 
 /* ============ Línurit ============ */
@@ -1221,7 +1240,8 @@ function diffScenarios(){
   if((A.otherIncome||0)!==(B.otherIncome||0)) rows.push({label:'Aðrar tekjur (nettó)', txt:kr(A.otherIncome||0)+' → '+kr(B.otherIncome||0)});
   if(!!A.rentInDsti!==!!B.rentInDsti) rows.push({label:'Leigutekjur í 35%-viðmiði', txt:(A.rentInDsti?'já':'nei')+' → '+(B.rentInDsti?'já':'nei')});
   if(Math.round(fixedTotal(A))!==Math.round(fixedTotal(B))) rows.push({label:'Fastar skuldbindingar', txt:kr(fixedTotal(A))+' → '+kr(fixedTotal(B))});
-  if((A.priceBuy||A.priceAssess||0)!==(B.priceBuy||B.priceAssess||0)) rows.push({label:'Verðmæti eignar', txt:kr(A.priceBuy||A.priceAssess||0)+' → '+kr(B.priceBuy||B.priceAssess||0)});
+  if((A.priceBuy||A.priceAssess||0)!==(B.priceBuy||B.priceAssess||0)) rows.push({label:'Verðmæti aðalhúsnæðis', txt:kr(A.priceBuy||A.priceAssess||0)+' → '+kr(B.priceBuy||B.priceAssess||0)});
+  if((A.priceRental||0)!==(B.priceRental||0)) rows.push({label:'Verðmæti útleigueignar', txt:kr(A.priceRental||0)+' → '+kr(B.priceRental||0)});
   const n=Math.max(A.loans.length,B.loans.length);
   for(let i=0;i<n;i++){
     const a=A.loans[i], b=B.loans[i];
@@ -1267,7 +1287,8 @@ function renderCompare(){
     incomeA&&incomeB?{label:'Greiðslubyrðarhlutfall', a:tA.sbi/incomeA*100, b:tB.sbi/incomeB*100, fmt:pct, lowerBetter:true}:null,
     {label:'Raunkostnaður (á verðlagi dagsins)', a:tA.costReal, b:tB.costReal, fmt:kr, lowerBetter:true},
     {label:'Greitt alls (krónur framtíðar)', a:tA.paid, b:tB.paid, fmt:kr, lowerBetter:true},
-    (A.hasLtv&&(A.priceBuy||A.priceAssess)&&B.hasLtv&&(B.priceBuy||B.priceAssess))?{label:'Veðhlutfall eignar', a:fasteignPrincipal(A)/(A.priceBuy||A.priceAssess)*100, b:fasteignPrincipal(B)/(B.priceBuy||B.priceAssess)*100, fmt:pct, lowerBetter:true}:null,
+    (A.hasLtv&&(A.priceBuy||A.priceAssess)&&B.hasLtv&&(B.priceBuy||B.priceAssess))?{label:'Veðhlutfall aðalhúsnæðis', a:fasteignPrincipal(A)/(A.priceBuy||A.priceAssess)*100, b:fasteignPrincipal(B)/(B.priceBuy||B.priceAssess)*100, fmt:pct, lowerBetter:true}:null,
+    (A.hasLtv&&A.priceRental>0&&B.hasLtv&&B.priceRental>0&&(principalOn(A,'leigueign')||principalOn(B,'leigueign')))?{label:'Veðhlutfall útleigueignar', a:principalOn(A,'leigueign')/A.priceRental*100, b:principalOn(B,'leigueign')/B.priceRental*100, fmt:pct, lowerBetter:true}:null,
     {label:'Öll lán uppgreidd eftir', a:tA.payoff, b:tB.payoff, fmt:yearsMonths, lowerBetter:true},
   ].filter(Boolean);
   document.getElementById('compareTable').innerHTML=`<table class="compare">
@@ -1385,12 +1406,12 @@ function importStateFile(file,btn){
 
 /* ============ Vistun ============ */
 function packScen(S){
-  return {loans:S.loans,rentals:S.rentals,hasRentals:S.hasRentals,rentInDsti:S.rentInDsti,fixed:S.fixed,hasFixed:S.hasFixed,hasLtv:S.hasLtv,priceBuy:S.priceBuy,priceAssess:S.priceAssess,nextId:S.nextId,inflation:S.inflation,income1:S.income1,income2:S.income2,otherIncome:S.otherIncome,firstBuyer:S.firstBuyer,view:S.currentView};
+  return {loans:S.loans,rentals:S.rentals,hasRentals:S.hasRentals,rentInDsti:S.rentInDsti,fixed:S.fixed,hasFixed:S.hasFixed,hasLtv:S.hasLtv,priceBuy:S.priceBuy,priceAssess:S.priceAssess,priceRental:S.priceRental,nextId:S.nextId,inflation:S.inflation,income1:S.income1,income2:S.income2,otherIncome:S.otherIncome,firstBuyer:S.firstBuyer,view:S.currentView};
 }
 function unpackScen(S,d){
   S.loans=d.loans||[]; S.rentals=d.rentals||[]; S.hasRentals=!!d.hasRentals;
   S.fixed=d.fixed||[]; S.hasFixed=!!d.hasFixed;
-  S.hasLtv=!!d.hasLtv; S.priceBuy=d.priceBuy||0; S.priceAssess=d.priceAssess||0;
+  S.hasLtv=!!d.hasLtv; S.priceBuy=d.priceBuy||0; S.priceAssess=d.priceAssess||0; S.priceRental=d.priceRental||0;
   S.rentInDsti=d.rentInDsti===undefined?true:!!d.rentInDsti;
   S.nextId=d.nextId||S.loans.length+S.rentals.length+1;
   S.inflation=d.inflation??4; S.income1=d.income1||0; S.income2=d.income2||0;
