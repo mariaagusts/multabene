@@ -988,8 +988,7 @@ function renderTiles(S){
     html+=`<div class="card tile" style="border-top:3px solid var(--s6)"><div class="eyebrow">Afgangur eftir greiðslu lána</div><div class="big"${left<0?' style="color:var(--bad-text)"':''}>${kr(left)}</div><div class="sub">af ${kr(totalIncome)} heildartekjum á mánuði, eftir greiðslur allra lána${fx>0?' og '+kr(fx)+' í fastar skuldbindingar':''} — líka þess sem stendur utan 35%-viðmiðsins</div></div>`;
   }
   html+=`
-    <div class="card tile" style="border-top:3px solid var(--s2)"><div class="eyebrow">Raunkostnaðurinn</div><div class="big">${kr(t.costReal)}</div><div class="sub">það sem lánin kosta umfram lánsupphæðina, á verðlagi dagsins í dag</div></div>
-    <div class="card tile" style="border-top:3px solid var(--s4)"><div class="eyebrow">Heildarkostnaður yfir lánstímann</div><div class="big">${kr(t.cost)}</div><div class="sub">vextir og verðbætur í krónum framtíðar — greitt alls ${kr(t.paid)}</div></div>`;
+    <div class="card tile" style="border-top:3px solid var(--s2)"><div class="eyebrow">Raunkostnaðurinn</div><div class="big">${kr(t.costReal)}</div><div class="sub">það sem lánin kosta umfram lánsupphæðina, á verðlagi dagsins í dag</div></div>`;
   if(savedReal>1){
     html+=`<div class="card tile" style="border-top:3px solid var(--good)"><div class="eyebrow">Aukagreiðslur spara</div><div class="big" style="color:var(--good-text)">${kr(savedReal)}</div><div class="sub">á verðlagi dagsins — og stytta lánstímann um ${yearsMonths(t.basePayoff-t.payoff)}</div></div>`;
   }
