@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vikan hjá Unni og Sigrúnu · 2026–2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4F6F5; --panel:#FFFFFF; --ink:#17262B; --ink-2:#4C5F66; --ink-3:#7C8B91;
+  --rule:#DCE3E2; --ua:#3B4899; --sl:#14666B;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:32px 20px 64px}
+
+header{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:28px}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);margin-bottom:10px}
+h1{font-family:"Bricolage Grotesque","Inter",sans-serif;font-weight:700;
+  font-size:clamp(28px,5.5vw,46px);line-height:1.02;letter-spacing:-.025em;margin:0 0 12px}
+.sub{color:var(--ink-2);max-width:60ch;margin:0}
+.who{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px}
+.who div{font-size:13px;color:var(--ink-2)}
+.who b{display:block;font-size:15px;color:var(--ink);font-weight:600}
+.who i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:1px}
+
+h2{font-family:"Bricolage Grotesque","Inter",sans-serif;font-weight:700;
+  font-size:22px;letter-spacing:-.015em;margin:44px 0 4px}
+.lede{color:var(--ink-2);font-size:14px;margin:0 0 18px;max-width:62ch}
+
+/* vikulínan */
+.tl{background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:16px 18px 12px;overflow:hidden}
+.tl-ruler,.tl-day{display:flex;align-items:stretch;gap:12px}
+.tl-lab{width:38px;flex:none;font-family:"IBM Plex Mono",monospace;font-size:11px;
+  letter-spacing:.08em;color:var(--ink-3);padding-top:6px}
+.tl-lanes{flex:1;min-width:0;padding:7px 0;border-top:1px solid var(--rule)}
+.tl-day:first-of-type .tl-lanes{border-top:none}
+.tl-ruler .tl-track{height:16px}
+.tl-track{position:relative;flex:1;min-width:0}
+.lane{height:26px;margin:3px 0;border-radius:5px}
+.lane-ua{background:#EFF1FB}
+.lane-sl{background:#EAF4F3}
+.lane-tag{position:absolute;left:7px;top:5px;font-size:10px;letter-spacing:.04em;
+  color:var(--ink-3);z-index:0}
+.tick{position:absolute;top:0;bottom:0;border-left:1px solid var(--rule)}
+.tick span{position:absolute;top:0;left:3px;font-family:"IBM Plex Mono",monospace;
+  font-size:10px;color:var(--ink-3)}
+.grid{position:absolute;top:0;bottom:0;border-left:1px solid rgba(0,0,0,.045)}
+.bar{position:absolute;top:0;height:26px;border-radius:5px;display:flex;align-items:center;
+  padding:0 7px;overflow:hidden;white-space:nowrap;font-size:11px;font-weight:500;z-index:1}
+.bar span{overflow:hidden;text-overflow:ellipsis}
+.bar-skoli.who-ua{background:#D6DBF3;color:#333E7A}
+.bar-skoli.who-sl{background:#CFE3E1;color:#17545A}
+.bar-tom{background:#E4D3B8;color:#5A4320}
+.bar-fb{background:var(--ua);color:#fff}
+.bar-hb{background:var(--sl);color:#fff}
+.bar-open{background:repeating-linear-gradient(45deg,#EDEFEE,#EDEFEE 6px,#E3E7E6 6px,#E3E7E6 12px);
+  color:var(--ink-3);border:1px dashed #C6CFCD}
+
+/* punktar */
+.notes{list-style:none;padding:0;margin:0;display:grid;gap:10px;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.notes li{background:var(--panel);border:1px solid var(--rule);border-left:3px solid var(--ua);
+  border-radius:0 8px 8px 0;padding:12px 14px;font-size:14px;color:var(--ink-2)}
+.notes strong{color:var(--ink)}
+
+/* töflur */
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin:0 0 16px}
+.key{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-2)}
+.key i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.grid-days{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.day h4{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 8px;padding-bottom:6px;
+  border-bottom:1px solid var(--rule)}
+.slot{border-radius:7px;padding:7px 9px;margin-bottom:5px}
+.tm{font-family:"IBM Plex Mono",monospace;font-size:10.5px;opacity:.82}
+.nm{font-size:13.5px;font-weight:600;line-height:1.25}
+.slot .sub{font-size:11px;opacity:.82}
+.brk{background:transparent;border:1px solid var(--rule);color:var(--ink-3);font-size:11px}
+.brk .tm{margin-right:4px}
+.none{font-size:12px;color:var(--ink-3)}
+
+.girl{margin-top:14px}
+.girl-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.girl-head h3{font-family:"Bricolage Grotesque","Inter",sans-serif;font-size:19px;margin:0;
+  letter-spacing:-.01em}
+.girl-head p{margin:0;font-size:13px;color:var(--ink-3)}
+.rule{height:3px;border-radius:2px;margin-bottom:14px}
+
+footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--rule);
+  font-size:12.5px;color:var(--ink-3);max-width:70ch}
+footer p{margin:0 0 7px}
+
+@media print{
+  body{background:#fff}
+  .wrap{padding:0;max-width:none}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  h2{page-break-after:avoid}
+  .day{page-break-inside:avoid}
+}
+@media (prefers-reduced-motion:no-preference){
+  .bar{animation:grow .5s cubic-bezier(.2,.7,.3,1) both}
+  @keyframes grow{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Skólaárið 2026–2027 · 24.8.2026–9.6.2027</div>
+  <h1>Vikan hjá Unni og Sigrúnu</h1>
+  <p class="sub">Skólatöflur beggja og allar æfingar á einum stað. Vikulínan efst sýnir hvenær þær skarast — það er þar sem skutlið strandar.</p>
+  <div class="who">
+    <div><b><i style="background:var(--ua)"></i>Unnur Ágústa</b>9. bekkur · umsjón Elena Einisdóttir · fótbolti, 3. fl. kvk</div>
+    <div><b><i style="background:var(--sl)"></i>Sigrún Lára</b>7. HGK, stofa 121 · umsjón Högni Grétar · handbolti, 5. fl. kvk</div>
+  </div>
+</header>
+
+<h2>Vikan í einni línu</h2>
+<p class="lede">Ljósgrátt er skólinn, dökku reitirnir eru æfingar. Bendill yfir reit sýnir nákvæman tíma.</p>
+<div class="tl">
+<div class="tl-ruler"><div class="tl-lab"></div><div class="tl-track">
+<div class="tick" style="left:0.000%"><span>08</span></div>
+<div class="tick" style="left:7.692%"><span>09</span></div>
+<div class="tick" style="left:15.385%"><span>10</span></div>
+<div class="tick" style="left:23.077%"><span>11</span></div>
+<div class="tick" style="left:30.769%"><span>12</span></div>
+<div class="tick" style="left:38.462%"><span>13</span></div>
+<div class="tick" style="left:46.154%"><span>14</span></div>
+<div class="tick" style="left:53.846%"><span>15</span></div>
+<div class="tick" style="left:61.538%"><span>16</span></div>
+<div class="tick" style="left:69.231%"><span>17</span></div>
+<div class="tick" style="left:76.923%"><span>18</span></div>
+<div class="tick" style="left:84.615%"><span>19</span></div>
+<div class="tick" style="left:92.308%"><span>20</span></div>
+<div class="tick" style="left:100.000%"><span>21</span></div>
+</div></div>
+<div class="tl-day"><div class="tl-lab">MÁN</div><div class="tl-lanes">
+<div class="tl-track lane lane-ua"><span class="lane-tag">Unnur</span>
+<div class="grid" style="left:7.692%"></div>
+<div class="grid" style="left:15.385%"></div>
+<div class="grid" style="left:23.077%"></div>
+<div class="grid" style="left:30.769%"></div>
+<div class="grid" style="left:38.462%"></div>
+<div class="grid" style="left:46.154%"></div>
+<div class="grid" style="left:53.846%"></div>
+<div class="grid" style="left:61.538%"></div>
+<div class="grid" style="left:69.231%"></div>
+<div class="grid" style="left:76.923%"></div>
+<div class="grid" style="left:84.615%"></div>
+<div class="grid" style="left:92.308%"></div>
+<div class="bar bar-skoli who-ua" style="left:13.462%;width:44.231%" title="Skóli 09:45–15:30"><span>Skóli</span></div>
+<div class="bar bar-fb who-ua" style="left:75.000%;width:11.538%" title="Fótbolti · Miðgarður 17:45–19:15"><span>Fótbolti · Miðgarður</span></div>
+</div>
+<div class="tl-track lane lane-sl"><span class="lane-tag">Sigrún</span>
+<div class="grid" style="left:7.692%"></div>
+<div class="grid" style="left:15.385%"></div>
+<div class="grid" style="left:23.077%"></div>
+<div class="grid" style="left:30.769%"></div>
+<div class="grid" style="left:38.462%"></div>
+<div class="grid" style="left:46.154%"></div>
+<div class="grid" style="left:53.846%"></div>
+<div class="grid" style="left:61.538%"></div>
+<div class="grid" style="left:69.231%"></div>
+<div class="grid" style="left:76.923%"></div>
+<div class="grid" style="left:84.615%"></div>
+<div class="grid" style="left:92.308%"></div>
+<div class="bar bar-skoli who-sl" style="left:2.564%;width:44.872%" title="Skóli 08:20–14:10"><span>Skóli</span></div>
+<div class="bar bar-hb who-sl" style="left:80.769%;width:7.692%" title="Handbolti · Salur A 18:30–19:30"><span>Handbolti · Salur A</span></div>
+</div>
+</div></div>
+<div class="tl-day"><div class="tl-lab">ÞRI</div><div class="tl-lanes">
+<div class="tl-track lane lane-ua"><span class="lane-tag">Unnur</span>
+<div class="grid" style="left:7.692%"></div>
+<div class="grid" style="left:15.385%"></div>
+<div class="grid" style="left:23.077%"></div>
+<div class="grid" style="left:30.769%"></div>
+<div class="grid" style="left:38.462%"></div>
+<div class="grid" style="left:46.154%"></div>
+<div class="grid" style="left:53.846%"></div>
+<div class="grid" style="left:61.538%"></div>
+<div class="grid" style="left:69.231%"></div>
+<div class="grid" style="left:76.923%"></div>
+<div class="grid" style="left:84.615%"></div>
+<div class="grid" style="left:92.308%"></div>
+<div class="bar bar-skoli who-ua" style="left:3.846%;width:46.154%" title="Skóli 08:30–14:30"><span>Skóli</span></div>
+<div class="bar bar-fb who-ua" style="left:73.077%;width:11.538%" title="Fótbolti · Miðgarður 17:30–19:00"><span>Fótbolti · Miðgarður</span></div>
+</div>
+<div class="tl-track lane lane-sl"><span class="lane-tag">Sigrún</span>
+<div class="grid" style="left:7.692%"></div>
+<div class="grid" style="left:15.385%"></div>
+<div class="grid" style="left:23.077%"></div>
+<div class="grid" style="left:30.769%"></div>
+<div class="grid" style="left:38.462%"></div>
+<div class="grid" style="left:46.154%"></div>
+<div class="grid" style="left:53.846%"></div>
+<div class="grid" style="left:61.538%"></div>
+<div class="grid" style="left:69.231%"></div>
+<div class="grid" style="left:76.923%"></div>
+<div class="grid" style="left:84.615%"></div>
+<div class="grid" style="left:92.308%"></div>
+<div class="bar bar-skoli who-sl" style="left:2.564%;width:44.872%" title="Skóli 08:20–14:10"><span>Skóli</span></div>
+</div>
+</div></div>
+<div class="tl-day"><div class="tl-lab">MIÐ</div><div class="tl-lanes">
+<div class="tl-track lane lane-ua"><span class="lane-tag">Unnur</span>
+<div class="grid" style="left:7.692%"></div>
+<div class="grid" style="left:15.385%"></div>
+<div class="grid" style="left:23.077%"></div>
+<div class="grid" style="left:30.769%"></div>
+<div class="grid" style="left:38.462%"></div>
+<div class="grid" style="left:46.154%"></div>
+<div class="grid" style="left:53.846%"></div>
+<div class="grid" style="left:61.538%"></div>
+<div class="grid" style="left:69.231%"></div>
+<div class="grid" style="left:76.923%"></div>
+<div class="grid" style="left:84.615%"></div>
+<div class="grid" style="left:92.308%"></div>
+<div class="bar bar-skoli who-ua" style="left:3.846%;width:46.154%" title="Skóli 08:30–14:30"><span>Skóli</span></div>
+</div>
+<div class="tl-track lane lane-sl"><span class="lane-tag">Sigrún</span>
+<div class="grid" style="left:7.692%"></div>
+<div class="grid" style="left:15.385%"></div>
+<div class="grid" style="left:23.077%"></div>
+<div class="grid" style="left:30.769%"></div>
+<div class="grid" style="left:38.462%"></div>
+<div class="grid" style="left:46.154%"></div>
+<div class="grid" style="left:53.846%"></div>
+<div class="grid" style="left:61.538%"></div>
+<div class="grid" style="left:69.231%"></div>
+<div class="grid" style="left:76.923%"></div>
+<div class="grid" style="left:84.615%"></div>
+<div class="grid" style="left:92.308%"></div>
+<div class="bar bar-skoli who-sl" style="left:2.564%;width:47.436%" title="Skóli 08:20–14:30"><span>Skóli</span></div>
+<div class="bar bar-hb who-sl" style="left:88.462%;width:7.692%" title="Handbolti · Salur B 19:30–20:30"><span>Handbolti · Salur B</span></div>
+</div>
+</div></div>
+<div class="tl-day"><div class="tl-lab">FIM</div><div class="tl-lanes">
+<div class="tl-track lane lane-ua"><span class="lane-tag">Unnur</span>
+<div class="grid" style="left:7.692%"></div>
+<div class="grid" style="left:15.385%"></div>
+<div class="grid" style="left:23.077%"></div>
+<div class="grid" style="left:30.769%"></div>
+<div class="grid" style="left:38.462%"></div>
+<div class="grid" style="left:46.154%"></div>
+<div class="grid" style="left:53.846%"></div>
+<div class="grid" style="left:61.538%"></div>
+<div class="grid" style="left:69.231%"></div>
+<div class="grid" style="left:76.923%"></div>
+<div class="grid" style="left:84.615%"></div>
+<div class="grid" style="left:92.308%"></div>
+<div class="bar bar-skoli who-ua" style="left:13.462%;width:44.231%" title="Skóli 09:45–15:30"><span>Skóli</span></div>
+<div class="bar bar-fb who-ua" style="left:76.923%;width:11.538%" title="Fótbolti · Miðgarður 18:00–19:30"><span>Fótbolti · Miðgarður</span></div>
+</div>
+<div class="tl-track lane lane-sl"><span class="lane-tag">Sigrún</span>
+<div class="grid" style="left:7.692%"></div>
+<div class="grid" style="left:15.385%"></div>
+<div class="grid" style="left:23.077%"></div>
+<div class="grid" style="left:30.769%"></div>
+<div class="grid" style="left:38.462%"></div>
+<div class="grid" style="left:46.154%"></div>
+<div class="grid" style="left:53.846%"></div>
+<div class="grid" style="left:61.538%"></div>
+<div class="grid" style="left:69.231%"></div>
+<div class="grid" style="left:76.923%"></div>
+<div class="grid" style="left:84.615%"></div>
+<div class="grid" style="left:92.308%"></div>
+<div class="bar bar-skoli who-sl" style="left:2.564%;width:44.231%" title="Skóli 08:20–14:05"><span>Skóli</span></div>
+<div class="bar bar-hb who-sl" style="left:65.385%;width:7.692%" title="Handbolti · Salur B 16:30–17:30"><span>Handbolti · Salur B</span></div>
+</div>
+</div></div>
+<div class="tl-day"><div class="tl-lab">FÖS</div><div class="tl-lanes">
+<div class="tl-track lane lane-ua"><span class="lane-tag">Unnur</span>
+<div class="grid" style="left:7.692%"></div>
+<div class="grid" style="left:15.385%"></div>
+<div class="grid" style="left:23.077%"></div>
+<div class="grid" style="left:30.769%"></div>
+<div class="grid" style="left:38.462%"></div>
+<div class="grid" style="left:46.154%"></div>
+<div class="grid" style="left:53.846%"></div>
+<div class="grid" style="left:61.538%"></div>
+<div class="grid" style="left:69.231%"></div>
+<div class="grid" style="left:76.923%"></div>
+<div class="grid" style="left:84.615%"></div>
+<div class="grid" style="left:92.308%"></div>
+<div class="bar bar-skoli who-ua" style="left:3.846%;width:46.154%" title="Skóli 08:30–14:30"><span>Skóli</span></div>
+<div class="bar bar-fb who-ua" style="left:78.846%;width:11.538%" title="Fótbolti · Stjörnuvöllur 18:15–19:45"><span>Fótbolti · Stjörnuvöllur</span></div>
+</div>
+<div class="tl-track lane lane-sl"><span class="lane-tag">Sigrún</span>
+<div class="grid" style="left:7.692%"></div>
+<div class="grid" style="left:15.385%"></div>
+<div class="grid" style="left:23.077%"></div>
+<div class="grid" style="left:30.769%"></div>
+<div class="grid" style="left:38.462%"></div>
+<div class="grid" style="left:46.154%"></div>
+<div class="grid" style="left:53.846%"></div>
+<div class="grid" style="left:61.538%"></div>
+<div class="grid" style="left:69.231%"></div>
+<div class="grid" style="left:76.923%"></div>
+<div class="grid" style="left:84.615%"></div>
+<div class="grid" style="left:92.308%"></div>
+<div class="bar bar-skoli who-sl" style="left:2.564%;width:42.949%" title="Skóli 08:20–13:55"><span>Skóli</span></div>
+</div>
+</div></div>
+<div class="tl-day"><div class="tl-lab">LAU</div><div class="tl-lanes">
+<div class="tl-track lane lane-ua"><span class="lane-tag">Unnur</span>
+<div class="grid" style="left:7.692%"></div>
+<div class="grid" style="left:15.385%"></div>
+<div class="grid" style="left:23.077%"></div>
+<div class="grid" style="left:30.769%"></div>
+<div class="grid" style="left:38.462%"></div>
+<div class="grid" style="left:46.154%"></div>
+<div class="grid" style="left:53.846%"></div>
+<div class="grid" style="left:61.538%"></div>
+<div class="grid" style="left:69.231%"></div>
+<div class="grid" style="left:76.923%"></div>
+<div class="grid" style="left:84.615%"></div>
+<div class="grid" style="left:92.308%"></div>
+<div class="bar bar-open bar-open" style="left:0;width:100%"><span>Fótbolti · tími óstaðfestur</span></div>
+</div>
+<div class="tl-track lane lane-sl"><span class="lane-tag">Sigrún</span>
+<div class="grid" style="left:7.692%"></div>
+<div class="grid" style="left:15.385%"></div>
+<div class="grid" style="left:23.077%"></div>
+<div class="grid" style="left:30.769%"></div>
+<div class="grid" style="left:38.462%"></div>
+<div class="grid" style="left:46.154%"></div>
+<div class="grid" style="left:53.846%"></div>
+<div class="grid" style="left:61.538%"></div>
+<div class="grid" style="left:69.231%"></div>
+<div class="grid" style="left:76.923%"></div>
+<div class="grid" style="left:84.615%"></div>
+<div class="grid" style="left:92.308%"></div>
+<div class="bar bar-hb who-sl" style="left:46.154%;width:7.692%" title="Handbolti · Salur A og B 14:00–15:00"><span>Handbolti · Salur A og B</span></div>
+</div>
+</div></div>
+</div>
+
+<h2>Stundatöflurnar</h2>
+<p class="lede">Sami litur þýðir sama fag hjá báðum stelpunum.</p>
+<div class="legend">
+<span class="key"><i style="background:#A8D8F0"></i>Íslenska</span>
+<span class="key"><i style="background:#A9DFBF"></i>Stærðfræði</span>
+<span class="key"><i style="background:#F3B0A8"></i>Danska</span>
+<span class="key"><i style="background:#9AD6CD"></i>Enska</span>
+<span class="key"><i style="background:#F7CBB0"></i>Samfélagsfræði</span>
+<span class="key"><i style="background:#D7E8A0"></i>Náttúrufræði</span>
+<span class="key"><i style="background:#F2B8C6"></i>Íþróttir</span>
+<span class="key"><i style="background:#86C5D9"></i>Sund</span>
+<span class="key"><i style="background:#F8CC8A"></i>Smiðjur</span>
+<span class="key"><i style="background:#CFC4E8"></i>Tölvur</span>
+<span class="key"><i style="background:#E8DCA8"></i>Lífsleikni</span>
+<span class="key"><i style="background:#3B4899"></i>Fótbolti</span>
+<span class="key"><i style="background:#14666B"></i>Handbolti</span>
+</div>
+
+<div class="girl">
+  <div class="girl-head"><h3>Unnur Ágústa</h3><p>Byrjar 08:30 á þri./mið./fös., 09:45 á mán./fim.</p></div>
+  <div class="rule" style="background:var(--ua)"></div>
+<div class="grid-days">
+<section class="day"><h4>Mánudagur</h4>
+<div class="slot" style="background:#DDD8CE;color:#4A443A"><div class="tm">09:45–10:40</div><div class="nm">SLÍ3101-2</div><div class="sub">SR · SPEG</div></div>
+<div class="slot" style="background:#F2B8C6;color:#6E1F35"><div class="tm">10:45–11:40</div><div class="nm">Íþróttir</div><div class="sub">GHÁ · ÍÞRÓ</div></div>
+<div class="slot" style="background:#A8D8F0;color:#0E3E5B"><div class="tm">11:45–12:40</div><div class="nm">Íslenska</div><div class="sub">RBG · 214</div></div>
+<div class="slot brk"><span class="tm">13:10–13:30</span> Læsisstund</div>
+<div class="slot" style="background:#A9DFBF;color:#14522F"><div class="tm">13:35–14:30</div><div class="nm">Stærðfræði</div><div class="sub">EE · 304</div></div>
+<div class="slot" style="background:#F7CBB0;color:#6B3A18"><div class="tm">14:35–15:30</div><div class="nm">Samfélagsfræði</div><div class="sub">ARO · 216</div></div>
+<div class="slot" style="background:#3B4899;color:#FFFFFF"><div class="tm">17:45–19:15</div><div class="nm">Fótbolti</div><div class="sub">Miðgarður</div></div>
+</section>
+<section class="day"><h4>Þriðjudagur</h4>
+<div class="slot" style="background:#9AD6CD;color:#125045"><div class="tm">08:30–09:25</div><div class="nm">Enska</div><div class="sub">EHH · K3</div></div>
+<div class="slot" style="background:#A8D8F0;color:#0E3E5B"><div class="tm">09:45–10:40</div><div class="nm">Íslenska</div><div class="sub">RBG · 214</div></div>
+<div class="slot" style="background:#D7E8A0;color:#4A5A12"><div class="tm">11:45–12:40</div><div class="nm">Náttúrufræði</div><div class="sub">BP · 103</div></div>
+<div class="slot brk"><span class="tm">13:10–13:30</span> Læsisstund</div>
+<div class="slot" style="background:#F3B0A8;color:#6E2119"><div class="tm">13:35–14:30</div><div class="nm">Danska</div><div class="sub">EDH · 202</div></div>
+<div class="slot" style="background:#3B4899;color:#FFFFFF"><div class="tm">17:30–19:00</div><div class="nm">Fótbolti</div><div class="sub">Miðgarður</div></div>
+</section>
+<section class="day"><h4>Miðvikudagur</h4>
+<div class="slot" style="background:#F7CBB0;color:#6B3A18"><div class="tm">08:30–09:25</div><div class="nm">Samfélagsfræði</div><div class="sub">ARO · 216</div></div>
+<div class="slot" style="background:#A9DFBF;color:#14522F"><div class="tm">09:45–10:40</div><div class="nm">STÆ3101-1</div><div class="sub">EE · 303</div></div>
+<div class="slot" style="background:#A8D8F0;color:#0E3E5B"><div class="tm">10:45–11:40</div><div class="nm">Íslenska</div><div class="sub">RBG · 214</div></div>
+<div class="slot" style="background:#A9DFBF;color:#14522F"><div class="tm">11:45–12:40</div><div class="nm">Stærðfræði</div><div class="sub">EE · 304</div></div>
+<div class="slot brk"><span class="tm">13:10–13:30</span> Læsisstund</div>
+<div class="slot" style="background:#9AD6CD;color:#125045"><div class="tm">13:35–14:30</div><div class="nm">Enska</div><div class="sub">EHH · K3</div></div>
+</section>
+<section class="day"><h4>Fimmtudagur</h4>
+<div class="slot" style="background:#D7E8A0;color:#4A5A12"><div class="tm">09:45–10:40</div><div class="nm">Náttúrufræði</div><div class="sub">BP · 103</div></div>
+<div class="slot" style="background:#A9DFBF;color:#14522F"><div class="tm">10:45–11:40</div><div class="nm">Stærðfræði</div><div class="sub">EE · 304</div></div>
+<div class="slot" style="background:#9AD6CD;color:#125045"><div class="tm">11:45–12:40</div><div class="nm">Enska</div><div class="sub">EHH · K3</div></div>
+<div class="slot brk"><span class="tm">13:10–13:30</span> Læsisstund</div>
+<div class="slot" style="background:#EDDCEA;color:#5A3C58"><div class="tm">13:35–14:30</div><div class="nm">Umsjón</div><div class="sub">EE · 304</div></div>
+<div class="slot" style="background:#A8D8F0;color:#0E3E5B"><div class="tm">14:35–15:30</div><div class="nm">Íslenska</div><div class="sub">RBG · 214</div></div>
+<div class="slot" style="background:#3B4899;color:#FFFFFF"><div class="tm">18:00–19:30</div><div class="nm">Fótbolti</div><div class="sub">Miðgarður</div></div>
+</section>
+<section class="day"><h4>Föstudagur</h4>
+<div class="slot" style="background:#A9DFBF;color:#14522F"><div class="tm">08:30–09:25</div><div class="nm">Stærðfræði</div><div class="sub">EE · 304</div></div>
+<div class="slot" style="background:#F3B0A8;color:#6E2119"><div class="tm">10:45–11:40</div><div class="nm">Danska</div><div class="sub">EDH · 202</div></div>
+<div class="slot" style="background:#A8D8F0;color:#0E3E5B"><div class="tm">11:45–12:40</div><div class="nm">Íslenska</div><div class="sub">RBG · 214</div></div>
+<div class="slot brk"><span class="tm">13:10–13:30</span> Læsisstund</div>
+<div class="slot" style="background:#86C5D9;color:#0D3E4E"><div class="tm">13:35–14:30</div><div class="nm">Sund</div><div class="sub">EÓA · SUND</div></div>
+<div class="slot" style="background:#3B4899;color:#FFFFFF"><div class="tm">18:15–19:45</div><div class="nm">Fótbolti</div><div class="sub">Stjörnuvöllur</div></div>
+</section>
+<section class="day"><h4>Laugardagur</h4>
+<div class="slot" style="background:#3B4899;color:#FFFFFF"><div class="tm">tími óstaðfestur</div><div class="nm">Fótbolti</div><div class="sub">Stjörnuvöllur</div></div>
+</section>
+</div>
+</div>
+
+<div class="girl" style="margin-top:32px">
+  <div class="girl-head"><h3>Sigrún Lára</h3><p>Byrjar 08:20 alla daga · Hofsstaðaskóli, Garðabæ · kemur sér sjálf á æfingar</p></div>
+  <div class="rule" style="background:var(--sl)"></div>
+<div class="grid-days">
+<section class="day"><h4>Mánudagur</h4>
+<div class="slot" style="background:#F7CBB0;color:#6B3A18"><div class="tm">08:20–09:00</div><div class="nm">Sam/nátt</div></div>
+<div class="slot brk"><span class="tm">09:00–09:40</span> Nesti</div>
+<div class="slot" style="background:#F3B0A8;color:#6E2119"><div class="tm">09:40–10:20</div><div class="nm">Danska</div></div>
+<div class="slot brk"><span class="tm">10:20–10:40</span> Frímínútur</div>
+<div class="slot" style="background:#A8D8F0;color:#0E3E5B"><div class="tm">10:40–11:35</div><div class="nm">Íslenska</div></div>
+<div class="slot" style="background:#F2B8C6;color:#6E1F35"><div class="tm">11:40–12:20</div><div class="nm">Íþróttir</div></div>
+<div class="slot brk"><span class="tm">12:25–13:10</span> Matur</div>
+<div class="slot" style="background:#A9DFBF;color:#14522F"><div class="tm">13:10–14:10</div><div class="nm">Stærðfræði</div></div>
+<div class="slot" style="background:#14666B;color:#FFFFFF"><div class="tm">18:30–19:30</div><div class="nm">Handbolti</div><div class="sub">Salur A</div></div>
+</section>
+<section class="day"><h4>Þriðjudagur</h4>
+<div class="slot" style="background:#A9DFBF;color:#14522F"><div class="tm">08:20–09:00</div><div class="nm">Stærðfræði</div></div>
+<div class="slot brk"><span class="tm">09:00–09:40</span> Nesti</div>
+<div class="slot" style="background:#A8D8F0;color:#0E3E5B"><div class="tm">09:40–10:20</div><div class="nm">Íslenska</div></div>
+<div class="slot brk"><span class="tm">10:20–10:40</span> Frímínútur</div>
+<div class="slot" style="background:#F8CC8A;color:#6B4406"><div class="tm">10:40–12:00</div><div class="nm">Smiðjur</div></div>
+<div class="slot brk"><span class="tm">12:00–12:15</span> Matur</div>
+<div class="slot" style="background:#F7CBB0;color:#6B3A18"><div class="tm">12:15–12:40</div><div class="nm">Sam/nátt</div></div>
+<div class="slot brk"><span class="tm">12:40–13:10</span> Frímínútur</div>
+<div class="slot" style="background:#F7CBB0;color:#6B3A18"><div class="tm">13:10–14:10</div><div class="nm">Sam/nátt</div></div>
+</section>
+<section class="day"><h4>Miðvikudagur</h4>
+<div class="slot" style="background:#9AD6CD;color:#125045"><div class="tm">08:20–09:00</div><div class="nm">Enska</div></div>
+<div class="slot brk"><span class="tm">09:00–09:40</span> Nesti</div>
+<div class="slot" style="background:#CFC4E8;color:#3A2A63"><div class="tm">09:40–10:20</div><div class="nm">Tölvur</div></div>
+<div class="slot brk"><span class="tm">10:20–10:40</span> Frímínútur</div>
+<div class="slot" style="background:#A8D8F0;color:#0E3E5B"><div class="tm">10:40–11:25</div><div class="nm">Íslenska</div></div>
+<div class="slot" style="background:#A9DFBF;color:#14522F"><div class="tm">11:25–12:00</div><div class="nm">Stærðfræði</div></div>
+<div class="slot brk"><span class="tm">12:00–12:40</span> Matur</div>
+<div class="slot" style="background:#F7CBB0;color:#6B3A18"><div class="tm">12:40–13:10</div><div class="nm">Sam/nátt</div></div>
+<div class="slot" style="background:#F3B0A8;color:#6E2119"><div class="tm">13:10–14:30</div><div class="nm">Danska</div></div>
+<div class="slot" style="background:#14666B;color:#FFFFFF"><div class="tm">19:30–20:30</div><div class="nm">Handbolti</div><div class="sub">Salur B</div></div>
+</section>
+<section class="day"><h4>Fimmtudagur</h4>
+<div class="slot" style="background:#F7CBB0;color:#6B3A18"><div class="tm">08:20–09:00</div><div class="nm">Sam/nátt</div></div>
+<div class="slot brk"><span class="tm">09:00–09:40</span> Nesti</div>
+<div class="slot" style="background:#F3B0A8;color:#6E2119"><div class="tm">09:40–10:20</div><div class="nm">Danska</div></div>
+<div class="slot brk"><span class="tm">10:20–10:40</span> Frímínútur</div>
+<div class="slot" style="background:#F8CC8A;color:#6B4406"><div class="tm">10:40–12:00</div><div class="nm">Smiðjur</div></div>
+<div class="slot brk"><span class="tm">12:00–12:15</span> Matur</div>
+<div class="slot" style="background:#A8D8F0;color:#0E3E5B"><div class="tm">12:15–12:40</div><div class="nm">Íslenska</div></div>
+<div class="slot brk"><span class="tm">12:40–13:10</span> Frímínútur</div>
+<div class="slot" style="background:#A8D8F0;color:#0E3E5B"><div class="tm">13:10–14:05</div><div class="nm">Íslenska</div></div>
+<div class="slot" style="background:#14666B;color:#FFFFFF"><div class="tm">16:30–17:30</div><div class="nm">Handbolti</div><div class="sub">Salur B</div></div>
+</section>
+<section class="day"><h4>Föstudagur</h4>
+<div class="slot" style="background:#F7CBB0;color:#6B3A18"><div class="tm">08:20–09:00</div><div class="nm">Sam/nátt</div></div>
+<div class="slot brk"><span class="tm">09:00–09:25</span> Nesti</div>
+<div class="slot" style="background:#F2B8C6;color:#6E1F35"><div class="tm">09:30–10:10</div><div class="nm">Íþróttir</div></div>
+<div class="slot brk"><span class="tm">10:20–10:40</span> Frímínútur</div>
+<div class="slot" style="background:#9AD6CD;color:#125045"><div class="tm">10:40–11:45</div><div class="nm">Enska</div></div>
+<div class="slot" style="background:#A9DFBF;color:#14522F"><div class="tm">11:45–12:25</div><div class="nm">Stærðfræði</div></div>
+<div class="slot brk"><span class="tm">12:25–13:10</span> Matur</div>
+<div class="slot" style="background:#E8DCA8;color:#57491A"><div class="tm">13:10–13:55</div><div class="nm">Lífsleikni</div></div>
+</section>
+<section class="day"><h4>Laugardagur</h4>
+<div class="slot" style="background:#14666B;color:#FFFFFF"><div class="tm">14:00–15:00</div><div class="nm">Handbolti</div><div class="sub">Salur A og B</div></div>
+</section>
+</div>
+</div>
+
+<footer>
+  <p><strong>Tvennt óstaðfest.</strong> Laugardagsæfing Unnar í fótbolta — tíminn var ólæsilegur á æfingatöflunni. Og SLÍ3101-2 á mánudögum: kóðinn segir ekki hvaða grein það er.</p>
+  <p>Stundatafla Sigrúnar gefur upp fasta tímaramma en kennarar hafa skrifað raunverulega tíma inn í suma reiti. Skrifuðu tímarnir eru notaðir hér þar sem þeir voru gefnir, rammarnir annars — einstaka mörk geta því skeikað um nokkrar mínútur. Endatímarnir eru öruggir.</p>
+  <p>Tekið saman úr útprentuðum stundatöflum og æfingatöflum félagsins.</p>
+</footer>
+
+</div>
+</body>
+</html>
