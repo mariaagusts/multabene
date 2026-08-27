@@ -504,7 +504,7 @@ function buildMonths(){
         btn.innerHTML = `<span class="num">${d}</span><span class="count">${special.icon}</span>`;
       } else {
         let extra = '';
-        if (isMexico(key)) extra += '<span class="flag">Mexíkó</span>';
+        if (isMexico(key)) extra += '<span class="flag">Mexíkó-Maja</span>';
         if (bday){ extra += `<span class="bday">🎂 ${bday.name} · ${bday.age}</span>`; btn.title = `Afmæli ${bday.name} — ${bday.age} ára`; }
         btn.innerHTML = `<span class="num">${d}</span><span class="count"></span>` + extra;
       }
