@@ -181,13 +181,12 @@
   .scale span{font-size:11px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;}
 
   /* ---------- niðurstöður ---------- */
-  .slider-row{display:flex;align-items:center;gap:12px;margin:0 0 4px;}
-  .slider-row label{font-size:14px;color:var(--dim);}
-  input[type=range]{flex:1;accent-color:rgb(var(--aurora));min-width:100px;}
-  .bignum{
+  .resgroup{margin:0 0 18px;}
+  .resgroup:last-of-type{margin-bottom:0;}
+  .reshead{
     font-family:"Bricolage Grotesque",Georgia,serif;
-    font-size:20px;font-weight:700;color:var(--moon);
-    font-variant-numeric:tabular-nums;
+    font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+    color:var(--dim);margin:0 0 6px;
   }
   ul.results{list-style:none;margin:14px 0 0;padding:0;}
   ul.results li{
@@ -256,14 +255,20 @@
 
   <section class="card">
     <h2>Dagar sem henta</h2>
-    <div class="slider-row">
-      <label for="thr">Að minnsta kosti</label>
-      <input type="range" id="thr" min="2" max="8" value="8">
-      <span class="bignum" id="thrVal">8</span>
+    <p class="empty" id="waiting" hidden></p>
+
+    <div class="resgroup">
+      <h3 class="reshead">Allar átta</h3>
+      <ul class="results" id="results8"></ul>
+      <p class="empty" id="empty8" hidden></p>
     </div>
-    <p class="hint" id="thrLabel" style="margin:0">allar átta</p>
-    <ul class="results" id="results"></ul>
-    <p class="empty" id="empty" hidden></p>
+
+    <div class="resgroup">
+      <h3 class="reshead">Sex af átta eða fleiri</h3>
+      <ul class="results" id="results6"></ul>
+      <p class="empty" id="empty6" hidden></p>
+    </div>
+
     <ul class="notes" id="notes"></ul>
     <div class="actions">
       <button class="btn" id="copyBtn">Afrita samantekt</button>
@@ -329,16 +334,6 @@ const DOW_LONG  = ['mánudagur','þriðjudagur','miðvikudagur','fimmtudagur','f
 /* Röðin skiptir máli: textalínurnar hanga á númerinu, ekki nafninu. */
 const GUIDES = ['Unnur','Stefanía','Sunna','Maja','Rakel','Gyða','Sigga','Hulda'];
 const UNNUR=0, STEFANIA=1, SUNNA=2, MAJA=3, RAKEL=4, GYDA=5, SIGGA=6, HULDA=7;
-
-const THR_LABEL = {
-  8:'allar átta',
-  7:'næstum allar',
-  6:'raunsætt',
-  5:'málamiðlun',
-  4:'helmingur, en það telst hittingur',
-  3:'þetta er orðið kaffi',
-  2:'þetta er orðið símtal'
-};
 
 let people = {};          // id -> {name, dates:[], updated}
 let me = null;
@@ -608,8 +603,7 @@ function render(){
   checkNotes();
 }
 
-function matches(){
-  const thr = +document.getElementById('thr').value;
+function matchesAtLeast(thr){
   return allDates()
     .filter(o => !SPECIAL[o.key])
     .map(o => ({...o, n: countOn(o.key)}))
@@ -617,28 +611,16 @@ function matches(){
     .sort((a,b) => b.n - a.n || a.key.localeCompare(b.key));
 }
 
-function renderResults(){
-  const list  = document.getElementById('results');
-  const empty = document.getElementById('empty');
+function renderGroup(listId, emptyId, rows, emptyMsg){
+  const list  = document.getElementById(listId);
+  const empty = document.getElementById(emptyId);
   list.innerHTML = '';
-
-  const registered = Object.keys(people).filter(i => people[i].dates.length).length;
-  if (registered < N){
-    empty.hidden = false;
-    empty.textContent = registered === 0
-      ? 'Engin hefur merkt við ennþá. Sú fyrsta ræður mestu.'
-      : `${registered} af ${N} búnar að skrá sig — niðurstöður birtast þegar allar átta hafa merkt við.`;
-    return;
-  }
-
-  const rows = matches();
   if (!rows.length){
     empty.hidden = false;
-    empty.textContent = 'Þetta gerist í hverri einustu ferð. Það tekur alltaf tíu mínútur.';
+    empty.textContent = emptyMsg;
     return;
   }
   empty.hidden = true;
-
   rows.slice(0, 25).forEach(o => {
     const on = index.get(o.key) || [];
     const missing = [];
@@ -652,6 +634,30 @@ function renderResults(){
       ${note ? `<span class="missing">${note}</span>` : ''}</span>`;
     list.appendChild(li);
   });
+}
+
+function renderResults(){
+  const waiting = document.getElementById('waiting');
+
+  const registered = Object.keys(people).filter(i => people[i].dates.length).length;
+  if (registered < N){
+    waiting.hidden = false;
+    waiting.textContent = registered === 0
+      ? 'Engin hefur merkt við ennþá. Sú fyrsta ræður mestu.'
+      : `${registered} af ${N} búnar að skrá sig — niðurstöður birtast þegar allar átta hafa merkt við.`;
+    document.getElementById('results8').innerHTML = '';
+    document.getElementById('results6').innerHTML = '';
+    document.getElementById('empty8').hidden = true;
+    document.getElementById('empty6').hidden = true;
+    return;
+  }
+  waiting.hidden = true;
+
+  const all8 = matchesAtLeast(8);
+  const six  = matchesAtLeast(6).filter(o => o.n < 8);   // 8/8 dagar eiga heima í hinum listanum, ekki tvítekið hér
+
+  renderGroup('results8', 'empty8', all8, 'Þetta gerist í hverri einustu ferð. Það tekur alltaf tíu mínútur.');
+  renderGroup('results6', 'empty6', six,  'Ekki einu sinni sex af átta eiga sameiginlegan lausan dag.');
 }
 
 /* ------------------------------------------------------------------
@@ -783,12 +789,6 @@ document.addEventListener('click', e => {
   toggle(cell.dataset.date);
 });
 
-document.getElementById('thr').addEventListener('input', e => {
-  document.getElementById('thrVal').textContent = e.target.value;
-  document.getElementById('thrLabel').textContent = THR_LABEL[e.target.value] || '';
-  renderResults();
-});
-
 document.getElementById('toggleNames').addEventListener('click', e => {
   const ed = document.getElementById('names');
   ed.hidden = !ed.hidden;
@@ -806,11 +806,14 @@ document.getElementById('clearBtn').addEventListener('click', () => {
 document.getElementById('refreshBtn').addEventListener('click', () => sync(true));
 
 document.getElementById('copyBtn').addEventListener('click', async () => {
-  const rows = matches();
-  const thr  = document.getElementById('thr').value;
+  const all8 = matchesAtLeast(8);
+  const six  = matchesAtLeast(6).filter(o => o.n < 8);
   const text = ['Lausir dagar — september til desember 2026',
-    `Dagar með ${thr}+ lausum:`,
-    ...(rows.length ? rows.slice(0,25).map(o => `• ${longDate(o.y,o.m,o.d)} — ${o.n}/${N}`) : ['• engir'])
+    'Allar átta:',
+    ...(all8.length ? all8.slice(0,25).map(o => `• ${longDate(o.y,o.m,o.d)}`) : ['• engir']),
+    '',
+    'Sex af átta eða fleiri:',
+    ...(six.length ? six.slice(0,25).map(o => `• ${longDate(o.y,o.m,o.d)} — ${o.n}/${N}`) : ['• engir'])
   ].join('\n');
   try { await navigator.clipboard.writeText(text); setStatus('Samantekt afrituð ✓'); }
   catch(e){ setStatus('Afritun tókst ekki — taktu frekar skjáskot.'); }
