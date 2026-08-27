@@ -302,12 +302,12 @@ const SPECIAL = {
 
 /* Afmælisdagar — bara merking, alveg hægt að haka við þá (nema 14. nóv, sjá SPECIAL). */
 const BIRTHDAYS = {
-  '2026-09-26': 'Gyða',
-  '2026-10-28': 'Stefanía',
-  '2026-11-11': 'Sunna',
-  '2026-11-16': 'Unnur',
-  '2026-11-27': 'Sigga',
-  '2026-12-01': 'Maja'
+  '2026-09-26': { name:'Gyða Sól', age:53 },
+  '2026-10-28': { name:'Stefanía', age:40 },
+  '2026-11-11': { name:'Sunna Sól', age:40 },
+  '2026-11-16': { name:'Unnur',    age:40 },
+  '2026-11-27': { name:'Sigga',    age:49 },
+  '2026-12-01': { name:'Maja',     age:44 }
 };
 /* Mexíkóferðin — bara merking, ekki lokað fyrir að skrá sig */
 const MEXICO_START = '2026-12-16';
@@ -505,7 +505,7 @@ function buildMonths(){
       } else {
         let extra = '';
         if (isMexico(key)) extra += '<span class="flag">Mexíkó</span>';
-        if (bday){ extra += `<span class="bday">🎂 ${bday}</span>`; btn.title = `Afmæli ${bday}`; }
+        if (bday){ extra += `<span class="bday">🎂 ${bday.name} · ${bday.age}</span>`; btn.title = `Afmæli ${bday.name} — ${bday.age} ára`; }
         btn.innerHTML = `<span class="num">${d}</span><span class="count"></span>` + extra;
       }
       grid.appendChild(btn);
