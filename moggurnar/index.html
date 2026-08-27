@@ -164,6 +164,10 @@
     position:absolute;bottom:4px;left:5px;font-size:10px;line-height:1;
     color:var(--moon);white-space:nowrap;
   }
+  .day .note{
+    position:absolute;bottom:4px;right:5px;font-size:9.5px;line-height:1;
+    color:var(--dim);white-space:nowrap;
+  }
 
   /* ---------- kvarði ---------- */
   .scale{display:flex;align-items:center;gap:10px;margin:0 0 22px;padding:0 2px;}
@@ -313,6 +317,11 @@ const BIRTHDAYS = {
 const MEXICO_START = '2026-12-16';
 const MEXICO_END   = '2026-12-31';
 const isMexico = key => key >= MEXICO_START && key <= MEXICO_END;
+
+/* Aðrir dagsetningarpunktar — bara merking, ekki lokað fyrir að skrá sig */
+const NOTES = {
+  '2026-09-24': { short:'Lokaslútt 4.fl', full:'Gothia lokaslútt hjá 4. fl. kvk' }
+};
 const DOW_SHORT = ['Mán','Þri','Mið','Fim','Fös','Lau','Sun'];
 const DOW_LONG  = ['mánudagur','þriðjudagur','miðvikudagur','fimmtudagur','föstudagur','laugardagur','sunnudagur'];
 
@@ -495,6 +504,7 @@ function buildMonths(){
       const key = iso(y,m,d);
       const special = SPECIAL[key];
       const bday = BIRTHDAYS[key];
+      const note = NOTES[key];
       const btn = document.createElement('button');
       btn.className = 'day' + (wd > 4 ? ' weekend' : '') + (special ? ' locked' : '') + (isMexico(key) ? ' mexico' : '') + (bday ? ' birthday' : '');
       btn.dataset.date = key;
@@ -506,6 +516,7 @@ function buildMonths(){
         let extra = '';
         if (isMexico(key)) extra += '<span class="flag">Mexíkó-Maja</span>';
         if (bday){ extra += `<span class="bday">🎂 ${bday.name} · ${bday.age}</span>`; btn.title = `Afmæli ${bday.name} — ${bday.age} ára`; }
+        if (note){ extra += `<span class="note">${note.short}</span>`; btn.title = note.full; }
         btn.innerHTML = `<span class="num">${d}</span><span class="count"></span>` + extra;
       }
       grid.appendChild(btn);
