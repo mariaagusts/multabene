@@ -159,6 +159,11 @@
   .day.mexico .flag{
     position:absolute;bottom:4px;right:5px;font-size:11px;line-height:1;
   }
+  .day.birthday{border-color:var(--moon);}
+  .day .bday{
+    position:absolute;bottom:4px;left:5px;font-size:10px;line-height:1;
+    color:var(--moon);white-space:nowrap;
+  }
 
   /* ---------- kvarði ---------- */
   .scale{display:flex;align-items:center;gap:10px;margin:0 0 22px;padding:0 2px;}
@@ -292,7 +297,17 @@ const MONTH_NAMES = ['janúar','febrúar','mars','apríl','maí','júní','júl�
 /* Dagar sem eru ekki til umræðu — hvorki hægt að merkja né þeir taldir með. */
 const SPECIAL = {
   '2026-10-31': { icon:'🎃', label:'31. október er hrekkjavaka — ekki hægt að merkja þann dag.' },
-  '2026-11-14': { icon:'🎂', label:'14. nóvember er fertugsafmæli Unnar #1 — allar mæta, fyrirfram skráð.' }
+  '2026-11-14': { icon:'🎂', label:'14. nóvember er afmælisveisla Unnar #1 (40 ára) — allar mæta, fyrirfram skráð. Afmælisdagurinn sjálfur er 16. nóvember.' }
+};
+
+/* Afmælisdagar — bara merking, alveg hægt að haka við þá (nema 14. nóv, sjá SPECIAL). */
+const BIRTHDAYS = {
+  '2026-09-26': 'Gyða',
+  '2026-10-28': 'Stefanía',
+  '2026-11-11': 'Sunna',
+  '2026-11-16': 'Unnur',
+  '2026-11-27': 'Sigga',
+  '2026-12-01': 'Maja'
 };
 /* Mexíkóferðin — bara merking, ekki lokað fyrir að skrá sig */
 const MEXICO_START = '2026-12-16';
@@ -479,15 +494,19 @@ function buildMonths(){
       const wd = dowIndex(new Date(y,m,d));
       const key = iso(y,m,d);
       const special = SPECIAL[key];
+      const bday = BIRTHDAYS[key];
       const btn = document.createElement('button');
-      btn.className = 'day' + (wd > 4 ? ' weekend' : '') + (special ? ' locked' : '') + (isMexico(key) ? ' mexico' : '');
+      btn.className = 'day' + (wd > 4 ? ' weekend' : '') + (special ? ' locked' : '') + (isMexico(key) ? ' mexico' : '') + (bday ? ' birthday' : '');
       btn.dataset.date = key;
       btn.type = 'button';
       if (special){
         btn.title = special.label;
         btn.innerHTML = `<span class="num">${d}</span><span class="count">${special.icon}</span>`;
       } else {
-        btn.innerHTML = `<span class="num">${d}</span><span class="count"></span>` + (isMexico(key) ? '<span class="flag">Mexíkó</span>' : '');
+        let extra = '';
+        if (isMexico(key)) extra += '<span class="flag">Mexíkó</span>';
+        if (bday){ extra += `<span class="bday">🎂 ${bday}</span>`; btn.title = `Afmæli ${bday}`; }
+        btn.innerHTML = `<span class="num">${d}</span><span class="count"></span>` + extra;
       }
       grid.appendChild(btn);
     }
