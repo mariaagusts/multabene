@@ -150,6 +150,15 @@
     width:6px;height:6px;border-radius:50%;background:var(--moon);
   }
   .day:focus-visible{outline:2px solid var(--moon);outline-offset:2px;}
+  .day.locked{
+    background-image:none;box-shadow:none;cursor:not-allowed;
+    border-style:dashed;border-color:var(--line);opacity:.72;
+  }
+  .day.locked .num{color:var(--dim);}
+  .day.locked .count{font-size:15px;color:var(--frost);visibility:visible;}
+  .day.mexico .flag{
+    position:absolute;bottom:4px;right:5px;font-size:11px;line-height:1;
+  }
 
   /* ---------- kvarði ---------- */
   .scale{display:flex;align-items:center;gap:10px;margin:0 0 22px;padding:0 2px;}
@@ -277,8 +286,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbyZAUJxJZA3MKGt904yAebi
 const KEY   = 'lausir-dagar-2026';
 const MEKEY = 'lausir-dagar-2026-me';
 const N = 8;
-const MONTHS = [{y:2026,m:8},{y:2026,m:9}];
+const MONTHS = [{y:2026,m:8},{y:2026,m:9},{y:2026,m:10},{y:2026,m:11}];
 const MONTH_NAMES = ['janúar','febrúar','mars','apríl','maí','júní','júlí','ágúst','september','október','nóvember','desember'];
+
+/* Dagar sem eru ekki til umræðu — hvorki hægt að merkja né þeir taldir með. */
+const SPECIAL = {
+  '2026-10-31': { icon:'🎃', label:'31. október er hrekkjavaka — ekki hægt að merkja þann dag.' },
+  '2026-11-14': { icon:'🎂', label:'14. nóvember er fertugsafmæli Unnar #1 — allar mæta, fyrirfram skráð.' }
+};
+/* Mexíkóferðin — bara merking, ekki lokað fyrir að skrá sig */
+const MEXICO_START = '2026-12-16';
+const MEXICO_END   = '2026-12-31';
+const isMexico = key => key >= MEXICO_START && key <= MEXICO_END;
 const DOW_SHORT = ['Mán','Þri','Mið','Fim','Fös','Lau','Sun'];
 const DOW_LONG  = ['mánudagur','þriðjudagur','miðvikudagur','fimmtudagur','föstudagur','laugardagur','sunnudagur'];
 
@@ -458,11 +477,18 @@ function buildMonths(){
     const days = new Date(y, m+1, 0).getDate();
     for (let d = 1; d <= days; d++){
       const wd = dowIndex(new Date(y,m,d));
+      const key = iso(y,m,d);
+      const special = SPECIAL[key];
       const btn = document.createElement('button');
-      btn.className = 'day' + (wd > 4 ? ' weekend' : '');
-      btn.dataset.date = iso(y,m,d);
+      btn.className = 'day' + (wd > 4 ? ' weekend' : '') + (special ? ' locked' : '') + (isMexico(key) ? ' mexico' : '');
+      btn.dataset.date = key;
       btn.type = 'button';
-      btn.innerHTML = `<span class="num">${d}</span><span class="count"></span>`;
+      if (special){
+        btn.title = special.label;
+        btn.innerHTML = `<span class="num">${d}</span><span class="count">${special.icon}</span>`;
+      } else {
+        btn.innerHTML = `<span class="num">${d}</span><span class="count"></span>` + (isMexico(key) ? '<span class="flag">🇲🇽</span>' : '');
+      }
       grid.appendChild(btn);
     }
     sec.appendChild(grid);
@@ -517,20 +543,28 @@ function render(){
 
   document.querySelectorAll('.day').forEach(btn => {
     const key = btn.dataset.date;
+    const [y,m,d] = key.split('-').map(Number);
+    if (SPECIAL[key]){
+      btn.setAttribute('aria-label', `${longDate(y,m-1,d)} — ${SPECIAL[key].label}`);
+      return;
+    }
     const list = index.get(key) || [];
     btn.style.setProperty('--n', list.length);
     btn.classList.toggle('zero', list.length === 0);
     btn.classList.toggle('full', list.length === N);
     btn.classList.toggle('mine', me !== null && list.includes(me));
     btn.querySelector('.count').textContent = list.length;
-    const [y,m,d] = key.split('-').map(Number);
     btn.setAttribute('aria-label', `${longDate(y,m-1,d)} — ${list.length} af ${N} lausar`);
   });
 
   MONTHS.forEach(({y,m}) => {
     const days = new Date(y, m+1, 0).getDate();
     let full = 0;
-    for (let d = 1; d <= days; d++) if (countOn(iso(y,m,d)) === N) full++;
+    for (let d = 1; d <= days; d++){
+      const key = iso(y,m,d);
+      if (SPECIAL[key]) continue;
+      if (countOn(key) === N) full++;
+    }
     const note = document.querySelector(`[data-note="${m}"]`);
     note.textContent =
       full === 0 ? 'enginn dagur með öllum átta' :
@@ -546,6 +580,7 @@ function render(){
 function matches(){
   const thr = +document.getElementById('thr').value;
   return allDates()
+    .filter(o => !SPECIAL[o.key])
     .map(o => ({...o, n: countOn(o.key)}))
     .filter(o => o.n >= thr)
     .sort((a,b) => b.n - a.n || a.key.localeCompare(b.key));
@@ -661,6 +696,7 @@ function queueSave(){
 }
 
 function toggle(key, force){
+  if (SPECIAL[key]){ setStatus(SPECIAL[key].label); return null; }
   if (me === null){ setStatus('Veldu fyrst nafnið þitt hér að ofan.'); return null; }
   const ds  = people[me].dates;
   const at  = ds.indexOf(key);
@@ -675,24 +711,33 @@ function toggle(key, force){
   return want;
 }
 
-/* Mús: strjúka yfir marga daga. Snerting og lyklaborð: venjulegur smellur. */
-let dragValue = null, skipClick = false;
+/* Mús: strjúka yfir marga daga — en aðeins eftir að músin hefur greinilega
+   hreyfst, svo venjulegur smellur mála aldrei óvart yfir aðra daga.
+   Snerting og lyklaborð: venjulegur smellur. */
+let dragValue = null, skipClick = false, dragArmed = false, dragX = 0, dragY = 0;
+const DRAG_THRESHOLD = 10; // px
 
 document.addEventListener('pointerdown', e => {
   if (e.pointerType !== 'mouse') return;
   const cell = e.target.closest('.day');
   if (!cell) return;
   dragValue = toggle(cell.dataset.date);
+  dragArmed = false;
+  dragX = e.clientX; dragY = e.clientY;
   skipClick = true;
 });
 document.addEventListener('pointermove', e => {
   if (dragValue === null || e.pointerType !== 'mouse' || !e.buttons) return;
+  if (!dragArmed){
+    if (Math.hypot(e.clientX - dragX, e.clientY - dragY) < DRAG_THRESHOLD) return;
+    dragArmed = true;
+  }
   const el = document.elementFromPoint(e.clientX, e.clientY);
   const cell = el && el.closest ? el.closest('.day') : null;
   if (cell) toggle(cell.dataset.date, dragValue);
 });
-document.addEventListener('pointerup',     () => { dragValue = null; });
-document.addEventListener('pointercancel', () => { dragValue = null; });
+document.addEventListener('pointerup',     () => { dragValue = null; dragArmed = false; });
+document.addEventListener('pointercancel', () => { dragValue = null; dragArmed = false; });
 
 document.addEventListener('click', e => {
   const cell = e.target.closest('.day');
