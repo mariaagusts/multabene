@@ -235,14 +235,6 @@
     <div class="names" id="names" hidden></div>
   </section>
 
-  <div class="scale">
-    <span>Engin laus</span>
-    <div class="scale-bars" id="scaleBars"></div>
-    <span>Allar 8</span>
-  </div>
-
-  <div id="months"></div>
-
   <section class="card">
     <h2>Dagar sem henta</h2>
     <div class="slider-row">
@@ -260,6 +252,15 @@
       <button class="btn" id="refreshBtn">Sækja uppfærslur</button>
     </div>
   </section>
+
+  <div class="scale">
+    <span>Engin laus</span>
+    <div class="scale-bars" id="scaleBars"></div>
+    <span>Allar 8</span>
+  </div>
+
+  <div id="months"></div>
+
 
   <p class="status" id="status">Hleð…</p>
   <footer>Ýttu á dag til að skipta um stöðu. Á tölvu má strjúka yfir marga daga í einu.</footer>
@@ -282,8 +283,8 @@ const DOW_SHORT = ['Mán','Þri','Mið','Fim','Fös','Lau','Sun'];
 const DOW_LONG  = ['mánudagur','þriðjudagur','miðvikudagur','fimmtudagur','föstudagur','laugardagur','sunnudagur'];
 
 /* Röðin skiptir máli: textalínurnar hanga á númerinu, ekki nafninu. */
-const GUIDES = ['Unnur','Stefanía','Súsanna','Maja','Rakel','Gyða','Sigga','Hulda'];
-const UNNUR=0, STEFANIA=1, SUSANNA=2, MAJA=3, RAKEL=4, GYDA=5, SIGGA=6, HULDA=7;
+const GUIDES = ['Unnur','Stefanía','Sunna','Maja','Rakel','Gyða','Sigga','Hulda'];
+const UNNUR=0, STEFANIA=1, SUNNA=2, MAJA=3, RAKEL=4, GYDA=5, SIGGA=6, HULDA=7;
 
 const THR_LABEL = {
   8:'allar átta',
@@ -476,7 +477,7 @@ function buildPeople(){
     const b = document.createElement('button');
     b.className = 'person';
     b.type = 'button';
-    b.textContent = people[i].name;
+    b.textContent = `${people[i].name} #${i+1}`;
     b.setAttribute('aria-pressed', String(me === i));
     b.onclick = () => {
       me = (me === i ? null : i);
@@ -635,7 +636,7 @@ function checkNotes(ev){
    Aðgerðir
 ------------------------------------------------------------------ */
 function setStatus(t){
-  document.getElementById('status').textContent = (me === SUSANNA) ? t.toUpperCase() : t;
+  document.getElementById('status').textContent = (me === SUNNA) ? t.toUpperCase() : t;
 }
 
 function queueSave(){
