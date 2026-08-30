@@ -215,6 +215,25 @@ input.required:placeholder-shown{border-color:color-mix(in srgb,var(--accent) 50
   font-size:11px; font-weight:600; color:var(--ink-2); white-space:nowrap;
 }
 .meter-scale{display:flex; justify-content:space-between; color:var(--muted); font-size:11px; font-variant-numeric:tabular-nums}
+
+/* --- Verðtryggt/óverðtryggt hlutfall --- */
+.mixbar{display:flex; height:16px; border-radius:8px; overflow:hidden; margin:10px 0 10px}
+.mixbar div{height:100%}
+.mix-legend{display:flex; gap:20px; flex-wrap:wrap; font-size:13.5px; color:var(--ink-2)}
+.mix-legend b{color:var(--ink); font-variant-numeric:tabular-nums}
+.mix-legend .sw{display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:6px; vertical-align:middle}
+
+/* --- Súla: kaupverð / fasteignamat / lán --- */
+.ltvbar-block{display:flex; gap:22px; align-items:flex-start; margin-top:16px; flex-wrap:wrap}
+.ltvbar-col{position:relative; width:64px; flex:none}
+.ltvbar{position:relative; width:64px; height:220px; background:var(--surface-2);
+  border:1px solid var(--hairline); border-radius:8px; overflow:hidden}
+.ltvbar-fill{position:absolute; left:0; right:0; bottom:0}
+.ltvbar-mark{position:absolute; left:-4px; right:-4px; height:0; border-top:2px dashed var(--ink); pointer-events:none}
+.ltvbar-legend{flex:1; min-width:200px; display:grid; gap:7px; font-size:13.5px; color:var(--ink-2); align-content:start}
+.ltvbar-legend b{color:var(--ink); font-variant-numeric:tabular-nums}
+.ltvbar-legend .sw{display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:7px; vertical-align:middle}
+.ltvbar-legend .dash{display:inline-block; width:14px; height:0; border-top:2px dashed var(--ink); margin-right:7px; vertical-align:middle}
 .sbi-detail{margin-top:14px; font-size:13.5px; color:var(--ink-2); max-width:75ch}
 .sbi-detail b{color:var(--ink); font-variant-numeric:tabular-nums}
 .infobox{
@@ -640,6 +659,7 @@ function scenarioShell(S, title, removable){
       <div class="card sbi-card" data-r="sbi"></div>
       <div class="card sbi-card" data-r="ltvcard" hidden style="margin-top:14px"></div>
       <div class="tiles" data-r="tiles" style="margin-top:14px"></div>
+      <div class="card" data-r="mix" hidden style="margin-top:14px; padding:18px 22px"></div>
       <p class="sec-sub" data-r="costnote" style="margin-top:12px; margin-bottom:0; font-size:13px"></p>
     </section>
     <section>
@@ -925,7 +945,7 @@ function recalc(S){
   }));
   S.baseline=valid.map(l=>(!l.extraMonthly&&!l.lumpAmount)?null
     :simulateLoan({...l,extraMonthly:0,lumpAmount:0,lumpMonth:0},S.inflation,S.horizon));
-  renderLoanStats(S); renderRentSummary(S); renderFixedSummary(S); renderTiles(S); renderSbi(S); renderLtv(S); renderChart(S); renderTable(S);
+  renderLoanStats(S); renderRentSummary(S); renderFixedSummary(S); renderTiles(S); renderMix(S); renderSbi(S); renderLtv(S); renderChart(S); renderTable(S);
   renderCompare(); saveState();
 }
 function renderLoanStats(S){
@@ -1000,6 +1020,25 @@ function renderTiles(S){
     ?`Á pappírunum verður samtalan hærri — greitt alls um <b>${kr(t.paid)}</b>, þar af <b>${kr(t.cost)}</b> í vexti og verðbætur. En sú tala safnast yfir ${Math.round(t.payoff/12)} ár og er í krónum framtíðarinnar, sem verða minna virði en krónur dagsins í dag — launin hækka alla jafna í takt við verðlagið á sama tíma. Þess vegna er raunkostnaðurinn hér að ofan réttari mælikvarði á það sem lánin kosta þig í alvöru.`
     :'';
 }
+function renderMix(S){
+  const el=S.$('mix'); if(!el) return;
+  const verd=S.results.reduce((a,r)=>a+(r.loan.indexed?r.loan.principal:0),0);
+  const overd=S.results.reduce((a,r)=>a+(!r.loan.indexed?r.loan.principal:0),0);
+  const total=verd+overd;
+  if(!total){el.hidden=true;return;}
+  el.hidden=false;
+  const vp=verd/total*100, op=overd/total*100;
+  el.innerHTML=`
+    <div class="eyebrow">Verðtryggt vs. óverðtryggt</div>
+    <div class="mixbar">
+      <div style="width:${op}%;background:var(--s1)" title="Óverðtryggt"></div>
+      <div style="width:${vp}%;background:var(--s3)" title="Verðtryggt"></div>
+    </div>
+    <div class="mix-legend">
+      <div><span class="sw" style="background:var(--s1)"></span>Óverðtryggt — <b>${kr(overd)}</b> (${pct(op)})</div>
+      <div><span class="sw" style="background:var(--s3)"></span>Verðtryggt — <b>${kr(verd)}</b> (${pct(vp)})</div>
+    </div>`;
+}
 function renderSbi(S){
   const el=S.$('sbi');
   const income=dstiIncome(S);
@@ -1053,19 +1092,48 @@ function renderSbi(S){
 /* ============ Veðhlutfall ============ */
 const principalOn=(S,cat)=>S.results.reduce((a,r)=>a+(catOf(r.loan)===cat?r.loan.principal:0),0);
 const fasteignPrincipal=S=>principalOn(S,'fasteign');
+function ltvBarHtml(S,b){
+  const kaupverd=b.cat==='fasteign'?S.priceBuy:S.priceRentalMarket;
+  const fasteignamat=b.cat==='fasteign'?S.priceAssess:S.priceRentalAssess;
+  if(!(kaupverd>0&&fasteignamat>0)) return '';
+  const verd=S.results.reduce((a,r)=>a+((catOf(r.loan)===b.cat&&r.loan.indexed)?r.loan.principal:0),0);
+  const overd=S.results.reduce((a,r)=>a+((catOf(r.loan)===b.cat&&!r.loan.indexed)?r.loan.principal:0),0);
+  const scaleMax=kaupverd;
+  const overdPct=Math.min(100,overd/scaleMax*100);
+  const verdPct=Math.min(100-overdPct,verd/scaleMax*100);
+  const assessPct=Math.min(118,fasteignamat/scaleMax*100);
+  const equity=kaupverd-overd-verd;
+  return `
+    <div class="ltvbar-block">
+      <div class="ltvbar-col">
+        <div class="ltvbar">
+          <div class="ltvbar-fill" style="height:${overdPct}%;background:var(--s1)" title="Óverðtryggt"></div>
+          <div class="ltvbar-fill" style="height:${verdPct}%;bottom:${overdPct}%;background:var(--s3)" title="Verðtryggt"></div>
+        </div>
+        <div class="ltvbar-mark" style="bottom:${assessPct}%"></div>
+      </div>
+      <div class="ltvbar-legend">
+        <div><b>Kaupverð — ${kr(kaupverd)}</b><br><span style="font-size:12px;color:var(--muted)">efsta lína súlunnar</span></div>
+        <div><span class="sw" style="background:var(--s3)"></span>Verðtryggt — <b>${kr(verd)}</b></div>
+        <div><span class="sw" style="background:var(--s1)"></span>Óverðtryggt — <b>${kr(overd)}</b></div>
+        <div><span class="dash"></span>Fasteignamat — <b>${kr(fasteignamat)}</b></div>
+        ${equity>0?`<div style="color:var(--muted)">Eigið fé (bilið efst á súlunni) — ${kr(equity)}</div>`:''}
+      </div>
+    </div>`;
+}
 function renderLtv(S){
   const el=S.$('ltvcard'); if(!el) return;
   const Pm=principalOn(S,'fasteign'), Pr=principalOn(S,'leigueign');
   const mainVal=S.priceBuy||S.priceAssess;
   const blocks=[];
   if(S.hasLtv&&mainVal>0&&Pm>0) blocks.push({
-    name:'Aðalhúsnæðið', P:Pm, val:mainVal, cap:S.firstBuyer?90:80,
+    cat:'fasteign', name:'Aðalhúsnæðið', P:Pm, val:mainVal, cap:S.firstBuyer?90:80,
     valLabel:S.priceBuy?'kaupverði':'fasteignamati',
     extra:(S.priceBuy>0&&S.priceAssess>0)?` — miðað við fasteignamatið (${kr(S.priceAssess)}) er hlutfallið <b>${pct(Pm/S.priceAssess*100)}</b>`:'',
   });
   const rentVal=S.priceRentalMarket||S.priceRentalAssess;
   if(S.hasLtv&&rentVal>0&&Pr>0) blocks.push({
-    name:'Útleigueignin', P:Pr, val:rentVal, cap:80,
+    cat:'leigueign', name:'Útleigueignin', P:Pr, val:rentVal, cap:80,
     valLabel:S.priceRentalMarket?'markaðsverði':'fasteignamati',
     extra:(S.priceRentalMarket>0&&S.priceRentalAssess>0)?` — miðað við fasteignamatið (${kr(S.priceRentalAssess)}) er hlutfallið <b>${pct(Pr/S.priceRentalAssess*100)}</b>`:'',
   });
@@ -1093,6 +1161,7 @@ function renderLtv(S){
         </div>
         <div class="meter-scale"><span>0%</span><span>${scaleMax}%</span></div>
         <p class="sbi-detail" style="margin-top:8px">Lánin á ${b.name==='Aðalhúsnæðið'?'aðalhúsnæðinu':'útleigueigninni'} eru samtals <b>${kr(b.P)}</b> á móti <b>${kr(b.val)}</b>${b.extra}.</p>
+        ${ltvBarHtml(S,b)}
       </div>`;
     }).join('')
     +`<p class="sbi-detail" style="margin-top:12px">Hvor eign hefur sitt eigið veðrými — lán á útleigueigninni notar ekki veðrými aðalhúsnæðisins, en telst samt með í 35%-viðmiðinu eins og önnur fasteignalán þín. Lán á lánsveði, bílalán og önnur lán telja hvergi í veðhlutfalli. Hámark skv. reglum Seðlabankans er 80% af verðmæti eignar (90% fyrir fyrstu kaupendur á aðalhúsnæði, frá október 2025) — lánveitendur setja auk þess eigin mörk og vaxtaþrep, oft strangari á útleigueignir.</p>`;
