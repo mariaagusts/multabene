@@ -85,6 +85,12 @@
   .kpi-value { font-size: 26px; font-weight: 700; margin-top: 8px; line-height: 1.05; }
   .kpi-change { font-size: 12px; margin-top: 6px; font-weight: 700; }
   .kpi-sub { font-size: 11px; color: var(--soft); margin-top: 4px; line-height: 1.4; }
+  .kpi-note { font-size: 10.5px; color: var(--muted); margin-top: 8px; padding-top: 7px;
+              border-top: 1px solid var(--line-soft); line-height: 1.5; }
+  .kpi-note b { color: var(--soft); }
+  .card-note { font-size: 11px; color: var(--muted); margin-top: 12px; padding-top: 9px;
+               border-top: 1px solid var(--line-soft); line-height: 1.55; }
+  .card-note b { color: var(--soft); }
   .up { color: var(--good); }
   .down { color: var(--bad); }
   .flat { color: var(--soft); }
@@ -233,48 +239,56 @@
       <div class="kpi-value">1.260 m.kr.</div>
       <div class="kpi-change up">▲ +2,1% frá 2024</div>
       <div class="kpi-sub">2024: 1.234m · 2023: 1.015m<br>Vöxtur hægist (+24% '24, +2% '25)</div>
+      <div class="kpi-note"><b>Hvers vegna:</b> styrkir (+70,7m) og æfingagjöld (+59,4m) hækkuðu en mótatekjur (−69,1m) og félagaskiptatekjur (−47,1m) féllu. Vöxturinn er borinn uppi af styrkjum og heimilum iðkenda, ekki keppnistekjum.</div>
     </div>
     <div class="kpi bad">
       <div class="kpi-label">Rekstrarniðurstaða</div>
       <div class="kpi-value down">−83,2 m.kr.</div>
       <div class="kpi-change down">▼ Sveifla −139,5m</div>
       <div class="kpi-sub">2024: +56,4m · 2023: −12,6m<br>Snarpur viðsnúningur</div>
+      <div class="kpi-note"><b>Hvers vegna:</b> sveiflan skýrist nær öll af knattspyrnudeild mfl., úr +66,0m í −76,5m. Handbolti mfl. −13,0m og karfa mfl. −17,2m; aðalstjórn skilaði +27,0m.</div>
     </div>
     <div class="kpi warn">
       <div class="kpi-label">Þjálfunar- og leikmannakostnaður</div>
       <div class="kpi-value">950 m.kr.</div>
       <div class="kpi-change down">▲ +20,0% frá 2024</div>
       <div class="kpi-sub">2024: 792m · 2023: 686m<br>Vex hraðar en tekjur</div>
+      <div class="kpi-note"><b>Hvers vegna:</b> +158m milli ára, þar af knattspyrnudeild +80m (mfl. +56,6m, B&amp;U +23,0m), fimleikar +23,3m og karfa mfl. +15,3m. Verktakagreiðslur samstæðu hækkuðu um 82m (skýring 4).</div>
     </div>
     <div class="kpi warn">
       <div class="kpi-label">Handbært fé</div>
       <div class="kpi-value">152,7 m.kr.</div>
       <div class="kpi-change down">▼ −30,4% frá 2024</div>
       <div class="kpi-sub">2024: 219,5m · 2023: 133,7m<br>Lækkun um 66,8m</div>
+      <div class="kpi-note"><b>Hvers vegna:</b> handbært fé frá rekstri var −61,3m (sjóðstreymisyfirlit) á móti +85,8m 2024. Rýrnunin fylgir tapi ársins, einkum hjá knattspyrnudeild mfl.</div>
     </div>
     <div class="kpi bad">
       <div class="kpi-label">Eigið fé</div>
       <div class="kpi-value">124,3 m.kr.</div>
       <div class="kpi-change down">▼ −39,2% frá 2024</div>
       <div class="kpi-sub">2024: 204,6m · 2023: 148,3m<br>Lækkun um 80,3m</div>
+      <div class="kpi-note"><b>Hvers vegna:</b> lækkunin fylgir tapi ársins, einkum knattspyrnudeildar mfl. (−76,5m). Eigið fé körfu mfl. fór úr −92,7m í −109,8m og handbolta mfl. úr −52,5m í −65,5m; eigið fé aðalstjórnar styrktist úr 148,3m í 175,2m.</div>
     </div>
     <div class="kpi bad">
       <div class="kpi-label">Handbært fé í mánuðum rekstrar</div>
       <div class="kpi-value">≈ 1,4 mán.</div>
       <div class="kpi-change down">▼ úr 2,2 mán. 2024</div>
       <div class="kpi-sub">152,7m ÷ ~113m meðalgjöld á mánuði<br>Rýrnar hratt milli ára</div>
+      <div class="kpi-note"><b>Svona er reiknað:</b> handbært fé í árslok (efnahagsreikningur) deilt með meðalrekstrargjöldum á mánuði (1.358m ÷ 12 ≈ 113m). Segir hve lengi félagið gæti staðið við skuldbindingar ef tekjur stöðvuðust; algeng viðmiðun félagasamtaka er a.m.k. 3 mánuðir.</div>
     </div>
     <div class="kpi warn">
       <div class="kpi-label">Eiginfjárhlutfall</div>
       <div class="kpi-value">47%</div>
       <div class="kpi-change down">▼ úr 65% 2024</div>
       <div class="kpi-sub">Eigið fé 124,3m af 262,3m eignum<br>2024: 204,6m af 317,2m</div>
+      <div class="kpi-note"><b>Hvers vegna:</b> eigið fé lækkaði um 80,3m vegna taps ársins (einkum knattspyrnudeildar mfl.) á meðan skammtímaskuldir stóðu nánast í stað. Efnahagsreikningur 31.12.2025.</div>
     </div>
     <div class="kpi bad">
       <div class="kpi-label">Þjálfunarkostnaður af tekjum</div>
       <div class="kpi-value">75%</div>
       <div class="kpi-change down">▲ úr 64% 2024</div>
       <div class="kpi-sub">950m af 1.260m tekjum<br>2023: 68% · hlutfallið hækkar hratt</div>
+      <div class="kpi-note"><b>Hvers vegna:</b> verktakagreiðslur hækkuðu um 82m og laun um 50m (skýring 4) á meðan tekjur uxu aðeins um 2,1%. Þegar þrír fjórðu af hverri tekjukrónu fara í þjálfun og leikmenn er lítið eftir fyrir allt annað.</div>
     </div>
   </div>
 
@@ -285,15 +299,17 @@
       <h3>Niðurstaða eftir árum</h3>
       <div class="csub">Þrjú ár í röð · m.kr. · grænn = hagnaður · rauður = tap</div>
       <div style="position:relative;height:240px"><canvas id="resultBar"></canvas></div>
+      <div class="card-note"><b>Lesið úr myndinni:</b> 2023 lítið tap (−12,6m), 2024 góður hagnaður (+56,4m), drifinn af Evrópu- og félagaskiptaári knattspyrnunnar, 2025 stórt tap (−83,2m) þegar þær tekjur hurfu en kostnaðurinn sat eftir.</div>
     </div>
     <div class="card">
       <h3>Hvað breyttist 2024 → 2025?</h3>
       <div class="csub">Helstu liðir sem drógu niðurstöðu samstæðu niður (rauðir) eða upp (grænir)</div>
       <div style="position:relative;height:300px"><canvas id="swingBar"></canvas></div>
+      <div class="card-note"><b>Lesið úr myndinni:</b> súlurnar sýna hvaða liðir færðu niðurstöðuna úr +56,4m í −83,2m. Hækkun þjálfunar- og leikmannakostnaðar (+158m) og fall keppnis- og félagaskiptatekna vega þyngst; á móti hækkuðu styrkir og æfingagjöld.</div>
     </div>
   </div>
   <div class="info">
-    <b>Aðalástæða:</b> Knattspyrnudeild mfl. fór úr +66,0m hagnaði í −76,5m tap. Mótatekjur (félagaskipti) féllu úr 122,5m í 25,8m og aðrar tekjur úr 118m í 71m. Á sama tíma jukust laun og verktakagreiðslur um 20% um félagið allt.
+    <b>Aðalástæða:</b> Knattspyrnudeild mfl. fór úr +66,0m hagnaði í −76,5m tap. Keppnistengdar mótatekjur deildarinnar féllu úr 122,5m í 25,8m (stökkið 2024 skýrist að líkindum af Evróputekjum mfl. karla) og félagaskiptatekjur samstæðu féllu úr 118,5m í 71,4m (skýring 3 í ársreikningi). Á sama tíma jukust laun og verktakagreiðslur um 20% um félagið allt.
   </div>
 
   <!-- 03 ÁHÆTTU-KÖFLUNGAR -->
@@ -317,7 +333,7 @@
     </div>
     <div class="alert warn">
       <h4>⚡ Mótatekjur óregulegar</h4>
-      <p>Mótatekjur (félagaskipti) sveiflast: 28,9m → 140,3m → 71,2m. Erfitt að áætla og hægt að gera ráð fyrir frekari falli.</p>
+      <p>Mótatekjur sveiflast: 28,9m → 140,3m → 71,2m (Evróputekjur 2024 líkleg skýring á toppnum). Félagaskiptatekjur sveiflast líka: 63,4m → 118,5m → 71,4m. Hvorugt er hægt að áætla af öryggi.</p>
     </div>
     <div class="alert good">
       <h4>✓ Engar langtímaskuldir</h4>
@@ -333,12 +349,19 @@
       <div class="csub">Samstæða 2025 · m.kr.</div>
       <div style="position:relative;height:260px"><canvas id="revPie"></canvas></div>
       <div id="pieLeg" style="display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin-top:14px;font-size:11px;color:var(--soft)"></div>
+      <div class="card-note"><b>Hvað er hvað:</b> Æfingagjöld = greiðslur foreldra og iðkenda. Styrkir og fjáröflun = styrktaraðilar, fjáraflanir og opinberir styrkir. Mótatekjur = keppnistengdar tekjur (miðasala, mótshald og Evróputekjur). Aðrar tekjur = félagaskipti, íþróttanámskeið, leiga o.fl. (skýring 3). Reiknuð afnot mannvirkja = ekki peningar heldur bókfært verðmæti aðstöðunnar frá Garðabæ; sami liður er líka gjaldamegin og núllast út.</div>
     </div>
     <div class="card">
       <h3>Tekjur eftir deild</h3>
-      <div class="csub">Heildartekjur eftir deildum · 2025 · m.kr. · Aðalstjórn inniheldur reiknuð afnot mannvirkja og rekstur knattspyrnuvalla</div>
+      <div class="csub">„Rekstrartekjur alls" hverrar einingar skv. ársreikningi 2025 · m.kr. · Aðalstjórn inniheldur reiknuð afnot mannvirkja og rekstur knattspyrnuvalla. Samtala eininga (1.330m) er hærri en samstæðutekjur (1.260m) því um 70m eru innri framlög, einkum úr afrekssjóði, sem teljast tekjur hjá deildum en gjöld hjá aðalstjórn.</div>
       <div style="position:relative;height:340px"><canvas id="divRev"></canvas></div>
     </div>
+  </div>
+  <div class="info">
+    <b>Hvers vegna uxu tekjur aðeins um 2,1%?</b> Styrkir og fjáröflun hækkuðu um 70,7m og æfingagjöld um 59,4m, en á móti féllu
+    mótatekjur um 69,1m og aðrar tekjur um 34,9m, þar af félagaskiptatekjur um 47,1m (skýring 3). Tekjuvöxturinn hvílir því á
+    styrkjum og hækkandi æfingagjöldum heimila, á meðan keppnistengdu tekjurnar gengu til baka. Heimild: rekstrarreikningur
+    samstæðu og skýring 3 í ársreikningi 2025.
   </div>
 
   <!-- 05 NIÐURSTAÐA DEILDA -->
@@ -351,6 +374,7 @@
       <span class="leg"><span class="leg-sq" style="background:var(--bad)"></span>Tap</span>
     </div>
     <div style="position:relative;height:300px"><canvas id="divNet"></canvas></div>
+    <div class="card-note"><b>Hvers vegna:</b> stærsta einstaka breytingin er knattspyrnudeild mfl., úr +66,0m í −76,5m. Karfa mfl. batnaði þó milli ára (úr −38,5m í −17,2m) og fimleikar B&amp;U nálgast jafnvægi (−0,9m). Aðalstjórn skilaði +27,0m og sunddeild +2,7m. Heimild: sérgreint rekstraryfirlit hverrar einingar í ársreikningi 2025.</div>
   </div>
 
   <!-- 06 TEKJUR VS GJÖLD -->
@@ -363,6 +387,7 @@
       <span class="leg"><span class="leg-sq" style="background:rgba(255,255,255,0.85)"></span>Gjöld 2025</span>
     </div>
     <div style="position:relative;height:340px"><canvas id="revExp"></canvas></div>
+    <div class="card-note"><b>Hvers vegna:</b> bilið er stærst hjá knattspyrnudeild mfl., þar sem gjöldin héldust nálægt fyrra stigi á meðan keppnis- og félagaskiptatekjur hurfu. Hjá flestum B&amp;U-deildum fylgjast tekjur og gjöld að, enda ráðast báðar að mestu af iðkendafjölda: fleiri iðkendur þýða hærri æfingagjöld en líka fleiri þjálfara. Heimild: sérgreint rekstraryfirlit hverrar einingar í ársreikningi 2025.</div>
   </div>
 
   <!-- 07 EIGIÐ FÉ -->
@@ -384,6 +409,22 @@
       <div style="position:relative;height:300px"><canvas id="negEquity"></canvas></div>
     </div>
   </div>
+  <div class="info">
+    <b>Hvers vegna breytist eigið fé?</b> Eigið fé hverrar einingar er uppsafnaður hagnaður og tap frá upphafi — það breytist um
+    rekstrarniðurstöðu hvers árs. Karfa mfl. fór úr −92,7m í −109,8m (tap 17,2m), handbolti mfl. úr −52,5m í −65,5m (tap 13,0m)
+    og eigið fé knattspyrnudeildar mfl. þurrkaðist nánast út við tap ársins, úr um 78m í um 1,9m. Á móti styrktist eigið fé
+    aðalstjórnar úr 148,3m í 175,2m. Neikvætt eigið fé þýðir að eining hefur eytt meiru en hún hefur aflað frá upphafi og er í
+    reynd fjármögnuð af félagsheildinni. Heimild: efnahagsyfirlit hverrar einingar í ársreikningi 2025.
+  </div>
+  <div class="info">
+    <b>Hvers vegna styrkist aðalstjórn þegar félagið tapar?</b> Tekjur aðalstjórnar (382,5m árið 2025) eru einkum föst framlög,
+    að stórum hluta frá Garðabæ: styrkir og fjáröflun 121,5m, afrekssjóðsframlag 60m og greiðsla fyrir rekstur knattspyrnuvalla
+    61m, auk reiknaðra afnota mannvirkja (122,3m) sem renna beint áfram til deilda og núllast út. Eftir peningaúthlutanir til
+    deilda (69,8m) og rekstur skrifstofunnar (177,9m, þar af laun og verktakagreiðslur 132,3m) stóð reksturinn í +12,5m — og
+    vaxtatekjur af handbæru fé félagsins (14,7m), sem bókast hjá aðalstjórn af því hún varðveitir sjóðinn, lyftu niðurstöðunni
+    í +27,0m. Eigið fé aðalstjórnar óx um þá fjárhæð, úr 148,3m í 175,2m. Tekjur aðalstjórnar eru sem sagt stöðugar og
+    samningsbundnar á meðan sveiflurnar liggja hjá meistaraflokkunum. Heimild: sérgreint yfirlit aðalstjórnar í ársreikningi 2025.
+  </div>
 
   <!-- 08 YOY -->
   <div class="section-title"><span class="num">08</span><span>Samanburður 2023 / 2024 / 2025</span><span class="hint">Helstu samstæðuliðir · m.kr.</span></div>
@@ -396,6 +437,7 @@
       <span class="leg"><span class="leg-sq" style="background:rgba(255,255,255,0.30)"></span>2023</span>
     </div>
     <div style="position:relative;height:300px"><canvas id="yoy"></canvas></div>
+    <div class="card-note"><b>Hvers vegna:</b> 2024 uxu tekjur (+22%) mun hraðar en gjöld og árið skilaði +56,4m. 2025 snerist það við: gjöld uxu um 14% en tekjur aðeins um 2%. Kostnaðarstigið sem sett var í góðærinu 2024 hélst þegar keppnis- og félagaskiptatekjurnar gengu til baka — það er kjarni tapsins. Heimild: rekstrarreikningar samstæðu 2024 og 2025.</div>
   </div>
 
   <!-- 09 SKULDIR -->
@@ -463,6 +505,7 @@
       <h3>Stuðningur Garðabæjar sem hlutfall af tekjum 2025</h3>
       <div class="csub">Bær fjármagnar um 19% af rekstri þegar bæði peningaleg og ópeningaleg er talin</div>
       <div style="position:relative;height:230px"><canvas id="gbPie"></canvas></div>
+      <div class="card-note"><b>Svona er reiknað:</b> þekktur stuðningur ~243m ÷ heildartekjur 1.260m ≈ 19%. Þar af eru 122,3m ópeningaleg (reiknuð afnot mannvirkja) og ~121m peningalegar greiðslur (vallarekstur 61m og afrekssjóðsframlag ~60m). Raunhlutfallið gæti verið hærra því hluti af „Styrkir og fjáröflun" er ósundurliðaður.</div>
     </div>
     <div class="card">
       <h3>Aðrir styrkir frá bæjarfélaginu</h3>
@@ -504,6 +547,7 @@
           <th>Deild</th><th class="num-r">Æfingagj.</th><th class="num-r">Laun</th><th class="num-r">Mismunur</th><th class="num-r">Þekja</th>
         </tr></thead><tbody id="aefTbody"></tbody></table>
       </div>
+      <div class="card-note"><b>Athugið:</b> greiningin byggir á ársreikningi 2024; sundurliðun fyrir 2025 liggur nú fyrir og verður uppfærð. Meginmyndin helst þó: meistaraflokkar innheimta nánast engin æfingagjöld og hvíla á styrkjum og keppnistekjum, en æfingagjöld B&amp;U-deilda standa að mestu undir þjálfaralaunum. Heimild: liðirnir „Æfingagjöld" og „Laun og verktakagreiðslur" í sérgreindu yfirliti hverrar deildar.</div>
     </div>
   </div>
 
@@ -530,42 +574,52 @@
       <table class="t" id="styrkT" style="margin-top: 16px;"><thead><tr>
         <th>Deild</th><th class="num-r">Styrkir</th><th class="num-r">Tekjur</th><th class="num-r">Hlutfall</th>
       </tr></thead><tbody id="styrkTbody"></tbody></table>
+      <div class="card-note"><b>Athugið:</b> byggt á ársreikningi 2024; hlutföllin breytast hægt milli ára því háðnin er innbyggð í tekjulíkan meistaraflokkanna. Há styrkjaháðni er ekki röng í sjálfu sér, en hún þýðir að reksturinn stendur og fellur með ákvörðunum styrktaraðila fremur en eigin tekjuöflun. Heimild: liðurinn „Styrkir og fjáröflun" á móti „Rekstrartekjur alls" í sérgreindu yfirliti hverrar deildar.</div>
     </div>
   </div>
 
   <!-- 13 SVIÐSMYNDIR 2026 -->
-  <div class="section-title"><span class="num">13</span><span>Sviðsmyndir 2026 — næmni fyrir mótatekjum</span><span class="hint">Einföld næmnigreining · ekki spá</span></div>
+  <div class="section-title"><span class="num">13</span><span>Sviðsmyndir 2026 — næmni fyrir keppnis- og félagaskiptatekjum</span><span class="hint">Einföld næmnigreining · ekki spá</span></div>
   <div class="info">
-    Mótatekjur (félagaskipti o.fl.) hafa sveiflast milli 71 og 140 m.kr. síðustu þrjú ár og eru stærsti einstaki óvissuþáttur rekstrarins.
-    Taflan sýnir hver rekstrarniðurstaðan yrði <b>að öðru óbreyttu frá 2025</b> miðað við ólík stig mótatekna — og hvaða áhrif 5% lækkun
-    þjálfunar- og leikmannakostnaðar (−47,5m) hefði til viðbótar. Þetta er næmnigreining til umræðu, ekki spá.
+    Tveir tekjuliðir sveiflast langmest milli ára: <b>mótatekjur</b> (keppnistengdar tekjur — toppurinn 2024 skýrist að líkindum af
+    Evróputekjum mfl. karla í knattspyrnu) og <b>félagaskiptatekjur</b> (skýring 3 í ársreikningi). Samanlagt fóru þessir liðir
+    92 → 259 → 143 m.kr. árin 2023–2025 og eru stærsti einstaki óvissuþáttur rekstrarins. Taflan sýnir hver rekstrarniðurstaðan
+    yrði <b>að öðru óbreyttu frá 2025</b> miðað við ólík stig þessara tekna samanlagt — og hvaða áhrif 5% lækkun þjálfunar- og
+    leikmannakostnaðar (−47,5m) hefði til viðbótar. Þetta er næmnigreining til umræðu, ekki spá.
+    Evrópuályktunin er rekjanleg í ársreikninginn: gjaldalínan „Kostnaður vegna Evrópukeppni" hjá knattspyrnudeild mfl. var
+    4,1m 2023, 29,0m 2024 en 0 kr. 2025 — í takt við mótatekjur deildarinnar (18,1m → 122,5m → 25,8m), enda koma
+    Evróputekjurnar inn karlamegin.
   </div>
   <div class="card">
     <table class="t">
       <thead>
         <tr>
           <th>Sviðsmynd</th>
-          <th class="num-r">Mótatekjur</th>
+          <th class="num-r">Móta- og félagaskiptatekjur samtals</th>
           <th class="num-r">Niðurstaða að öðru óbreyttu</th>
           <th class="num-r">Með 5% lækkun þjálfunarkostnaðar</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td>Svartsýn — mótatekjur halda áfram að falla</td><td class="num-r">30 m.kr.</td><td class="num-r" style="color:var(--bad)">≈ −124 m.kr.</td><td class="num-r" style="color:var(--bad)">≈ −77 m.kr.</td></tr>
-        <tr><td>Óbreytt staða frá 2025</td><td class="num-r">71 m.kr.</td><td class="num-r" style="color:var(--bad)">≈ −83 m.kr.</td><td class="num-r" style="color:var(--warn)">≈ −36 m.kr.</td></tr>
-        <tr><td>Bjartsýn — mótatekjur ná 2024-stigi</td><td class="num-r">140 m.kr.</td><td class="num-r" style="color:var(--warn)">≈ −14 m.kr.</td><td class="num-r" style="color:var(--good)">≈ +33 m.kr.</td></tr>
+        <tr><td>Svartsýn — tekjurnar falla á 2023-stig (engin Evrópukeppni, lítil félagaskipti)</td><td class="num-r">≈ 90 m.kr.</td><td class="num-r" style="color:var(--bad)">≈ −136 m.kr.</td><td class="num-r" style="color:var(--bad)">≈ −88 m.kr.</td></tr>
+        <tr><td>Óbreytt staða frá 2025</td><td class="num-r">≈ 143 m.kr.</td><td class="num-r" style="color:var(--bad)">≈ −83 m.kr.</td><td class="num-r" style="color:var(--warn)">≈ −36 m.kr.</td></tr>
+        <tr><td>Bjartsýn — tekjurnar ná 2024-stigi (Evrópukeppni og stór félagaskipti)</td><td class="num-r">≈ 259 m.kr.</td><td class="num-r" style="color:var(--good)">≈ +33 m.kr.</td><td class="num-r" style="color:var(--good)">≈ +81 m.kr.</td></tr>
       </tbody>
     </table>
   </div>
   <div class="info">
-    <b>Lærdómurinn:</b> jafnvel í bjartsýnu sviðsmyndinni dugar tekjubati einn og sér ekki til að rétta reksturinn af — kostnaðarhliðin þarf líka að koma til. Rekstur sem stendur og fellur með óreglulegum félagaskiptatekjum er ekki sjálfbær áætlanagrunnur.
+    <b>Lærdómurinn:</b> afkoma félagsins stendur og fellur með tekjum sem enginn getur áætlað af öryggi — Evrópusæti og stórum
+    félagaskiptum. Góðu árin þarf að nota til að byggja upp borð fyrir báru, því kostnaðarstigið sem sett er í góðæri situr eftir
+    þegar tekjurnar hverfa.
   </div>
 
   <!-- 14 ÞAÐ SEM OPINBER GÖGN SÝNA EKKI -->
   <div class="section-title"><span class="num">14</span><span>Það sem opinber gögn sýna ekki</span><span class="hint">Upplýsingar sem eftirlitshlutverk aðalstjórnar kallar á</span></div>
   <div class="info">
-    Þetta yfirlit er unnið eingöngu úr opinberum gögnum. Eftirfarandi upplýsingar eru ekki aðgengilegar þar en skipta máli fyrir
-    eftirlitshlutverk aðalstjórnar — og eiga sér í flestum tilvikum beina stoð í gildandi skjölum félagsins.
+    Þetta yfirlit er unnið eingöngu úr opinberum gögnum. Aðalstjórn fær reglulega kynningu á fjárhagsstöðunni frá fjármálastjóra
+    á fundum — kaflinn snýst því ekki um að stjórnin sé óupplýst, heldur um hvaða upplýsingar eru hvorki í opinberum gögnum né
+    í mánaðaryfirlitunum, og hvað mætti setja fram á aðgengilegri hátt svo stjórnarmenn geti lagt sjálfstætt mat á stöðuna.
+    Flest atriðin eiga sér beina stoð í gildandi skjölum félagsins.
   </div>
   <div class="card">
     <table class="t">
@@ -578,10 +632,9 @@
       </thead>
       <tbody>
         <tr><td>Fjárhagsáætlun á móti rauntölum, eftir deildum</td><td>Frávikagreining er grunnur fjárhagseftirlits</td><td>12. gr. laga: aðalstjórn samþykkir áætlanir allra deilda</td></tr>
-        <tr><td>Ársfjórðungsleg þróun innan árs</td><td>Ársuppgjör sýnir stöðuna of seint til að bregðast við</td><td>Handbók Fyrirmyndarfélags: ársfjórðungsleg yfirferð aðalstjórnar</td></tr>
+        <tr><td>Aðgengileg framsetning á þróun innan árs</td><td>Mánaðarstaða er kynnt á fundum en á formi sem erfitt er að rýna á staðnum; samandregið yfirlit auðveldar stjórn að leggja sjálfstætt mat á tölurnar</td><td>Handbók Fyrirmyndarfélags: ársfjórðungsleg yfirferð aðalstjórnar</td></tr>
         <tr><td>Kynjaskipting meistaraflokkskostnaðar</td><td>Forsenda þess að meta samræmi við jafnréttisstefnu</td><td>Jafnréttisáætlun: árleg úttekt á skiptingu fjármagns eftir kynjum; handbók: aðskilið bókhald mfl. karla og kvenna</td></tr>
-        <tr><td>Framtíðarskuldbindingar vegna leikmanna- og þjálfarasamninga</td><td>Félagið er þegar bundið af kostnaði næstu tímabila</td><td>5. gr. laga: yfirlit um fjárhagslegar skuldbindingar í ársreikningi</td></tr>
-        <tr><td>Kostnaður vegna starfsloka þjálfara</td><td>Forsenda kostnaðaraðhalds og betri ákvarðana</td><td>Til umfjöllunar hjá aðalstjórn</td></tr>
+        <tr><td>Framtíðarskuldbindingar vegna leikmanna- og þjálfarasamninga</td><td>Félagið er þegar bundið af kostnaði næstu tímabila — þessar skuldbindingar koma ekki fram í mánaðaryfirlitum sem kynnt eru stjórn</td><td>5. gr. laga: yfirlit um fjárhagslegar skuldbindingar í ársreikningi</td></tr>
         <tr><td>Sundurliðun á „Styrkir og fjáröflun" (459,5m)</td><td>Sýnir hversu háð félagið er Garðabæ í reynd</td><td>Óskað eftir sundurliðun frá skrifstofu</td></tr>
       </tbody>
     </table>
@@ -739,17 +792,18 @@ pieLabels.forEach((l, i) => {
 // Tölur úr ársreikningi 2025 — Rekstrartekjur alls per deild
 const divRev = [
   ['Aðalstjórn',       382.5],
-  ['Knattspyrna mfl.', 236.8],
+  ['Knattspyrna mfl.', 250.1],
   ['Fimleikar B&U',    166.9],
-  ['Knattspyrna B&U',  150.2],
+  ['Knattspyrna B&U',  160.1],
+  ['Körfuknattl. mfl.',116.7],
   ['Handknattl. mfl.',  82.9],
-  ['Körfuknattl. mfl.', 75.9],
-  ['Körfuknattl. B&U',  56.9],
-  ['Handknattl. B&U',   48.0],
+  ['Körfuknattl. B&U',  67.3],
+  ['Handknattl. B&U',   51.6],
   ['Fimleikar mfl.',    25.4],
-  ['Lyftingadeild',      8.9],
-  ['Sunddeild',          8.6],
+  ['Sunddeild',         12.5],
+  ['Lyftingadeild',      8.7],
   ['Almenningsíþr.',     5.2],
+  ['Stjörnukonur',       0.6],
 ].sort((a,b) => b[1] - a[1]);
 new Chart(document.getElementById('divRev'), {
   type: 'bar',
