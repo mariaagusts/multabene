@@ -317,21 +317,32 @@ function teikna() {
     '<div class="kr">' + kr(samtala(valin)) + '</div></div>' +
     '<div class="cnt">' + minHakad.length + ' verkefni ✅' + (sendingar ? '<br>vista…' : '') + '</div></div>';
 
-  html += '<h2>Verkefnin</h2>';
-  var syndi = 0;
+  // Hópa verkefnin eftir flokki (röðin ræðst af fyrstu línu hvers flokks í Sheet-inu)
+  var flokkar = [];
+  var flokkaMap = {};
   state.verkefni.forEach(function (v) {
     if (!maGera(v, valin)) return;
-    syndi++;
-    var n = fjoldi[v.nafn] || 0;
-    html += '<div class="task' + (n ? ' done' : '') + (n > 1 ? ' multi' : '') + '">' +
-      '<div class="info"><div class="nafn">' + v.nafn + '</div>' +
-      '<div class="kr">' + (n ? '✔ búið — ' + kr(v.upphaed * n) : kr(v.upphaed)) + '</div></div>' +
-      '<span class="badge">×' + n + '</span>' +
-      '<button class="minus" title="Taka til baka" data-minus="' + v.nafn.replace(/"/g, '&quot;') + '">−</button>' +
-      '<button class="check" data-haka="' + v.nafn.replace(/"/g, '&quot;') + '">✓</button>' +
-      '</div>';
+    var f = (v.flokkur || '').trim();
+    if (!(f in flokkaMap)) { flokkaMap[f] = []; flokkar.push(f); }
+    flokkaMap[f].push(v);
   });
-  if (!syndi) html += '<div class="log"><div class="empty">Engin verkefni skráð á ' + valin + ' í Google Sheet-inu.</div></div>';
+
+  var syndi = 0;
+  flokkar.forEach(function (f) {
+    html += '<h2>' + (f ? f.replace(/</g, '&lt;') : 'Verkefnin') + '</h2>';
+    flokkaMap[f].forEach(function (v) {
+      syndi++;
+      var n = fjoldi[v.nafn] || 0;
+      html += '<div class="task' + (n ? ' done' : '') + (n > 1 ? ' multi' : '') + '">' +
+        '<div class="info"><div class="nafn">' + v.nafn + '</div>' +
+        '<div class="kr">' + (n ? '✔ búið — ' + kr(v.upphaed * n) : kr(v.upphaed)) + '</div></div>' +
+        '<span class="badge">×' + n + '</span>' +
+        '<button class="minus" title="Taka til baka" data-minus="' + v.nafn.replace(/"/g, '&quot;') + '">−</button>' +
+        '<button class="check" data-haka="' + v.nafn.replace(/"/g, '&quot;') + '">✓</button>' +
+        '</div>';
+    });
+  });
+  if (!syndi) html += '<h2>Verkefnin</h2><div class="log"><div class="empty">Engin verkefni skráð á ' + valin + ' í Google Sheet-inu.</div></div>';
 
   html += '<h2>Nýlega hakað</h2><div class="log">';
   if (minHakad.length) {
