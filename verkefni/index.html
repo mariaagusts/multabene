@@ -48,7 +48,23 @@
   .total {
     background: linear-gradient(135deg, #8b5cf6, #d946ef);
     color: #fff; border-radius: var(--r); padding: 18px 20px; box-shadow: var(--shadow);
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
+    margin-bottom: 14px;
+  }
+  .total-top { display: flex; justify-content: space-between; align-items: center; }
+
+  /* Sparnaðarsúla */
+  .goal { margin-top: 14px; }
+  .goal .goal-lbl { font-size: .8rem; opacity: .95; margin-bottom: 6px; }
+  .goal .goal-bar { height: 12px; background: rgba(255,255,255,.28); border-radius: 999px; overflow: hidden; }
+  .goal .goal-fill {
+    height: 100%; background: linear-gradient(90deg, #fde68a, #ffffff);
+    border-radius: 999px; transition: width .5s ease; min-width: 4px;
+  }
+
+  /* Stjörnur í fögnuði */
+  .stjarna {
+    position: fixed; top: -34px; z-index: 100; pointer-events: none;
+    animation: fall 1.8s ease-in forwards;
   }
   .total .lbl { font-size: .8rem; opacity: .85; }
   .total .kr { font-size: 1.7rem; font-weight: 800; letter-spacing: -.02em; }
@@ -313,9 +329,20 @@ function teikna() {
     return '<button class="tab' + (s === valin ? ' on' : '') + '" data-stelpa="' + s.replace(/"/g, '&quot;') + '">' + s + '</button>';
   }).join('') + '</div>';
 
-  html += '<div class="total"><div><div class="lbl">' + valin + ' hefur unnið sér inn</div>' +
+  html += '<div class="total"><div class="total-top"><div><div class="lbl">' + valin + ' hefur unnið sér inn</div>' +
     '<div class="kr">' + kr(samtala(valin)) + '</div></div>' +
     '<div class="cnt">' + minHakad.length + ' verkefni ✅' + (sendingar ? '<br>vista…' : '') + '</div></div>';
+
+  // Sparnaðarsúla: allt greitt + ógreitt telur upp í markmiðið
+  var markmid = (state.markmid || {})[valin.toLowerCase()];
+  if (markmid && markmid.upphaed > 0) {
+    var sparnadur = ((state.sagaSamtals || {})[valin] || 0) + samtala(valin);
+    var pct = Math.min(100, Math.round(sparnadur / markmid.upphaed * 100));
+    html += '<div class="goal"><div class="goal-lbl">🎯 ' + (markmid.heiti || 'Markmiðið mitt').replace(/</g, '&lt;') +
+      ' — ' + kr(sparnadur) + ' af ' + kr(markmid.upphaed) + (pct >= 100 ? ' — KOMIN Í MARK! 🎉' : ' (' + pct + '%)') + '</div>' +
+      '<div class="goal-bar"><div class="goal-fill" style="width:' + pct + '%"></div></div></div>';
+  }
+  html += '</div>';
 
   // Hópa verkefnin eftir flokki (röðin ræðst af fyrstu línu hvers flokks í Sheet-inu)
   var flokkar = [];
@@ -359,6 +386,30 @@ function teikna() {
   }
   html += '</div>';
 
+  // Saga — það sem hefur verið greitt út
+  var minSaga = (state.sagaFaerslur || []).filter(function (h) { return h.stelpa === valin; });
+  var greittAlls = (state.sagaSamtals || {})[valin] || 0;
+  html += '<h2>Saga — greitt út</h2><div class="log">';
+  if (minSaga.length) {
+    // hópa eftir útborgunardegi
+    var dagar = [];
+    var dagaMap = {};
+    minSaga.forEach(function (h) {
+      var d = new Date(h.greitt);
+      var lykill = isNaN(d) ? String(h.greitt) : ('0' + d.getDate()).slice(-2) + '.' + ('0' + (d.getMonth() + 1)).slice(-2) + '.' + d.getFullYear();
+      if (!dagaMap[lykill]) { dagaMap[lykill] = { sum: 0, n: 0 }; dagar.push(lykill); }
+      dagaMap[lykill].sum += h.upphaed;
+      dagaMap[lykill].n++;
+    });
+    dagar.slice(-8).reverse().forEach(function (lykill) {
+      html += '<div class="row"><span>' + lykill + ' · ' + dagaMap[lykill].n + ' verkefni</span><span class="t">' + kr(dagaMap[lykill].sum) + '</span></div>';
+    });
+    html += '<div class="row"><span><strong>Samtals greitt</strong></span><span><strong>' + kr(greittAlls) + '</strong></span></div>';
+  } else {
+    html += '<div class="empty">Ekkert greitt út ennþá.</div>';
+  }
+  html += '</div>';
+
   html += '<button class="payout" id="utborgun">💸 Greiða út (fyrir foreldra)</button>';
 
   efni.innerHTML = html;
@@ -390,6 +441,43 @@ function konfetti() {
     document.body.appendChild(k);
     setTimeout(function (el) { return function () { el.remove(); }; }(k), 2600);
   }
+  // Stjörnur með!
+  var stjornur = ['⭐', '🌟', '✨', '💫'];
+  for (var j = 0; j < 12; j++) {
+    var s = document.createElement('div');
+    s.className = 'stjarna';
+    s.textContent = stjornur[j % stjornur.length];
+    s.style.left = (5 + Math.random() * 90) + 'vw';
+    s.style.fontSize = (16 + Math.random() * 16) + 'px';
+    s.style.animationDelay = (Math.random() * .35) + 's';
+    s.style.animationDuration = (1.3 + Math.random() * .9) + 's';
+    document.body.appendChild(s);
+    setTimeout(function (el) { return function () { el.remove(); }; }(s), 3000);
+  }
+  fagnadarHljod();
+}
+
+/* Lítill sigurhljómur (enginn hljóðskrá þarf — búinn til í vafranum) */
+function fagnadarHljod() {
+  try {
+    var ctx = fagnadarHljod.ctx = fagnadarHljod.ctx || new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === 'suspended') ctx.resume();
+    var notur = [523.25, 659.25, 783.99, 1046.5]; // C5 E5 G5 C6
+    notur.forEach(function (f, i) {
+      var o = ctx.createOscillator();
+      var g = ctx.createGain();
+      o.type = 'triangle';
+      o.frequency.value = f;
+      var t = ctx.currentTime + i * 0.09;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.22, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.38);
+      o.connect(g);
+      g.connect(ctx.destination);
+      o.start(t);
+      o.stop(t + 0.42);
+    });
+  } catch (e) { /* hljóð er bara bónus */ }
 }
 
 /* ---------- Uppsetningarskilaboð ---------- */
