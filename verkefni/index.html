@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="is">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verkefni heimilisins</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏡</text></svg>">
+<style>
+  :root {
+    --bg: #faf6ff;
+    --card: #ffffff;
+    --ink: #2d2440;
+    --muted: #8b80a3;
+    --line: #ece5f8;
+    --accent: #8b5cf6;
+    --accent-soft: #f1eafe;
+    --green: #16a34a;
+    --green-soft: #e8f8ee;
+    --gold: #f59e0b;
+    --shadow: 0 2px 10px rgba(80, 50, 140, .08);
+    --r: 16px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 16px 14px 90px; }
+
+  header { text-align: center; padding: 14px 0 6px; }
+  header h1 { margin: 0; font-size: 1.5rem; letter-spacing: -.02em; }
+  header p { margin: 4px 0 0; color: var(--muted); font-size: .85rem; }
+
+  /* Flipar fyrir stelpurnar */
+  .tabs { display: flex; gap: 8px; margin: 16px 0 14px; }
+  .tab {
+    flex: 1; border: 2px solid var(--line); background: var(--card);
+    border-radius: var(--r); padding: 12px 6px; font-size: 1.05rem; font-weight: 700;
+    color: var(--muted); cursor: pointer; transition: all .15s;
+  }
+  .tab.on { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+
+  /* Samtölukort */
+  .total {
+    background: linear-gradient(135deg, #8b5cf6, #d946ef);
+    color: #fff; border-radius: var(--r); padding: 18px 20px; box-shadow: var(--shadow);
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
+  }
+  .total .lbl { font-size: .8rem; opacity: .85; }
+  .total .kr { font-size: 1.7rem; font-weight: 800; letter-spacing: -.02em; }
+  .total .cnt { font-size: .8rem; opacity: .85; text-align: right; }
+
+  h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 18px 4px 8px; }
+
+  /* Verkefnalisti */
+  .task {
+    background: var(--card); border-radius: var(--r); box-shadow: var(--shadow);
+    padding: 12px 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px;
+  }
+  .task .info { flex: 1; min-width: 0; }
+  .task .nafn { font-weight: 600; font-size: .98rem; }
+  .task .kr { color: var(--muted); font-size: .82rem; margin-top: 2px; }
+  .task.done { background: var(--green-soft); }
+  .task.done .kr { color: var(--green); font-weight: 600; }
+
+  .minus {
+    border: none; background: none; color: var(--muted); font-size: 1.3rem; line-height: 1;
+    width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: none;
+  }
+  .task.done .minus { display: block; }
+  .badge {
+    display: none; background: var(--green); color: #fff; border-radius: 999px;
+    font-size: .75rem; font-weight: 700; padding: 2px 8px;
+  }
+  .task.multi .badge { display: inline-block; }
+
+  .check {
+    width: 46px; height: 46px; border-radius: 50%; border: 2.5px solid var(--line);
+    background: var(--card); cursor: pointer; font-size: 1.2rem; color: transparent;
+    transition: all .15s; flex-shrink: 0;
+  }
+  .check:active { transform: scale(.9); }
+  .task.done .check { background: var(--green); border-color: var(--green); color: #fff; }
+
+  /* Nýlega hakað */
+  .log { background: var(--card); border-radius: var(--r); box-shadow: var(--shadow); padding: 6px 14px; }
+  .log .row {
+    display: flex; justify-content: space-between; gap: 10px; padding: 9px 0;
+    border-bottom: 1px solid var(--line); font-size: .86rem;
+  }
+  .log .row:last-child { border-bottom: none; }
+  .log .t { color: var(--muted); white-space: nowrap; }
+  .log .empty { color: var(--muted); padding: 12px 0; text-align: center; font-size: .86rem; }
+
+  /* Útborgun */
+  .payout {
+    width: 100%; margin-top: 18px; padding: 14px; border-radius: var(--r);
+    border: 2px dashed #f3cf8e; background: #fff8ec; color: #b45309;
+    font-weight: 700; font-size: .95rem; cursor: pointer;
+  }
+
+  /* Villu-/stöðuborði */
+  .banner {
+    position: fixed; left: 50%; transform: translateX(-50%); bottom: 16px;
+    background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 999px;
+    font-size: .85rem; box-shadow: 0 4px 16px rgba(0,0,0,.25); z-index: 50;
+    max-width: 90vw; text-align: center; display: none;
+  }
+  .banner.err { background: #dc2626; }
+
+  /* Gluggi (dialog) */
+  dialog {
+    border: none; border-radius: 20px; padding: 22px; width: min(92vw, 340px);
+    box-shadow: 0 10px 40px rgba(0,0,0,.25); font-family: inherit; color: var(--ink);
+  }
+  dialog::backdrop { background: rgba(45, 36, 64, .45); }
+  dialog h3 { margin: 0 0 4px; font-size: 1.1rem; }
+  dialog p { margin: 0 0 14px; color: var(--muted); font-size: .85rem; }
+  dialog label { display: flex; align-items: center; gap: 8px; padding: 7px 0; font-size: .92rem; cursor: pointer; }
+  dialog input[type=password] {
+    width: 100%; padding: 12px; font-size: 1.2rem; text-align: center; letter-spacing: .3em;
+    border: 2px solid var(--line); border-radius: 12px; margin: 10px 0 4px; outline: none;
+  }
+  dialog input[type=password]:focus { border-color: var(--accent); }
+  .dlg-btns { display: flex; gap: 8px; margin-top: 14px; }
+  .dlg-btns button {
+    flex: 1; padding: 12px; border-radius: 12px; border: none; font-size: .95rem;
+    font-weight: 700; cursor: pointer;
+  }
+  .btn-go { background: var(--accent); color: #fff; }
+  .btn-no { background: var(--line); color: var(--ink); }
+  .dlg-villa { color: #dc2626; font-size: .82rem; min-height: 1.1em; margin: 2px 0 0; text-align: center; }
+
+  /* Uppsetningarskilaboð */
+  .setup {
+    background: #fff8ec; border: 2px dashed #f3cf8e; border-radius: var(--r);
+    padding: 18px; margin-top: 20px; font-size: .9rem; line-height: 1.5; color: #7c5307;
+  }
+  .setup code { background: #fdeecd; padding: 1px 5px; border-radius: 5px; font-size: .82rem; word-break: break-all; }
+
+  .skel { color: var(--muted); text-align: center; padding: 40px 0; }
+
+  /* Konfettí */
+  .konfetti {
+    position: fixed; width: 9px; height: 9px; top: -12px; z-index: 100;
+    pointer-events: none; border-radius: 2px;
+    animation: fall 1.5s ease-in forwards;
+  }
+  @keyframes fall {
+    to { transform: translateY(105vh) rotate(540deg); opacity: .7; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🏡 Verkefni heimilisins</h1>
+    <p id="undirtitill">Hakaðu við þegar þú klárar verkefni</p>
+  </header>
+
+  <div id="efni"><div class="skel">Sæki verkefnin… ⏳</div></div>
+</div>
+
+<div class="banner" id="banner"></div>
+
+<dialog id="pinDlg">
+  <h3>💸 Greiða út</h3>
+  <p>Fyrir foreldra: við útborgun hreinsast hökin og færast í söguna í Google Sheet-inu.</p>
+  <div id="pinValkostir"></div>
+  <input type="password" id="pinInp" inputmode="numeric" placeholder="PIN" maxlength="8" autocomplete="off">
+  <div class="dlg-villa" id="pinVilla"></div>
+  <div class="dlg-btns">
+    <button class="btn-no" id="pinHaetta" type="button">Hætta við</button>
+    <button class="btn-go" id="pinStadfesta" type="button">Greiða út</button>
+  </div>
+</dialog>
+
+<script>
+/* ============================================================
+   STILLING: límdu vefslóð Apps Script vefappsins hér á milli
+   gæsalappanna (endar á /exec). Sjá LEIDBEININGAR.md
+   ============================================================ */
+var API_URL = "https://script.google.com/macros/s/AKfycbz4NkGp_9EClmEkew5QxC4-oe_CldoZoVqrBKmZxG584mnIBWE2-QmswaOK462YjCnx5g/exec";
+
+var state = null;        // {stelpur, verkefni, hakad}
+var valin = null;        // valin stelpa
+var sendingar = 0;       // fjöldi POST-a í gangi
+
+var efni = document.getElementById('efni');
+var banner = document.getElementById('banner');
+
+function kr(n) { return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' kr.'; }
+
+function synaBanner(texti, villa) {
+  banner.textContent = texti;
+  banner.className = 'banner' + (villa ? ' err' : '');
+  banner.style.display = 'block';
+  clearTimeout(synaBanner.t);
+  synaBanner.t = setTimeout(function () { banner.style.display = 'none'; }, 3500);
+}
+
+/* ---------- Samskipti við Google Sheets ---------- */
+
+function saekja() {
+  if (!API_URL) { synaUppsetningu(); return; }
+  fetch(API_URL).then(function (r) { return r.json(); }).then(function (d) {
+    if (!d.ok) throw new Error(d.villa || 'Villa í svari');
+    state = d;
+    if (!valin || d.stelpur.indexOf(valin) === -1) valin = d.stelpur[0] || null;
+    teikna();
+  }).catch(function (e) {
+    if (!state) efni.innerHTML = '<div class="skel">Næ ekki sambandi við Google Sheet 😕<br><small>' +
+      String(e).replace(/</g, '&lt;') + '</small></div>';
+    else synaBanner('Næ ekki sambandi — reyni aftur…', true);
+  });
+}
+
+function senda(gogn, tekst) {
+  sendingar++;
+  return fetch(API_URL, { method: 'POST', body: JSON.stringify(gogn) })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (!d.ok) throw new Error(d.villa || 'Villa');
+      state = d;
+      if (tekst) synaBanner(tekst);
+      return d;
+    })
+    .catch(function (e) {
+      synaBanner(String(e.message || e), true);
+      saekja(); // sækja rétta stöðu aftur
+      throw e;
+    })
+    .finally(function () { sendingar--; teikna(); });
+}
+
+/* ---------- Aðgerðir ---------- */
+
+function haka(verkefniNafn) {
+  // Bjartsýn uppfærsla svo hakið birtist strax
+  state.hakad.push({ id: 'timabundid-' + Date.now(), timi: new Date().toISOString(), stelpa: valin, verkefni: verkefniNafn, upphaed: verdFyrir(verkefniNafn) });
+  teikna();
+  konfetti();
+  senda({ action: 'haka', stelpa: valin, verkefni: verkefniNafn });
+}
+
+function afhaka(verkefniNafn) {
+  // finna nýjasta hak þessarar stelpu á þessu verkefni
+  var sida = state.hakad.filter(function (h) { return h.stelpa === valin && h.verkefni === verkefniNafn; });
+  if (!sida.length) return;
+  var h = sida[sida.length - 1];
+  state.hakad.splice(state.hakad.indexOf(h), 1);
+  teikna();
+  if (String(h.id).indexOf('timabundid-') === 0) { saekja(); return; }
+  senda({ action: 'afhaka', id: h.id });
+}
+
+function verdFyrir(nafn) {
+  var v = state.verkefni.filter(function (x) { return x.nafn === nafn; })[0];
+  return v ? v.upphaed : 0;
+}
+
+/* ---------- Útborgun ---------- */
+
+var pinDlg = document.getElementById('pinDlg');
+document.getElementById('pinHaetta').onclick = function () { pinDlg.close(); };
+document.getElementById('pinStadfesta').onclick = function () {
+  var pin = document.getElementById('pinInp').value;
+  var hver = (document.querySelector('input[name=hver]:checked') || {}).value;
+  if (!pin) { document.getElementById('pinVilla').textContent = 'Sláðu inn PIN'; return; }
+  document.getElementById('pinVilla').textContent = '';
+  senda({ action: 'greida', pin: pin, stelpa: hver === 'allar' ? null : hver }, 'Greitt út! 🎉 Hökin færðust í söguna.')
+    .then(function () { pinDlg.close(); })
+    .catch(function () { document.getElementById('pinVilla').textContent = 'Tókst ekki — er PIN-ið rétt?'; });
+};
+
+function opnaUtborgun() {
+  var valk = document.getElementById('pinValkostir');
+  valk.innerHTML = state.stelpur.map(function (s) {
+    return '<label><input type="radio" name="hver" value="' + s.replace(/"/g, '&quot;') + '"' +
+      (s === valin ? ' checked' : '') + '> Bara ' + s + ' (' + kr(samtala(s)) + ')</label>';
+  }).join('') +
+  '<label><input type="radio" name="hver" value="allar"> Allar saman (' + kr(samtala(null)) + ')</label>';
+  document.getElementById('pinInp').value = '';
+  document.getElementById('pinVilla').textContent = '';
+  pinDlg.showModal();
+}
+
+/* ---------- Teikning ---------- */
+
+function samtala(stelpa) {
+  return state.hakad.reduce(function (s, h) {
+    return s + ((stelpa === null || h.stelpa === stelpa) ? h.upphaed : 0);
+  }, 0);
+}
+
+function maGera(v, stelpa) {
+  return v.hver.indexOf('allar') !== -1 || v.hver.indexOf(stelpa.toLowerCase()) !== -1;
+}
+
+function teikna() {
+  if (!state) return;
+  var minHakad = state.hakad.filter(function (h) { return h.stelpa === valin; });
+  var fjoldi = {};
+  minHakad.forEach(function (h) { fjoldi[h.verkefni] = (fjoldi[h.verkefni] || 0) + 1; });
+
+  var html = '';
+
+  html += '<div class="tabs">' + state.stelpur.map(function (s) {
+    return '<button class="tab' + (s === valin ? ' on' : '') + '" data-stelpa="' + s.replace(/"/g, '&quot;') + '">' + s + '</button>';
+  }).join('') + '</div>';
+
+  html += '<div class="total"><div><div class="lbl">' + valin + ' hefur unnið sér inn</div>' +
+    '<div class="kr">' + kr(samtala(valin)) + '</div></div>' +
+    '<div class="cnt">' + minHakad.length + ' verkefni ✅' + (sendingar ? '<br>vista…' : '') + '</div></div>';
+
+  html += '<h2>Verkefnin</h2>';
+  var syndi = 0;
+  state.verkefni.forEach(function (v) {
+    if (!maGera(v, valin)) return;
+    syndi++;
+    var n = fjoldi[v.nafn] || 0;
+    html += '<div class="task' + (n ? ' done' : '') + (n > 1 ? ' multi' : '') + '">' +
+      '<div class="info"><div class="nafn">' + v.nafn + '</div>' +
+      '<div class="kr">' + (n ? '✔ búið — ' + kr(v.upphaed * n) : kr(v.upphaed)) + '</div></div>' +
+      '<span class="badge">×' + n + '</span>' +
+      '<button class="minus" title="Taka til baka" data-minus="' + v.nafn.replace(/"/g, '&quot;') + '">−</button>' +
+      '<button class="check" data-haka="' + v.nafn.replace(/"/g, '&quot;') + '">✓</button>' +
+      '</div>';
+  });
+  if (!syndi) html += '<div class="log"><div class="empty">Engin verkefni skráð á ' + valin + ' í Google Sheet-inu.</div></div>';
+
+  html += '<h2>Nýlega hakað</h2><div class="log">';
+  if (minHakad.length) {
+    minHakad.slice(-6).reverse().forEach(function (h) {
+      var d = new Date(h.timi);
+      var t = isNaN(d) ? '' : ('0' + d.getDate()).slice(-2) + '.' + ('0' + (d.getMonth() + 1)).slice(-2) + '. kl. ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+      html += '<div class="row"><span>' + h.verkefni + ' · ' + kr(h.upphaed) + '</span><span class="t">' + t + '</span></div>';
+    });
+  } else {
+    html += '<div class="empty">Ekkert hakað ennþá — drífðu þig! 💪</div>';
+  }
+  html += '</div>';
+
+  html += '<button class="payout" id="utborgun">💸 Greiða út (fyrir foreldra)</button>';
+
+  efni.innerHTML = html;
+
+  efni.querySelectorAll('.tab').forEach(function (b) {
+    b.onclick = function () { valin = b.getAttribute('data-stelpa'); teikna(); };
+  });
+  efni.querySelectorAll('[data-haka]').forEach(function (b) {
+    b.onclick = function () { haka(b.getAttribute('data-haka')); };
+  });
+  efni.querySelectorAll('[data-minus]').forEach(function (b) {
+    b.onclick = function () { afhaka(b.getAttribute('data-minus')); };
+  });
+  var ut = document.getElementById('utborgun');
+  if (ut) ut.onclick = opnaUtborgun;
+}
+
+/* ---------- Konfettí ---------- */
+
+function konfetti() {
+  var litir = ['#8b5cf6', '#d946ef', '#f59e0b', '#16a34a', '#3b82f6', '#ef4444'];
+  for (var i = 0; i < 24; i++) {
+    var k = document.createElement('div');
+    k.className = 'konfetti';
+    k.style.left = (5 + Math.random() * 90) + 'vw';
+    k.style.background = litir[i % litir.length];
+    k.style.animationDelay = (Math.random() * .3) + 's';
+    k.style.animationDuration = (1.1 + Math.random() * .9) + 's';
+    document.body.appendChild(k);
+    setTimeout(function (el) { return function () { el.remove(); }; }(k), 2600);
+  }
+}
+
+/* ---------- Uppsetningarskilaboð ---------- */
+
+function synaUppsetningu() {
+  efni.innerHTML = '<div class="setup"><strong>Uppsetningu ekki lokið 🛠️</strong><br>' +
+    'Það á eftir að líma vefslóð Google Apps Script vefappsins inn í þessa skrá.<br><br>' +
+    'Opnaðu <code>verkefni.html</code> í textaritli, finndu línuna <code>var API_URL = "";</code> ' +
+    'efst í &lt;script&gt; hlutanum og límdu slóðina (sem endar á <code>/exec</code>) á milli gæsalappanna. ' +
+    'Sjá nánar í leiðbeiningunum.</div>';
+}
+
+/* ---------- Ræsing og samstilling milli tækja ---------- */
+
+saekja();
+setInterval(function () { if (!document.hidden && !sendingar) saekja(); }, 25000);
+document.addEventListener('visibilitychange', function () { if (!document.hidden) saekja(); });
+</script>
+</body>
+</html>
