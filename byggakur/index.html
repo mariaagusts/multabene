@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Byggakur 12 · House Manual</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -619,6 +620,24 @@
   }
   .footer .closer em { color: var(--accent-soft); }
 
+  /* Kóðar sem birtast aðeins með gestahlekknum (sjá revealSecrets) */
+  .secret { font-style: italic; opacity: 0.75; }
+  .secret.secret-on { font-style: normal; opacity: 1; font-weight: 600; letter-spacing: 0.04em; }
+  .ribbon-fact .val .secret-val { font-weight: inherit; letter-spacing: inherit; }
+
+  /* Iceland 101 og bilanakaflinn */
+  .facts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px 40px; margin-top: 8px; }
+  @media (max-width: 700px) { .facts-grid { grid-template-columns: 1fr; gap: 20px; } }
+  .facts-grid h4 { margin: 0 0 6px; font-size: 15px; }
+  .facts-grid p { margin: 0; font-size: 14px; color: var(--ink-2); line-height: 1.55; }
+  .daylight { width: 100%; border-collapse: collapse; margin-top: 28px; font-size: 13px; }
+  .daylight th, .daylight td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule-soft); }
+  .daylight th { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); font-weight: 500; }
+  .glossary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px 24px; margin-top: 24px; font-size: 14px; }
+  @media (max-width: 800px) { .glossary { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px) { .glossary { grid-template-columns: 1fr; } }
+  .glossary span { color: var(--ink-3); }
+
   @media print {
     .toc, .hero-mountains { display: none; }
     .layout { grid-template-columns: 1fr; padding: 24px; }
@@ -652,7 +671,7 @@
     <div class="hero-meta">
       <div><div class="lbl">Host</div><div class="val">María Ágústsdóttir<br>+354 844 2770</div></div>
       <div><div class="lbl">Check-in / out</div><div class="val">4 PM · 11 AM</div></div>
-      <div><div class="lbl">Updated</div><div class="val">May 2026</div></div>
+      <div><div class="lbl">Updated</div><div class="val">September 2026</div></div>
     </div>
     <aside class="emergency-sticker">
       <div class="lab">Emergency · Iceland</div>
@@ -722,11 +741,18 @@ window.MANUAL = {
     email: "mariaagusts@gmail.com",
     phone: "+354 844 2770",
     wifiName: "B12",
-    wifiPass: "06030112",
-    keyBoxCode: "0312",
-    greenhouseCode: "121",
     checkin: "4:00 PM",
     checkout: "11:00 AM",
+  },
+
+  // Kóðarnir (Wi-Fi, lykilbox, gróðurhús) eru EKKI í þessari skrá í læsilegu formi.
+  // Þeir eru dulkóðaðir (AES-256-CBC, lykill úr PBKDF2) og birtast aðeins þegar síðan er
+  // opnuð með ?k=LEYNIORÐ í slóðinni, sem gestir fá í bókunarskilaboðum. Leyniorðið vistast
+  // í vafra gestsins svo bókamerkið virki áfram. Sjá revealSecrets() neðst.
+  secrets: {
+    salt: "ayoryliJBmyVwXoxBe343Q==",
+    iv: "9pZBcqPlJJwpNi438tHyjw==",
+    ct: "3VXvT6iUYKSw42meNowd4CCGTCErLVRoz3l9a4YhRnHgU2UVe/k6Ujwm6hNkkoSv1CDzoQP6KIuk8naIm8xMDQ==",
   },
 
   emergency: {
@@ -742,15 +768,15 @@ window.MANUAL = {
     address: "Fossvogsvegur, 108 Reykjavík",
     drive: "~10 minutes by car from the house",
     phone: "+354 543 1000",
-    note: "Iceland's main hospital. The Fossvogur branch handles A&E (er. emergency room / bráðamóttökuna). Walk-in is fine, no need to call ahead. Most staff speak excellent English.",
+    note: "Iceland's main hospital. The Fossvogur branch handles A&E (i.e. the emergency room, bráðamóttaka in Icelandic). For anything serious, go straight there or call 112. For smaller things it is slow and expensive, use the options below instead. Most staff speak excellent English.",
     map: "https://goo.gl/maps/QYbY7v9YJZcEYY7H7",
-    clinic: "For minor issues, the closer local clinic is Heilsugæsla Garðabæjar at Garðatorg.",
+    clinic: "<strong>Daytime (weekdays 8 to 16):</strong> the local clinic, Heilsugæsla Garðabæjar at Garðatorg, takes walk-ins for a fee. <strong>Evenings and weekends:</strong> Læknavaktin, the after-hours clinic at Háaleitisbraut 68 in Reykjavík (weekdays 17 to 23:30, weekends 9 to 23:30), no appointment needed. <strong>Not sure where to go?</strong> Call <strong>1700</strong>, a 24-hour nurse advice line in English, they'll tell you.",
     pharmacy: "Closest pharmacy: Lyfja at Garðatorg. Most convenient is the <a href=\"https://maps.app.goo.gl/qTXUfhUviy4j1BLn8\" target=\"_blank\">drive-through Car-Pharmacy (Apótekarinn)</a> at Hlíðasmári in Kópavogur.",
   },
 
   qr: {
     headline: "Always have this guide on you",
-    body: "There's a small printed card on the kitchen counter. Scan its QR code to open this manual on your phone. Bookmark it. The page works offline once loaded.",
+    body: "There's a small printed card on the kitchen counter. Scan its QR code to open this manual on your phone, or use the link from your booking message (that one also unlocks the door and Wi-Fi codes). Bookmark it. Once loaded, the page keeps working without an internet connection.",
   },
 
   photos: [
@@ -758,10 +784,11 @@ window.MANUAL = {
     { id: "hot-tub-faucet", src: "/byggakur/photos/hottubfaucet.png", label: "Hot tub faucet (garage)", note: "The two knobs in the garage. Left handle for power, right knob preset to 42°C." },
     { id: "hot-tub-drain", src: ["/byggakur/photos/hottub1.png", "/byggakur/photos/hottub2.png"], label: "Hot tub drain", note: "The drain handle underneath the steps, shown open and closed." },
     { id: "laundry", src: "/byggakur/photos/laundry1.png", label: "Laundry machines", note: "All three machines in a row, two washing machines on the left, with the pre-loaded one labelled. Dryer on the right, image showing the dryer's water tank top-left." },
-    { id: "coffee", src: ["/byggakur/photos/coffee1.png", "/byggakur/photos/coffee2.png", "/byggakur/photos/coffee3.png", "/byggakur/photos/coffee4.png"], label: "Coffee machine controls", note: "On/off button and the hot-water knob. A second shot of the milk frother on the side." },
-    { id: "fuse-box", label: "Fuse box", note: "Where it lives + a labelled close-up of the breakers, in case anything trips." },
-    { id: "trash-bins", label: "Trash & recycling bins", note: "All three bins from the front, with labels matching the manual: regular, plastic, paper." },
-    { id: "bbq-gas", label: "BBQ & spare gas", note: "The BBQ on the patio with the spare gas tank visible on the right side." },
+    { id: "coffee", src: ["/byggakur/photos/coffee1.png", "/byggakur/photos/coffee2.png", "/byggakur/photos/coffee3.png", "/byggakur/photos/coffee4.png"], label: "Coffee machine controls", note: "On/off button and the hot-water knob, then the milk frother on the side." },
+    // Myndir sem á eftir að taka. Reitir án src birtast ekki á síðunni; bæta við src þegar myndin er komin.
+    { id: "fuse-box", label: "Fuse box", note: "Where it is and which breaker is which, in case anything trips." },
+    { id: "trash-bins", label: "Trash & recycling bins", note: "The bins out front, labelled the same way as in the manual." },
+    { id: "bbq-gas", label: "BBQ & spare gas", note: "The BBQ on the patio with the spare gas tank on the right side." },
   ],
 
   seasons: {
@@ -772,7 +799,7 @@ window.MANUAL = {
       tips: [
         "Daylight is precious. In December the sun is up only ~4 to 5 hours. Plan outings for late morning to early afternoon.",
         "Roads can ice over fast. Check road.is before driving anywhere outside the city.",
-        "Studded tyres are standard on rentals from Nov to Apr. Confirm yours has them.",
+        "Rental cars come with winter tyres (studded or not) from Nov to mid-Apr. Confirm yours has them before you leave the airport.",
         "Bring or buy proper crampons. Even the sidewalks get glassy.",
         "Best aurora odds: Oct, Feb, Mar.",
         "Pools and the Sky Lagoon are at their best when it's freezing out.",
@@ -818,10 +845,9 @@ window.MANUAL = {
       { name: "FlyOver Iceland", note: "Simulator ride over Iceland. Short, thrilling, indoor.", url: "https://www.flyovericeland.com" },
     ],
     practical: [
-      "Tap water is safe straight from the cold tap. Fill bottles, no need to buy. Just keep the tap running for a bit so it gets properly cold. For some reason the tap water is coldest in the downstairs bathroom (it might sound odd to get drinking water from a bathroom, but trust me on this!).",
-      "Pharmacies stock children's painkillers and basic medicine. Closest is Lyfja at Garðatorg, but the most convenient is the <a href=\"https://maps.app.goo.gl/qTXUfhUviy4j1BLn8\" target=\"_blank\">drive-through Car-Pharmacy</a> at Hlíðasmári in Kópavogur.",
+      "Pharmacies stock children's painkillers and basic medicine (see Hospital &amp; pharmacy below for the closest ones).",
       "Most restaurants have high-chairs and kids' menus by default; no need to call ahead.",
-      "Kids ride free on Strætó (city buses) under 6, half-price 6 to 17.",
+      "Kids under 12 ride free on Strætó (city buses), 12 to 17 pay a reduced youth fare.",
       "Public pools are extremely kid-friendly. Just shower fully naked before entering (Icelandic rule, no exceptions). This is because our pools are geothermally heated and use very little chlorine, so everyone needs to be properly clean going in.",
       "My own daughters (12 and 14) have grown up with all of these spots. They can vouch.",
     ],
@@ -829,14 +855,17 @@ window.MANUAL = {
 
   toc: [
     { id: "welcome", label: "Welcome" },
+    { id: "gettinghere", label: "Getting here" },
     { id: "arrival", label: "Arrival & key" },
     { id: "essentials", label: "Essentials" },
     { id: "house", label: "Inside the house" },
     { id: "outdoors", label: "Outdoors & hot tub" },
     { id: "rules", label: "House rules" },
+    { id: "trouble", label: "If something goes wrong" },
     { id: "photos", label: "Photo reference" },
     { id: "neighbourhood", label: "Neighbourhood" },
     { id: "kids", label: "Travelling with kids" },
+    { id: "iceland101", label: "Iceland 101" },
     { id: "restaurants", label: "Where to eat" },
     { id: "todo", label: "Things to do" },
     { id: "itineraries", label: "Itineraries" },
@@ -854,32 +883,89 @@ window.MANUAL = {
     signoff: "María",
   },
 
+  gettingHere: {
+    intro: "Keflavík airport (KEF) is about 45 km from the house, 40 to 45 minutes by car. Three ways to do it, in order of how most guests choose:",
+    options: [
+      { title: "Rental car", body: "The easiest if you plan any day trips. All rental desks are at the airport or a short shuttle away. Set the GPS to Byggakur 12, Garðabær. You'll take Route 41 towards Reykjavík, then Route 40 (Hafnarfjarðarvegur), and turn off at Garðabær. Parking for three cars in the driveway.", url: "https://goo.gl/maps/AwKvTrRU7ErZuRXt9", link: "Open the house in Maps" },
+      { title: "Flybus + short taxi", body: "The Flybus leaves the terminal after every arrival, no need to book a time. Get off at the <strong>Aktu Taktu</strong> stop in Garðabær (tell the driver, it's the stop before Reykjavík), about 40 minutes. From there it's a 5-minute taxi ride to the house, roughly 3,000 to 4,000 ISK. Buy the Flybus ticket online or at the desk in arrivals.", url: "https://www.re.is/tour/flybus/", link: "Flybus tickets" },
+      { title: "Taxi all the way", body: "Convenient with lots of luggage or a late flight, but expensive: expect 20,000 to 25,000 ISK (roughly €140 to €175). Use the official taxi rank outside arrivals, or book Hreyfill in advance on +354 588 5522 and ask for a fixed price." },
+    ],
+    note: "There are no trains in Iceland. Public bus 55 also runs airport to Reykjavík a few times a day (cheap, but slow and it doesn't pass Garðabær). The Flybus meets every flight, including late-night arrivals. Text me if anything goes wrong on the way.",
+  },
+
+  trouble: {
+    lede: "Nothing here is an emergency. Text me first, I'd rather hear about a small thing early than a big thing late.",
+    items: [
+      { title: "Locked out", body: "The spare key lives in the key box by the front door (code in your booking message). If the key is inside and the box is empty, text or call me and I'll sort it out." },
+      { title: "Wi-Fi drops", body: "Give it two minutes first, it usually comes back on its own. If not, text me and I'll tell you where the router is so you can unplug it for thirty seconds." },
+      { title: "House feels too warm or too cold", body: "The floor heating is automatic and slow: it takes a few hours to notice a change, so don't keep adjusting. Too warm: open windows on both sides for a cross-breeze. Too cold: close windows and give it time. It won't get truly cold, the heating never switches off." },
+      { title: "Something trips the power", body: "Find the fuse box (see Photo reference) and flip the breaker that's pointing the other way. If it trips again, unplug whatever you just switched on and text me." },
+      { title: "Hot tub won't drain or fill", body: "It can't overflow, there's an overflow drain. If it won't drain, the drain handle under the steps isn't fully open. If it won't fill, the left handle in the garage isn't fully on. Photos of both in Photo reference." },
+      { title: "Something breaks", body: "It happens, houses are for living in. Just tell me. I won't charge you for normal wear, and I'd much rather know than find out later." },
+    ],
+  },
+
+  iceland101: {
+    lede: "The things Icelanders forget to tell visitors because they seem obvious to us.",
+    items: [
+      { title: "Money", body: "The currency is the króna (ISK). Cards work everywhere, including taxis, hot-dog stands and public toilets, so you don't need cash at all. Contactless and Apple/Google Pay are standard. No tipping, service is included. Rough prices: coffee 700 to 900 ISK, a casual lunch 2,500 to 4,000, a main course at dinner 4,500 to 7,000, a beer in a bar 1,500 to 1,900." },
+      { title: "Time", body: "Iceland is on GMT all year round, no daylight saving. In summer that puts us one hour behind London and two behind central Europe; in winter, same as London." },
+      { title: "Phone & data", body: "EU/EEA SIM cards roam here at no extra cost. Others: an eSIM (Airalo, Holafly and the like) is the easiest, or a prepaid Icelandic SIM from Síminn or Nova, sold at the airport and in most supermarkets. Download the free <strong>112 Iceland</strong> app: one tap sends your location to the emergency services." },
+      { title: "Electricity", body: "230 volts, two-round-pin plugs (type F, the same as most of Europe). UK, US, Canadian and Australian plugs need an adapter. US hair dryers and straighteners rated for 110 V only will not survive the trip." },
+      { title: "Opening hours", body: "Supermarkets: Bónus roughly 10 to 19:30, Krónan a bit longer, Hagkaup by Garðatorg around the clock. Downtown shops 10 to 18, shorter on Sundays. Vínbúðin (the state alcohol shop) is closed on Sundays and public holidays; the legal drinking age is 20." },
+      { title: "Weather", body: "It changes by the hour, and the wind is the part visitors underestimate. Layers, a proper shell jacket and something for your ears, whatever the month. The <a href=\"https://en.vedur.is/\" target=\"_blank\" rel=\"noopener\">vedur.is</a> app is what locals use. Before any day trip, glance at <a href=\"https://safetravel.is/\" target=\"_blank\" rel=\"noopener\">safetravel.is</a>: road closures, weather warnings and, when relevant, volcanic activity on the Reykjanes peninsula (the airport peninsula). Eruptions there are normal in recent years and don't affect the house, but never approach one on your own." },
+      { title: "The swimming pool ritual", body: "Every town has a geothermal pool with hot tubs at 38 to 42°C, and going is the most Icelandic thing you can do. The rule that trips up visitors: you shower fully naked, with soap, <em>before</em> putting on your swimsuit, in the open shower room. Nobody looks, everybody does it, the water uses very little chlorine. Bring a towel and swimsuit (rentals available), entry is around 1,300 ISK for adults, less for kids." },
+      { title: "Buses", body: "City buses (Strætó) don't take cash; pay in the Klapp app (buy tickets before you board). Route 1 runs from the neighbourhood straight into central Reykjavík." },
+      { title: "Reading Icelandic", body: "Two letters you'll see on every road sign: <strong>Þ þ</strong> sounds like the 'th' in <em>thing</em>, and <strong>Ð ð</strong> like the 'th' in <em>this</em>. So Þingvellir is 'THING-vet-lir' and Garðabær is 'GAR-tha-bye-r'." },
+      { title: "Nature is not fenced", body: "There are very few railings, warning signs or lifeguards. Cliffs, hot springs, glacier edges and the surf are exactly as dangerous as they look. Stay on marked paths, and respect closed roads and ropes: they are there because someone was hurt." },
+    ],
+    daylight: [
+      ["January", "11:00", "16:10", "5 h"], ["February", "09:45", "17:45", "8 h"], ["March", "08:15", "19:15", "11 h"],
+      ["April", "06:20", "20:50", "14½ h"], ["May", "04:30", "22:30", "18 h"], ["June", "03:00", "24:00", "21 h"],
+      ["July", "03:30", "23:30", "20 h"], ["August", "05:30", "21:30", "16 h"], ["September", "06:55", "19:45", "13 h"],
+      ["October", "08:20", "18:00", "9½ h"], ["November", "09:55", "16:25", "6½ h"], ["December", "11:15", "15:30", "4 h"],
+    ],
+    glossary: [
+      ["mjólk", "milk"], ["nýmjólk", "whole milk"], ["léttmjólk", "semi-skimmed milk"], ["undanrenna", "skimmed milk"],
+      ["rjómi", "cream"], ["skyr", "thick Icelandic yoghurt"], ["smjör", "butter"], ["ostur", "cheese"],
+      ["egg", "eggs"], ["brauð", "bread"], ["hveiti", "flour"], ["sykur", "sugar"],
+      ["kjúklingur", "chicken"], ["lambakjöt", "lamb"], ["ýsa", "haddock"], ["lax", "salmon"],
+      ["pylsa", "hot dog"], ["kleina", "twisted doughnut"], ["lakkrís", "liquorice"], ["kaffi", "coffee"],
+      ["vatn", "water"], ["bjór", "beer"], ["tilboð", "special offer"], ["opið / lokað", "open / closed"],
+    ],
+  },
+
   arrivalChecklist: [
-    { title: "Find the key box", body: "Sometimes I'll leave the house unlocked for you with keys inside, so try the front door first. If it's locked, there is a spare key in the key box that is mounted above the trash-bin shelter, opposite the front door. Code: 0312. Slide the cover, enter the code, key drops out." },
+    { title: "Find the key box", body: "Sometimes I'll leave the house unlocked for you with keys inside, so try the front door first. If it's locked, there is a spare key in the key box that is mounted above the trash-bin shelter, opposite the front door. Code: <span class=\"secret\" data-k=\"key\">sent in your booking message</span>. Slide the cover, enter the code, key drops out." },
     { title: "Lock the front door properly", body: "It's a safe neighbourhood, so locking isn't really a concern. If you do lock it, pull the handle UP first, then turn the key. The bolt won't engage otherwise." },
     { title: "Shoes off", body: "Icelandic homes are shoes-off. The downstairs hardwood and living-room rug are sensitive to water." },
-    { title: "Connect to Wi-Fi", body: "Network: B12 · Password: 06030112" },
+    { title: "Connect to Wi-Fi", body: "Network: B12 · Password: <span class=\"secret\" data-k=\"wifi\">sent in your booking message</span>" },
     { title: "Climate", body: "If too warm, open windows. If too cold, close them. The house has floor heating, which reacts slowly to changes, so give it a bit of time before adjusting again." },
     { title: "Say hi", body: "Text María at +354 844 2770 once you're in, even just to confirm everything's good." },
   ],
 
   quickFacts: [
-    { label: "Wi-Fi", value: "B12", sub: "06030112" },
-    { label: "Key box", value: "0312", sub: "above trash shelter" },
+    { label: "Wi-Fi", value: "B12", sub: '<span class="secret" data-k="wifi">see booking message</span>' },
+    { label: "Key box", value: '<span class="secret secret-val" data-k="key">····</span>', sub: "above trash shelter" },
     { label: "Check-in", value: "4 PM", sub: "Check-out 11 AM" },
-    { label: "Greenhouse", value: "121", sub: "if locked" },
+    { label: "Greenhouse", value: '<span class="secret secret-val" data-k="greenhouse">···</span>', sub: "if locked" },
     { label: "Parking", value: "3 cars", sub: "in driveway" },
     { label: "Tap water", value: "Drink it!", sub: "safe & cold" },
   ],
 
   essentials: {
-    wifi: { name: "B12", pass: "06030112", note: "Recently upgraded, should be <strong>VERY</strong> fast. (Recent speed test: 778 Mbps download, 407 Mbps upload.)" },
+    wifi: { name: "B12", pass: '<span class="secret secret-val" data-k="wifi">see booking message</span>', note: "Recently upgraded, should be <strong>VERY</strong> fast. (Recent speed test: 778 Mbps download, 407 Mbps upload.)" },
+    water: "Tap water is safe straight from the cold tap and tastes better than anything bottled. Let it run a moment so it gets properly cold; for some reason it runs coldest in the downstairs bathroom. The hot water is geothermal, like everywhere in Iceland, but the house has a heat exchanger and a preset temperature, so no sulphur smell and no scalding.",
     parking: "The driveway fits up to three cars.",
     rubbish: "Three bins out front: regular trash + food waste (left), plastic recycling (middle), paper & card (right). If full, use the third door on the right and I'll take care of it.",
     smoking: "No smoking inside the house, please.",
   },
 
   insideHouse: [
+    {
+      title: "Bedrooms",
+      body: "Six bedrooms in all: five upstairs, and one downstairs with a very good pull-out sofa bed. Use the rooms that suit your group and leave the rest as they are. The rooms you sleep in are the ones you strip on the way out (see Laundry), that's how I know which to redo.",
+    },
     {
       title: "Kitchen",
       body: "The microwave sits above the main oven. Press 'Menu' to switch to Microwave mode. Dishwasher is under the sink, on the left. You'll find utensils, condiments, oil, coffee and tea in the kitchen, and some more (feel free to use what you find).",
@@ -922,14 +1008,14 @@ window.MANUAL = {
       steps: [
         "Close the drain, it's outside, underneath the hot tub steps. Turn the handle to the closed position.",
         "Open the faucet in the garage (white door inside the downstairs bedroom). The temperature is pre-set on the right knob to 42°C (108°F), which is what I like, it's quite hot. Turn the LEFT handle for full power.",
-        "Once the tub is filled, please close the faucet so it doesn't keep running.",
+        "Once the tub is filled, please close the faucet. It can't overflow (there's an overflow drain), but the hot water is metered and I pay for every litre that runs through, so please don't leave it flowing while you soak.",
         "Enjoy. The tub doesn't have bubble jets, just a hot soak.",
         "When done, open the drain (the opposite direction from step 1).",
       ],
       cooldown: "If it gets too hot, turn off the LEFT handle in the garage and the water will cool down naturally over time.",
     },
     bbq: "On the patio. Remember to shut off the gas after use. There's an extra gas tank on the right side of the BBQ. If that also runs out (shouldn't be needed), swap the empty tank at any N1 (red) gas station, bring the empty one, pay only for the gas.",
-    greenhouse: "Code 121 if locked (I lock it in heavy winds). Note that the <strong>greenhouse is not noise-proof, so please keep voices low in the garden, especially after 10 PM.</strong> My neighbours' bedrooms face this side and they've asked me to mention this.",
+    greenhouse: "Code <span class=\"secret\" data-k=\"greenhouse\">(in your booking message)</span> if locked (I lock it in heavy winds). Note that the <strong>greenhouse is not noise-proof, so please keep voices low in the garden, especially after 10 PM.</strong> My neighbours' bedrooms face this side and they've asked me to mention this.",
     cameras: "Arlo cameras outside only, none inside. The patio camera doesn't cover the hot tub. Feel free to take them down if you'd prefer. I mute all notifications except the doorbell.",
   },
 
@@ -939,7 +1025,7 @@ window.MANUAL = {
     { icon: "smoke", title: "No smoking", body: "Anywhere inside the house." },
     { icon: "lock", title: "Lift handle, then lock", body: "The front-door bolt only engages with the handle up." },
     { icon: "rug", title: "Mind the living-room rug", body: "Even water marks it, especially after the hot tub. It already shows some wear and tear (I do not recommend buying a 100% viscose rug!)." },
-    { icon: "key", title: "Key back in box at checkout", body: "Same code: 0312." },
+    { icon: "key", title: "Key back in box at checkout", body: "Same code as on arrival: <span class=\"secret\" data-k=\"key\">see booking message</span>." },
   ],
 
   neighbourhood: {
@@ -993,18 +1079,15 @@ window.MANUAL = {
   },
 
   todo: [
-    { name: "Sky Lagoon", type: "Geothermal lagoon", note: "Highly recommended, adults-only, ocean-edge.", url: "https://skylagoon.com" },
+    { name: "Sky Lagoon", type: "Geothermal lagoon", note: "Highly recommended. Ocean-edge, calm, minimum age 12.", url: "https://skylagoon.com" },
     { name: "Blue Lagoon", type: "Iconic spa", note: "Tourist classic. Book well in advance.", url: "https://www.bluelagoon.com" },
     { name: "Lava Show", type: "Live lava demo", note: "Real molten lava poured indoors, in Reykjavík or Vík. Genuinely thrilling.", url: "https://lavashow.com" },
     { name: "Perlan", type: "Museum & viewpoint", note: "Wonders of Iceland exhibits, ice cave, planetarium.", url: "https://perlan.is" },
     { name: "FlyOver Iceland", type: "Simulator ride", note: "10 minutes, indoor, all ages. Surprisingly good.", url: "https://www.flyovericeland.com" },
     { name: "Whale watching", type: "Boat trip", note: "Elding from the old harbour. Best May to Sep.", url: "https://elding.is" },
-    { name: "Whales of Iceland", type: "Indoor exhibit", note: "Life-size whale models. Walk-around. Quietly amazing.", url: "https://whalesoficeland.is" },
-    { name: "Reykjavík Park & Zoo", type: "For kids", note: "Small, charming, with rides." },
-    { name: "Ásgarðslaug", type: "Local pool", note: "Walking distance, Icelanders love their pools." },
-    { name: "Álftaneslaug", type: "Pool with wave machine", note: "Near the presidential residence." },
-    { name: "Laugardalslaug", type: "Biggest pool in Reykjavík", note: "Multiple hot pots, big slides." },
+    { name: "Laugardalslaug", type: "Biggest pool in Reykjavík", note: "Multiple hot pots, big slides. Ásgarðslaug (walking distance) and Álftaneslaug (wave machine) are the local favourites, see the kids section." },
     { name: "Hallgrímskirkja", type: "Iconic church + tower", note: "Take the elevator up for the best city view." },
+    { name: "Harpa", type: "Concert hall", note: "The glass building by the harbour. Free to wander, the light inside is the point. Check the programme for concerts." },
   ],
 
   itineraries: [
@@ -1063,11 +1146,11 @@ window.MANUAL = {
       "Single-lane bridges are common. First car to the bridge has right of way.",
       "F-roads (mountain roads) require a 4x4 and are summer-only. Rental contracts forbid 2WD on them.",
       "Wind can rip car doors off. Open them carefully, especially in open, windy spots.",
-      "Speed cameras are common; speeding fines are steep (~€200+).",
+      "Speed cameras are common and fines are steep: typically 50,000 to 150,000 ISK (roughly €350 to €1,000), charged to your rental card.",
       "Fill up whenever you see a station outside the city. They're sparse in the highlands.",
       "If a road is marked 'Impassable', do not attempt it. People die every year ignoring this.",
       "Please do NOT stop at the side of the road for photos. Even when roads look like quiet country lanes, they are often high-speed routes (90 km/h) and pull-overs cause serious crashes. Use the marked viewpoints and lay-bys instead.",
-      "WARNING at Reynisfjara (the black sand beach near Vík): do NOT go close to the ocean. 'Sneaker waves' surge up the beach without warning and have killed people, most recently a 10-year-old German girl. Stay well back from the water, always.",
+      "WARNING at Reynisfjara (the black sand beach near Vík): do NOT go close to the ocean. 'Sneaker waves' surge far up the beach without warning and have killed several visitors, including children. Stay well back from the water, always, and never turn your back on it.",
     ],
   },
 
@@ -1089,7 +1172,7 @@ window.MANUAL = {
   checkout: [
     { title: "Strip used beds", body: "Just the rooms you slept in, leave the linens on the floor." },
     { title: "Lock up", body: "Front door: lift handle UP, then turn the key." },
-    { title: "Key back in the box", body: "Code 0312, same as arrival." },
+    { title: "Key back in the box", body: "Code <span class=\"secret\" data-k=\"key\">(see booking message)</span>, same as arrival." },
     { title: "Text María", body: "+354 844 2770, just a quick 'we're out!'" },
   ],
 
@@ -1139,10 +1222,13 @@ document.getElementById('toc-list').innerHTML = M.toc.map((t,i) => `
   <li><a href="#${t.id}"><span class="n">${num(i)}</span><span>${t.label}</span></a></li>
 `).join('');
 
-function sec(id, n, label, title, lede, body, opts = {}) {
+// Kaflanúmerið kemur úr efnisyfirlitinu (M.toc) svo það passi alltaf við það.
+const secNum = id => { const i = M.toc.findIndex(t => t.id === id); return i >= 0 ? num(i) : '··'; };
+
+function sec(id, _n, label, title, lede, body, opts = {}) {
   const klass = opts.class || '';
   return `<section class="${klass}" id="${id}" data-screen-label="${label}">
-    <div class="sec-tag"><span>${n} · ${label}</span><span>Byggakur 12</span></div>
+    <div class="sec-tag"><span>${secNum(id)} · ${label}</span><span>Byggakur 12</span></div>
     <h2>${title}</h2>
     ${lede ? `<p class="lede">${lede}</p>` : ''}
     ${body}
@@ -1162,7 +1248,21 @@ out.push(sec('welcome', '01', 'Welcome', 'Make yourself<br>at <em>home</em>.', '
   </div>`
 ));
 
-out.push(sec('arrival', '02', 'Arrival', 'First five<br><em>minutes</em>.', 'Six small things to handle when you walk in.',
+out.push(sec('gettinghere', '02', 'Getting here', 'From the <em>airport</em>.', M.gettingHere.intro,
+  `<div class="arrival">
+    ${M.gettingHere.options.map((o,i) => `
+      <div class="ar-item">
+        <div class="n">${num(i)}</div>
+        <div>
+          <h4>${o.title}</h4>
+          <p>${o.body}${o.url ? ` <a href="${o.url}" target="_blank" rel="noopener">${o.link} ↗</a>` : ''}</p>
+        </div>
+      </div>`).join('')}
+  </div>
+  <p style="font-size: 14px; color: var(--ink-3); margin-top: 24px; max-width: 640px;">${M.gettingHere.note}</p>`
+));
+
+out.push(sec('arrival', '03', 'Arrival', 'First five<br><em>minutes</em>.', 'Six small things to handle when you walk in.',
   `<div class="arrival">
     ${M.arrivalChecklist.map((c,i) => `
       <div class="ar-item">
@@ -1187,6 +1287,9 @@ out.push(sec('essentials', '03', 'Essentials', 'The <em>basics</em>.', '',
     <div><h4>Parking</h4><p>${M.essentials.parking}</p></div>
     <div><h4>Rubbish &amp; recycling</h4><p>${M.essentials.rubbish}</p></div>
     <div><h4>Smoking</h4><p>${M.essentials.smoking}</p></div>
+  </div>
+  <div class="basics-3" style="grid-template-columns: 1fr;">
+    <div><h4>Water</h4><p>${M.essentials.water}</p></div>
   </div>`
 ));
 
@@ -1230,6 +1333,12 @@ out.push(sec('rules', '06', 'House rules', 'Six small <em>house rules</em>.', "W
         <h4>${r.title}</h4>
         <p>${r.body}</p>
       </div>`).join('')}
+  </div>`
+));
+
+out.push(sec('trouble', '07', 'If something goes wrong', 'If something <em>goes wrong</em>.', M.trouble.lede,
+  `<div class="facts-grid">
+    ${M.trouble.items.map(t => `<div><h4>${t.title}</h4><p>${t.body}</p></div>`).join('')}
   </div>`
 ));
 
@@ -1323,14 +1432,32 @@ function photoCell(p) {
       ${srcs.map((s, i) => `<img src="${s}" alt="${p.label}"${i > 0 ? ' hidden' : ''}>`).join('')}
       ${multi ? `<button class="ph-arr ph-prev" aria-label="Previous">&#8592;</button><button class="ph-arr ph-next" aria-label="Next">&#8594;</button><div class="ph-dots">${srcs.map((_, i) => `<span${i === 0 ? ' class="on"' : ''}></span>`).join('')}</div>` : ''}
     </div>
-    <div class="id-line">${p.id}</div>
+    <div class="id-line">${p.label}</div>
     <p class="note-line">${p.note}</p>
   </div>`;
 }
 
-out.push(sec('photos', '06b', 'Photo reference', 'Where to find <em>everything</em>.', "Use the arrows to step through multi-photo guides.",
+// Myndakaflinn er settur inn á undan hverfinu (sjá neðar) svo röðin passi við efnisyfirlitið.
+const photosSection = sec('photos', '07', 'Photo reference', 'Where to find <em>everything</em>.', "Use the arrows to step through multi-photo guides.",
   `<div class="photo-grid">
-    ${M.photos.map(photoCell).join('')}
+    ${M.photos.filter(p => p.src).map(photoCell).join('')}
+  </div>`
+);
+
+out.push(sec('iceland101', '11', 'Iceland 101', 'Iceland, <em>explained</em>.', M.iceland101.lede,
+  `<div class="facts-grid">
+    ${M.iceland101.items.map(t => `<div><h4>${t.title}</h4><p>${t.body}</p></div>`).join('')}
+  </div>
+  <h3 style="margin-top: 48px;">Daylight through the year</h3>
+  <p style="font-size: 14px; color: var(--ink-3); margin: 4px 0 0;">Approximate sunrise and sunset in Reykjavík around the middle of each month.</p>
+  <table class="daylight">
+    <thead><tr><th>Month</th><th>Sunrise</th><th>Sunset</th><th>Daylight</th></tr></thead>
+    <tbody>${M.iceland101.daylight.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody>
+  </table>
+  <h3 style="margin-top: 48px;">Supermarket words</h3>
+  <p style="font-size: 14px; color: var(--ink-3); margin: 4px 0 0;">Enough to get the right milk and the right cheese.</p>
+  <div class="glossary">
+    ${M.iceland101.glossary.map(g => `<div><strong>${g[0]}</strong> <span>${g[1]}</span></div>`).join('')}
   </div>`
 ));
 
@@ -1417,7 +1544,7 @@ out.push(sec('itineraries', '10', 'Itineraries', 'Three <em>plans</em>.', "Depen
 // Aurora – full-bleed treatment
 out.push(`<section class="aurora" id="aurora" data-screen-label="Aurora">
   <div class="aurora-inner">
-    <div class="sec-tag"><span>11 · Northern Lights</span><span>Byggakur 12</span></div>
+    <div class="sec-tag"><span>${secNum('aurora')} · Northern Lights</span><span>Byggakur 12</span></div>
     <h2>Catching the<br><em>aurora.</em></h2>
     <p class="lede">${M.aurora.season}</p>
     <div class="aurora-grid">
@@ -1459,7 +1586,7 @@ out.push(sec('seasonal', '13b', 'By season', 'What changes <em>by season</em>.',
   <div id="season-content"></div>`
 ));
 
-out.push(sec('hospital', '14b', 'Hospital & pharmacy', 'If you need <em>urgent care</em>.', "Most issues are best handled at the local clinic, not 112.",
+out.push(sec('hospital', '14b', 'Hospital & pharmacy', 'If you need <em>urgent care</em>.', "For most things you won't need 112. Here's where to go instead.",
   `<div class="hosp-wrap">
     <div class="hosp-block">
       <div class="meta">Nearest hospital</div>
@@ -1509,6 +1636,7 @@ out.push(sec('checkout', '14', 'Before you go', 'Before you <em>head out</em>.',
   </div>`
 ));
 
+out.splice(out.findIndex(s => s.includes('id="neighbourhood"')), 0, photosSection);
 document.getElementById('main').innerHTML = out.join('');
 
 function ruleIcon(name) {
@@ -1580,6 +1708,48 @@ document.querySelectorAll('.ph-carousel').forEach(c => {
   c.querySelector('.ph-prev').addEventListener('click', () => go(idx - 1));
   c.querySelector('.ph-next').addEventListener('click', () => go(idx + 1));
 });
+
+// ── Kóðarnir (Wi-Fi, lykilbox, gróðurhús) ──────────────────────────────
+// Leyniorðið kemur úr slóðinni (?k=... eða #k=...) og vistast í vafranum.
+// Kóðarnir eru dulkóðaðir í M.secrets (AES-256-CBC, lykill úr PBKDF2-SHA256, 150.000 umferðir).
+// Án rétts leyniorðs stendur „sent in your booking message" í stað kóðanna.
+const SECRET_STORE = 'b12-guest-key';
+async function revealSecrets() {
+  const params = new URLSearchParams(location.search);
+  const hash = new URLSearchParams(location.hash.replace(/^#/, ''));
+  let guestKey = params.get('k') || hash.get('k');
+  if (guestKey) {
+    try { localStorage.setItem(SECRET_STORE, guestKey); } catch (e) {}
+    // Fjarlægja leyniorðið úr slóðinni svo það sjáist ekki í sögu eða bókamerkjum sem eru deilt.
+    history.replaceState(null, '', location.pathname);
+  } else {
+    try { guestKey = localStorage.getItem(SECRET_STORE); } catch (e) {}
+  }
+  if (!guestKey || !window.crypto?.subtle) return;
+  const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  try {
+    const enc = new TextEncoder();
+    const km = await crypto.subtle.importKey('raw', enc.encode(guestKey), 'PBKDF2', false, ['deriveKey']);
+    const key = await crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt: b64(M.secrets.salt), iterations: 150000, hash: 'SHA-256' },
+      km, { name: 'AES-CBC', length: 256 }, false, ['decrypt']);
+    const plain = await crypto.subtle.decrypt({ name: 'AES-CBC', iv: b64(M.secrets.iv) }, key, b64(M.secrets.ct));
+    const codes = JSON.parse(new TextDecoder().decode(plain));
+    document.querySelectorAll('.secret').forEach(el => {
+      const v = codes[el.dataset.k];
+      if (v) { el.textContent = v; el.classList.add('secret-on'); }
+    });
+  } catch (e) {
+    // Rangt leyniorð: hreinsa það svo næsti réttur hlekkur virki
+    try { localStorage.removeItem(SECRET_STORE); } catch (_) {}
+  }
+}
+revealSecrets();
+
+// Offline: service worker geymir síðuna og myndirnar svo hún opnist án nets eftir fyrstu heimsókn.
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  navigator.serviceWorker.register('/byggakur/sw.js').catch(() => {});
+}
 </script>
 </body>
 </html>
