@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -768,10 +768,13 @@ window.MANUAL = {
     address: "Fossvogsvegur, 108 Reykjavík",
     drive: "~10 minutes by car from the house",
     phone: "+354 543 1000",
-    note: "Iceland's main hospital. The Fossvogur branch handles A&E (i.e. the emergency room, bráðamóttaka in Icelandic). For anything serious, go straight there or call 112. For smaller things it is slow and expensive, use the options below instead. Most staff speak excellent English.",
+    note: "Iceland's main hospital. The Fossvogur branch handles adult A&E (i.e. the emergency room, bráðamóttaka in Icelandic). For anything serious, go straight there or call 112. For smaller things it is slow and expensive, use the options below instead. Most staff speak excellent English.",
     map: "https://goo.gl/maps/QYbY7v9YJZcEYY7H7",
-    clinic: "<strong>Daytime (weekdays 8 to 16):</strong> the local clinic, Heilsugæsla Garðabæjar at Garðatorg, takes walk-ins for a fee. <strong>Evenings and weekends:</strong> Læknavaktin, the after-hours clinic at Háaleitisbraut 68 in Reykjavík (weekdays 17 to 23:30, weekends 9 to 23:30), no appointment needed. <strong>Not sure where to go?</strong> Call <strong>1700</strong>, a 24-hour nurse advice line in English, they'll tell you.",
-    pharmacy: "Closest pharmacy: Lyfja at Garðatorg. Most convenient is the <a href=\"https://maps.app.goo.gl/qTXUfhUviy4j1BLn8\" target=\"_blank\">drive-through Car-Pharmacy (Apótekarinn)</a> at Hlíðasmári in Kópavogur.",
+    children: "<strong>Children and teenagers (under 18) go to a different hospital:</strong> the children's emergency department at Barnaspítali Hringsins, Landspítali <strong>Hringbraut</strong>, 101 Reykjavík, open 24 hours. About 15 minutes by car. Not sure it's an emergency? Call <strong>1700</strong> first, the nurses there handle children's illnesses around the clock.",
+    childrenMap: "https://maps.google.com/?q=Barnasp%C3%ADtali+Hringsins+Hringbraut+Reykjav%C3%ADk",
+    clinic: "<strong>Daytime (weekdays 8 to 16):</strong> the local clinic, Heilsugæsla Garðabæjar at Garðatorg, usually sees visitors as walk-ins for a fee, though it mainly serves registered patients and may send you on. <strong>Evenings and weekends:</strong> Læknavaktin, the after-hours clinic at Háaleitisbraut 68 in Reykjavík (weekdays 17 to 22, weekends and holidays 9 to 22), no appointment needed. <strong>Not sure where to go?</strong> Call <strong>1700</strong>, a 24-hour nurse advice line in English, they'll tell you.",
+    cost: "<strong>Cost:</strong> visitors pay the full price, and an A&E visit can run to tens of thousands of krónur. EU/EEA citizens should bring the European Health Insurance Card (EHIC) for the local rate; everyone else pays and claims it back from their travel insurance, so keep the receipts.",
+    pharmacy: "Closest pharmacy: Lyfja at Garðatorg (closes around 18). With a car, the <a href=\"https://maps.app.goo.gl/qTXUfhUviy4j1BLn8\" target=\"_blank\">drive-through Car-Pharmacy (Apótekarinn)</a> at Hlíðasmári in Kópavogur is the most convenient. <strong>Evenings:</strong> Lyfja at Smáratorg (Kópavogur, closest) and Lyfja Lágmúla (Reykjavík) are open until midnight every day.",
   },
 
   qr: {
@@ -1608,26 +1611,14 @@ out.push(sec('hospital', '14b', 'Hospital & pharmacy', 'If you need <em>urgent c
       <div class="hosp-row"><div class="k">Phone</div><div class="v">${M.hospital.phone}</div></div>
       <div class="hosp-row"><div class="k">Maps</div><div class="v"><a href="${M.hospital.map}" target="_blank">Open in Maps &rarr;</a></div></div>
       <p class="note">${M.hospital.note}</p>
-      <p class="note"><strong style="color: var(--ink);">Local clinic.</strong> ${M.hospital.clinic}</p>
+      <p class="note">${M.hospital.children} <a href="${M.hospital.childrenMap}" target="_blank">Open in Maps &rarr;</a></p>
+      <p class="note"><strong style="color: var(--ink);">Not an emergency?</strong> ${M.hospital.clinic}</p>
+      <p class="note">${M.hospital.cost}</p>
       <div class="pharm-strip"><strong style="color: var(--ink);">Pharmacy.</strong> ${M.hospital.pharmacy}</div>
     </div>
     <div class="qr-block">
-      <div class="qr-glyph">
-        <svg viewBox="0 0 80 80">
-          <rect width="80" height="80" fill="#fff"/>
-          <g fill="#365666">
-            <rect x="6" y="6" width="18" height="18"/><rect x="10" y="10" width="10" height="10" fill="#fff"/><rect x="13" y="13" width="4" height="4"/>
-            <rect x="56" y="6" width="18" height="18"/><rect x="60" y="10" width="10" height="10" fill="#fff"/><rect x="63" y="13" width="4" height="4"/>
-            <rect x="6" y="56" width="18" height="18"/><rect x="10" y="60" width="10" height="10" fill="#fff"/><rect x="13" y="63" width="4" height="4"/>
-            <rect x="30" y="6" width="4" height="4"/><rect x="38" y="6" width="4" height="4"/><rect x="46" y="10" width="4" height="4"/>
-            <rect x="30" y="14" width="4" height="4"/><rect x="42" y="14" width="4" height="4"/>
-            <rect x="6" y="30" width="4" height="4"/><rect x="14" y="30" width="4" height="4"/><rect x="22" y="30" width="4" height="4"/><rect x="30" y="30" width="4" height="4"/><rect x="38" y="30" width="4" height="4"/><rect x="50" y="30" width="4" height="4"/><rect x="58" y="30" width="4" height="4"/><rect x="66" y="30" width="4" height="4"/>
-            <rect x="10" y="38" width="4" height="4"/><rect x="22" y="38" width="4" height="4"/><rect x="34" y="38" width="4" height="4"/><rect x="46" y="38" width="4" height="4"/><rect x="58" y="38" width="4" height="4"/>
-            <rect x="6" y="46" width="4" height="4"/><rect x="18" y="46" width="4" height="4"/><rect x="26" y="46" width="4" height="4"/><rect x="38" y="46" width="4" height="4"/><rect x="50" y="46" width="4" height="4"/><rect x="62" y="46" width="4" height="4"/><rect x="70" y="46" width="4" height="4"/>
-            <rect x="30" y="58" width="4" height="4"/><rect x="42" y="58" width="4" height="4"/><rect x="54" y="58" width="4" height="4"/><rect x="62" y="58" width="4" height="4"/>
-            <rect x="34" y="66" width="4" height="4"/><rect x="46" y="66" width="4" height="4"/><rect x="58" y="66" width="4" height="4"/><rect x="70" y="66" width="4" height="4"/>
-          </g>
-        </svg>
+      <div class="qr-glyph" title="multabene.is/byggakur">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 37" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h37v37H0z"/><path stroke="#365666" d="M4 4.5h7m1 0h4m1 0h3m6 0h7M4 5.5h1m5 0h1m8 0h1m6 0h1m5 0h1M4 6.5h1m1 0h3m1 0h1m1 0h2m1 0h3m3 0h1m2 0h1m1 0h1m1 0h3m1 0h1M4 7.5h1m1 0h3m1 0h1m2 0h1m5 0h4m3 0h1m1 0h3m1 0h1M4 8.5h1m1 0h3m1 0h1m2 0h1m1 0h1m3 0h4m3 0h1m1 0h3m1 0h1M4 9.5h1m5 0h1m1 0h2m2 0h3m1 0h3m1 0h1m1 0h1m5 0h1M4 10.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M14 11.5h4m4 0h3M4 12.5h1m1 0h1m3 0h2m4 0h2m1 0h2m3 0h1m2 0h1m2 0h1m1 0h1M4 13.5h3m1 0h1m2 0h5m4 0h1m2 0h1m2 0h2m3 0h2M4 14.5h2m2 0h3m1 0h1m4 0h2m1 0h1m2 0h1m1 0h6m1 0h1M4 15.5h1m3 0h1m4 0h1m4 0h3m1 0h2m1 0h1m1 0h1m1 0h1M4 16.5h3m1 0h4m1 0h1m1 0h4m4 0h1m2 0h1m5 0h1M11 17.5h1m1 0h1m2 0h3m4 0h2m1 0h2m3 0h2M7 18.5h1m2 0h1m1 0h1m1 0h1m2 0h1m1 0h3m1 0h4m3 0h1M5 19.5h4m5 0h4m4 0h1m3 0h3M4 20.5h1m3 0h6m2 0h2m1 0h2m3 0h1m1 0h2m4 0h1M6 21.5h4m1 0h1m8 0h2m1 0h2m1 0h2m2 0h3M4 22.5h3m3 0h1m2 0h2m2 0h2m1 0h1m1 0h3m1 0h1m1 0h2m2 0h1M7 23.5h1m3 0h1m1 0h1m1 0h1m2 0h3m1 0h4m1 0h1M4 24.5h4m2 0h1m1 0h1m1 0h5m5 0h6m1 0h1M12 25.5h1m1 0h5m3 0h1m1 0h1m3 0h3m1 0h1M4 26.5h7m1 0h1m2 0h2m2 0h1m1 0h1m2 0h1m1 0h1m1 0h1m3 0h1M4 27.5h1m5 0h1m3 0h1m2 0h1m4 0h1m1 0h1m3 0h1m2 0h1M4 28.5h1m1 0h3m1 0h1m2 0h1m2 0h2m1 0h2m2 0h7M4 29.5h1m1 0h3m1 0h1m2 0h2m1 0h2m2 0h1m1 0h2m1 0h1m1 0h5M4 30.5h1m1 0h3m1 0h1m1 0h4m2 0h1m1 0h1m1 0h1m1 0h2m2 0h1m2 0h2M4 31.5h1m5 0h1m3 0h1m3 0h3m3 0h4m1 0h1M4 32.5h7m1 0h4m1 0h2m1 0h3m1 0h2m3 0h1m2 0h1"/></svg>
       </div>
       <h4>${M.qr.headline}</h4>
       <p>${M.qr.body}</p>
