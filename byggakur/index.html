@@ -891,6 +891,14 @@ window.MANUAL = {
       { title: "Taxi all the way", body: "Convenient with lots of luggage or a late flight, but expensive: expect 20,000 to 25,000 ISK (roughly €140 to €175). Use the official taxi rank outside arrivals, or book Hreyfill in advance on +354 588 5522 and ask for a fixed price." },
     ],
     note: "There are no trains in Iceland. Public bus 55 also runs airport to Reykjavík a few times a day (cheap, but slow and it doesn't pass Garðabær). The Flybus meets every flight, including late-night arrivals. Text me if anything goes wrong on the way.",
+    carTipsTitle: "Before you book a car",
+    carTips: [
+      "Book early. From June to August prices roughly double and the good cars sell out.",
+      "Take the sand &amp; ash (SAAP) and gravel (GP) insurance if you're driving beyond the city. The basic cover excludes exactly the damage Iceland causes most, and a sandstorm can strip paint in an hour.",
+      "Winter (Nov to mid-Apr): confirm winter tyres. A 4x4 is not needed for the Golden Circle or the South Coast, only for the highlands and unploughed roads.",
+      "Landing late at night? Some companies (Blue Car Rental and Lotus, for example) hand over the car with a key box or an app, so you skip the queue at the desk. Search for \"self-service pickup\" or \"keyless\".",
+      "Check the car for existing scratches and photograph them before you drive off. Every rental dispute in Iceland is about this.",
+    ],
   },
 
   trouble: {
@@ -1259,7 +1267,11 @@ out.push(sec('gettinghere', '02', 'Getting here', 'From the <em>airport</em>.', 
         </div>
       </div>`).join('')}
   </div>
-  <p style="font-size: 14px; color: var(--ink-3); margin-top: 24px; max-width: 640px;">${M.gettingHere.note}</p>`
+  <p style="font-size: 14px; color: var(--ink-3); margin-top: 24px; max-width: 640px;">${M.gettingHere.note}</p>
+  <h3 style="margin-top: 40px;">${M.gettingHere.carTipsTitle}</h3>
+  <ul class="season-tips" style="margin-top: 12px;">
+    ${M.gettingHere.carTips.map(t => `<li>${t}</li>`).join('')}
+  </ul>`
 ));
 
 out.push(sec('arrival', '03', 'Arrival', 'First five<br><em>minutes</em>.', 'Six small things to handle when you walk in.',
