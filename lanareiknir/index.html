@@ -445,7 +445,7 @@ footer a{color:var(--ink-2)}
       <p>Samkvæmt reglum Seðlabanka Íslands um hámark greiðslubyrðar fasteignalána (nr. 1130/2025, áður nr. 701/2022) má mánaðarleg greiðslubyrði fasteignalána að hámarki vera <b>35% af mánaðarlegum ráðstöfunartekjum</b> — útborguðum launum — og <b>40% hjá fyrstu kaupendum</b>. Greiðslubyrðin í því mati er ekki raungreiðslan af láninu þínu heldur stöðluð viðmiðunargreiðsla: jafngreiðslulán með að hámarki 40 ára lánstíma og að lágmarki 5,5% vöxtum sé lánið óverðtryggt, en að hámarki 25 ára lánstíma og að lágmarki 3% vöxtum sé það verðtryggt. Séu raunverulegir vextir eða lánstími strangari en viðmiðin gilda þau raunverulegu. Reiknivélin notar þessar forsendur. Lánveitendur hafa þrönga undanþáguheimild (allt að 10% útlána á ársfjórðungi frá október 2025), svo niðurstaðan hér er viðmið en ekki endanlegt greiðslumat.</p>
       <h3>Eigið fé og kostnaður við kaupin</h3>
       <p>Súlan „Nær þetta upp í kaupverðið?“ leggur saman eigið fé þitt og þau lán sem borga íbúðina, og ber það saman við kaupverðið að viðbættum kostnaði við kaupin. Með lánum í kaupin teljast fasteignalán á aðalhúsnæðinu og lán á lánsveði. Lán á útleigueign, bílalán og námslán telja ekki með, því þau fara ekki í þessi kaup.</p>
-      <p>Áætlaði kostnaðurinn við kaupin er reiknaður sem stimpilgjald (0,8% af fasteignamati, helmingur hjá fyrstu kaupendum), þinglýsing tveggja skjala og 1% lántökugjald af nýju lánunum. <b>Þetta eru viðmiðunartölur.</b> Gjaldskrár breytast milli ára og lántökugjaldið er mismunandi eftir lánveitendum, svo hafir þú tölur frá fasteignasalanum eða bankanum skaltu velja „Mín eigin tala“ í skrefi 1 og slá þær inn. Hér er hvorki reiknað með þóknun fasteignasala við sölu eldri eignar né kostnaði við flutning eða breytingar á eigninni.</p>
+      <p>Áætlaði kostnaðurinn við kaupin er reiknaður sem stimpilgjald (0,8% af fasteignamati, helmingur hjá fyrstu kaupendum), þinglýsing tveggja skjala og lántökugjald upp á 60.000 kr. á hvert nýtt fasteignalán. Lántökugjaldið er föst krónutala, ekki hlutfall af láninu, og fellur alla jafna niður við fyrstu kaup. <b>Þetta eru viðmiðunartölur.</b> Gjaldskrár breytast milli ára og lántökugjaldið er mismunandi eftir lánveitendum, svo hafir þú tölur frá fasteignasalanum eða bankanum skaltu velja „Mín eigin tala“ í skrefi 1 og slá þær inn. Hér er hvorki reiknað með þóknun fasteignasala við sölu eldri eignar né kostnaði við flutning eða breytingar á eigninni.</p>
       <h3>Fyrirvarar</h3>
       <p>Reiknivélin gerir ráð fyrir jafnri verðbólgu allan lánstímann, föstum vöxtum og engum lántöku- eða greiðslugjöldum. Vaxtabætur, sérstakur húsnæðisstuðningur og skattaáhrif eru ekki með. Niðurstöðurnar eru til glöggvunar og koma ekki í stað greiðslumats lánveitanda eða fjármálaráðgjafar.</p>
     </div>
@@ -599,28 +599,31 @@ const buyLoanTotal=S=>S.loans.filter(l=>buysHome(l)).reduce((a,l)=>a+(l.principa
 // Viðmiðunartölur fyrir kaupkostnað — sjá skýringu í reitnum sjálfum
 const STAMP_RATE=0.008;   // stimpilgjald, 0,8% af fasteignamati (helmingur hjá fyrstu kaupendum)
 const THINGL_FEE=3500;    // þinglýsingargjald á skjal — reiknað með tveimur skjölum
-const LOAN_FEE=0.01;      // lántökugjald, gróft meðaltal af nýjum fasteignalánum
+const LOAN_FEE=60000;     // lántökugjald, föst krónutala á hvert nýtt fasteignalán, fellur niður hjá fyrstu kaupendum
+const newLoanCount=S=>S.loans.filter(l=>buysHome(l)&&l.principal>0).length;
 function estBuyCost(S){
   const base=S.priceAssess||S.priceBuy||0;
   const stamp=base*STAMP_RATE*(S.firstBuyer?0.5:1);
   const thingl=THINGL_FEE*2;
-  const fee=buyLoanTotal(S)*LOAN_FEE;
-  return {stamp, thingl, fee, total:Math.round(stamp+thingl+fee)};
+  const n=newLoanCount(S);
+  const fee=S.firstBuyer?0:n*LOAN_FEE;
+  return {stamp, thingl, fee, n, total:Math.round(stamp+thingl+fee)};
 }
 const buyCostOf=S=>S.buyCostMode==='manual'?(S.buyCost||0):estBuyCost(S).total;
 const buyNeed=S=>(S.priceBuy||0)+buyCostOf(S);
 const buyHave=S=>equityTotal(S)+buyLoanTotal(S);
-// Hvaða höfuðstóll á tilteknu láni lætur dæmið ganga upp? Lántökugjaldið hækkar
-// með láninu sjálfu, svo hér er leyst fyrir þeirri hringtengingu í stað þess að giska.
+// Hvaða höfuðstóll á tilteknu láni lætur dæmið ganga upp? Lánið sem verið er að fylla
+// telur sjálft með í lántökugjaldinu, líka þótt það standi í núlli núna.
 function fillTarget(S, loan){
   const others=buyLoanTotal(S)-(loan?(loan.principal||0):0);
-  const auto=S.buyCostMode!=='manual';
-  const fixedCost=auto
-    ? (S.priceAssess||S.priceBuy||0)*STAMP_RATE*(S.firstBuyer?0.5:1)+THINGL_FEE*2+others*LOAN_FEE
-    : (S.buyCost||0);
-  let P=(S.priceBuy||0)+fixedCost-equityTotal(S)-others;
-  if(auto) P=P/(1-LOAN_FEE);
-  return Math.max(0,Math.round(P));
+  let cost;
+  if(S.buyCostMode==='manual') cost=S.buyCost||0;
+  else{
+    const base=S.priceAssess||S.priceBuy||0;
+    const n=S.loans.filter(l=>buysHome(l)&&l.principal>0&&(!loan||l.id!==loan.id)).length+1;
+    cost=base*STAMP_RATE*(S.firstBuyer?0.5:1)+THINGL_FEE*2+(S.firstBuyer?0:n*LOAN_FEE);
+  }
+  return Math.max(0,Math.round((S.priceBuy||0)+cost-equityTotal(S)-others));
 }
 
 function scenarioShell(S, title, removable){
@@ -962,15 +965,19 @@ function renderEquity(S){
 function renderEquitySummary(S){
   const el=S.$('equitySummary'); if(!el) return;
   const tot=equityTotal(S);
-  el.innerHTML=tot>0?`Eigið fé alls <b style="color:var(--good-text)">${kr(tot)}</b>.`:'';
+  el.innerHTML=tot>0?`Eigið fé alls <b style="color:var(--good-text)">${kr(tot)}</b>`:'';
   const cs=S.$('buyCostSummary');
   if(cs){
     if(S.buyCostMode==='manual'){
       cs.innerHTML=S.buyCost>0?`Kostnaður við kaupin <b>${kr(S.buyCost)}</b> — leggst ofan á kaupverðið í niðurstöðunni.`:'';
     }else{
       const c=estBuyCost(S);
+      const stofn=S.priceAssess>0?'fasteignamati':'kaupverði';
+      const stampTxt=`stimpilgjald ${kr(Math.round(c.stamp))} (${S.firstBuyer?'0,4':'0,8'}% af ${stofn}${S.firstBuyer?', helmingsafsláttur fyrstu kaupenda':''})`;
+      const feeTxt=`lántökugjald ${kr(Math.round(c.fee))}`
+        +(S.firstBuyer?' (fellur niður við fyrstu kaup).':c.n>1?` (${kr(LOAN_FEE)} á hvert lán, ${c.n} lán).`:` (föst krónutala á hvert nýtt fasteignalán).`);
       cs.innerHTML=c.total>0
-        ? `Áætlaður kostnaður <b>${kr(c.total)}</b>: stimpilgjald ${kr(Math.round(c.stamp))}${S.firstBuyer?' (helmingsafsláttur fyrstu kaupenda)':''} · þinglýsing ${kr(c.thingl)} · lántökugjald ${kr(Math.round(c.fee))}. Athugaðu tölurnar hjá lánveitandanum þínum.`
+        ? `Áætlaður kostnaður <b>${kr(c.total)}</b>: ${stampTxt} · þinglýsing ${kr(c.thingl)} (${kr(THINGL_FEE)} á skjal, tvö skjöl) · ${feeTxt} Athugaðu tölurnar hjá lánveitandanum þínum.`
         : 'Settu inn kaupverð eða fasteignamat til að fá áætlun.';
     }
   }
