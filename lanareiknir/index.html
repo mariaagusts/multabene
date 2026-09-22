@@ -248,6 +248,7 @@ input.required:placeholder-shown{border-color:color-mix(in srgb,var(--accent) 50
   color-mix(in srgb,var(--ink) 13%,transparent) 5px,
   color-mix(in srgb,var(--ink) 13%,transparent) 10px)}
 .stack-need{position:absolute; left:-5px; right:-5px; height:0; border-top:2px solid var(--ink); pointer-events:none}
+.stack-reach{position:absolute; left:-5px; right:-5px; height:0; border-top:2px dashed var(--ink); pointer-events:none}
 .stack-legend{flex:1 1 320px; min-width:250px; max-width:430px; display:grid; gap:6px; font-size:13.5px; color:var(--ink-2); align-content:start}
 .stack-legend b{color:var(--ink); font-variant-numeric:tabular-nums}
 .stack-legend .rowline{display:flex; justify-content:space-between; gap:14px; align-items:baseline}
@@ -446,6 +447,10 @@ footer a{color:var(--ink-2)}
       <h3>Eigið fé og kostnaður við kaupin</h3>
       <p>Súlan „Nær þetta upp í kaupverðið?“ leggur saman eigið fé þitt og þau lán sem borga íbúðina, og ber það saman við kaupverðið að viðbættum kostnaði við kaupin. Með lánum í kaupin teljast fasteignalán á aðalhúsnæðinu og lán á lánsveði. Lán á útleigueign, bílalán og námslán telja ekki með, því þau fara ekki í þessi kaup.</p>
       <p>Áætlaði kostnaðurinn við kaupin er reiknaður sem stimpilgjald (0,8% af fasteignamati, helmingur hjá fyrstu kaupendum), þinglýsing tveggja skjala og lántökugjald upp á 60.000 kr. á hvert nýtt fasteignalán. Lántökugjaldið er föst krónutala, ekki hlutfall af láninu, og fellur alla jafna niður við fyrstu kaup. <b>Þetta eru viðmiðunartölur.</b> Gjaldskrár breytast milli ára og lántökugjaldið er mismunandi eftir lánveitendum, svo hafir þú tölur frá fasteignasalanum eða bankanum skaltu velja „Mín eigin tala“ í skrefi 1 og slá þær inn. Hér er hvorki reiknað með þóknun fasteignasala við sölu eldri eignar né kostnaði við flutning eða breytingar á eigninni.</p>
+      <h3>Bráðabirgðagreiðslumat og hámarkskaupverð</h3>
+      <p>Framfærslutölurnar eru <b>framfærsluviðmið umboðsmanns skuldara</b>, sótt af island.is. Þau eru uppfærð á tveggja mánaða fresti og byggja á rannsókn Hagstofunnar á útgjöldum heimilanna. Viðmiðin eru miðgildi, sem þýðir að helmingur heimila eyðir meiru en þetta. Húsnæðiskostnaður og leikskólagjöld eru ekki inni í þeim og eru því skráð sérstaklega hér. Athugið að neysluviðmið félags- og húsnæðismálaráðuneytisins, sem stundum er vísað til, hafa ekki verið uppfærð síðan í október 2019 og eru í heildarendurskoðun; þau eru ekki notuð hér.</p>
+      <p>Lánveitendur byggja greiðslumat sitt á sama grunni en hver þeirra setur sín eigin viðmið og lítur auk þess á greiðslusögu, starfsöryggi og fleira. Matið hér er því vísbending um hvort dæmið sé raunhæft, ekki svar frá bankanum.</p>
+      <p>Hámarkskaupverðið er lægsta talan af þrennu: því sem greiðslubyrðarviðmið Seðlabankans leyfir, því sem veðþakið leyfir miðað við eigið fé þitt, og því sem stendur eftir þegar framfærsla og rekstur eignarinnar hafa verið dregin frá. Í öllum þremur tilvikum er notuð viðmiðunargreiðsla Seðlabankans en ekki raungreiðsla fyrsta mánaðar, því greiðsla verðtryggðs láns er lægst í upphafi og hækkar með verðbólgunni.</p>
       <h3>Fyrirvarar</h3>
       <p>Reiknivélin gerir ráð fyrir jafnri verðbólgu allan lánstímann, föstum vöxtum og engum lántöku- eða greiðslugjöldum. Vaxtabætur, sérstakur húsnæðisstuðningur og skattaáhrif eru ekki með. Niðurstöðurnar eru til glöggvunar og koma ekki í stað greiðslumats lánveitanda eða fjármálaráðgjafar.</p>
     </div>
@@ -568,7 +573,9 @@ const incomeOffset=S=>netRent(S)+(S.otherIncome||0);   // leigutekjur nettó + a
 function newScenario(key){
   return {key, loans:[], rentals:[], hasRentals:false, rentInDsti:true, fixed:[], hasFixed:false,
     hasLtv:false, priceBuy:0, priceAssess:0, priceRentalMarket:0, priceRentalAssess:0,
-    equity:[], buyCostMode:'auto', buyCost:0, nextId:1, currentView:'balance',
+    equity:[], nopay:[], salePrice:0, saleFeePct:2, buyCostMode:'auto', buyCost:0,
+    hasGm:false, adults:1, children:0, running:[],
+    nextId:1, currentView:'balance',
     inflation:5.3, income1:0, income2:0, otherIncome:0, firstBuyer:false,
     results:[], baseline:[], horizon:360, root:null};
 }
@@ -595,6 +602,10 @@ const inSbi=l=>{const c=catOf(l);return c==='fasteign'||c==='leigueign';};
 // Lán á útleigueign, bílalán og námslán borga ekki íbúðina og telja því ekki með.
 const buysHome=l=>{const c=catOf(l);return c==='fasteign'||c==='lansved';};
 const equityTotal=S=>S.equity.reduce((a,e)=>a+(e.amount||0),0);
+// Fjármögnun sem borgar íbúðina en ber engar mánaðarlegar afborganir, t.d.
+// hlutdeildarlán HMS. Hún telur hvorki í greiðslubyrði né í veðþakinu.
+const nopayTotal=S=>S.nopay.reduce((a,n)=>a+(n.amount||0),0);
+const ownFunds=S=>equityTotal(S)+nopayTotal(S);
 const buyLoanTotal=S=>S.loans.filter(l=>buysHome(l)).reduce((a,l)=>a+(l.principal||0),0);
 // Viðmiðunartölur fyrir kaupkostnað — sjá skýringu í reitnum sjálfum
 const STAMP_RATE=0.008;   // stimpilgjald, 0,8% af fasteignamati (helmingur hjá fyrstu kaupendum)
@@ -607,11 +618,12 @@ function estBuyCost(S){
   const thingl=THINGL_FEE*2;
   const n=newLoanCount(S);
   const fee=S.firstBuyer?0:n*LOAN_FEE;
-  return {stamp, thingl, fee, n, total:Math.round(stamp+thingl+fee)};
+  const sale=(S.salePrice||0)*(S.saleFeePct||0)/100;
+  return {stamp, thingl, fee, n, sale, total:Math.round(stamp+thingl+fee+sale)};
 }
 const buyCostOf=S=>S.buyCostMode==='manual'?(S.buyCost||0):estBuyCost(S).total;
 const buyNeed=S=>(S.priceBuy||0)+buyCostOf(S);
-const buyHave=S=>equityTotal(S)+buyLoanTotal(S);
+const buyHave=S=>ownFunds(S)+buyLoanTotal(S);
 // Hvaða höfuðstóll á tilteknu láni lætur dæmið ganga upp? Lánið sem verið er að fylla
 // telur sjálft með í lántökugjaldinu, líka þótt það standi í núlli núna.
 function fillTarget(S, loan){
@@ -621,10 +633,70 @@ function fillTarget(S, loan){
   else{
     const base=S.priceAssess||S.priceBuy||0;
     const n=S.loans.filter(l=>buysHome(l)&&l.principal>0&&(!loan||l.id!==loan.id)).length+1;
-    cost=base*STAMP_RATE*(S.firstBuyer?0.5:1)+THINGL_FEE*2+(S.firstBuyer?0:n*LOAN_FEE);
+    cost=base*STAMP_RATE*(S.firstBuyer?0.5:1)+THINGL_FEE*2+(S.firstBuyer?0:n*LOAN_FEE)+(S.salePrice||0)*(S.saleFeePct||0)/100;
   }
-  return Math.max(0,Math.round((S.priceBuy||0)+cost-equityTotal(S)-others));
+  return Math.max(0,Math.round((S.priceBuy||0)+cost-ownFunds(S)-others));
 }
+// Veðþak Seðlabankans á aðalhúsnæðið. Lán á lánsveði hvíla á annarri eign og
+// rúmast því utan þaksins, eins og í veðhlutfallsspjaldinu.
+const ltvCap=S=>S.firstBuyer?90:80;
+const ltvRoom=(S,loan)=>{
+  const others=S.loans.filter(l=>catOf(l)==='fasteign'&&(!loan||l.id!==loan.id)).reduce((a,l)=>a+(l.principal||0),0);
+  return Math.max(0,Math.round((S.priceBuy||0)*ltvCap(S)/100-others));
+};
+// Hversu hátt má lánið raunverulega fara? Hnappurinn á aldrei að búa til lán
+// sem fer yfir veðþakið, því slíkt lán fæst einfaldlega ekki.
+function fillPlan(S, loan){
+  const want=fillTarget(S,loan);
+  const cat=loan?catOf(loan):'fasteign';
+  if(cat!=='fasteign') return {want, give:want, room:Infinity, short:0};
+  const room=ltvRoom(S,loan);
+  const give=Math.min(want,room);
+  return {want, give, room, short:Math.max(0,want-give)};
+}
+/* ---- Framfærsluviðmið umboðsmanns skuldara ----
+   Sótt af island.is 22. september 2026; viðmiðin sjálf voru uppfærð 2. ágúst 2026
+   og eru uppfærð á tveggja mánaða fresti. Lykill er "fullorðnir+börn".
+   Röð: matur · föt og skór · lækna- og lyfjakostnaður · sími og fjarskipti ·
+   önnur þjónusta · samgöngur · tómstundir · samtals.
+   Húsnæðiskostnaður (fasteignagjöld, hússjóður, hiti, rafmagn, tryggingar) og
+   leikskólagjöld eru EKKI inni í þessum tölum og eru skráð sérstaklega.
+   Athugið: gildi 2+5 fyrir „önnur þjónusta“ er augljós innsláttarvilla í
+   heimildinni (544.424 kr.). Hér er notuð brúuð tala milli 2+4 og 2+6. */
+const FRAMF={
+'1+0':[70416,7623,14693,23081,19795,73023,32783,241414],
+'1+1':[108441,12089,16232,23081,24638,80317,43691,308489],
+'1+2':[146465,16557,17773,23081,29484,92165,54597,380122],
+'1+3':[184490,21023,19312,23081,34328,120952,65504,468690],
+'1+4':[222515,25489,20853,23081,39172,132817,76410,540337],
+'1+5':[237945,29955,22392,23081,44017,169406,87318,614114],
+'1+6':[253375,34424,23933,23081,48862,181231,98224,663130],
+'1+7':[268806,38890,25471,23081,53707,193055,109131,712141],
+'1+8':[284235,43356,27012,23081,58550,204881,120037,761152],
+'1+9':[299666,47823,28552,23081,63395,216706,130945,810168],
+'2+0':[124601,10283,23311,25715,30201,78084,47759,339954],
+'2+1':[162626,14751,24851,25715,35045,85444,58667,407099],
+'2+2':[200651,19217,26390,25715,39889,98318,69573,479753],
+'2+3':[238676,23684,27931,25715,44734,126033,80480,567253],
+'2+4':[276701,28150,29470,25715,49578,135804,91386,636804],
+'2+5':[292131,32616,31011,25715,54423,174684,102294,712874],
+'2+6':[307560,37083,32550,25715,59268,186518,113200,761894],
+'2+7':[322991,41551,34090,25715,64112,198351,124107,810917],
+'2+8':[338421,46017,35630,25715,68957,210183,135015,859938],
+'2+9':[353851,50483,37170,25715,73802,222018,145922,908961],
+};
+const FRAMF_DATE='2. ágúst 2026';
+const FRAMF_CATS=['Matur og dagvörur','Föt og skór','Lækna- og lyfjakostnaður','Sími og fjarskipti','Önnur þjónusta','Samgöngur','Tómstundir'];
+const framfKey=S=>Math.min(2,Math.max(1,S.adults||1))+'+'+Math.min(9,Math.max(0,S.children||0));
+const framfOf=S=>(FRAMF[framfKey(S)]||FRAMF['1+0']);
+const runningTotal=S=>S.running.reduce((a,r)=>a+(r.amount||0),0);
+
+// Hæsta upphæð sem þessi kaupandi getur púslað saman: eigið fé, veðþakið á
+// aðalhúsnæðinu og þau lán sem hvíla annars staðar.
+const buyReach=S=>{
+  const utan=S.loans.filter(l=>buysHome(l)&&catOf(l)!=='fasteign').reduce((a,l)=>a+(l.principal||0),0);
+  return ownFunds(S)+(S.priceBuy||0)*ltvCap(S)/100+utan;
+};
 
 function scenarioShell(S, title, removable){
   return `
@@ -676,7 +748,8 @@ function scenarioShell(S, title, removable){
         <div class="field"><label class="check"><input type="checkbox" data-r="firstBuyer"${S.firstBuyer?' checked':''}><span>Við erum að kaupa fyrstu eign<br><small style="color:var(--muted)">Þá má greiðslubyrðin fara í 40% í stað 35%</small></span></label>
         <label class="check"><input type="checkbox" data-r="hasRentals"${S.hasRentals?' checked':''}><span>Ég er með útleiguíbúð í húsinu<br><small style="color:var(--muted)">Opnar reit fyrir leigutekjur</small></span></label>
         <label class="check"><input type="checkbox" data-r="hasFixed"${S.hasFixed?' checked':''}><span>Við erum með fastar mánaðarlegar skuldbindingar<br><small style="color:var(--muted)">T.d. meðlag eða rekstrarleigu bíls</small></span></label>
-        <label class="check"><input type="checkbox" data-r="hasLtv"${S.hasLtv?' checked':''}><span>Ég er að kaupa eign eða á eign nú þegar<br><small style="color:var(--muted)">Opnar reiti fyrir kaupverð og eigið fé, og sýnir hvort þetta nái upp í kaupverðið</small></span></label></div>
+        <label class="check"><input type="checkbox" data-r="hasLtv"${S.hasLtv?' checked':''}><span>Ég er að kaupa eign eða á eign nú þegar<br><small style="color:var(--muted)">Opnar reiti fyrir kaupverð og eigið fé, og sýnir hvort þetta nái upp í kaupverðið</small></span></label>
+        <label class="check"><input type="checkbox" data-r="hasGm"${S.hasGm?' checked':''}><span>Reikna bráðabirgðagreiðslumat<br><small style="color:var(--muted)">Dregur framfærslu heimilisins og rekstur eignarinnar frá, eins og bankinn gerir</small></span></label></div>
       </div>
       <div class="card" style="margin-top:14px; padding:16px 18px" data-r="rentwrap"${S.hasRentals?'':' hidden'}>
         <div class="eyebrow" style="margin-bottom:4px">Leigutekjur — valfrjálst</div>
@@ -692,6 +765,23 @@ function scenarioShell(S, title, removable){
         <div data-r="fixedList"></div>
         <button type="button" class="table-toggle" style="margin-top:10px" data-r="addFixed">+ Bæta við skuldbindingu</button>
         <div data-r="fixedSummary" style="margin-top:10px; font-size:13.5px; color:var(--ink-2)"></div>
+      </div>
+      <div class="card" style="margin-top:14px; padding:16px 18px" data-r="gmwrap"${S.hasGm?'':' hidden'}>
+        <div class="eyebrow" style="margin-bottom:4px">Heimilið og rekstur eignarinnar — fyrir greiðslumatið</div>
+        <p class="hint" style="margin:0 0 10px; max-width:75ch">Bankinn dregur framfærslukostnað heimilisins frá tekjunum áður en hann metur hvort þú ráðir við lánið. Segðu okkur hvað þið eruð mörg, þá notum við opinberu framfærsluviðmiðin. Settu líka inn það sem eignin kostar í rekstri á mánuði: fasteignagjöld, hússjóð, tryggingar, hita og rafmagn. Þessir liðir eru ekki inni í framfærsluviðmiðunum og gleymast oft þegar fólk reiknar sjálft.</p>
+        <div class="assumptions" style="padding:0; box-shadow:none; border:none; background:none">
+          <div class="field"><label>Fullorðnir á heimilinu</label>
+            <select data-r="adults"><option value="1"${S.adults===2?'':' selected'}>1 fullorðinn</option><option value="2"${S.adults===2?' selected':''}>2 fullorðnir</option></select></div>
+          <div class="field"><label>Börn á framfæri</label>
+            <select data-r="children">${[0,1,2,3,4,5,6,7,8,9].map(n=>`<option value="${n}"${n===(S.children||0)?' selected':''}>${n===0?'Ekkert barn':n===1?'1 barn':n+' börn'}</option>`).join('')}</select></div>
+        </div>
+        <div style="border-top:1px solid var(--hairline); margin-top:16px; padding-top:16px">
+          <div class="eyebrow" style="margin-bottom:4px">Rekstur eignarinnar á mánuði</div>
+          <p class="hint" style="margin:0 0 10px; max-width:75ch">Hver liður í sína línu, með nafni sem þú þekkir. Smelltu á nafnið til að breyta því. Ef þú veist ekki nákvæmar tölur er betra að skjóta á eitthvað raunhæft en að skilja eftir autt.</p>
+          <div data-r="runningList"></div>
+          <button type="button" class="table-toggle" style="margin-top:10px" data-r="addRunning">+ Bæta við lið</button>
+          <div data-r="runningSummary" style="margin-top:10px; font-size:13.5px; color:var(--ink-2)"></div>
+        </div>
       </div>
       <div class="card" style="margin-top:14px; padding:16px 18px" data-r="ltvwrap"${S.hasLtv?'':' hidden'}>
         <div class="eyebrow" style="margin-bottom:4px">Eignin, eigið fé og kaupverð</div>
@@ -716,6 +806,14 @@ function scenarioShell(S, title, removable){
         </div>
 
         <div style="border-top:1px solid var(--hairline); margin-top:16px; padding-top:16px">
+          <div class="eyebrow" style="margin-bottom:4px">Fjármögnun án mánaðarlegra afborgana — valfrjálst</div>
+          <p class="hint" style="margin:0 0 10px; max-width:75ch">Hér á hlutdeildarlán HMS heima, og annað fé sem borgar íbúðina en þú greiðir ekkert af í hverjum mánuði. Hlutdeildarlán getur numið allt að 20% af kaupverði, ber hvorki vexti né afborganir, og endurgreiðist þegar eignin er seld sem sama hlutfall af þáverandi verðmæti hennar. Það telur hvorki í greiðslubyrðinni né í veðhlutfallinu, en það borgar íbúðina og birtist því í súlunni. Athugaðu að reiknivélin sýnir ekki hvað endurgreiðslan verður í framtíðinni, því hún fer eftir verðþróun eignarinnar.</p>
+          <div data-r="nopayList"></div>
+          <button type="button" class="table-toggle" style="margin-top:10px" data-r="addNopay">+ Bæta við hlutdeildarláni</button>
+          <div data-r="nopaySummary" style="margin-top:10px; font-size:13.5px; color:var(--ink-2)"></div>
+        </div>
+
+        <div style="border-top:1px solid var(--hairline); margin-top:16px; padding-top:16px">
           <div class="eyebrow" style="margin-bottom:4px">Kostnaður við kaupin</div>
           <p class="hint" style="margin:0 0 10px; max-width:75ch">Kaupverðið er ekki eina talan sem þarf að eiga fyrir. Ofan á það leggjast stimpilgjald, þinglýsing og lántökugjald. Reiknivélin áætlar þetta fyrir þig, en <b>þetta er gróf áætlun</b>: gjöldin breytast milli ára og eru mismunandi eftir lánveitendum. Ef þú ert með tölur frá fasteignasalanum eða bankanum skaltu velja „Mín eigin tala“ og slá þær inn.</p>
           <div class="field" style="max-width:320px"><label>Hvernig á að reikna kostnaðinn?</label>
@@ -725,6 +823,16 @@ function scenarioShell(S, title, removable){
             </select></div>
           <div class="field" style="max-width:320px; margin-top:10px"${S.buyCostMode==='manual'?'':' hidden'} data-r="buyCostWrap"><label>Kostnaður við kaupin alls</label>
             <div class="inputrow"><input type="text" data-r="buyCost" inputmode="numeric" value="${S.buyCost?nf.format(S.buyCost):''}" placeholder="t.d. 900.000"><span class="unit">kr.</span></div></div>
+          <div data-r="saleWrap"${S.buyCostMode==='manual'?' hidden':''}>
+            <p class="hint" style="margin:14px 0 10px; max-width:75ch">Ertu líka að selja eign? Þóknun fasteignasala er oft stærsti einstaki kostnaðarliðurinn við kaupin. Settu söluverðið hér, og settu í eigið fé hér að ofan það sem stendur eftir þegar áhvílandi lán hafa verið greidd upp, <b>án þess að draga þóknunina frá</b>. Hún er reiknuð hér.</p>
+            <div class="assumptions" style="padding:0; box-shadow:none; border:none; background:none">
+              <div class="field"><label>Söluverð eldri eignar</label>
+                <div class="inputrow"><input type="text" data-r="salePrice" inputmode="numeric" value="${S.salePrice?nf.format(S.salePrice):''}" placeholder="valfrjálst"><span class="unit">kr.</span></div></div>
+              <div class="field"><label>Þóknun fasteignasala</label>
+                <div class="inputrow"><input type="number" data-r="saleFeePct" value="${S.saleFeePct}" step="0.1" min="0" max="10"><span class="unit">%</span></div>
+                <div class="hint">Oftast 1,5 til 2,5% af söluverði, með virðisaukaskatti. Semdu um þetta.</div></div>
+            </div>
+          </div>
           <div data-r="buyCostSummary" style="margin-top:10px; font-size:13.5px; color:var(--ink-2)"></div>
         </div>
       </div>
@@ -743,8 +851,10 @@ function scenarioShell(S, title, removable){
         <p class="sec-sub">Svarið við spurningunni — og stóru tölurnar á mannamáli.</p>
       </div></div>
       <p class="plain-summary" data-r="plain"></p>
+      <div class="card sbi-card" data-r="maxcard" hidden style="margin-bottom:14px"></div>
       <div class="card sbi-card" data-r="buycard" hidden style="margin-bottom:14px"></div>
       <div class="card sbi-card" data-r="sbi"></div>
+      <div class="card sbi-card" data-r="gmcard" hidden style="margin-top:14px"></div>
       <div class="card sbi-card" data-r="ltvcard" hidden style="margin-top:14px"></div>
       <div class="tiles" data-r="tiles" style="margin-top:14px"></div>
       <div class="card" data-r="mix" hidden style="margin-top:14px; padding:18px 22px"></div>
@@ -802,6 +912,25 @@ function mountScenario(S, hostId, title, removable){
     if(S.hasLtv&&!S.equity.length){S.equity.push({id:S.nextId++,name:'Sparnaður',amount:0});renderEquity(S);}
     recalc(S);
   });
+  S.$('hasGm').addEventListener('change',e=>{
+    S.hasGm=e.target.checked;
+    S.$('gmwrap').hidden=!S.hasGm;
+    if(S.hasGm&&!S.running.length){
+      S.running=[{id:S.nextId++,name:'Fasteignagjöld',amount:0},
+                 {id:S.nextId++,name:'Hússjóður',amount:0},
+                 {id:S.nextId++,name:'Tryggingar',amount:0},
+                 {id:S.nextId++,name:'Hiti og rafmagn',amount:0}];
+      renderRunning(S);
+    }
+    recalc(S);
+  });
+  S.$('adults').addEventListener('change',e=>{S.adults=parseInt(e.target.value,10)||1;recalc(S);});
+  S.$('children').addEventListener('change',e=>{S.children=parseInt(e.target.value,10)||0;recalc(S);});
+  S.$('addRunning').addEventListener('click',()=>{
+    S.running.push({id:S.nextId++,name:'Liður '+(S.running.length+1),amount:0});
+    renderRunning(S); recalc(S);
+  });
+  renderRunning(S);
   S.$('addEquity').addEventListener('click',()=>{
     S.equity.push({id:S.nextId++,name:'Eigið fé '+(S.equity.length+1),amount:0});
     renderEquity(S); recalc(S);
@@ -809,8 +938,19 @@ function mountScenario(S, hostId, title, removable){
   S.$('buyCostMode').addEventListener('change',e=>{
     S.buyCostMode=e.target.value;
     S.$('buyCostWrap').hidden=S.buyCostMode!=='manual';
+    S.$('saleWrap').hidden=S.buyCostMode==='manual';
     recalc(S);
   });
+  S.$('addNopay').addEventListener('click',()=>{
+    S.nopay.push({id:S.nextId++,name:'Hlutdeildarlán HMS',amount:0});
+    renderNopay(S); recalc(S);
+  });
+  renderNopay(S);
+  {
+    const sp=S.$('salePrice');
+    sp.addEventListener('input',()=>{liveFormat(sp);S.salePrice=parseAmount(sp.value);recalc(S);});
+    S.$('saleFeePct').addEventListener('input',e=>{S.saleFeePct=Math.max(0,parseFloat(e.target.value)||0);recalc(S);});
+  }
   {
     const bc=S.$('buyCost');
     bc.addEventListener('input',()=>{liveFormat(bc);S.buyCost=parseAmount(bc.value);recalc(S);});
@@ -940,6 +1080,154 @@ function renderFixedSummary(S){
   el.innerHTML=tot>0?`Fastar skuldbindingar alls <b>${kr(tot)}</b> á mánuði — dragast frá afganginum í niðurstöðunni.`:'';
 }
 
+/* ============ Rekstur eignarinnar ============ */
+function renderRunning(S){
+  const host=S.$('runningList'); if(!host) return;
+  host.innerHTML='';
+  S.running.forEach(r=>{
+    const row=document.createElement('div');
+    row.className='rental-row';
+    row.innerHTML=`
+      <input type="text" style="max-width:200px" value="${esc(r.name)}" aria-label="Heiti liðar" data-rg="name">
+      <div class="inputrow" style="flex:0 1 200px;min-width:160px"><input type="text" inputmode="numeric" data-rg="amount" value="${r.amount?nf.format(r.amount):''}" placeholder="kr. á mánuði"><span class="unit">kr./mán.</span></div>
+      <button class="loan-del" title="Fjarlægja" aria-label="Fjarlægja lið">×</button>`;
+    row.querySelector('[data-rg="name"]').addEventListener('input',ev=>{r.name=ev.target.value;renderGm(S);saveState();});
+    const aEl=row.querySelector('[data-rg="amount"]');
+    aEl.addEventListener('input',()=>{liveFormat(aEl);r.amount=parseAmount(aEl.value);recalc(S);});
+    row.querySelector('.loan-del').addEventListener('click',()=>{S.running=S.running.filter(x=>x.id!==r.id);renderRunning(S);recalc(S);});
+    host.appendChild(row);
+  });
+}
+function renderRunningSummary(S){
+  const el=S.$('runningSummary'); if(!el) return;
+  const tot=runningTotal(S);
+  el.innerHTML=tot>0?`Rekstur eignarinnar alls <b>${kr(tot)}</b> á mánuði`:'';
+}
+
+/* ============ Hvað kemstu hæst? ============ */
+// Snúum dæminu við: út frá tekjum og eigin fé, hvað má eignin kosta mest?
+// Tvennt bindur, 35/40%-viðmiðið og veðþakið, og lægri talan ræður.
+function maxPrice(S){
+  const cap=S.firstBuyer?40:35;
+  const income=dstiIncome(S);
+  if(!(income>0)) return null;
+  // Greiðslurými: viðmiðsgreiðsla allra fasteignalána má ekki fara yfir þakið.
+  // Lán á útleigueign eru þegar inni í viðmiðinu og taka því af rýminu.
+  const tekid=S.results.reduce((a,r)=>a+(catOf(r.loan)==='leigueign'?r.sbi:0),0);
+  const rymi=Math.max(0,income*cap/100-tekid);
+  // Viðmiðunarlánið: notum kjörin af fyrsta fasteignaláninu ef þau eru til,
+  // annars viðmiðunarlán Seðlabankans fyrir verðtryggt lán.
+  const fyrirmynd=S.loans.find(l=>catOf(l)==='fasteign'&&l.rate>0&&l.years>0);
+  const indexed=fyrirmynd?!!fyrirmynd.indexed:true;
+  const rate=fyrirmynd?(indexed?Math.max(fyrirmynd.rate,3):Math.max(fyrirmynd.rate,5.5)):3;
+  const years=fyrirmynd?(indexed?Math.min(fyrirmynd.years,25):Math.min(fyrirmynd.years,40)):25;
+  const thattur=annuity((rate/100)/12,Math.round(years*12),1);   // greiðsla á hverja krónu
+  const hamarkslan=thattur>0?rymi/thattur:0;
+
+  const eigid=ownFunds(S);
+  const utan=S.loans.filter(l=>buysHome(l)&&catOf(l)!=='fasteign').reduce((a,l)=>a+(l.principal||0),0);
+  // Kostnaðurinn vex með kaupverðinu (stimpilgjaldið), svo hann er leystur með.
+  const matHlutf=(S.priceAssess>0&&S.priceBuy>0)?S.priceAssess/S.priceBuy:1;
+  const stimpHlutf=matHlutf*STAMP_RATE*(S.firstBuyer?0.5:1);
+  const fastur=THINGL_FEE*2+(S.firstBuyer?0:Math.max(1,newLoanCount(S))*LOAN_FEE)+(S.salePrice||0)*(S.saleFeePct||0)/100;
+  const laust=eigid+utan-fastur;
+  const vidTekjur=(laust+hamarkslan)/(1+stimpHlutf);
+  const vidVed=laust/((1-ltvCap(S)/100)+stimpHlutf);
+
+  // Þriðja markið: greiðslumatið sjálft, sem er alla jafna strangast. Hér er
+  // reiknað með raunverulegri greiðslu af láninu, ekki viðmiðsgreiðslunni.
+  let vidGm=Infinity, gmRymi=0, gmLan=0;
+  if(S.hasGm){
+    const gmTekjur=S.income1+S.income2+incomeOffset(S);
+    const gmOnnur=S.results.reduce((a,r)=>a+(catOf(r.loan)!=='fasteign'?r.sim.firstPayment:0),0);
+    gmRymi=Math.max(0,gmTekjur-framfOf(S)[7]-runningTotal(S)-fixedTotal(S)-gmOnnur);
+    // Sama viðmiðsgreiðsla og að ofan, ekki raungreiðslan. Raungreiðsla verðtryggðs
+    // láns er lægst í upphafi og hækkar; lánveitendur álagsprófa fyrir því.
+    gmLan=thattur>0?gmRymi/thattur:0;
+    vidGm=(laust+gmLan)/(1+stimpHlutf);
+  }
+
+  const verd=Math.max(0,Math.min(vidTekjur,vidVed,vidGm));
+  const bindur=verd===vidVed?'ved':(verd===vidGm?'gm':'tekjur');
+  return {verd:Math.round(verd), vidTekjur:Math.round(vidTekjur), vidVed:Math.round(vidVed),
+    vidGm:isFinite(vidGm)?Math.round(vidGm):null, gmRymi:Math.round(gmRymi), gmLan:Math.round(gmLan),
+    bindur, hamarkslan:Math.round(hamarkslan), rymi:Math.round(rymi),
+    cap, eigid, indexed, rate, years, fyrirmynd:!!fyrirmynd};
+}
+function renderMax(S){
+  const el=S.$('maxcard'); if(!el) return;
+  if(!S.hasLtv){el.hidden=true;return;}
+  const m=maxPrice(S);
+  if(!m||!(m.verd>0)){
+    el.hidden=false; el.className='card sbi-card';
+    el.innerHTML=`<div class="eyebrow">Hvað kemstu hæst?</div>
+      <div class="verdict-line">Settu inn launin í skrefi 1 og eigið fé hér að ofan til að sjá hæsta kaupverðið.</div>`;
+    return;
+  }
+  el.hidden=false; el.className='card sbi-card';
+  const hl=k=>m.bindur===k?' style="color:var(--bad-text)"':'';
+  const skyring={
+    ved:`Það er <b>eigið féð sem bindur þig</b>, ekki tekjurnar. Veðþakið leyfir ekki hærra lán á eign í þessum verðflokki. Hver króna sem bætist við eigið féð hækkar hámarkskaupverðið um ${ltvCap(S)===90?'tí':'fimm'}falt, því lánið hækkar með.`,
+    tekjur:`Það eru <b>tekjurnar sem binda þig</b>, ekki eigið féð. Greiðslurýmið innan ${m.cap}%-viðmiðsins er ${kr(m.rymi)} á mánuði, sem ber lán upp á ${kr(m.hamarkslan)}.`,
+    gm:m.gmRymi<=0
+      ? `<b>Tekjurnar duga ekki fyrir framfærslu heimilisins og rekstri eignarinnar</b>, hvað þá afborgunum. Talan hér að ofan er því eingöngu þitt eigið fé: þú kæmist í eign á því verði ef þú borgaðir hana að fullu út, en ekkert svigrúm er fyrir lán. Athugaðu hvort tekjurnar séu rétt skráðar, og hvort rekstrarliðirnir í skrefi 1 séu of háir.`
+      : `Það er <b>framfærslan sem bindur þig</b>. Þegar framfærsla heimilisins og rekstur eignarinnar hafa verið dregin frá standa ${kr(m.gmRymi)} eftir á mánuði, sem bera lán upp á ${kr(m.gmLan)}. Þetta er strangara mark en ${m.cap}%-viðmiðið og nær því sem bankinn reiknar.`,
+  }[m.bindur];
+  el.innerHTML=`<div class="eyebrow">Hvað kemstu hæst?</div>
+    <div class="verdict-line">Miðað við tekjurnar og eigið féð kemstu hæst í eign á um <b>${kr(m.verd)}</b></div>
+    <div class="stack-legend" style="max-width:520px; margin-top:14px">
+      <div class="rowline"><span>Vegna greiðslubyrðar (${m.cap}%-viðmiðið)</span><b${hl('tekjur')}>${kr(m.vidTekjur)}</b></div>
+      <div class="rowline"><span>Vegna veðþaksins (${ltvCap(S)}% af kaupverði)</span><b${hl('ved')}>${kr(m.vidVed)}</b></div>
+      ${m.vidGm!==null?`<div class="rowline"><span>Vegna framfærslu (bráðabirgðagreiðslumat)</span><b${hl('gm')}>${kr(m.vidGm)}</b></div>`:''}
+      <div class="rowline sumline"><span><b>Lægsta talan ræður</b></span><b>${kr(m.verd)}</b></div>
+    </div>
+    <p class="sbi-detail">${skyring}</p>
+    <div class="infobox">Reiknað er með ${m.fyrirmynd
+      ? `kjörunum af fyrsta fasteignaláninu þínu í skrefi 2`
+      : `viðmiðunarláni Seðlabankans, verðtryggðu jafngreiðsluláni með 3% vöxtum til 25 ára`} og kostnaði við kaupin eins og hann er stilltur hér að ofan. <b>Þetta er efra mark, ekki ráðlegging.</b> Lánveitendur setja auk þess sín eigin hámörk, álagsprófa greiðslugetuna og líta á greiðslusögu og starfsöryggi, svo raunverulega hámarkið er alla jafna lægra en það sem reglurnar einar leyfa. Segi reiknivélin þér að þú komist í tölu sem þér finnst fjarstæðukennd er það merki um að reglurnar séu ekki það sem stoppar þig.${S.hasGm?'':' Hakaðu við „bráðabirgðagreiðslumat“ í skrefi 1 til að fá þriðja markið, framfærsluna, sem er alla jafna strangast og næst því sem bankinn reiknar.'}</div>`;
+}
+
+/* ============ Bráðabirgðagreiðslumat ============ */
+function renderGm(S){
+  const el=S.$('gmcard'); if(!el) return;
+  if(!S.hasGm){el.hidden=true;return;}
+  el.hidden=false;
+  const t=scenTotals(S);
+  const income=S.income1+S.income2+incomeOffset(S);
+  const f=framfOf(S), framf=f[7];
+  const rek=runningTotal(S), fx=fixedTotal(S);
+  const left=income-framf-rek-fx-t.first;
+  const ok=left>=0;
+  el.className='card sbi-card '+(income>0?(ok?'ok':'bad'):'');
+  if(!(income>0)){
+    el.innerHTML=`<div class="eyebrow">Bráðabirgðagreiðslumat</div>
+      <div class="verdict-line">Settu inn launin í skrefi 1 til að fá matið.</div>`;
+    return;
+  }
+  const fjolskylda=(S.adults===2?'2 fullorðnir':'1 fullorðinn')+(S.children?', '+S.children+(S.children===1?' barn':' börn'):'');
+  const row=(label,val,neg,strong)=>`<div class="rowline${strong?' sumline':''}"><span>${strong?'<b>'+label+'</b>':label}</span><b${neg&&val>0?' style="color:var(--bad-text)"':''}>${neg&&val>0?'−':''}${kr(val)}</b></div>`;
+  el.innerHTML=`<div class="eyebrow">Bráðabirgðagreiðslumat</div>
+    <div class="verdict-line ${ok?'ok':'bad'}">${ok
+      ? `Það standa <b>${kr(left)}</b> eftir í hverjum mánuði þegar allt er dregið frá.`
+      : `Dæmið gengur ekki upp — það vantar <b>${kr(-left)}</b> á mánuði.`}</div>
+    <div class="stack-legend" style="max-width:480px; margin-top:16px">
+      ${row('Nettótekjur heimilisins',income)}
+      ${row('Framfærsla skv. viðmiði ('+fjolskylda+')',framf,true)}
+      ${rek>0?row('Rekstur eignarinnar',rek,true):''}
+      ${fx>0?row('Fastar skuldbindingar',fx,true):''}
+      ${row('Greiðsla af öllum lánum',Math.round(t.first),true)}
+      <div class="rowline sumline"><span><b>Afgangur á mánuði</b></span><b style="color:var(--${ok?'good':'bad'}-text)">${kr(left)}</b></div>
+    </div>
+    <details style="margin-top:14px"><summary style="cursor:pointer; font-size:13.5px; color:var(--ink-2)">Hvað er inni í framfærsluviðmiðinu?</summary>
+      <div class="stack-legend" style="max-width:480px; margin-top:10px">
+        ${FRAMF_CATS.map((c,i)=>`<div class="rowline"><span>${c}</span><b>${kr(f[i])}</b></div>`).join('')}
+        <div class="rowline sumline"><span><b>Samtals</b></span><b>${kr(framf)}</b></div>
+      </div>
+      <p class="sbi-detail">Húsnæðiskostnaður og leikskólagjöld eru <b>ekki</b> inni í þessum tölum. Rekstur eignarinnar er því skráður sérstaklega hér að ofan, og leikskólagjöld eiga heima undir „fastar mánaðarlegar skuldbindingar“ í skrefi 1.</p>
+    </details>
+    <div class="infobox"><b>Þetta er ekki greiðslumatið sjálft.</b> Hér eru notuð framfærsluviðmið umboðsmanns skuldara (uppfærð ${FRAMF_DATE}, sótt af island.is). Lánveitendur byggja sín viðmið á sama grunni en hver þeirra setur sín eigin og lítur auk þess á greiðslusögu, starfsöryggi og fleira. Matið hér er því vísbending um hvort dæmið sé raunhæft, ekki svar frá bankanum. Ef afgangurinn er naumur er ástæða til að staldra við: viðmiðin eru miðgildi, svo helmingur heimila eyðir meiru en þetta.</div>`;
+}
+
 /* ============ Eigið fé ============ */
 // Grænir tónar svo eigið fé sé sjónrænt aðgreint frá lánunum, sem nota SERIES-litina
 const EQ_MIX=[100,76,58,45,34];
@@ -962,6 +1250,35 @@ function renderEquity(S){
     host.appendChild(row);
   });
 }
+const NOPAY_COLOR='color-mix(in srgb, var(--s4) 80%, var(--surface))';
+function renderNopay(S){
+  const host=S.$('nopayList'); if(!host) return;
+  host.innerHTML='';
+  S.nopay.forEach(n=>{
+    const row=document.createElement('div');
+    row.className='rental-row';
+    row.innerHTML=`
+      <span class="sw" style="display:inline-block;width:10px;height:10px;border-radius:2px;flex:none;background:${NOPAY_COLOR}"></span>
+      <input type="text" style="max-width:200px" value="${esc(n.name)}" aria-label="Heiti fjármögnunar" data-nf="name">
+      <div class="inputrow" style="flex:0 1 200px;min-width:160px"><input type="text" inputmode="numeric" data-nf="amount" value="${n.amount?nf.format(n.amount):''}" placeholder="upphæð"><span class="unit">kr.</span></div>
+      <button class="loan-del" title="Fjarlægja" aria-label="Fjarlægja">×</button>`;
+    row.querySelector('[data-nf="name"]').addEventListener('input',ev=>{n.name=ev.target.value;renderBuy(S);saveState();});
+    const aEl=row.querySelector('[data-nf="amount"]');
+    aEl.addEventListener('input',()=>{liveFormat(aEl);n.amount=parseAmount(aEl.value);recalc(S);});
+    row.querySelector('.loan-del').addEventListener('click',()=>{S.nopay=S.nopay.filter(x=>x.id!==n.id);renderNopay(S);recalc(S);});
+    host.appendChild(row);
+  });
+}
+function renderNopaySummary(S){
+  const el=S.$('nopaySummary'); if(!el) return;
+  const tot=nopayTotal(S);
+  if(!(tot>0)){el.innerHTML='';return;}
+  const pct=S.priceBuy>0?' eða '+pct2(tot/S.priceBuy*100)+' af kaupverðinu':'';
+  const yfir=S.priceBuy>0&&tot>S.priceBuy*0.2
+    ? ` <b style="color:var(--bad-text)">Hlutdeildarlán má að hámarki vera 20% af kaupverði</b>, svo athugaðu töluna.`:'';
+  el.innerHTML=`Fjármögnun án afborgana alls <b>${kr(tot)}</b>${pct}.${yfir}`;
+}
+const pct2=x=>(Math.round(x*10)/10).toFixed(1).replace('.',',')+'%';
 function renderEquitySummary(S){
   const el=S.$('equitySummary'); if(!el) return;
   const tot=equityTotal(S);
@@ -977,7 +1294,7 @@ function renderEquitySummary(S){
       const feeTxt=`lántökugjald ${kr(Math.round(c.fee))}`
         +(S.firstBuyer?' (fellur niður við fyrstu kaup).':c.n>1?` (${kr(LOAN_FEE)} á hvert lán, ${c.n} lán).`:` (föst krónutala á hvert nýtt fasteignalán).`);
       cs.innerHTML=c.total>0
-        ? `Áætlaður kostnaður <b>${kr(c.total)}</b>: ${stampTxt} · þinglýsing ${kr(c.thingl)} (${kr(THINGL_FEE)} á skjal, tvö skjöl) · ${feeTxt} Athugaðu tölurnar hjá lánveitandanum þínum.`
+        ? `Áætlaður kostnaður <b>${kr(c.total)}</b>: ${stampTxt} · þinglýsing ${kr(c.thingl)} (${kr(THINGL_FEE)} á skjal, tvö skjöl) · ${feeTxt}${c.sale>0?` Þóknun fasteignasala ${kr(Math.round(c.sale))} (${pct2(S.saleFeePct)} af ${kr(S.salePrice)} söluverði).`:''} Athugaðu tölurnar hjá lánveitandanum þínum.`
         : 'Settu inn kaupverð eða fasteignamat til að fá áætlun.';
     }
   }
@@ -989,7 +1306,7 @@ function renderBuy(S){
   if(!S.hasLtv||!(S.priceBuy>0)){el.hidden=true;return;}
   el.hidden=false;
   const cost=buyCostOf(S), need=S.priceBuy+cost;
-  const eq=equityTotal(S), ln=buyLoanTotal(S), have=eq+ln;
+  const eq=equityTotal(S), np=nopayTotal(S), ln=buyLoanTotal(S), have=eq+np+ln;
   const gap=Math.round(need-have);
   const done=gap<=0;
   el.className='card sbi-card'+(done?' ok':'');
@@ -997,6 +1314,7 @@ function renderBuy(S){
   const scaleMax=Math.max(need,have,1);
   const segs=[];
   S.equity.forEach((e,i)=>{ if(e.amount>0) segs.push({name:e.name||('Eigið fé '+(i+1)), amount:e.amount, color:eqColor(i)}); });
+  S.nopay.forEach((n,i)=>{ if(n.amount>0) segs.push({name:n.name||'Hlutdeildarlán', amount:n.amount, color:NOPAY_COLOR}); });
   S.loans.forEach((l,i)=>{ if(buysHome(l)&&l.principal>0) segs.push({name:l.name||('Lán '+(i+1)), amount:l.principal, color:'var('+SERIES[i%SERIES.length]+')'}); });
 
   let acc=0;
@@ -1010,26 +1328,38 @@ function renderBuy(S){
     `<div class="rowline"><span><span class="sw" style="background:${s.color}"></span>${esc(s.name)}</span><b>${kr(s.amount)}</b></div>`).join('')
     + (gap>0?`<div class="rowline"><span><span class="hatch"></span>Vantar upp á</span><b>${kr(gap)}</b></div>`:'');
 
+  // Kemst kaupandinn yfirleitt þangað? Veðþakið setur hámark á það sem má lána.
+  const reach=buyReach(S), vantarEigidFe=Math.max(0,Math.round(need-reach));
+
   const verdict=done
     ? (gap<0
         ? `Þetta nær upp í kaupverðið — og <b>${kr(-gap)}</b> umfram.`
         : 'Þetta nær nákvæmlega upp í kaupverðið.')
-    : `Það vantar ${kr(gap)} upp í kaupverðið.`;
+    : vantarEigidFe>0
+      ? `Það vantar ${kr(gap)} upp í kaupverðið — og þar af ${kr(vantarEigidFe)} sem ekkert lán getur brúað.`
+      : `Það vantar ${kr(gap)} upp í kaupverðið.`;
 
   // Hnappur sem setur mismuninn inn á lán — aldrei sjálfkrafa, þú smellir sjálf(ur)
   const targets=S.loans.map((l,i)=>({l,i})).filter(x=>buysHome(x.l));
   let fill='';
   if(gap>0){
+    const plan=targets.length===1?fillPlan(S,targets[0].l):targets.length?null:fillPlan(S,null);
+    const capNote=p=>p&&p.short>0
+      ? `<span style="font-size:12.5px;color:var(--bad-text)">Veðþakið (${ltvCap(S)}% af kaupverði) leyfir aðeins ${kr(p.give)}. Það vantar enn ${kr(p.short)} í eigið fé.</span>`
+      : `<span style="font-size:12.5px;color:var(--muted)">Höfuðstóllinn verður ${kr(p?p.give:0)}.</span>`;
     if(!targets.length){
       fill=`<div class="fill-row"><button type="button" class="table-toggle" data-buyfill="new">Búa til lán fyrir mismuninn</button>
-        <span style="font-size:12.5px;color:var(--muted)">Nýtt fasteignalán bætist við í skrefi 2 með upphæðinni sem vantar. Þú setur svo inn vexti og lánstíma.</span></div>`;
+        ${plan&&plan.short>0
+          ?`<span style="font-size:12.5px;color:var(--bad-text)">Lánið verður ${kr(plan.give)}, hæsta sem veðþakið (${ltvCap(S)}%) leyfir. Það vantar enn ${kr(plan.short)} í eigið fé.</span>`
+          :`<span style="font-size:12.5px;color:var(--muted)">Nýtt fasteignalán bætist við í skrefi 2 með upphæðinni sem vantar. Þú setur svo inn vexti og lánstíma.</span>`}</div>`;
     }else if(targets.length===1){
       fill=`<div class="fill-row"><button type="button" class="table-toggle" data-buyfill="${targets[0].l.id}">Setja mismuninn inn á „${esc(targets[0].l.name)}“</button>
-        <span style="font-size:12.5px;color:var(--muted)">Höfuðstóllinn verður ${kr(fillTarget(S,targets[0].l))}.</span></div>`;
+        ${capNote(plan)}</div>`;
     }else{
       fill=`<div class="fill-row"><span style="font-size:13.5px">Setja mismuninn inn á</span>
         <select data-buypick>${targets.map(x=>`<option value="${x.l.id}">${esc(x.l.name)}</option>`).join('')}</select>
-        <button type="button" class="table-toggle" data-buyfill="pick">Setja inn</button></div>`;
+        <button type="button" class="table-toggle" data-buyfill="pick">Setja inn</button>
+        <span style="font-size:12.5px;color:var(--muted)">Hnappurinn fer aldrei yfir veðþakið (${ltvCap(S)}% af kaupverði).</span></div>`;
     }
   }
 
@@ -1039,18 +1369,22 @@ function renderBuy(S){
       <div class="stack-col">
         <div class="stack-bar">${bars}</div>
         <div class="stack-need" style="bottom:${need/scaleMax*100}%"></div>
+        ${vantarEigidFe>0?`<div class="stack-reach" style="bottom:${reach/scaleMax*100}%"></div>`:''}
       </div>
       <div class="stack-legend">
         ${legendRows}
         <div class="rowline sumline"><span>Eigið fé alls</span><b>${kr(eq)}</b></div>
+        ${np>0?`<div class="rowline"><span>Fjármögnun án afborgana</span><b>${kr(np)}</b></div>`:''}
         <div class="rowline"><span>Lán í kaupin</span><b>${kr(ln)}</b></div>
         <div class="rowline"><span><b>Samtals í boði</b></span><b>${kr(have)}</b></div>
+        ${vantarEigidFe>0?`<div class="rowline"><span><span class="dash"></span>Hæst kemstu í</span><b>${kr(Math.round(reach))}</b></div>`:''}
         <div class="rowline sumline"><span>Kaupverð</span><b>${kr(S.priceBuy)}</b></div>
         <div class="rowline"><span>Kostnaður við kaupin</span><b>${kr(cost)}</b></div>
         <div class="rowline"><span><span class="solid"></span><b>Þarf alls</b></span><b>${kr(need)}</b></div>
       </div>
     </div>
     ${fill}
+    ${vantarEigidFe>0?`<div class="infobox"><b>Veðþakið stoppar þig, ekki greiðslugetan.</b> Lánveitandi má að hámarki lána ${ltvCap(S)}% af kaupverði eignarinnar${S.firstBuyer?', enda eruð þið fyrstu kaupendur (annars væri þakið 80%)':''}, sem eru ${kr(Math.round(S.priceBuy*ltvCap(S)/100))} á þessari eign. Með eigin fé upp á ${kr(eq)} kemstu því hæst í ${kr(Math.round(reach))} Til að ná þessari eign þarftu ${kr(vantarEigidFe)} til viðbótar í eigið fé, eða að finna ódýrari eign.</div>`:''}
     <p class="sbi-detail">Súlan staflast neðan frá: eigið fé fyrst, svo lánin sem fara í kaupin. Heila línan er upphæðin sem þarf alls, kaupverðið að viðbættum kostnaði við kaupin. Hér teljast með fasteignalán á aðalhúsnæðinu og lán á lánsveði, því hvort tveggja borgar íbúðina. Lán á útleigueign, bílalán og námslán telja ekki með.</p>`;
 
   const btn=el.querySelector('[data-buyfill]');
@@ -1058,14 +1392,14 @@ function renderBuy(S){
     const v=btn.dataset.buyfill;
     if(v==='new'){
       const l=defaultLoan(S,true);
-      l.principal=fillTarget(S,null);
+      l.principal=fillPlan(S,null).give;
       S.loans.push(l); renderLoans(S); recalc(S);
       S.$('loans').scrollIntoView({behavior:'smooth',block:'center'});
       return;
     }
     const id=v==='pick'?parseInt(el.querySelector('[data-buypick]').value,10):parseInt(v,10);
     const loan=S.loans.find(l=>l.id===id); if(!loan) return;
-    loan.principal=fillTarget(S,loan);
+    loan.principal=fillPlan(S,loan).give;
     renderLoans(S); recalc(S);
   });
 }
@@ -1178,7 +1512,7 @@ function recalc(S){
   }));
   S.baseline=valid.map(l=>(!l.extraMonthly&&!l.lumpAmount)?null
     :simulateLoan({...l,extraMonthly:0,lumpAmount:0,lumpMonth:0},S.inflation,S.horizon));
-  renderLoanStats(S); renderRentSummary(S); renderFixedSummary(S); renderEquitySummary(S); renderBuy(S); renderTiles(S); renderMix(S); renderSbi(S); renderLtv(S); renderChart(S); renderTable(S);
+  renderLoanStats(S); renderRentSummary(S); renderFixedSummary(S); renderEquitySummary(S); renderNopaySummary(S); renderRunningSummary(S); renderMax(S); renderBuy(S); renderGm(S); renderTiles(S); renderMix(S); renderSbi(S); renderLtv(S); renderChart(S); renderTable(S);
   renderCompare(); saveState();
 }
 function renderLoanStats(S){
@@ -1237,8 +1571,13 @@ function renderTiles(S){
   const totalIncome=S.income1+S.income2+off;
   const fx=fixedTotal(S);
   if(totalIncome>0){
-    const left=totalIncome-t.first-fx;
-    html+=`<div class="card tile" style="border-top:3px solid var(--s6)"><div class="eyebrow">Afgangur eftir greiðslu lána</div><div class="big"${left<0?' style="color:var(--bad-text)"':''}>${kr(left)}</div><div class="sub">af ${kr(totalIncome)} heildartekjum á mánuði, eftir greiðslur allra lána${fx>0?' og '+kr(fx)+' í fastar skuldbindingar':''} — líka þess sem stendur utan 35%-viðmiðsins</div></div>`;
+    // Með greiðslumatinu kveiktu er framfærslan og rekstur eignarinnar dreginn frá
+    // líka, svo talan hér stangist ekki á við greiðslumatsspjaldið.
+    const framf=S.hasGm?framfOf(S)[7]:0, rek=S.hasGm?runningTotal(S):0;
+    const left=totalIncome-t.first-fx-framf-rek;
+    html+=`<div class="card tile" style="border-top:3px solid var(--s6)"><div class="eyebrow">Afgangur ${S.hasGm?'þegar allt er dregið frá':'eftir greiðslu lána'}</div><div class="big"${left<0?' style="color:var(--bad-text)"':''}>${kr(left)}</div><div class="sub">${S.hasGm
+      ?`af ${kr(totalIncome)} heildartekjum, eftir greiðslur allra lána${fx>0?', fastar skuldbindingar':''}, framfærslu heimilisins (${kr(framf)})${rek>0?' og rekstur eignarinnar ('+kr(rek)+')':''}`
+      :`af ${kr(totalIncome)} heildartekjum á mánuði, eftir greiðslur allra lána${fx>0?' og '+kr(fx)+' í fastar skuldbindingar':''}. <b>Framfærsla heimilisins og rekstur eignarinnar eru ekki dregin frá</b> — hakaðu við „bráðabirgðagreiðslumat“ í skrefi 1 til að fá raunhæfari tölu`}</div></div>`;
   }
   html+=`
     <div class="card tile" style="border-top:3px solid var(--s2)"><div class="eyebrow">Raunkostnaðurinn</div><div class="big">${kr(t.costReal)}</div><div class="sub">það sem lánin kosta umfram lánsupphæðina, á verðlagi dagsins í dag</div></div>`;
@@ -1726,7 +2065,7 @@ function importStateFile(file,btn){
 
 /* ============ Vistun ============ */
 function packScen(S){
-  return {loans:S.loans,rentals:S.rentals,hasRentals:S.hasRentals,rentInDsti:S.rentInDsti,fixed:S.fixed,hasFixed:S.hasFixed,hasLtv:S.hasLtv,priceBuy:S.priceBuy,priceAssess:S.priceAssess,priceRentalMarket:S.priceRentalMarket,priceRentalAssess:S.priceRentalAssess,equity:S.equity,buyCostMode:S.buyCostMode,buyCost:S.buyCost,nextId:S.nextId,inflation:S.inflation,income1:S.income1,income2:S.income2,otherIncome:S.otherIncome,firstBuyer:S.firstBuyer,view:S.currentView};
+  return {loans:S.loans,rentals:S.rentals,hasRentals:S.hasRentals,rentInDsti:S.rentInDsti,fixed:S.fixed,hasFixed:S.hasFixed,hasLtv:S.hasLtv,priceBuy:S.priceBuy,priceAssess:S.priceAssess,priceRentalMarket:S.priceRentalMarket,priceRentalAssess:S.priceRentalAssess,equity:S.equity,nopay:S.nopay,salePrice:S.salePrice,saleFeePct:S.saleFeePct,buyCostMode:S.buyCostMode,buyCost:S.buyCost,hasGm:S.hasGm,adults:S.adults,children:S.children,running:S.running,nextId:S.nextId,inflation:S.inflation,income1:S.income1,income2:S.income2,otherIncome:S.otherIncome,firstBuyer:S.firstBuyer,view:S.currentView};
 }
 function unpackScen(S,d){
   S.loans=d.loans||[]; S.rentals=d.rentals||[]; S.hasRentals=!!d.hasRentals;
@@ -1734,8 +2073,9 @@ function unpackScen(S,d){
   S.hasLtv=!!d.hasLtv; S.priceBuy=d.priceBuy||0; S.priceAssess=d.priceAssess||0;
   S.priceRentalMarket=d.priceRentalMarket||d.priceRental||0; S.priceRentalAssess=d.priceRentalAssess||0;
   S.rentInDsti=d.rentInDsti===undefined?true:!!d.rentInDsti;
-  S.equity=d.equity||[]; S.buyCostMode=d.buyCostMode==='manual'?'manual':'auto'; S.buyCost=d.buyCost||0;
-  S.nextId=d.nextId||S.loans.length+S.rentals.length+S.equity.length+1;
+  S.equity=d.equity||[]; S.nopay=d.nopay||[]; S.salePrice=d.salePrice||0; S.saleFeePct=d.saleFeePct===undefined?2:d.saleFeePct; S.buyCostMode=d.buyCostMode==='manual'?'manual':'auto'; S.buyCost=d.buyCost||0;
+  S.hasGm=!!d.hasGm; S.adults=d.adults===2?2:1; S.children=Math.min(9,Math.max(0,d.children||0)); S.running=d.running||[];
+  S.nextId=d.nextId||S.loans.length+S.rentals.length+S.equity.length+S.running.length+1;
   S.inflation=d.inflation??4; S.income1=d.income1||0; S.income2=d.income2||0;
   S.otherIncome=d.otherIncome||0;
   S.firstBuyer=!!d.firstBuyer; S.currentView=d.view||'balance';
