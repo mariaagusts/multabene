@@ -598,7 +598,7 @@ const equityTotal=S=>S.equity.reduce((a,e)=>a+(e.amount||0),0);
 const buyLoanTotal=S=>S.loans.filter(l=>buysHome(l)).reduce((a,l)=>a+(l.principal||0),0);
 // Viðmiðunartölur fyrir kaupkostnað — sjá skýringu í reitnum sjálfum
 const STAMP_RATE=0.008;   // stimpilgjald, 0,8% af fasteignamati (helmingur hjá fyrstu kaupendum)
-const THINGL_FEE=3500;    // þinglýsingargjald á skjal — reiknað með tveimur skjölum
+const THINGL_FEE=3800;    // þinglýsingargjald á skjal skv. island.is — reiknað með tveimur skjölum
 const LOAN_FEE=60000;     // lántökugjald, föst krónutala á hvert nýtt fasteignalán, fellur niður hjá fyrstu kaupendum
 const newLoanCount=S=>S.loans.filter(l=>buysHome(l)&&l.principal>0).length;
 function estBuyCost(S){
