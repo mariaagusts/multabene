@@ -106,6 +106,7 @@ h2{
 .skrefastika button:hover{background:var(--surface)}
 .skrefastika button:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
 .skrefastika button .step-num{background:var(--surface-2); color:var(--ink-2); margin:0}
+.skrefastika button.lokid .step-num{background:var(--good); color:#fff}
 .skrefastika button[aria-current="step"]{background:var(--surface); color:var(--ink); border-color:var(--hairline)}
 .skrefastika button[aria-current="step"] .step-num{background:var(--accent); color:var(--accent-ink)}
 .skrefastika .t{overflow:hidden; text-overflow:ellipsis}
@@ -817,6 +818,8 @@ function newScenario(key){
     results:[], baseline:[], horizon:360, root:null};
 }
 let A=newScenario('A'), B=null;
+// Skrefastikan setur þetta þegar hún er ræst, recalc kallar á það
+let uppfaeraStiku=()=>{};
 
 function defaultLoan(S, indexed){
   return {id:S.nextId++, name:'Lán '+(S.loans.length+1),
@@ -2052,6 +2055,7 @@ function recalc(S){
   renderLoanStats(S); renderRentSummary(S); renderFixedSummary(S); renderEquitySummary(S); renderNopaySummary(S); renderRunningSummary(S); renderSvar(S); renderMax(S); renderBuy(S); renderGm(S); renderTiles(S); renderMix(S); renderSbi(S); renderLtv(S); renderChart(S); renderTable(S);
   // Dæmi B erfir greiðslumatið frá A þangað til notandinn breytir því þar
   if(S.key==='A'&&B&&B.root&&!B.gmSjalfstaett){ samstillaGm(); recalc(B); }
+  uppfaeraStiku();
   renderCompare(); saveState();
 }
 // Upphæð komin inn en kjörin vantar. Reiknivélin giskar aldrei á vexti eða
@@ -2858,6 +2862,21 @@ document.getElementById('addScenarioB').addEventListener('click',()=>{
     const y=m.getBoundingClientRect().top+scrollY-stika.offsetHeight-10;
     window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
   });
+  // Stikan sagði aðeins hvar maður væri staddur eftir skruni, aldrei hvað væri
+  // búið. Skref 1 og 2 eru þau einu sem notandinn klárar, hin tvö eru
+  // niðurstaða og eru því ekki merkt.
+  const lokid=n=>n===1?((A.income1||0)+(A.income2||0))>0
+                :n===2?A.loans.some(loanValid)
+                :false;
+  uppfaeraStiku=()=>{
+    hnappar.forEach((b,i)=>{
+      const n=i+1, num=b.querySelector('.step-num'), ok=lokid(n);
+      b.classList.toggle('lokid', ok);
+      num.textContent=ok?'✓':String(n);
+      num.setAttribute('aria-label', ok?`Skref ${n}, klárað`:`Skref ${n}`);
+    });
+  };
+  uppfaeraStiku();
   let bidur=false;
   const merkja=()=>{
     bidur=false;
