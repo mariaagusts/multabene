@@ -486,6 +486,9 @@ footer a{color:var(--ink-2)}
   .loan-del{min-width:44px; min-height:44px; font-size:20px}
   label.check input[type="checkbox"]{width:24px; height:24px}
   .loan-head input[data-f="name"]{min-height:44px}
+  /* Fellilistarnir voru einu snertifletirnir undir 44px, sumir 18px háir */
+  .moli > summary, .nanar > summary, .lesefni > summary{
+    min-height:44px; padding-top:12px; padding-bottom:12px; box-sizing:border-box}
 }
 @media (prefers-reduced-motion: reduce){ *{transition:none !important} }
 </style>
@@ -773,7 +776,10 @@ function defaultLoan(S, indexed){
     principal:0, rate:0, years:0,
     extraMonthly:0, lumpAmount:0, lumpYear:0, extraMode:'stytta'};
 }
-const loanValid=l=>l.principal>0&&l.years>0;
+// Vextina vantar ekki að ástæðulausu: lán án vaxta reiknast á 0% og gefur
+// grænt svar á lán sem kostar ekki neitt. Reiknivélin giskar ekki fyrir þig,
+// svo ófullbúið lán fer einfaldlega ekki inn í niðurstöðuna.
+const loanValid=l=>l.principal>0&&l.years>0&&l.rate>0;
 const LOAN_CATS={
   fasteign:'Fasteignalán á aðalhúsnæði (innan 35%-viðmiðs)',
   leigueign:'Fasteignalán á útleigueign (innan 35%-viðmiðs)',
@@ -1371,9 +1377,19 @@ function renderRunningSummary(S){
 // í fyrirsögn síðunnar. Hér er eitt svar efst og hitt fer í samanbrotna kaflann.
 function renderSvar(S){
   const el=S.$('svar'); if(!el) return;
+  // Lán sem eru byrjuð en ekki fullbúin reiknast ekki. Það á að sjást hér í
+  // svarinu, ekki bara á lánakortinu sem er oft tveimur skjáfyllingum ofar.
+  const ofullbuin=S.loans.filter(l=>!loanValid(l)&&(l.principal>0||l.rate>0||l.years>0));
+  const vantarOrd=ls=>{
+    const o=[...new Set(ls.flatMap(l=>[
+      !l.principal?'upphæð':'', !l.rate?'vexti':'', !l.years?'lánstíma':''].filter(Boolean)))];
+    return o.length<2?o.join(''):o.slice(0,-1).join(', ')+' og '+o[o.length-1];
+  };
   if(!S.results.length){
     el.className='svarid tomt';
-    el.innerHTML='Bættu við láni í skrefi 2 til að fá svarið.';
+    el.innerHTML=ofullbuin.length
+      ? `Svarið bíður þess að lánið verði fullbúið, það vantar ${vantarOrd(ofullbuin)} í skrefi 2. Reiknivélin giskar ekki á þær tölur fyrir þig.`
+      : 'Bættu við láni í skrefi 2 til að fá svarið.';
     return;
   }
   const t=scenTotals(S);
@@ -1393,19 +1409,33 @@ function renderSvar(S){
   }else if(!stenst&&S.erMedLan){
     // Reglan gildir um ný lán. Sá sem á lánin þegar er ekki að falla á neinu
     // prófi, en hann kemst ekki í endurfjármögnun á meðan hlutfallið er hátt.
-    tonn='bidur'; svar=`Greiðslubyrðin er <b>${pct(ratio)}</b> af laununum, yfir ${cap}%-marki Seðlabankans. Lánin sem þú ert með standa óhögguð og þú greiðir af þeim eins og venjulega, en á meðan kemstu hvorki í endurfjármögnun né færð nýtt fasteignalán.`;
+    tonn='bidur'; svar=`Seðlabankinn reiknar greiðslubyrðina <b>${pct(ratio)}</b> af laununum, yfir ${cap}%-marki sínu. Lánin sem þú ert með standa óhögguð og þú greiðir af þeim eins og venjulega, en á meðan kemstu hvorki í endurfjármögnun né færð nýtt fasteignalán.`;
   }else if(!stenst){
-    tonn='bad'; svar=`<b>Nei.</b> Greiðslubyrðin er ${pct(ratio)} af laununum og fer yfir ${cap}%-mark Seðlabankans, svo þessi lán fást ekki eins og þau standa.`;
+    tonn='bad'; svar=`<b>Nei.</b> Seðlabankinn reiknar greiðslubyrðina ${pct(ratio)} af laununum, yfir ${cap}%-marki sínu, svo þessi lán fást ekki eins og þau standa.`;
   }else if(gmAfgangur!==null&&gmAfgangur<0){
     tonn='bad'; svar=`<b>Varla.</b> Lánin rúmast innan ${cap}%-marksins, en þegar framfærsla heimilisins er dregin frá vantar <b>${kr(-gmAfgangur)}</b> upp á í hverjum mánuði.`;
   }else if(S.erMedLan){
     tonn='ok';
-    svar=`Greiðslubyrðin er <b>${pct(ratio)}</b> af laununum, innan ${cap}%-marksins, svo endurfjármögnun eða nýtt fasteignalán ætti að standa þér til boða hvað þetta viðmið varðar`
+    svar=`Seðlabankinn reiknar greiðslubyrðina <b>${pct(ratio)}</b> af laununum, innan ${cap}%-marksins, svo endurfjármögnun eða nýtt fasteignalán ætti að standa þér til boða hvað þetta viðmið varðar`
       +(gmAfgangur!==null?`, og <b>${kr(gmAfgangur)}</b> standa eftir þegar framfærslan er dregin frá.`:'.');
   }else{
     tonn='ok';
-    svar=`<b>Já.</b> Greiðslan er <b>${kr(t.first)}</b> á mánuði, eða ${pct(ratio)} af laununum, innan ${cap}%-marksins`
-      +(gmAfgangur!==null?` og <b>${kr(gmAfgangur)}</b> standa eftir þegar framfærslan er dregin frá.`:'.');
+    // Greiðslan og hlutfallið eru EKKI sama talan: hlutfallið reiknast af
+    // viðmiðunargreiðslu Seðlabankans, sem er hærri en raungreiðslan þegar
+    // samningsvextirnir eru undir gólfinu eða lánstíminn yfir mörkunum.
+    // Að tengja þær með „eða“ var beinlínis rangt.
+    svar=`<b>Já.</b> Þú borgar <b>${kr(t.first)}</b> á mánuði.`
+      +(Math.abs(t.sbi-t.first)>1000
+        ? ` Seðlabankinn reiknar dæmið með sínum eigin forsendum og fær <b>${kr(t.sbi)}</b>, sem eru ${pct(ratio)} af laununum og innan ${cap}%-marksins`
+        : ` Það eru ${pct(ratio)} af laununum, innan ${cap}%-marksins`)
+      +(gmAfgangur!==null?`, og <b>${kr(gmAfgangur)}</b> standa eftir þegar framfærslan er dregin frá.`:'.');
+  }
+  // Svar sem byggir á hluta lánanna er ekki fullgilt svar, svo græni tónninn
+  // víkur fyrir gulum og það er sagt berum orðum hvað stendur út af.
+  if(ofullbuin.length){
+    if(tonn==='ok') tonn='bidur';
+    const eitt=ofullbuin.length===1;
+    svar+=` ${eitt?'Eitt lán er':ofullbuin.length+' lán eru'} ekki ${eitt?'fullbúið':'fullbúin'} og ${eitt?'reiknast':'reiknast'} ekki með, það vantar ${vantarOrd(ofullbuin)}.`;
   }
   el.className='svarid '+tonn;
   el.innerHTML=svar;
@@ -1482,10 +1512,10 @@ function renderMax(S){
   const hl=k=>m.bindur===k?' style="color:var(--bad-text)"':'';
   const skyring={
     ved:`Það er <b>eigið féð sem bindur þig</b>, ekki tekjurnar. Veðþakið leyfir ekki hærra lán á eign í þessum verðflokki. Hver króna sem bætist við eigið féð hækkar hámarkskaupverðið um ${ltvCap(S)===90?'tí':'fimm'}falt, því lánið hækkar með.`,
-    tekjur:`Það eru <b>tekjurnar sem binda þig</b>, ekki eigið féð. Greiðslurýmið innan ${m.cap}%-viðmiðsins er ${kr(m.rymi)} á mánuði, sem ber lán upp á ${kr(m.hamarkslan)}.`,
+    tekjur:`Það eru <b>tekjurnar sem binda þig</b>, ekki eigið féð. Greiðslurýmið innan ${m.cap}%-viðmiðsins er ${kr(m.rymi)} á mánuði, sem ber lán upp á ${kr(m.hamarkslan)}`,
     gm:m.gmRymi<=0
       ? `<b>Tekjurnar duga ekki fyrir framfærslu heimilisins og rekstri eignarinnar</b>, hvað þá afborgunum. Talan hér að ofan er því eingöngu þitt eigið fé: þú kæmist í eign á því verði ef þú borgaðir hana að fullu út, en ekkert svigrúm er fyrir lán. Athugaðu hvort tekjurnar séu rétt skráðar, og hvort rekstrarliðirnir í skrefi 1 séu of háir.`
-      : `Það er <b>framfærslan sem bindur þig</b>. Þegar framfærsla heimilisins og rekstur eignarinnar hafa verið dregin frá standa ${kr(m.gmRymi)} eftir á mánuði, sem bera lán upp á ${kr(m.gmLan)}. Þetta er strangara mark en ${m.cap}%-viðmiðið og nær því sem bankinn reiknar.`,
+      : `Það er <b>framfærslan sem bindur þig</b>. Þegar framfærsla heimilisins og rekstur eignarinnar hafa verið dregin frá standa ${kr(m.gmRymi)} eftir á mánuði, sem bera lán upp á ${kr(m.gmLan)} Þetta er strangara mark en ${m.cap}%-viðmiðið og nær því sem bankinn reiknar.`,
   }[m.bindur];
   el.innerHTML=`<div class="eyebrow">Hvað kemstu hæst?</div>
     <div class="verdict-line">Miðað við tekjurnar og eigið féð kemstu hæst í eign á um <b>${kr(m.verd)}</b><a href="#skyring-hamark" class="fotnota" title="Hvað þýðir þessi tala?">*</a></div>
@@ -1656,6 +1686,10 @@ function renderBuy(S){
     ? (gap<0
         ? `Þetta nær upp í kaupverðið og <b>${kr(-gap)}</b> umfram.`
         : 'Þetta nær nákvæmlega upp í kaupverðið.')
+    : vantarEigidFe>gap
+      // Lánin eru þegar komin yfir veðþakið, svo tölurnar tvær eru ekki
+      // hvor innan í annarri og „þar af“ átti ekki við.
+      ? `Lánin eru komin yfir veðþakið (${ltvCap(S)}% af kaupverði). Miðað við það vantar <b>${kr(vantarEigidFe)}</b> í eigið fé.`
     : vantarEigidFe>0
       ? `Það vantar ${kr(gap)} upp í kaupverðið og þar af ${kr(vantarEigidFe)} sem ekkert lán getur brúað.`
       : `Það vantar ${kr(gap)} upp í kaupverðið.`;
@@ -1666,8 +1700,8 @@ function renderBuy(S){
   if(gap>0){
     const plan=targets.length===1?fillPlan(S,targets[0].l):targets.length?null:fillPlan(S,null);
     const capNote=p=>p&&p.short>0
-      ? `<span style="font-size:12.5px;color:var(--bad-text)">Veðþakið (${ltvCap(S)}% af kaupverði) leyfir aðeins ${kr(p.give)}. Það vantar enn ${kr(p.short)} í eigið fé.</span>`
-      : `<span style="font-size:12.5px;color:var(--muted)">Höfuðstóllinn verður ${kr(p?p.give:0)}.</span>`;
+      ? `<span style="font-size:12.5px;color:var(--bad-text)">Veðþakið (${ltvCap(S)}% af kaupverði) leyfir aðeins ${kr(p.give)} Það vantar enn ${kr(p.short)} í eigið fé.</span>`
+      : `<span style="font-size:12.5px;color:var(--muted)">Höfuðstóllinn verður ${kr(p?p.give:0)}</span>`;
     if(!targets.length){
       fill=`<div class="fill-row"><button type="button" class="table-toggle" data-buyfill="new">Búa til lán fyrir mismuninn</button>
         ${plan&&plan.short>0
@@ -1913,7 +1947,7 @@ function merkjaVantar(card, loan, S){
   // notandinn reynt að fara í niðurstöðuna án þess að nokkuð sé reiknanlegt er
   // líka merkt við höfuðstólinn, svo hann sjái hvað stendur á.
   // Þvingunin slokknar um leið og lánið er orðið reiknanlegt
-  if(loan.vantarStadfest&&loanValid(loan)&&loan.rate>0) delete loan.vantarStadfest;
+  if(loan.vantarStadfest&&loanValid(loan)) delete loan.vantarStadfest;
   const knyja=!!loan.vantarStadfest;
   const vantarHofud=knyja&&!loan.principal;
   const vantarVexti=(loan.principal>0||knyja)&&!loan.rate;
