@@ -469,7 +469,7 @@ footer a{color:var(--ink-2)}
       <p>Öðru máli gegnir um samninga þar sem þú átt eignina í sameign með fyrirtæki og greiðir því fyrir afnot af þeirra hlut, svo sem ýmis „leigu til eignar“ úrræði. Með 3. mgr. 4. gr. reglna nr. 1300/2025, sem er nýmæli frá desember 2025, teljast allar slíkar greiðslur til sameiganda sem heldur á hlutnum í atvinnuskyni með í greiðslubyrðinni, óháð því hvenær þær koma til greiðslu. Sama grein kveður á um að miða skuli við allar greiðslur sem falla til vegna öflunar íbúðarhúsnæðis, að undanskildum opinberum gjöldum, umsýsluþóknunum og lántökugjöldum. <b>Reiknivélin reiknar þessar greiðslur ekki með</b>, enda ræðst fjárhæð þeirra af samningnum hverju sinni. Eigi þetta við um þig er greiðslubyrðarhlutfallið hér lægra en það sem lánveitandinn reiknar.</p>
       <h3>Eigið fé og kostnaður við kaupin</h3>
       <p>Súlan „Nær þetta upp í kaupverðið?“ leggur saman eigið fé þitt og þau lán sem borga íbúðina, og ber það saman við kaupverðið að viðbættum kostnaði við kaupin. Með lánum í kaupin teljast fasteignalán á aðalhúsnæðinu og lán á lánsveði. Lán á útleigueign, bílalán og námslán telja ekki með, því þau fara ekki í þessi kaup.</p>
-      <p>Áætlaði kostnaðurinn við kaupin er reiknaður sem stimpilgjald (0,8% af fasteignamati, helmingur hjá fyrstu kaupendum), þinglýsing tveggja skjala og lántökugjald upp á 60.000 kr. á hvert nýtt fasteignalán. Lántökugjaldið er föst krónutala, ekki hlutfall af láninu, og fellur alla jafna niður við fyrstu kaup. <b>Þetta eru viðmiðunartölur.</b> Gjaldskrár breytast milli ára og lántökugjaldið er mismunandi eftir lánveitendum, svo hafir þú tölur frá fasteignasalanum eða bankanum skaltu velja „Mín eigin tala“ í skrefi 1 og slá þær inn. Hér er hvorki reiknað með þóknun fasteignasala við sölu eldri eignar né kostnaði við flutning eða breytingar á eigninni.</p>
+      <p>Áætlaði kostnaðurinn við kaupin er reiknaður sem stimpilgjald (0,8% af fasteignamati, helmingur hjá fyrstu kaupendum), þinglýsing tveggja skjala og lántökugjald upp á 60.000 kr. á hvert nýtt fasteignalán. Lántökugjaldið er föst krónutala, ekki hlutfall af láninu, og fellur alla jafna niður við fyrstu kaup. <b>Þetta eru viðmiðunartölur.</b> Gjaldskrár breytast milli ára og lántökugjaldið er mismunandi eftir lánveitendum, svo hafir þú tölur frá fasteignasalanum eða bankanum skaltu velja „Mín eigin tala“ í skrefi 1 og slá þær inn. Sért þú líka að selja eign reiknast þóknun fasteignasala með: settu söluverðið inn í skrefi 1 og prósentuna sem þú semur um, oftast 1 til 2% með virðisaukaskatti. Hér er hins vegar ekki reiknað með kostnaði við flutning, breytingar á eigninni eða húsgögn.</p>
       <h3>Bráðabirgðagreiðslumat og hámarkskaupverð</h3>
       <p>Framfærslutölurnar eru <b>framfærsluviðmið umboðsmanns skuldara</b>, sótt af island.is. Þau eru uppfærð á tveggja mánaða fresti og byggja á rannsókn Hagstofunnar á útgjöldum heimilanna. Viðmiðin eru miðgildi, sem þýðir að helmingur heimila eyðir meiru en þetta. Húsnæðiskostnaður og leikskólagjöld eru ekki inni í þeim og eru því skráð sérstaklega hér. Athugið að neysluviðmið félags- og húsnæðismálaráðuneytisins, sem stundum er vísað til, hafa ekki verið uppfærð síðan í október 2019 og eru í heildarendurskoðun; þau eru ekki notuð hér.</p>
       <p>Lánveitendur byggja greiðslumat sitt á sama grunni en hver þeirra setur sín eigin viðmið og lítur auk þess á greiðslusögu, starfsöryggi og fleira. Matið hér er því vísbending um hvort dæmið sé raunhæft, ekki svar frá bankanum.</p>
@@ -552,13 +552,20 @@ const REGLUR_URL='https://island.is/stjornartidindi/nr/f2fc66b9-0dfd-44a6-b795-5
 
 /* Viðmiðunarkjör sem gripið er til EINGÖNGU þegar notandinn hefur engin kjör
    slegið inn. Reiknivélin á annars alltaf að byggja á hans eigin tölum.
-   Þetta eru gróf markaðskjör í september 2026, ekki lágmörk Seðlabankans:
-   lágmörkin (3% verðtryggt, 5,5% óverðtryggt) voru sett þegar vextir voru
-   lágir og eru nú undir því sem býðst, svo þau ein og sér ofmeta lánsgetuna. */
-const VIDMID_VERD=4.3;    // verðtryggt, raunvextir
-const VIDMID_OVERD=8.5;   // óverðtryggt, nafnvextir
+   Þetta eru markaðskjör, ekki lágmörk Seðlabankans: lágmörkin (3% verðtryggt,
+   5,5% óverðtryggt) voru sett þegar vextir voru lágir og eru nú vel undir því
+   sem býðst, svo þau ein og sér ofmeta lánsgetuna.
+
+   Meðaltal allra kjara sem bjóðast við 80% veðhlutfall, sótt af aurbjorg.is
+   22. september 2026. Þá voru 13 óverðtryggð kjör í boði (8,75 til 10,25%) og
+   8 verðtryggð (4,10 til 5,02%). Til samanburðar var meðaltalið við 70%
+   veðhlutfall 9,25% og 4,28%, og við 90% veðhlutfall 9,47% óverðtryggt en
+   ekkert verðtryggt lán í boði. Uppfæra þarf þessar tölur reglulega. */
+const VIDMID_VERD=4.55;   // verðtryggt, raunvextir
+const VIDMID_OVERD=9.4;   // óverðtryggt, nafnvextir
 const VIDMID_AR=30;
 const VIDMID_DAGS='september 2026';
+const VIDMID_HEIMILD='https://aurbjorg.is/husnaedislan';
 function sbiPayment(loan){
   const rate=loan.indexed?Math.max(loan.rate,3):Math.max(loan.rate,5.5);
   const years=loan.indexed?Math.min(loan.years,25):Math.min(loan.years,40);
@@ -1275,7 +1282,7 @@ function renderMax(S){
     <div class="infobox" id="skyring-hamark"><b>* Þetta er þakið sem reglurnar setja, ekki tala sem þér stendur til boða.</b> Séu tekjurnar háar getur talan orðið margfalt hærri en nokkur lánveitandi myndi í reynd lána. Reglurnar eru aðeins efsta mörkin; lánveitandinn setur sín eigin, álagsprófar greiðslugetuna og lítur á greiðslusögu og starfsöryggi. Finnist þér talan fjarstæðukennd er það merki um að það séu ekki reglurnar sem stoppa þig.</div>
     <div class="infobox">${m.fyrirmynd
       ? `Reiknað er með kjörunum af fyrsta fasteignaláninu þínu í skrefi 2`
-      : `<b>Þú hefur ekki slegið inn nein lánakjör.</b> Hér er því gripið til grófs viðmiðs, verðtryggðs láns á ${pct(VIDMID_VERD)} til ${VIDMID_AR} ára, sem er nærri því sem býðst í ${VIDMID_DAGS}. <b>Settu inn þín eigin kjör í skrefi 2</b> um leið og þú færð tilboð, því talan hér breytist með þeim`} og kostnaði við kaupin eins og hann er stilltur hér að ofan. Greiðslubyrðin er reiknuð eftir greiðslubyrðarreglu Seðlabankans (<a href="${REGLUR_URL}" target="_blank" rel="noopener">nr. ${REGLUR_NR}</a>, 4. gr.): miðað er við samningsvexti lánsins, þó aldrei lægri en 3% sé það verðtryggt eða 5,5% sé það óverðtryggt, og lánstíma að hámarki 25 ár eða 40 ár eftir tegund. Lágmarksvextirnir binda því aðeins þegar raunveruleg kjör eru lægri en þeir.${S.hasGm?'':' Hakaðu við „bráðabirgðagreiðslumat“ í skrefi 1 til að fá þriðja markið, framfærsluna, sem er alla jafna strangast og næst því sem bankinn reiknar.'}</div>`;
+      : `<b>Þú hefur ekki slegið inn nein lánakjör.</b> Hér er því miðað við verðtryggt lán á ${pct(VIDMID_VERD)} til ${VIDMID_AR} ára, sem var meðaltal þeirra kjara sem buðust við 80% veðhlutfall í ${VIDMID_DAGS} skv. <a href="${VIDMID_HEIMILD}" target="_blank" rel="noopener">vaxtatöflu Aurbjargar</a>. Óverðtryggð lán báru þá um ${pct(VIDMID_OVERD)}. <b>Settu inn þín eigin kjör í skrefi 2</b> um leið og þú færð tilboð, því talan hér breytist með þeim`} og kostnaði við kaupin eins og hann er stilltur hér að ofan. Greiðslubyrðin er reiknuð eftir greiðslubyrðarreglu Seðlabankans (<a href="${REGLUR_URL}" target="_blank" rel="noopener">nr. ${REGLUR_NR}</a>, 4. gr.): miðað er við samningsvexti lánsins, þó aldrei lægri en 3% sé það verðtryggt eða 5,5% sé það óverðtryggt, og lánstíma að hámarki 25 ár eða 40 ár eftir tegund. Lágmarksvextirnir binda því aðeins þegar raunveruleg kjör eru lægri en þeir.${S.hasGm?'':' Hakaðu við „bráðabirgðagreiðslumat“ í skrefi 1 til að fá þriðja markið, framfærsluna, sem er alla jafna strangast og næst því sem bankinn reiknar.'}</div>`;
 }
 
 /* ============ Bráðabirgðagreiðslumat ============ */
@@ -1672,11 +1679,11 @@ function vaxtaVidvorun(S, loan){
   if(!(r>0)) return null;
   const i=S.inflation||0;
   if(!loan.indexed&&(r<5.5||r<i)){
-    return {txt:`<b>${pct(r)} eru lágir nafnvextir.</b> Óverðtryggt lán ber nafnvexti, sem innihalda verðbólguna${r<i?` og eru hér lægri en verðbólguforsendan þín (${pct(i)})`:''}. Sé þetta raunvaxtatala af verðtryggðu tilboði á hún ekki við hér.`,
+    return {txt:`<b>${pct(r)} eru lágir nafnvextir.</b> Óverðtryggt lán ber nafnvexti, sem innihalda verðbólguna${r<i?` og eru hér lægri en verðbólguforsendan þín (${pct(i)})`:''}. Í ${VIDMID_DAGS} báru óverðtryggð íbúðalán um ${pct(VIDMID_OVERD)}. Sé þetta raunvaxtatala af verðtryggðu tilboði á hún ekki við hér.`,
       til:Math.round(((1+r/100)*(1+i/100)-1)*10000)/100, heiti:'nafnvexti'};
   }
   if(loan.indexed&&r>RAUNVAXTAPAK){
-    return {txt:`<b>${pct(r)} eru háir raunvextir.</b> Verðtryggt lán ber raunvexti ofan á verðbæturnar, oftast á bilinu 3 til 5%. Sé þetta nafnvaxtatala af óverðtryggðu tilboði á hún ekki við hér.`,
+    return {txt:`<b>${pct(r)} eru háir raunvextir.</b> Verðtryggt lán ber raunvexti ofan á verðbæturnar. Í ${VIDMID_DAGS} báru verðtryggð íbúðalán um ${pct(VIDMID_VERD)}. Sé þetta nafnvaxtatala af óverðtryggðu tilboði á hún ekki við hér.`,
       til:Math.round(((1+r/100)/(1+i/100)-1)*10000)/100, heiti:'raunvexti'};
   }
   return null;
