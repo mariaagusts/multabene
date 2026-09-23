@@ -13,6 +13,10 @@
   --accent:#1266c4; --accent-ink:#fff; --accent-soft:#e4edf9;
   --good:#0ca30c; --good-text:#046b0f; --bad:#d03b3b; --bad-text:#b32626;
   --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4; --s6:#008300;
+  /* Verðtryggt og óverðtryggt fá eigin liti. Áður láðust lánalitirnir --s1 og
+     --s3, svo sami litur táknaði bæði tiltekið lán og tiltekna lánategund.
+     Tvö þrep af sama tón sýna að þetta eru tveir hlutar af einni heild. */
+  --ovtr:#5a4a9f; --vtr:#b3a6dd;
   --shadow:0 1px 2px rgba(84,66,32,.06),0 6px 20px rgba(84,66,32,.09);
   color-scheme:light;
 }
@@ -24,6 +28,7 @@
     --accent:#5aa2f0; --accent-ink:#161310; --accent-soft:#1e3048;
     --good:#0ca30c; --good-text:#4ecb5c; --bad:#e66767; --bad-text:#f09090;
     --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#00a300;
+  --ovtr:#a294e0; --vtr:#6a5cae;
     --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 20px rgba(0,0,0,.3);
     color-scheme:dark;
   }
@@ -35,6 +40,7 @@
   --accent:#5aa2f0; --accent-ink:#161310; --accent-soft:#1e3048;
   --good:#0ca30c; --good-text:#4ecb5c; --bad:#e66767; --bad-text:#f09090;
   --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#00a300;
+  --ovtr:#a294e0; --vtr:#6a5cae;
   --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 20px rgba(0,0,0,.3);
   color-scheme:dark;
 }
@@ -76,6 +82,15 @@ h2{
 .howto .step-num{width:24px; height:24px; font-size:12.5px; margin:0}
 .howto-note{margin-top:14px; font-size:14px; color:var(--ink-2); max-width:70ch}
 .vistun-nota{font-size:12.5px; color:var(--muted); max-width:44ch; line-height:1.35}
+.next-step{
+  display:block; margin:18px 0 0 auto; font:inherit; font-size:14px; font-weight:600;
+  cursor:pointer; padding:10px 18px; border-radius:99px;
+  border:1px solid color-mix(in srgb,var(--accent) 35%,var(--hairline));
+  background:var(--surface); color:var(--accent);
+}
+.next-step::after{content:" ↓"; font-weight:400}
+.next-step:hover{background:var(--accent-soft)}
+.next-step:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 /* Reitur blikkar þegar hann sleppir stöfum sem eru ekki tölur */
 @keyframes hafnad-blikk{0%,100%{background:var(--surface-2)}35%{background:color-mix(in srgb,var(--bad) 18%,var(--surface-2))}}
 input.hafnad{animation:hafnad-blikk 1.4s ease-out}
@@ -823,7 +838,7 @@ function scenarioShell(S, title, removable){
             </div>
           </div>`}
     </div>
-    <section>
+    <section data-skref="1">
       <div class="step-head"><span class="step-num">1</span><div>
         <h2 style="font-size:18px">Launin og heimilið</h2>
         <p class="sec-sub">Byrjaðu hér: hvað fáið þið útborgað á mánuði og hvað heldurðu að verðbólgan verði næstu árin?</p>
@@ -958,16 +973,18 @@ function scenarioShell(S, title, removable){
           </div>
         </div>
       </div>
+      <button type="button" class="next-step" data-gonext="2">Næsta skref: lánin þín</button>
     </section>
-    <section>
+    <section data-skref="2">
       <div class="step-head"><span class="step-num">2</span><div>
         <h2 style="font-size:18px">Lánin þín</h2>
         <p class="sec-sub">Skráðu hvert lán fyrir sig, tölurnar standa á lánayfirlitinu í heimabankanum eða í tilboði lánveitandans. Notaðu „+“ til að bæta við fleiri lánum, og smelltu á heiti láns til að gefa því eigið nafn, t.d. „Íbúðalánið“ eða „Bíllinn“. Reitir merktir <span class="req">*</span> eru nauðsynlegir svo hægt sé að reikna lánið, allt annað er valkvætt.</p>
       </div></div>
       <div class="loans" data-r="loans"></div>
+      <button type="button" class="next-step" data-gonext="3">Næsta skref: sjá niðurstöðuna</button>
       ${removable?'':`<div class="didyou"><span class="dy-tag">Vissir þú?</span>Þú mátt alltaf greiða aukalega inn á lánin þín, <b>líka þau verðtryggðu</b>. Það er útbreiddur misskilningur að það borgi sig ekki að greiða inn á verðtryggt lán: hver króna sem þú greiðir aukalega lækkar höfuðstólinn strax, og þar með bæði vextina og verðbæturnar sem annars hefðu reiknast á hann út lánstímann. Prófaðu að setja tölu í „Aukagreiðsla á mánuði“ hér að ofan og sjáðu í samantektinni hvað hún sparar þér. (Sum óverðtryggð lán með föstum vöxtum bera uppgreiðslugjald, kannaðu skilmálana hjá lánveitandanum.)</div>`}
     </section>
-    <section>
+    <section data-skref="3">
       <div class="step-head"><span class="step-num">3</span><div>
         <h2 style="font-size:18px">Niðurstaðan</h2>
         <p class="sec-sub">Svarið við spurningunni og stóru tölurnar á mannamáli.</p>
@@ -982,8 +999,9 @@ function scenarioShell(S, title, removable){
       <div data-r="costwarn"></div>
       <div class="card" data-r="mix" hidden style="margin-top:14px; padding:18px 22px"></div>
       <p class="sec-sub" data-r="costnote" style="margin-top:12px; margin-bottom:0; font-size:13px"></p>
+      <button type="button" class="next-step" data-gonext="4">Næsta skref: hvernig þróast þetta?</button>
     </section>
-    <section>
+    <section data-skref="4">
       <div class="step-head"><span class="step-num">4</span><div>
         <h2 style="font-size:18px">Hvernig þróast þetta?</h2>
         <p class="sec-sub">Færðu músina yfir línuritið til að sjá stöðuna á hverjum tíma, flipar efst skipta um sjónarhorn.</p>
@@ -1164,6 +1182,22 @@ function mountScenario(S, hostId, title, removable){
       if(!helpPop.hidden&&!helpPop.contains(e.target)&&e.target!==helpBtn) helpPop.hidden=true;
     });
   }
+  // Leiðsögn milli skrefa. Hnappurinn úr skrefi 2 fer ekki áfram ef ekkert lán
+  // er reiknanlegt, heldur merkir reitina sem vantar og fer í þann fyrsta.
+  host.addEventListener('click',e=>{
+    const b=e.target.closest('.next-step'); if(!b) return;
+    const naest=b.dataset.gonext;
+    if(naest==='3'&&!S.loans.some(loanValid)){
+      S.loans.forEach(l=>{ if(!l.principal||!l.rate||!l.years) l.vantarStadfest=true; });
+      renderLoans(S); recalc(S);
+      const fyrsti=host.querySelector('.loan-card input.vantar');
+      if(fyrsti){ fyrsti.closest('.loan-card').scrollIntoView({behavior:'smooth',block:'center'});
+                  setTimeout(()=>fyrsti.focus({preventScroll:true}),400); }
+      return;
+    }
+    const m=host.querySelector('[data-skref="'+naest+'"]');
+    if(m) m.scrollIntoView({behavior:'smooth',block:'start'});
+  });
   renderLoans(S);
   recalc(S);
 }
@@ -1742,9 +1776,18 @@ function vaxtaVidvorun(S, loan){
   return null;
 }
 function merkjaVantar(card, loan, S){
-  const vantarVexti=loan.principal>0&&!loan.rate;
-  const vantarAr=loan.principal>0&&!loan.years;
-  card.classList.toggle('vantar-kjor', vantarVexti||vantarAr);
+  // Venjulega er aðeins merkt þegar upphæð er komin inn en kjörin vantar. Hafi
+  // notandinn reynt að fara í niðurstöðuna án þess að nokkuð sé reiknanlegt er
+  // líka merkt við höfuðstólinn, svo hann sjái hvað stendur á.
+  // Þvingunin slokknar um leið og lánið er orðið reiknanlegt
+  if(loan.vantarStadfest&&loanValid(loan)&&loan.rate>0) delete loan.vantarStadfest;
+  const knyja=!!loan.vantarStadfest;
+  const vantarHofud=knyja&&!loan.principal;
+  const vantarVexti=(loan.principal>0||knyja)&&!loan.rate;
+  const vantarAr=(loan.principal>0||knyja)&&!loan.years;
+  const p=card.querySelector('[data-f="principal"]');
+  if(p) p.classList.toggle('vantar', vantarHofud);
+  card.classList.toggle('vantar-kjor', vantarHofud||vantarVexti||vantarAr);
   const r=card.querySelector('[data-f="rate"]'), y=card.querySelector('[data-f="years"]');
   if(r) r.classList.toggle('vantar', vantarVexti);
   if(y) y.classList.toggle('vantar', vantarAr);
@@ -1752,8 +1795,11 @@ function merkjaVantar(card, loan, S){
   if(hint) hint.hidden=!vantarVexti;
   const merki=card.querySelector('[data-vantarmerki]');
   if(merki){
-    merki.hidden=!(vantarVexti||vantarAr);
-    if(!merki.hidden) merki.textContent='Vantar '+[vantarVexti?'vexti':'',vantarAr?'lánstíma':''].filter(Boolean).join(' og ');
+    merki.hidden=!(vantarHofud||vantarVexti||vantarAr);
+    if(!merki.hidden){
+      const l=[vantarHofud?'upphæð':'',vantarVexti?'vexti':'',vantarAr?'lánstíma':''].filter(Boolean);
+      merki.textContent='Vantar '+(l.length>1?l.slice(0,-1).join(', ')+' og '+l[l.length-1]:l[0]);
+    }
   }
   const vv=S?vaxtaVidvorun(S,loan):null;
   const box=card.querySelector('[data-ratewarn]');
@@ -1867,12 +1913,12 @@ function renderMix(S){
   el.innerHTML=`
     <div class="eyebrow">Verðtryggt vs. óverðtryggt</div>
     <div class="mixbar">
-      <div style="width:${op}%;background:var(--s1)" title="Óverðtryggt"></div>
-      <div style="width:${vp}%;background:var(--s3)" title="Verðtryggt"></div>
+      <div style="width:${op}%;background:var(--ovtr)" title="Óverðtryggt"></div>
+      <div style="width:${vp}%;background:var(--vtr)" title="Verðtryggt"></div>
     </div>
     <div class="mix-legend">
-      <div><span class="sw" style="background:var(--s1)"></span>Óverðtryggt: <b>${kr(overd)}</b> (${pct(op)})</div>
-      <div><span class="sw" style="background:var(--s3)"></span>Verðtryggt: <b>${kr(verd)}</b> (${pct(vp)})</div>
+      <div><span class="sw" style="background:var(--ovtr)"></span>Óverðtryggt: <b>${kr(overd)}</b> (${pct(op)})</div>
+      <div><span class="sw" style="background:var(--vtr)"></span>Verðtryggt: <b>${kr(verd)}</b> (${pct(vp)})</div>
     </div>`;
 }
 function renderSbi(S){
@@ -1921,6 +1967,7 @@ function renderSbi(S){
       ?`Svigrúmið upp að hámarkinu er <b>${kr(room)}</b> á mánuði í viðbótargreiðslubyrði.`
       :`Til að komast innan marka þyrfti greiðslubyrðin að lækka um <b>${kr(-room)}</b> á mánuði, eða tekjurnar að hækka um <b>${kr(sbiTotal/(cap/100)-income)}</b>.`}
     ${outPay>0?` Lán utan viðmiðsins, á lánsveði, bílalán og önnur lán (<b>${kr(outPay)}</b> á mánuði), eru samt inni í greiðslubyrðartölunum og afganginum hér að neðan.`:''}
+    ${!ok?`<div class="infobox" style="border-color:color-mix(in srgb,var(--bad) 35%,transparent)"><b>Hvað þýðir þetta ef þú ert þegar með lánin?</b> Reglan gildir um ný lán, svo hún hróflar ekki við þeim lánum sem þú ert með í dag og þú heldur áfram að greiða af þeim eins og venjulega. En hún þýðir að þú kemst að öllum líkindum <b>hvorki í endurfjármögnun né nýtt fasteignalán</b> á meðan hlutfallið er yfir markinu, því lánveitandinn má ekki veita það. Leiðirnar niður fyrir markið eru að lækka greiðslubyrðina, til dæmis með lengri lánstíma eða uppgreiðslu dýrustu lánanna, eða að tekjurnar hækki.</div>`:''}
     ${!S.rentInDsti&&netRentHms(S)>0?`<br><br><b>Ábending:</b> Þú ert með <b>${kr(netRentHms(S))}</b> í nettóleigutekjur af HMS-skráðum samningum sem telja ekki með í viðmiðinu eins og er, hakaðu við í leigutekjuhlutanum í skrefi 1 til að sjá áhrifin (hlutfallið yrði þá <b>${pct(sbiTotal/(income+netRentHms(S))*100)}</b>).`:''}</p>
     ${infobox}`;
 }
@@ -1946,16 +1993,16 @@ function ltvBarHtml(S,b){
     <div class="ltvbar-block">
       <div class="ltvbar-col">
         <div class="ltvbar">
-          <div class="ltvbar-fill" style="height:${overdPct}%;background:var(--s1)" title="Óverðtryggt"></div>
-          <div class="ltvbar-fill" style="height:${verdPct}%;bottom:${overdPct}%;background:var(--s3)" title="Verðtryggt"></div>
+          <div class="ltvbar-fill" style="height:${overdPct}%;background:var(--ovtr)" title="Óverðtryggt"></div>
+          <div class="ltvbar-fill" style="height:${verdPct}%;bottom:${overdPct}%;background:var(--vtr)" title="Verðtryggt"></div>
         </div>
         <div class="ltvbar-mark solid-mark" style="bottom:${pricePct}%"></div>
         ${assessPct!==null?`<div class="ltvbar-mark" style="bottom:${assessPct}%"></div>`:''}
       </div>
       <div class="ltvbar-legend">
         <div><span class="solid"></span>${verdLabel}: <b>${kr(kaupverd)}</b></div>
-        <div><span class="sw" style="background:var(--s3)"></span>Verðtryggt: <b>${kr(verd)}</b></div>
-        <div><span class="sw" style="background:var(--s1)"></span>Óverðtryggt: <b>${kr(overd)}</b></div>
+        <div><span class="sw" style="background:var(--vtr)"></span>Verðtryggt: <b>${kr(verd)}</b></div>
+        <div><span class="sw" style="background:var(--ovtr)"></span>Óverðtryggt: <b>${kr(overd)}</b></div>
         ${fasteignamat>0?`<div><span class="dash"></span>Fasteignamat: <b>${kr(fasteignamat)}</b></div>`:''}
         ${equity>0?`<div style="color:var(--muted)">Eigið fé í eigninni (bilið upp að heilu línunni): ${kr(equity)}</div>`:''}
         ${equity<0?`<div style="color:var(--bad-text)">Lánin standa ${kr(-equity)} upp fyrir ${verdLabel.toLowerCase()}ið</div>`:''}
