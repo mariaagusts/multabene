@@ -277,6 +277,11 @@ input.required:placeholder-shown{border-color:color-mix(in srgb,var(--accent) 50
   background:color-mix(in srgb,var(--bad) 14%,transparent); color:var(--bad-text); white-space:nowrap}
 input.vantar{border-color:var(--bad) !important; background:color-mix(in srgb,var(--bad) 7%,var(--surface-2))}
 input.vantar:focus{outline:2px solid var(--bad); outline-offset:1px}
+.ratewarn{margin-top:7px; padding:9px 11px; border-radius:7px; font-size:12.5px; line-height:1.45;
+  background:color-mix(in srgb,var(--bad) 8%,var(--surface)); border:1px solid color-mix(in srgb,var(--bad) 35%,transparent); color:var(--ink-2)}
+.ratewarn b{color:var(--bad-text)}
+.ratewarn .table-toggle{font-size:12px; padding:4px 10px}
+input.grunsamlegt{border-color:color-mix(in srgb,var(--bad) 55%,var(--hairline))}
 .villa{margin-top:6px; font-size:12.5px; color:var(--bad-text); font-weight:600}
 .villa b{font-weight:700}
 .fotnota{color:var(--accent); text-decoration:none; font-size:.75em; vertical-align:super; padding:0 2px}
@@ -1542,6 +1547,7 @@ function renderLoans(S){
         <div class="field"><label>${loan.indexed?'Vextir (raunvextir)':'Vextir (nafnvextir)'} <span class="req">*</span></label>
           <div class="inputrow"><input type="text" inputmode="decimal" class="required" data-f="rate" value="${loan.rate?pctIn(loan.rate):''}" placeholder="${loan.indexed?'t.d. 4':'t.d. 8'}"><span class="unit">%</span></div>
           <div class="villa" data-vantarhint hidden>Sæktu þessa tölu í lánatilboðið eða heimabankann. Reiknivélin giskar ekki fyrir þig.</div>
+          <div class="ratewarn" data-ratewarn hidden></div>
           ${loan.rateNote?`<div class="ratenote">Vextirnir voru umreiknaðir úr <b>${pct(loan.rateNote.fra)}</b> ${loan.rateNote.varRaun?'raunvöxtum':'nafnvöxtum'} í <b>${pct(loan.rateNote.til)}</b> ${loan.rateNote.varRaun?'nafnvexti':'raunvexti'} miðað við ${pct(loan.rateNote.verdbolga)} verðbólgu, því þetta eru ekki sami hluturinn. <b>Settu inn þín eigin kjör</b> ef þú ert með tilboð frá lánveitanda.</div>`:''}</div>
         <div class="field"><label>Lánstími <span class="req">*</span></label>
           <div class="inputrow"><input type="number" class="required" step="1" min="1" max="50" data-f="years" value="${loan.years||''}" placeholder="t.d. 30"><span class="unit">ár</span></div></div>
@@ -1615,6 +1621,19 @@ function renderLoans(S){
     });
     hostL.appendChild(card);
   });
+  // Umreikningshnappurinn er endurteiknaður við hverja breytingu, svo hlustað er
+  // á hann í gegnum foreldrið í stað þess að tengja hann upp á nýtt í hvert sinn.
+  if(!hostL.dataset.umreiknaTengt){
+    hostL.dataset.umreiknaTengt='1';
+    hostL.addEventListener('click',e=>{
+      const b=e.target.closest('[data-umreikna]'); if(!b) return;
+      const i=[...hostL.querySelectorAll('.loan-card')].indexOf(b.closest('.loan-card'));
+      const loan=S.loans[i]; if(!loan) return;
+      loan.rate=Math.max(0,parseFloat(b.dataset.umreikna)||0);
+      delete loan.rateNote;
+      renderLoans(S); recalc(S);
+    });
+  }
   const add=document.createElement('button');
   add.className='add-loan';
   add.innerHTML='<span class="plus">+</span> Bæta við láni';
@@ -1642,7 +1661,27 @@ function recalc(S){
 // lánstíma: þær tölur eiga að koma úr lánatilboði eða heimabanka notandans.
 // Keyrt við hverja breytingu svo merkingin hverfi um leið og reitur fyllist,
 // án þess að kortið sé endurteiknað ofan í þann sem er að skrifa.
-function merkjaVantar(card, loan){
+/* Vaxtatalan passar ekki við tegund lánsins. Algengasta villan er að nota
+   raunvaxtatölu á óverðtryggt lán, sem gerir það fáránlega ódýrt í samanburði.
+   Viðmið: óverðtryggt lán ber nafnvexti og ætti ekki að vera undir lágmarki
+   Seðlabankans (5,5%) né undir verðbólgu; verðtryggt lán ber raunvexti og
+   raunvextir yfir 6,5% á íbúðaláni eru nær óþekktir. */
+const RAUNVAXTAPAK=6.5;
+function vaxtaVidvorun(S, loan){
+  const r=loan.rate;
+  if(!(r>0)) return null;
+  const i=S.inflation||0;
+  if(!loan.indexed&&(r<5.5||r<i)){
+    return {txt:`<b>${pct(r)} eru lágir nafnvextir.</b> Óverðtryggt lán ber nafnvexti, sem innihalda verðbólguna${r<i?` og eru hér lægri en verðbólguforsendan þín (${pct(i)})`:''}. Sé þetta raunvaxtatala af verðtryggðu tilboði á hún ekki við hér.`,
+      til:Math.round(((1+r/100)*(1+i/100)-1)*10000)/100, heiti:'nafnvexti'};
+  }
+  if(loan.indexed&&r>RAUNVAXTAPAK){
+    return {txt:`<b>${pct(r)} eru háir raunvextir.</b> Verðtryggt lán ber raunvexti ofan á verðbæturnar, oftast á bilinu 3 til 5%. Sé þetta nafnvaxtatala af óverðtryggðu tilboði á hún ekki við hér.`,
+      til:Math.round(((1+r/100)/(1+i/100)-1)*10000)/100, heiti:'raunvexti'};
+  }
+  return null;
+}
+function merkjaVantar(card, loan, S){
   const vantarVexti=loan.principal>0&&!loan.rate;
   const vantarAr=loan.principal>0&&!loan.years;
   card.classList.toggle('vantar-kjor', vantarVexti||vantarAr);
@@ -1656,11 +1695,18 @@ function merkjaVantar(card, loan){
     merki.hidden=!(vantarVexti||vantarAr);
     if(!merki.hidden) merki.textContent='Vantar '+[vantarVexti?'vexti':'',vantarAr?'lánstíma':''].filter(Boolean).join(' og ');
   }
+  const vv=S?vaxtaVidvorun(S,loan):null;
+  const box=card.querySelector('[data-ratewarn]');
+  if(box){
+    box.hidden=!vv;
+    if(vv) box.innerHTML=`${vv.txt} <button type="button" class="table-toggle" data-umreikna="${vv.til}" style="margin-top:7px">Umreikna í ${pct(vv.til)} ${vv.heiti}</button>`;
+  }
+  if(r) r.classList.toggle('grunsamlegt', !!vv&&!vantarVexti);
 }
 function renderLoanStats(S){
   S.root.querySelectorAll('.loan-card').forEach((card,i)=>{
     const loan=S.loans[i]; if(!loan) return;
-    merkjaVantar(card, loan);
+    merkjaVantar(card, loan, S);
     const r=S.results.find(x=>x.loan.id===loan.id);
     if(!r){
       card.querySelector('[data-stats]').innerHTML='<div style="grid-column:1/-1;color:var(--muted);font-size:12.5px">Settu inn höfuðstól og lánstíma til að sjá útreikninginn.</div>';
