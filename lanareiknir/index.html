@@ -1078,9 +1078,10 @@ function scenarioShell(S, title, removable){
         <p class="sec-sub">Skráðu hvert lán fyrir sig, tölurnar standa á lánayfirlitinu í heimabankanum eða í tilboði lánveitandans. Notaðu „+“ til að bæta við fleiri lánum, og smelltu á heiti láns til að gefa því eigið nafn, t.d. „Íbúðalánið“ eða „Bíllinn“. Reitir merktir <span class="req">*</span> eru nauðsynlegir svo hægt sé að reikna lánið, allt annað er valkvætt.</p>
       </div></div>
       <div class="loans" data-r="loans"></div>
-      <button type="button" class="next-step" data-gonext="3">Næsta skref: sjá niðurstöðuna</button>
+      <button type="button" class="next-step" data-gonext="${removable?'cmp':'3'}">Næsta skref: ${removable?'berðu dæmin saman':'sjá niðurstöðuna'}</button>
       ${removable?'':`<div class="didyou"><span class="dy-tag">Vissir þú?</span>Þú mátt alltaf greiða aukalega inn á lánin þín, <b>líka þau verðtryggðu</b>. Það er útbreiddur misskilningur að það borgi sig ekki að greiða inn á verðtryggt lán: hver króna sem þú greiðir aukalega lækkar höfuðstólinn strax, og þar með bæði vextina og verðbæturnar sem annars hefðu reiknast á hann út lánstímann. Prófaðu að setja tölu í „Aukagreiðsla á mánuði“ hér að ofan og sjáðu í samantektinni hvað hún sparar þér. (Sum óverðtryggð lán með föstum vöxtum bera uppgreiðslugjald, kannaðu skilmálana hjá lánveitandanum.)</div>`}
     </section>
+    ${removable?`<p class="sec-sub" style="margin:14px 0 0">Niðurstaðan fyrir dæmi B stendur í samanburðinum hér að neðan, við hliðina á dæmi A.</p>`:`
     <section data-skref="3">
       <div class="step-head"><span class="step-num">3</span><div>
         <h2 style="font-size:18px">Niðurstaðan</h2>
@@ -1115,7 +1116,7 @@ function scenarioShell(S, title, removable){
       </div>
       <button class="table-toggle" data-r="tableToggle" aria-expanded="false">Sýna árlega töflu</button>
       <div class="table-scroll" data-r="tableWrap" hidden></div>
-    </section>
+    </section>`}
   </div>`;
 }
 
@@ -1235,7 +1236,8 @@ function mountScenario(S, hostId, title, removable){
     renderRentals(S); recalc(S);
   });
   renderRentals(S);
-  S.$('tableToggle').addEventListener('click',function(){
+  // Dæmi B hefur hvorki línurit né töflu, samanburðurinn sér um þá hlið
+  if(S.$('tableToggle')) S.$('tableToggle').addEventListener('click',function(){
     const wrap=S.$('tableWrap');
     wrap.hidden=!wrap.hidden;
     this.setAttribute('aria-expanded',String(!wrap.hidden));
@@ -1297,7 +1299,9 @@ function mountScenario(S, hostId, title, removable){
                   setTimeout(()=>fyrsti.focus({preventScroll:true}),400); }
       return;
     }
-    const m=host.querySelector('[data-skref="'+naest+'"]');
+    // Dæmi B endar í samanburðinum, sem stendur utan við dæmið sjálft
+    const m=naest==='cmp'?document.getElementById('compareSec')
+                         :host.querySelector('[data-skref="'+naest+'"]');
     if(m) m.scrollIntoView({behavior:'smooth',block:'start'});
   });
   renderLoans(S);
@@ -2047,6 +2051,7 @@ function scenTotals(S){
 // aðeins eftir þar sem hann segir eitthvað: grænt á sparnaði, rautt á
 // neikvæðum afgangi.
 function renderTiles(S){
+  if(!S.$("tiles")) return;
   const t=scenTotals(S);
   const savedReal=t.basePaidReal-t.paidReal;
   let html=`
@@ -2125,7 +2130,7 @@ function renderMix(S){
     </div>`;
 }
 function renderSbi(S){
-  const el=S.$('sbi');
+  const el=S.$("sbi"); if(!el) return;
   const income=dstiIncome(S);
   const rentPart=S.rentInDsti?netRentHms(S):0;
   const cap=S.firstBuyer?40:35;
@@ -2370,6 +2375,7 @@ function renderTabsInto(el, current, onPick){
   });
 }
 function renderChart(S){
+  if(!S.$("chart")) return;
   renderTabsInto(S.$('tabs'),S.currentView,id=>{S.currentView=id;renderChart(S);saveState();});
   S.$('note').textContent=VIEWS.find(v=>v.id===S.currentView).note;
   if(!S.results.length){S.$('chart').innerHTML='';S.$('legend').innerHTML='';return;}
@@ -2378,7 +2384,7 @@ function renderChart(S){
 
 /* ============ Árleg tafla ============ */
 function renderTable(S){
-  const wrap=S.$('tableWrap');
+  const wrap=S.$("tableWrap"); if(!wrap) return;
   if(wrap.hidden||!S.results.length){if(wrap.hidden)wrap.innerHTML='';return;}
   const years=Math.ceil(S.horizon/12);
   let rows='';
