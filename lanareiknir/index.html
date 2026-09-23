@@ -1162,7 +1162,6 @@ function scenarioShell(S, title, removable){
       </div></div>
       <div class="loans" data-r="loans"></div>
       <button type="button" class="next-step" data-gonext="${removable?'cmp':'3'}">Næsta skref: ${removable?'berðu dæmin saman':'sjá niðurstöðuna'}</button>
-      ${removable?'':`<div class="didyou"><span class="dy-tag">Vissir þú?</span>Þú mátt alltaf greiða aukalega inn á lánin þín, <b>líka þau verðtryggðu</b>. Það er útbreiddur misskilningur að það borgi sig ekki að greiða inn á verðtryggt lán: hver króna sem þú greiðir aukalega lækkar höfuðstólinn strax, og þar með bæði vextina og verðbæturnar sem annars hefðu reiknast á hann út lánstímann. Prófaðu að setja tölu í „Aukagreiðsla á mánuði“ hér að ofan og sjáðu í samantektinni hvað hún sparar þér. (Sum óverðtryggð lán með föstum vöxtum bera uppgreiðslugjald, kannaðu skilmálana hjá lánveitandanum.)</div>`}
     </section>
     ${removable?`<p class="sec-sub" style="margin:14px 0 0">Niðurstaðan fyrir dæmi B stendur í samanburðinum hér að neðan, við hliðina á dæmi A.</p>`:`
     <section data-skref="3">
@@ -1970,7 +1969,11 @@ function renderLoans(S){
           <div class="inputrow"><input type="number" class="required" step="1" min="1" max="50" data-f="years" value="${loan.years||''}" placeholder="t.d. 30"><span class="unit">ár</span></div>
           ${i===0?`<details class="moli"><summary>Lánstíminn er dýrasta stillingin</summary>40 ára lán léttir mánuðinn en margfaldar heildarvextina miðað við 25 ára lán af sömu upphæð, þú ert einfaldlega að leigja peningana miklu lengur. Á móti kemur að lægri greiðsla skilur eftir meira handa á milli í hverjum mánuði, og hvort vegur þyngra er þitt að meta. Prófaðu í dæmi B að breyta bara árafjöldanum og skoðaðu hvað munar.</details>`:''}</div>
         <div class="field"><label>Aukagreiðsla á mánuði</label>
-          <div class="inputrow"><input type="text" inputmode="numeric" data-f="extraMonthly" value="${loan.extraMonthly?nf.format(loan.extraMonthly):''}" placeholder="0"><span class="unit">kr.</span></div></div>
+          <div class="inputrow"><input type="text" inputmode="numeric" data-f="extraMonthly" value="${loan.extraMonthly?nf.format(loan.extraMonthly):''}" placeholder="0"><span class="unit">kr.</span></div>
+          <!-- Fullyrðingin sjálf stendur sýnileg, því hún leiðréttir útbreiddan
+               misskilning og sá sem þarf hana mest myndi aldrei smella. -->
+          <div class="hint">Þú mátt alltaf greiða aukalega inn á lánin þín, <b>líka þau verðtryggðu</b>.</div>
+          ${i===0?`<details class="moli"><summary>Af hverju borgar sig að greiða inn á verðtryggt lán?</summary>Það er útbreiddur misskilningur að það geri ekkert gagn. Hver króna sem þú greiðir aukalega lækkar höfuðstólinn strax, og þar með bæði vextina og verðbæturnar sem annars hefðu reiknast á hann út lánstímann. Verðbæturnar leggjast á höfuðstólinn, svo lægri höfuðstóll þýðir líka lægri verðbætur. Settu tölu í reitinn hér að ofan og svarið birtist á kortinu sjálfu.</details>`:''}</div>
         <div class="field"><label>Eingreiðsla</label>
           <div class="inputrow"><input type="text" inputmode="numeric" data-f="lumpAmount" value="${loan.lumpAmount?nf.format(loan.lumpAmount):''}" placeholder="0"><span class="unit">kr.</span></div></div>
         <div class="field"><label>Eingreiðsla eftir hvað mörg ár?</label>
