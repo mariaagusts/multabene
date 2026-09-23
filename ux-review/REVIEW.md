@@ -185,6 +185,10 @@ Athugasemd um tón: langur skýringartexti undir reitum er skrifaður vel, en ha
 |---|---|---|---|---|
 | 15 | Þúsundaskil með punkti (`1.234.567 kr.`) eru rétt að íslenskum sið og virka vel. Tugabrot nota kommu **nema** í verðbólgureitnum. Ósamræmi | Hátt (sjá #2) | Sjá #2 | Lítil |
 | 16 | **41 af 66 smellanlegum hlutum eru undir 44px á hæð í síma.** Verstu: „?" hjálparhnappur 25×25px, verðbólguhnappar 29px, efsta stikan (Deila hlekk, Vista afrit, Opna afrit, Hreinsa allt) 31px, innsláttarreitir 41px | Hátt | Lágmark 44px á allt sem er smellt á í síma. Reitirnir þurfa bara 3px í viðbót | Lítil |
+
+> **Þetta var innleitt.** Við endurmælingu voru þeir orðnir 83 af 85, enda hafði stjórnum fjölgað síðan rýnin var skrifuð. Lagað með einni reglu sem gildir aðeins þar sem bent er með fingri eða skjárinn er þröngur (`@media (pointer:coarse), (max-width:760px)`), svo tölvuútlitið er óbreytt: reitir og hnappar fá `min-height:44px`, „?" hnappurinn 44×44, × hnapparnir 44×44 og hakkassarnir stækka í 24px. Eftir breytingu eru **núll stjórnir undir 44px**. Hakkassarnir sjálfir eru 24px en raunverulegi snertiflöturinn er merkimiðinn utan um þá, sem er 85px eða hærri.
+>
+> **Útlitsgalli sem fannst í leiðinni og var ekki í rýninni:** reiturinn „Útborguð laun (aðili 2)" var **29px breiður** í síma, nánast ónothæfur. Orsökin er að `.assumptions` er `repeat(auto-fit, minmax(200px,1fr))` en tveir reitir í grindinni hafa `grid-column:span 2`, sem þvingar fram tvo dálka jafnvel þegar aðeins einn kemst fyrir. Seinni dálkurinn varð þá 83px. Grindin er nú einn dálkur undir 760px og reiturinn er 243px breiður.
 | 17 | Engin sjálfgefin gildi á vöxtum og lánstíma. Notandi sem veit ekki kjörin sín kemst ekki áfram | Miðlungs | Sjálfgefið 3,9% og 40 ár fyrir verðtryggt, 8,5% og 40 ár fyrir óverðtryggt, greinilega merkt sem ágiskun sem má breyta | Lítil |
 | 18 | Reitir merktir `*` eru sagðir nauðsynlegir en ekkert gerist ef þeir eru tómir nema að útreikningur birtist ekki | Miðlungs | Merkja tóma nauðsynlega reiti sjónrænt þegar niðurstaða er reynd | Lítil |
 

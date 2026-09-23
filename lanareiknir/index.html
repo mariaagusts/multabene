@@ -375,6 +375,25 @@ table.compare{border-collapse:collapse; width:100%; min-width:560px; font-size:1
 footer{margin-top:30px; color:var(--muted); font-size:12.5px; max-width:75ch}
 footer a{color:var(--ink-2)}
 @media (max-width:560px){ .loan-grid{grid-template-columns:1fr} }
+
+/* Reitagrindin er auto-fit minmax(200px,1fr), en reitir með grid-column:span 2
+   þvinga fram tvo dálka líka þegar aðeins einn kemst fyrir. Þá varð seinni
+   dálkurinn 83px og reitirnir í honum ónothæfir. */
+@media (max-width:760px){
+  .assumptions{grid-template-columns:1fr}
+  .assumptions > .field{grid-column:auto !important}
+}
+
+/* Snertifletir. Fingur þarf um 44px, músarbendill ekki, svo þetta gildir
+   aðeins þar sem bent er með fingri eða skjárinn er þröngur. */
+@media (pointer:coarse), (max-width:760px){
+  input[type="text"], input[type="number"], select{min-height:44px}
+  .preset, .table-toggle, .tab, .scenario-remove, .add-loan{min-height:44px}
+  .help-dot{width:44px; height:44px; font-size:16px}
+  .loan-del{min-width:44px; min-height:44px; font-size:20px}
+  label.check input[type="checkbox"]{width:24px; height:24px}
+  .loan-head input[data-f="name"]{min-height:44px}
+}
 @media (prefers-reduced-motion: reduce){ *{transition:none !important} }
 </style>
 
