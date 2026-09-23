@@ -1810,13 +1810,14 @@ function renderLoans(S){
           <select data-f="indexed">
             <option value="1"${loan.indexed?' selected':''}>Verðtryggt</option>
             <option value="0"${!loan.indexed?' selected':''}>Óverðtryggt</option>
-          </select></div>
+          </select>
+          ${i===0?`<details class="moli"><summary>Verðtryggt eða óverðtryggt?</summary><b>Verðtryggt:</b> léttari greiðsla í byrjun, en skuldin hækkar með verðbólgunni og eignamyndunin er hægari fyrstu árin. Vextirnir sem þú slærð inn eru <b>raunvextir</b>, ofan á verðbæturnar. <b>Óverðtryggt:</b> hærri greiðsla strax, en skuldin lækkar í krónum frá fyrsta degi. Vextirnir eru <b>nafnvextir</b> og innihalda verðbólguna. Þetta er stærsta ákvörðunin í dæminu, svo settu upp bæði og berðu þau saman með „Bera saman annað dæmi“ neðst á síðunni.</details>`:''}</div>
         <div class="field"><label>Greiðslufyrirkomulag</label>
           <select data-f="paymentType">
             <option value="annuitet"${loan.paymentType==='annuitet'?' selected':''}>Jafnar greiðslur</option>
             <option value="jafnar"${loan.paymentType==='jafnar'?' selected':''}>Jafnar afborganir</option>
           </select>
-          ${i===0?`<details class="moli"><summary>Hvort á ég að velja?</summary>Jafnar greiðslur gefa sömu tölu út allan tímann og léttari byrjun. Jafnar afborganir byrja hærra en lækka jafnt og þétt, og heildarvextirnir verða talsvert lægri því höfuðstóllinn lækkar hraðar frá fyrsta degi.</details>`:''}</div>
+          ${i===0?`<details class="moli"><summary>Jafnar greiðslur eða jafnar afborganir?</summary>Jafnar greiðslur gefa sömu tölu út allan tímann og léttari byrjun. Jafnar afborganir byrja hærra en lækka jafnt og þétt, og heildarvextirnir verða talsvert lægri því höfuðstóllinn lækkar hraðar frá fyrsta degi.</details>`:''}</div>
         <div class="field"><label>Höfuðstóll / eftirstöðvar <span class="req">*</span></label>
           <div class="inputrow"><input type="text" class="required" inputmode="numeric" data-f="principal" value="${loan.principal?nf.format(loan.principal):''}" placeholder="t.d. 30.000.000"><span class="unit">kr.</span></div>
           <div class="hint">Fyrir eldra lán: núverandi eftirstöðvar og árin sem eftir eru.</div></div>
