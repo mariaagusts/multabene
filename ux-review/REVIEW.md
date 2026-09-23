@@ -113,7 +113,30 @@ Fyrirhöfn: **Lítil** ≈ innan við klukkustund. **Miðlungs** ≈ hálfur dag
 |---|---|---|---|---|---|
 | 1 | Vaxtatala helst óbreytt þegar skipt er milli verðtryggt/óverðtryggt, sem gefur neikvæðan raunkostnað og 51 m.kr. skekkju í samanburði | [09](screenshots/09-personaC-oll-1440.png) | Hátt | Við skiptingu: bjóða sjálfkrafa dæmigerða vexti fyrir nýju tegundina og segja „vextirnir voru færðir úr 3,9% raunvöxtum í 8,5% nafnvexti, breyttu ef þín kjör eru önnur". Að auki viðvörun í samanburðartöflunni ef raunkostnaður reynist neikvæður | Miðlungs |
 | 2 | „5,3" með kommu tæmir verðbólgureitinn og setur verðbólgu í 0% án skilaboða | [05](screenshots/05-personaA-fold-1440.png) | Hátt | Skipta úr `type=number` í `type=text inputmode=decimal` og þýða kommu í punkt við innslátt, eins og krónureitirnir gera nú þegar. Sýna gildið með kommu | Lítil |
-| 3 | Fylliskipun setur höfuðstól en ekki vexti og lánstíma, græn staðfesting birtist á ógildu láni | [06](screenshots/06-personaA-oll-1440.png) | Hátt | Setja sjálfgefna vexti og lánstíma um leið, skruna að lánakortinu og merkja reitina sem vantar | Miðlungs |
+| 3 | Fylliskipun setur höfuðstól en ekki vexti og lánstíma, græn staðfesting birtist á ógildu láni | [06](screenshots/06-personaA-oll-1440.png) | Hátt | ~~Setja sjálfgefna vexti og lánstíma um leið~~, skruna að lánakortinu og merkja reitina sem vantar | Miðlungs |
+
+> **Leiðrétt tillaga (úrelt ráð hér að ofan).** Upphaflega lagði ég til að reiknivélin setti sjálfgefna vexti og lánstíma inn um leið. Það var rangt ráð. Reiknivélin á að byggja á rauntölum notandans, og sjálfgefin vaxtatala sem hann tekur ekki eftir er sama tegund villu og sú sem finnst í #1: talan lítur rétt út og er ágiskun.
+>
+> **Það sem var innleitt í staðinn:** hnappurinn setur aðeins upphæðina, og segir svo skýrt frá því sem vantar. Lánakortið fær rauða umgjörð og merkimiðann „Vantar vexti og lánstíma", reitirnir sjálfir eru merktir, undir vaxtareitnum stendur „Sæktu þessa tölu í lánatilboðið eða heimabankann. Reiknivélin giskar ekki fyrir þig", og púslspjaldið segir „Upphæðin er komin upp í kaupverðið, en lánið „Lán 1" er enn án vaxta og lánstíma" í stað grænnar staðfestingar. Smellurinn skrunar að kortinu og setur bendilinn í reitinn sem vantar. Merkingin uppfærist við hvern innslátt, líka ef reitur er hreinsaður aftur.
+>
+> Eini staðurinn þar sem viðmiðunarlán er enn notað er spjaldið „Hvað kemstu hæst?" þegar notandinn hefur ekkert lán skráð. Þar þarf óhjákvæmilega einhverja vaxtaforsendu. Sjá kaflann hér á eftir um hver hún á að vera.
+
+### Vaxtaforsendan í „Hvað kemstu hæst?"
+
+Upphaflega notaði spjaldið lágmörk Seðlabankans, 3% fyrir verðtryggt lán til 25 ára, þegar notandinn hafði engin kjör slegið inn. **Það var rangt val og hefur verið breytt í 4,3% til 30 ára**, sem er nærri markaðskjörum í september 2026.
+
+Ástæðan er sú að 3% og 5,5% eru **lágmörk**, ekki markaðskjör. Reglan segir, eins og stendur í skýringarkafla síðunnar sjálfrar: viðmiðunargreiðslan miðast við *a.m.k.* 3% vexti sé lánið verðtryggt, og *séu raunverulegir vextir strangari gilda þeir raunverulegu*. Lágmörkin voru sett þegar vextir voru lágir. Í dag er raunveruleikinn hærri, svo lágmarkið bindur ekki lengur, og að nota það sem staðgengil markaðskjara ofmetur lánsgetuna.
+
+Munurinn er ekki fræðilegur. Fyrir par með 900.000 kr. útborgað og 8 m.kr. í eigið fé:
+
+| Vaxtaforsenda | Hámarkskaupverð | Hvað bindur |
+|---|---|---|
+| 3% til 25 ára (lágmark SÍ) | 76.850.000 kr. | veðþakið |
+| **4,3% til 30 ára (markaðskjör)** | **73.807.819 kr.** | **tekjurnar** |
+
+Þriggja milljóna munur, og forsendan ræður því hvor reglan er sögð binda notandann. Með lágmarkinu hefði parið fengið tölu sem það stenst svo ekki þegar raunverulegt lánatilboð berst.
+
+**Þetta breytir engu um 35%-spjaldið sjálft.** Það reiknast áfram eftir reglu Seðlabankans: vextir eru þeir hærri af raunvöxtum lánsins og lágmarki reglunnar, lánstíminn sá styttri af raunlánstíma og hámarki reglunnar. Forsendan hér að ofan er aðeins gripið til þegar ekkert lán er skráð, og hún er svo keyrð í gegnum sömu reglu.
 | 4 | Neikvæðir vextir samþykktir án athugasemda (prófað með −2%) | Lánakort | Miðlungs | `min=0` og einföld villuskilaboð | Lítil |
 | 5 | Bókstafir í krónureit hverfa þegjandi, engin skilaboð | Öll upphæðareitir | Lágt | Stutt lína undir reitnum: „Skrifaðu bara tölu" | Lítil |
 | 6 | 35%-spjaldið dæmir lán sem notandinn er þegar með. Persóna B fær rautt „Nei, þessi lán fara yfir hámark Seðlabankans" þótt hún sé ekki að sækja um neitt | [08](screenshots/08-personaB-oll-simi.png) | Hátt | Spjaldið á aðeins að birtast þegar notandinn segist vera að kaupa eða endurfjármagna. Annars: „Reglan gildir um ný lán, ekki lán sem þú ert þegar með" | Miðlungs |

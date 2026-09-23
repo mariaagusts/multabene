@@ -272,6 +272,11 @@ input.required:placeholder-shown{border-color:color-mix(in srgb,var(--accent) 50
 .ratenote{margin-top:7px; padding:8px 11px; border-radius:7px; font-size:12px; line-height:1.45;
   background:var(--accent-soft); border:1px solid color-mix(in srgb,var(--accent) 25%,transparent); color:var(--ink-2)}
 .ratenote b{color:var(--ink)}
+.loan-card.vantar-kjor{border-color:color-mix(in srgb,var(--bad) 45%,var(--hairline))}
+.vantar-merki{margin-left:8px; padding:2px 9px; border-radius:99px; font-size:12px; font-weight:600;
+  background:color-mix(in srgb,var(--bad) 14%,transparent); color:var(--bad-text); white-space:nowrap}
+input.vantar{border-color:var(--bad) !important; background:color-mix(in srgb,var(--bad) 7%,var(--surface-2))}
+input.vantar:focus{outline:2px solid var(--bad); outline-offset:1px}
 .villa{margin-top:6px; font-size:12.5px; color:var(--bad-text); font-weight:600}
 .villa b{font-weight:700}
 .fotnota{color:var(--accent); text-decoration:none; font-size:.75em; vertical-align:super; padding:0 2px}
@@ -529,6 +534,15 @@ function simulateLoan(loan, inflationPct, maxMonths){
   return out;
 }
 /* Reglur SBÍ nr. 1130/2025: jafngreiðsluviðmið, óvtr ≥5,5% & ≤40 ár, vtr ≥3% & ≤25 ár */
+/* Viðmiðunarkjör sem gripið er til EINGÖNGU þegar notandinn hefur engin kjör
+   slegið inn. Reiknivélin á annars alltaf að byggja á hans eigin tölum.
+   Þetta eru gróf markaðskjör í september 2026, ekki lágmörk Seðlabankans:
+   lágmörkin (3% verðtryggt, 5,5% óverðtryggt) voru sett þegar vextir voru
+   lágir og eru nú undir því sem býðst, svo þau ein og sér ofmeta lánsgetuna. */
+const VIDMID_VERD=4.3;    // verðtryggt, raunvextir
+const VIDMID_OVERD=8.5;   // óverðtryggt, nafnvextir
+const VIDMID_AR=30;
+const VIDMID_DAGS='september 2026';
 function sbiPayment(loan){
   const rate=loan.indexed?Math.max(loan.rate,3):Math.max(loan.rate,5.5);
   const years=loan.indexed?Math.min(loan.years,25):Math.min(loan.years,40);
@@ -1167,8 +1181,15 @@ function maxPrice(S){
   // annars viðmiðunarlán Seðlabankans fyrir verðtryggt lán.
   const fyrirmynd=S.loans.find(l=>catOf(l)==='fasteign'&&l.rate>0&&l.years>0);
   const indexed=fyrirmynd?!!fyrirmynd.indexed:true;
-  const rate=fyrirmynd?(indexed?Math.max(fyrirmynd.rate,3):Math.max(fyrirmynd.rate,5.5)):3;
-  const years=fyrirmynd?(indexed?Math.min(fyrirmynd.years,25):Math.min(fyrirmynd.years,40)):25;
+  // Hafi notandinn engin kjör slegið inn þarf eitthvað viðmið. Lágmörk
+  // Seðlabankans (3% og 5,5%) duga ekki sem slík: þau voru sett þegar vextir
+  // voru lágir og eru nú vel undir markaðskjörum, svo þau ofmeta lánsgetuna.
+  const baseRate=fyrirmynd?fyrirmynd.rate:VIDMID_VERD;
+  const baseYears=fyrirmynd?fyrirmynd.years:VIDMID_AR;
+  // Þakið sjálft er 35%-regla Seðlabankans, svo forsendan er alltaf keyrð í
+  // gegnum lágmarksvexti og hámarkslánstíma reglunnar, hvaðan sem hún kemur.
+  const rate=indexed?Math.max(baseRate,3):Math.max(baseRate,5.5);
+  const years=indexed?Math.min(baseYears,25):Math.min(baseYears,40);
   const thattur=annuity((rate/100)/12,Math.round(years*12),1);   // greiðsla á hverja krónu
   const hamarkslan=thattur>0?rymi/thattur:0;
 
@@ -1231,9 +1252,9 @@ function renderMax(S){
     </div>
     <p class="sbi-detail">${skyring}</p>
     <div class="infobox" id="skyring-hamark"><b>* Þetta er þakið sem reglurnar setja, ekki tala sem þér stendur til boða.</b> Séu tekjurnar háar getur talan orðið margfalt hærri en nokkur lánveitandi myndi í reynd lána. Reglurnar eru aðeins efsta mörkin; lánveitandinn setur sín eigin, álagsprófar greiðslugetuna og lítur á greiðslusögu og starfsöryggi. Finnist þér talan fjarstæðukennd er það merki um að það séu ekki reglurnar sem stoppa þig.</div>
-    <div class="infobox">Reiknað er með ${m.fyrirmynd
-      ? `kjörunum af fyrsta fasteignaláninu þínu í skrefi 2`
-      : `viðmiðunarláni Seðlabankans, verðtryggðu jafngreiðsluláni með 3% vöxtum til 25 ára`} og kostnaði við kaupin eins og hann er stilltur hér að ofan.${S.hasGm?'':' Hakaðu við „bráðabirgðagreiðslumat“ í skrefi 1 til að fá þriðja markið, framfærsluna, sem er alla jafna strangast og næst því sem bankinn reiknar.'}</div>`;
+    <div class="infobox">${m.fyrirmynd
+      ? `Reiknað er með kjörunum af fyrsta fasteignaláninu þínu í skrefi 2`
+      : `<b>Þú hefur ekki slegið inn nein lánakjör.</b> Hér er því gripið til grófs viðmiðs, verðtryggðs láns á ${pct(VIDMID_VERD)} til ${VIDMID_AR} ára, sem er nærri því sem býðst í ${VIDMID_DAGS}. <b>Settu inn þín eigin kjör í skrefi 2</b> um leið og þú færð tilboð, því talan hér breytist með þeim`} og kostnaði við kaupin eins og hann er stilltur hér að ofan. Greiðslubyrðin er reiknuð eftir 35%-reglu Seðlabankans, sem þýðir að viðmiðunargreiðslan miðast við a.m.k. 3% vexti og mest 25 ára lánstíma sé lánið verðtryggt, en a.m.k. 5,5% vexti og mest 40 ár sé það óverðtryggt.${S.hasGm?'':' Hakaðu við „bráðabirgðagreiðslumat“ í skrefi 1 til að fá þriðja markið, framfærsluna, sem er alla jafna strangast og næst því sem bankinn reiknar.'}</div>`;
 }
 
 /* ============ Bráðabirgðagreiðslumat ============ */
@@ -1358,7 +1379,10 @@ function renderBuy(S){
   const cost=buyCostOf(S), need=S.priceBuy+cost;
   const eq=equityTotal(S), np=nopayTotal(S), ln=buyLoanTotal(S), have=eq+np+ln;
   const gap=Math.round(need-have);
-  const done=gap<=0;
+  // Lán sem eiga að borga íbúðina en eru enn án vaxta eða lánstíma. Upphæðin
+  // getur gengið upp þótt ekkert sé hægt að reikna, svo það má ekki staðfesta.
+  const okladin=S.loans.filter(l=>buysHome(l)&&l.principal>0&&(!l.rate||!l.years));
+  const done=gap<=0&&!okladin.length;
   el.className='card sbi-card'+(done?' ok':'');
 
   const scaleMax=Math.max(need,have,1);
@@ -1381,7 +1405,9 @@ function renderBuy(S){
   // Kemst kaupandinn yfirleitt þangað? Veðþakið setur hámark á það sem má lána.
   const reach=buyReach(S), vantarEigidFe=Math.max(0,Math.round(need-reach));
 
-  const verdict=done
+  const verdict=okladin.length&&gap<=0
+    ? `Upphæðin er komin upp í kaupverðið, en ${okladin.length===1?'lánið':'lánin'} ${okladin.map(l=>'„'+esc(l.name)+'“').join(' og ')} ${okladin.length===1?'er':'eru'} enn án ${[...new Set(okladin.flatMap(l=>[!l.rate?'vaxta':'',!l.years?'lánstíma':''].filter(Boolean)))].join(' og ')}.`
+    : done
     ? (gap<0
         ? `Þetta nær upp í kaupverðið — og <b>${kr(-gap)}</b> umfram.`
         : 'Þetta nær nákvæmlega upp í kaupverðið.')
@@ -1434,9 +1460,19 @@ function renderBuy(S){
       </div>
     </div>
     ${fill}
+    ${okladin.length?`<div class="infobox" style="border-color:color-mix(in srgb,var(--bad) 35%,transparent)"><b>Reiknivélin giskar ekki á vexti eða lánstíma.</b> Þær tölur standa í lánatilboðinu frá lánveitanda, eða á lánayfirlitinu í heimabankanum. Settu þær inn í skrefi 2 og þá reiknast greiðslubyrðin, 35%-viðmiðið og veðhlutfallið.<div class="fill-row"><button type="button" class="table-toggle" data-goloan>Fara á ${okladin.length===1?'lánið':'lánin'} í skrefi 2</button></div></div>`:''}
     ${vantarEigidFe>0?`<div class="infobox"><b>Veðþakið stoppar þig, ekki greiðslugetan.</b> Lánveitandi má að hámarki lána ${ltvCap(S)}% af kaupverði eignarinnar${S.firstBuyer?', enda eruð þið fyrstu kaupendur (annars væri þakið 80%)':''}, sem eru ${kr(Math.round(S.priceBuy*ltvCap(S)/100))} á þessari eign. Með eigin fé upp á ${kr(eq)} kemstu því hæst í ${kr(Math.round(reach))} Til að ná þessari eign þarftu ${kr(vantarEigidFe)} til viðbótar í eigið fé, eða að finna ódýrari eign.</div>`:''}
     <p class="sbi-detail">Súlan staflast neðan frá: eigið fé fyrst, svo lánin sem fara í kaupin. Heila línan er upphæðin sem þarf alls, kaupverðið að viðbættum kostnaði við kaupin. Hér teljast með fasteignalán á aðalhúsnæðinu og lán á lánsveði, því hvort tveggja borgar íbúðina. Lán á útleigueign, bílalán og námslán telja ekki með.</p>`;
 
+  // Eftir að upphæðin er sett inn á notandinn eftir að slá inn kjörin sjálfur.
+  // Þess vegna er alltaf farið á lánakortið og bent á reitinn sem vantar.
+  const faraALan=id=>{
+    const card=[...S.root.querySelectorAll('.loan-card')][S.loans.findIndex(l=>l.id===id)];
+    if(!card) return;
+    card.scrollIntoView({behavior:'smooth',block:'center'});
+    const reitur=card.querySelector('.vantar')||card.querySelector('[data-f="rate"]');
+    if(reitur) setTimeout(()=>reitur.focus({preventScroll:true}),400);
+  };
   const btn=el.querySelector('[data-buyfill]');
   if(btn) btn.addEventListener('click',()=>{
     const v=btn.dataset.buyfill;
@@ -1444,14 +1480,17 @@ function renderBuy(S){
       const l=defaultLoan(S,true);
       l.principal=fillPlan(S,null).give;
       S.loans.push(l); renderLoans(S); recalc(S);
-      S.$('loans').scrollIntoView({behavior:'smooth',block:'center'});
+      faraALan(l.id);
       return;
     }
     const id=v==='pick'?parseInt(el.querySelector('[data-buypick]').value,10):parseInt(v,10);
     const loan=S.loans.find(l=>l.id===id); if(!loan) return;
     loan.principal=fillPlan(S,loan).give;
     renderLoans(S); recalc(S);
+    faraALan(loan.id);
   });
+  const gl=el.querySelector('[data-goloan]');
+  if(gl) gl.addEventListener('click',()=>faraALan(okladin[0].id));
 }
 
 /* ============ Lánakort ============ */
@@ -1467,7 +1506,7 @@ function renderLoans(S){
       <div class="loan-head">
         <span class="loan-dot"></span>
         <input type="text" data-f="name" value="${esc(loan.name)}" aria-label="Heiti láns" title="Smelltu til að breyta heiti lánsins">
-        <span class="edit-pen" title="Breyta heiti lánsins">✎</span>
+        <span class="edit-pen" title="Breyta heiti lánsins">✎</span><span class="vantar-merki" data-vantarmerki hidden></span>
         <button class="loan-del" title="Fjarlægja lán" aria-label="Fjarlægja lán">×</button>
       </div>
       <div class="loan-grid">
@@ -1486,6 +1525,7 @@ function renderLoans(S){
           <div class="hint">Fyrir eldra lán: núverandi eftirstöðvar og árin sem eftir eru.</div></div>
         <div class="field"><label>${loan.indexed?'Vextir (raunvextir)':'Vextir (nafnvextir)'} <span class="req">*</span></label>
           <div class="inputrow"><input type="number" class="required" step="0.05" min="0" max="30" data-f="rate" value="${loan.rate||''}" placeholder="${loan.indexed?'t.d. 4':'t.d. 8'}"><span class="unit">%</span></div>
+          <div class="villa" data-vantarhint hidden>Sæktu þessa tölu í lánatilboðið eða heimabankann. Reiknivélin giskar ekki fyrir þig.</div>
           ${loan.rateNote?`<div class="ratenote">Vextirnir voru umreiknaðir úr <b>${pct(loan.rateNote.fra)}</b> ${loan.rateNote.varRaun?'raunvöxtum':'nafnvöxtum'} í <b>${pct(loan.rateNote.til)}</b> ${loan.rateNote.varRaun?'nafnvexti':'raunvexti'} miðað við ${pct(loan.rateNote.verdbolga)} verðbólgu, því þetta eru ekki sami hluturinn. <b>Settu inn þín eigin kjör</b> ef þú ert með tilboð frá lánveitanda.</div>`:''}</div>
         <div class="field"><label>Lánstími <span class="req">*</span></label>
           <div class="inputrow"><input type="number" class="required" step="1" min="1" max="50" data-f="years" value="${loan.years||''}" placeholder="t.d. 30"><span class="unit">ár</span></div></div>
@@ -1578,9 +1618,29 @@ function recalc(S){
   renderLoanStats(S); renderRentSummary(S); renderFixedSummary(S); renderEquitySummary(S); renderNopaySummary(S); renderRunningSummary(S); renderMax(S); renderBuy(S); renderGm(S); renderTiles(S); renderMix(S); renderSbi(S); renderLtv(S); renderChart(S); renderTable(S);
   renderCompare(); saveState();
 }
+// Upphæð komin inn en kjörin vantar. Reiknivélin giskar aldrei á vexti eða
+// lánstíma: þær tölur eiga að koma úr lánatilboði eða heimabanka notandans.
+// Keyrt við hverja breytingu svo merkingin hverfi um leið og reitur fyllist,
+// án þess að kortið sé endurteiknað ofan í þann sem er að skrifa.
+function merkjaVantar(card, loan){
+  const vantarVexti=loan.principal>0&&!loan.rate;
+  const vantarAr=loan.principal>0&&!loan.years;
+  card.classList.toggle('vantar-kjor', vantarVexti||vantarAr);
+  const r=card.querySelector('[data-f="rate"]'), y=card.querySelector('[data-f="years"]');
+  if(r) r.classList.toggle('vantar', vantarVexti);
+  if(y) y.classList.toggle('vantar', vantarAr);
+  const hint=card.querySelector('[data-vantarhint]');
+  if(hint) hint.hidden=!vantarVexti;
+  const merki=card.querySelector('[data-vantarmerki]');
+  if(merki){
+    merki.hidden=!(vantarVexti||vantarAr);
+    if(!merki.hidden) merki.textContent='Vantar '+[vantarVexti?'vexti':'',vantarAr?'lánstíma':''].filter(Boolean).join(' og ');
+  }
+}
 function renderLoanStats(S){
   S.root.querySelectorAll('.loan-card').forEach((card,i)=>{
     const loan=S.loans[i]; if(!loan) return;
+    merkjaVantar(card, loan);
     const r=S.results.find(x=>x.loan.id===loan.id);
     if(!r){
       card.querySelector('[data-stats]').innerHTML='<div style="grid-column:1/-1;color:var(--muted);font-size:12.5px">Settu inn höfuðstól og lánstíma til að sjá útreikninginn.</div>';
