@@ -186,6 +186,9 @@ input.hafnad{animation:hafnad-blikk 1.4s ease-out}
 .scenario{border-top:2px solid var(--hairline); margin-top:44px; padding-top:6px}
 .scenario-head{display:flex; align-items:center; gap:12px; margin-top:22px; flex-wrap:wrap}
 .scenario-head .btns{margin-left:auto; display:flex; gap:8px; flex-wrap:wrap; position:relative; align-items:center}
+.samantekt{margin:0 0 16px; padding:15px 18px; border-radius:10px; font-size:17px; line-height:1.5;
+  background:var(--surface); border:1px solid var(--hairline); color:var(--ink-2); max-width:78ch}
+.samantekt b{color:var(--ink)}
 .husverk{margin-top:26px; padding-top:18px; border-top:1px solid var(--hairline)}
 .husverk .btns{display:flex; gap:8px; flex-wrap:wrap; position:relative; align-items:center}
 .husverk .vistun-nota{margin:10px 0 0}
@@ -535,7 +538,12 @@ footer a{color:var(--ink-2)}
         <span class="scenario-tag"><span class="daemi-dot" style="background:var(--s1)"></span>Dæmi A</span><span class="vs">⇄</span><span class="scenario-tag"><span class="daemi-dot" style="background:var(--s2)"></span>Dæmi B</span>
         <h2>Samanburður</h2>
       </div>
-      <p class="sec-sub" style="margin-top:8px">Lykiltölur beggja dæma hlið við hlið. Lægri talan er merkt græn þar sem lægra er betra.</p>
+      <p class="sec-sub" style="margin-top:8px">Lykiltölur beggja dæma hlið við hlið. Hakið merkir lægri töluna, eða hærri þar sem hærra þýðir meira eftir í vasanum. Það segir hvað munar á dæmunum, ekki hvort þeirra hentar þér.</p>
+      <!-- Samantekt í orðum. Hún lýsir skiptunum en velur ekki: hvor leiðin
+           hentar veltur á verðbólgu næstu áratugi og á því hvað fólk vill,
+           og sumir kjósa frekar meira svigrúm í hverjum mánuði en að greiða
+           lánið hratt niður. Reiknivélin veit hvorugt. -->
+      <div class="samantekt" id="compareSamantekt" hidden></div>
       <div class="card" id="compareDiff" style="padding:16px 18px; margin-bottom:16px"></div>
       <div class="card" style="padding:6px 12px 2px"><div class="compare-table-wrap" id="compareTable"></div></div>
       <div class="card chart-card" style="margin-top:16px">
@@ -1916,7 +1924,7 @@ function renderLoans(S){
             <option value="stytta"${loan.extraMode==='stytta'?' selected':''}>stytta lánstímann (greiðslan helst)</option>
             <option value="laekka"${loan.extraMode==='laekka'?' selected':''}>lækka greiðsluna (lánstíminn helst)</option>
           </select>
-          ${i===0?`<details class="moli"><summary>Hvort borgar sig?</summary>Sama aukagreiðslan sparar mun meira ef hún styttir lánstímann. Lækki greiðslan í staðinn skilar ávinningurinn sér jafnóðum til baka sem lægri mánaðargreiðsla, svo þú leggur í raun minna inn á lánið í hverjum mánuði og höfuðstóllinn lækkar hægar.</details>`:''}</div>
+          ${i===0?`<details class="moli"><summary>Hvor stillingin gerir hvað?</summary><b>Stytta lánstímann:</b> greiðslan þín stendur í stað og lánið klárast fyrr. Sama aukagreiðslan lækkar þá heildarkostnaðinn mun meira. <b>Lækka greiðsluna:</b> ávinningurinn skilar sér jafnóðum til baka sem léttari mánaðargreiðsla, svo þú leggur í raun minna inn á lánið í hverjum mánuði og höfuðstóllinn lækkar hægar. Hvorug leiðin er rétt í sjálfu sér: sú fyrri skilar meiri peningum þegar upp er staðið, sú seinni meira svigrúmi strax.</details>`:''}</div>
         <div class="field full"><label>Flokkur láns</label>
           <select data-f="cat" title="Flokkurinn ræður tvennu: hvort lánið telst í 35%-viðmiði Seðlabankans (öll fasteignalán þín gera það, líka á útleigueign) og á hvaða veðrými það hvílir: aðalhúsnæði, útleigueign eða lánsveði annarra. Lán utan viðmiðsins telja samt með í mánaðarlegri greiðslubyrði og afganginum af launum.">
             ${Object.entries(LOAN_CATS).map(([k,v])=>`<option value="${k}"${k===catOf(loan)?' selected':''}>${v}</option>`).join('')}
@@ -2085,9 +2093,20 @@ function renderLoanStats(S){
         const hvad=[loan.extraMonthly>0?kr(loan.extraMonthly)+' á mánuði':'',
                     loan.lumpAmount>0?kr(loan.lumpAmount)+(loan.lumpYear>0?' eftir '+loan.lumpYear+' ár':' strax'):'']
                    .filter(Boolean).join(' og ');
-        svarEl.innerHTML=`<b>Aukagreiðslan borgar sig.</b> ${hvad} sparar þér <b>${kr(sparar)}</b> á verðlagi dagsins`
-          +(styttir>0?` og styttir lánið um <b>${yearsMonths(styttir).replace(/\.$/,'')}</b>.`:'.')
-          +(loan.extraMode==='laekka'?` Þú ert með stillinguna „lækka greiðsluna“. Veldu „stytta lánstímann“ hér að ofan og sjáðu muninn.`:'');
+        // Sagði áður „Aukagreiðslan borgar sig“. Það er dómur sem reiknivélin
+        // getur ekki fellt: sumir vilja frekar eiga peninginn í hverjum mánuði
+        // en að greiða lánið hratt niður. Hér stendur hvað hún gerir og hvað
+        // hún kostar á móti, og valið er notandans.
+        // Aukagreiðsla lækkar ekki alltaf raunkostnaðinn. Á verðtryggðu láni
+        // er greitt fyrr með krónum dagsins í stað ódýrari króna framtíðar,
+        // svo talan getur snúist við. Textinn verður að þola bæði formerkin.
+        const kostn=sparar>1 ? `lækka heildarkostnaðinn um <b>${kr(sparar)}</b> á verðlagi dagsins`
+                  : sparar<-1 ? `hækka heildarkostnaðinn um <b>${kr(-sparar)}</b> á verðlagi dagsins`
+                  : `breyta heildarkostnaðinum sama og ekkert á verðlagi dagsins`;
+        svarEl.innerHTML=`<b>${hvad}</b> ${kostn}`
+          +(styttir>0?` og stytta lánið um <b>${yearsMonths(styttir).replace(/\.$/,'')}</b>.`:'.')
+          +(loan.extraMonthly>0?` Á móti eru það ${kr(loan.extraMonthly)} sem þú hefur ekki handa á milli í hverjum mánuði.`:'')
+          +(loan.extraMode==='laekka'?` Þú ert með stillinguna „lækka greiðsluna“, sem skilar ávinningnum jafnóðum í léttari mánaðargreiðslu í stað þess að stytta lánið. Hin stillingin sýnir hvað munar.`:'');
       }
     }
   });
@@ -2528,12 +2547,54 @@ function renderCompareDiff(){
       ?rows.map(r=>`<div style="font-size:13.5px; color:var(--ink-2); padding:3px 0"><b style="color:var(--ink)">${r.label}:</b> ${r.txt}</div>`).join('')
       :'<div style="font-size:13.5px; color:var(--muted)">Engu ennþá, dæmin eru eins. Breyttu forsendum eða lánum í dæmi B og breytingarnar birtast hér.</div>');
 }
+// Samantekt samanburðarins í orðum. Hún segir hvað munar og hvað það kostar
+// á móti, og endar á spurningu. Hún kveður aldrei upp úrskurð um hvor leiðin
+// sé betri: það veltur á verðbólgu næstu áratugi og á því hvað fólk vill út
+// úr hverjum mánuði, og hvorugt er reiknivélarinnar að meta.
+function renderSamantekt(tA,tB){
+  const el=document.getElementById('compareSamantekt'); if(!el) return;
+  if(!A.results.length||!B.results.length){el.hidden=true;return;}
+  const dKostn=Math.round(tB.costReal-tA.costReal);   // < 0: dæmi B kostar minna
+  const dGreidsla=Math.round(tB.first-tA.first);      // > 0: dæmi B greiðir meira
+  const dTimi=Math.round(tB.payoff-tA.payoff);        // < 0: dæmi B klárast fyrr
+  const hvort=n=>n<0?'B':'A';
+  const odyrara=Math.abs(dKostn)>1000, fyrr=Math.abs(dTimi)>0, dyrari=Math.abs(dGreidsla)>500;
+  if(!odyrara&&!fyrr&&!dyrari){
+    el.hidden=false;
+    el.innerHTML='Dæmin tvö skila nánast sömu niðurstöðu. Breyttu einhverju í dæmi B til að sjá hvað munar.';
+    return;
+  }
+  const kostnTxt=`kostar <b>${kr(Math.abs(dKostn))}</b> minna á verðlagi dagsins`;
+  const timiTxt=`klárast <b>${yearsMonths(Math.abs(dTimi))}</b> fyrr`;
+  let txt='';
+  if(odyrara&&fyrr&&hvort(dKostn)===hvort(dTimi)){
+    // Báðar tölurnar benda á sama dæmið, þá á það heima í einni setningu
+    txt=`<b>Dæmi ${hvort(dKostn)}</b> ${kostnTxt} og ${timiTxt}`;
+  }else if(odyrara&&fyrr){
+    // Tölurnar benda á sitt hvort dæmið, sem er einmitt tilvikið þar sem
+    // enginn getur sagt hvort er betra án þess að vita hvað notandinn vill
+    txt=`<b>Dæmi ${hvort(dKostn)}</b> ${kostnTxt}, en <b>dæmi ${hvort(dTimi)}</b> ${timiTxt}`;
+  }else if(odyrara){
+    txt=`<b>Dæmi ${hvort(dKostn)}</b> ${kostnTxt}`;
+  }else if(fyrr){
+    txt=`<b>Dæmi ${hvort(dTimi)}</b> ${timiTxt}`;
+  }
+  if(dyrari){
+    const haerra=dGreidsla>0?'B':'A';
+    txt+=txt
+      ? `. Á móti er greiðslan í <b>dæmi ${haerra}</b> <b>${kr(Math.abs(dGreidsla))}</b> hærri á mánuði til að byrja með`
+      : `Greiðslan í <b>dæmi ${haerra}</b> er <b>${kr(Math.abs(dGreidsla))}</b> hærri á mánuði til að byrja með`;
+  }
+  el.hidden=false;
+  el.innerHTML=txt+'. Reiknivélin velur ekki fyrir þig, hún gefur yfirsýn. Vilt þú frekar hafa meira handa á milli í hverjum mánuði, eða minni kostnað þegar upp er staðið?';
+}
 function renderCompare(){
   const sec=document.getElementById('compareSec');
   if(!B||!B.root){sec.hidden=true;return;}
   sec.hidden=false;
   renderCompareDiff();
   const tA=scenTotals(A), tB=scenTotals(B);
+  renderSamantekt(tA,tB);
   const incomeA=dstiIncome(A), incomeB=dstiIncome(B);
   const rows=[
     {label:'Heildarhöfuðstóll', a:tA.principal, b:tB.principal, fmt:kr},
