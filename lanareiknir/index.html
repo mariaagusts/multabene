@@ -289,6 +289,7 @@ input.required:placeholder-shown{border-color:color-mix(in srgb,var(--accent) 50
 }
 .loan-stats div span{display:block; color:var(--muted); font-size:12.5px}
 .loan-stats div b{font-variant-numeric:tabular-nums; font-weight:600}
+.loan-stats div em{display:block; color:var(--muted); font-size:11.5px; font-style:normal; line-height:1.35; margin-top:2px}
 .add-loan{
   border:1.5px dashed var(--baseline); border-radius:10px; background:none;
   color:var(--ink-2); font:inherit; font-weight:600; cursor:pointer;
@@ -2082,9 +2083,17 @@ function renderLoanStats(S){
       card.querySelector('[data-stats]').innerHTML=`<div style="grid-column:1/-1;color:var(--muted);font-size:12.5px">Settu inn ${talin} til að sjá útreikninginn.</div>`;
       return;
     }
+    // Fyrsta greiðsla hækkaði þegjandi þegar aukagreiðsla var slegin inn, og
+    // skýringin stóð löngu seinna á spjaldinu. Hér er hún sundurliðuð á
+    // staðnum. Hlutinn er reiknaður út frá grunndæminu en ekki áætlaður, því
+    // stillingin „lækka greiðsluna“ hagar sér öðruvísi en „stytta lánstímann“.
+    const grunnur=S.baseline[S.results.indexOf(r)];
+    const aukahluti=grunnur?Math.round(r.sim.firstPayment-grunnur.firstPayment):0;
     card.querySelector('[data-stats]').innerHTML=`
-      <div><span>Fyrsta greiðsla</span><b>${kr(r.sim.firstPayment)}</b></div>
-      <div><span>Greiðslubyrði skv. SBÍ</span><b>${inSbi(r.loan)?kr(r.sbi):'utan 35%-viðmiðs'}</b></div>
+      <div><span>Fyrsta greiðsla</span><b>${kr(r.sim.firstPayment)}</b>${aukahluti>0
+        ?`<em>${kr(r.sim.firstPayment-aukahluti)} af láninu og ${kr(aukahluti)} aukagreiðsla</em>`:''}</div>
+      <div><span>Seðlabankinn reiknar með</span><b>${inSbi(r.loan)?kr(r.sbi):'utan 35%-viðmiðs'}</b>${inSbi(r.loan)
+        ?`<em>álagsprófuð tala í 35%-reglunni, ekki það sem þú borgar</em>`:''}</div>
       <div><span>Uppgreitt eftir</span><b>${yearsMonths(r.sim.payoffMonth)}</b></div>
       <div><span>Raunkostnaður (verðlag dagsins)</span><b>${kr(r.sim.totalPaidReal-r.loan.principal)}</b></div>`;
     // Svarið við aukagreiðslunni birtist á kortinu sjálfu. Áður þurfti notandinn
