@@ -1900,19 +1900,6 @@ function renderLoans(S){
     });
     hostL.appendChild(card);
   });
-  // Umreikningshnappurinn er endurteiknaður við hverja breytingu, svo hlustað er
-  // á hann í gegnum foreldrið í stað þess að tengja hann upp á nýtt í hvert sinn.
-  if(!hostL.dataset.umreiknaTengt){
-    hostL.dataset.umreiknaTengt='1';
-    hostL.addEventListener('click',e=>{
-      const b=e.target.closest('[data-umreikna]'); if(!b) return;
-      const i=[...hostL.querySelectorAll('.loan-card')].indexOf(b.closest('.loan-card'));
-      const loan=S.loans[i]; if(!loan) return;
-      loan.rate=Math.max(0,parseFloat(b.dataset.umreikna)||0);
-      delete loan.rateNote;
-      renderLoans(S); recalc(S);
-    });
-  }
   const add=document.createElement('button');
   add.className='add-loan';
   add.innerHTML='<span class="plus">+</span> Bæta við láni';
@@ -1952,11 +1939,11 @@ function vaxtaVidvorun(S, loan){
   const i=S.inflation||0;
   if(!loan.indexed&&(r<5.5||r<i)){
     return {txt:`<b>${pct(r)} eru lágir nafnvextir.</b> Óverðtryggt lán ber nafnvexti, sem innihalda verðbólguna${r<i?` og eru hér lægri en verðbólguforsendan þín (${pct(i)})`:''}. Í ${VIDMID_DAGS} báru óverðtryggð íbúðalán um ${pct(VIDMID_OVERD)}. Sé þetta raunvaxtatala af verðtryggðu tilboði á hún ekki við hér.`,
-      til:Math.round(((1+r/100)*(1+i/100)-1)*10000)/100, heiti:'nafnvexti'};
+      };
   }
   if(loan.indexed&&r>RAUNVAXTAPAK){
     return {txt:`<b>${pct(r)} eru háir raunvextir.</b> Verðtryggt lán ber raunvexti ofan á verðbæturnar. Í ${VIDMID_DAGS} báru verðtryggð íbúðalán um ${pct(VIDMID_VERD)}. Sé þetta nafnvaxtatala af óverðtryggðu tilboði á hún ekki við hér.`,
-      til:Math.round(((1+r/100)/(1+i/100)-1)*10000)/100, heiti:'raunvexti'};
+      };
   }
   return null;
 }
@@ -1990,7 +1977,9 @@ function merkjaVantar(card, loan, S){
   const box=card.querySelector('[data-ratewarn]');
   if(box){
     box.hidden=!vv;
-    if(vv) box.innerHTML=`${vv.txt} <button type="button" class="table-toggle" data-umreikna="${vv.til}" style="margin-top:7px">Umreikna í ${pct(vv.til)} ${vv.heiti}</button>`;
+    // Viðvörunin segir hvað er líklega að, en lagar það ekki. Reiknivélin
+    // skrifar aldrei vaxtaprósentu fyrir notandann, hann ber ábyrgð á henni.
+    if(vv) box.innerHTML=vv.txt;
   }
   if(r) r.classList.toggle('grunsamlegt', !!vv&&!vantarVexti);
 }
