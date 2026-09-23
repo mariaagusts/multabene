@@ -556,13 +556,19 @@ const REGLUR_URL='https://island.is/stjornartidindi/nr/f2fc66b9-0dfd-44a6-b795-5
    5,5% óverðtryggt) voru sett þegar vextir voru lágir og eru nú vel undir því
    sem býðst, svo þau ein og sér ofmeta lánsgetuna.
 
-   Meðaltal allra kjara sem bjóðast við 80% veðhlutfall, sótt af aurbjorg.is
-   22. september 2026. Þá voru 13 óverðtryggð kjör í boði (8,75 til 10,25%) og
-   8 verðtryggð (4,10 til 5,02%). Til samanburðar var meðaltalið við 70%
-   veðhlutfall 9,25% og 4,28%, og við 90% veðhlutfall 9,47% óverðtryggt en
-   ekkert verðtryggt lán í boði. Uppfæra þarf þessar tölur reglulega. */
-const VIDMID_VERD=4.55;   // verðtryggt, raunvextir
-const VIDMID_OVERD=9.4;   // óverðtryggt, nafnvextir
+   Miðað er við FASTA vexti, ekki breytilega, enda er breytileg tala ekki kjör
+   sem hægt er að reikna með til framtíðar. Sótt af aurbjorg.is 22. september
+   2026 við 80% veðhlutfall:
+
+     Óverðtryggt, fast í 3 ár   4 kjör, 8,85 til 9,16%, meðaltal 9,05%
+     Verðtryggt, fast út lánstímann   3 kjör, 4,10 til 4,60%, meðaltal 4,37%
+
+   Verðtryggt með þriggja ára festingu var aðeins eitt kjör í boði (4,40%),
+   of fátt til að taka meðaltal af. Verðtryggð íbúðalán eru hvort eð er
+   yfirleitt með fasta raunvexti út lánstímann, svo sá dálkur er notaður.
+   Uppfæra þarf þessar tölur reglulega. */
+const VIDMID_VERD=4.4;    // verðtryggt, raunvextir, fastir út lánstímann
+const VIDMID_OVERD=9.05;  // óverðtryggt, nafnvextir, fastir í 3 ár
 const VIDMID_AR=30;
 const VIDMID_DAGS='september 2026';
 const VIDMID_HEIMILD='https://aurbjorg.is/husnaedislan';
@@ -1282,7 +1288,7 @@ function renderMax(S){
     <div class="infobox" id="skyring-hamark"><b>* Þetta er þakið sem reglurnar setja, ekki tala sem þér stendur til boða.</b> Séu tekjurnar háar getur talan orðið margfalt hærri en nokkur lánveitandi myndi í reynd lána. Reglurnar eru aðeins efsta mörkin; lánveitandinn setur sín eigin, álagsprófar greiðslugetuna og lítur á greiðslusögu og starfsöryggi. Finnist þér talan fjarstæðukennd er það merki um að það séu ekki reglurnar sem stoppa þig.</div>
     <div class="infobox">${m.fyrirmynd
       ? `Reiknað er með kjörunum af fyrsta fasteignaláninu þínu í skrefi 2`
-      : `<b>Þú hefur ekki slegið inn nein lánakjör.</b> Hér er því miðað við verðtryggt lán á ${pct(VIDMID_VERD)} til ${VIDMID_AR} ára, sem var meðaltal þeirra kjara sem buðust við 80% veðhlutfall í ${VIDMID_DAGS} skv. <a href="${VIDMID_HEIMILD}" target="_blank" rel="noopener">vaxtatöflu Aurbjargar</a>. Óverðtryggð lán báru þá um ${pct(VIDMID_OVERD)}. <b>Settu inn þín eigin kjör í skrefi 2</b> um leið og þú færð tilboð, því talan hér breytist með þeim`} og kostnaði við kaupin eins og hann er stilltur hér að ofan. Greiðslubyrðin er reiknuð eftir greiðslubyrðarreglu Seðlabankans (<a href="${REGLUR_URL}" target="_blank" rel="noopener">nr. ${REGLUR_NR}</a>, 4. gr.): miðað er við samningsvexti lánsins, þó aldrei lægri en 3% sé það verðtryggt eða 5,5% sé það óverðtryggt, og lánstíma að hámarki 25 ár eða 40 ár eftir tegund. Lágmarksvextirnir binda því aðeins þegar raunveruleg kjör eru lægri en þeir.${S.hasGm?'':' Hakaðu við „bráðabirgðagreiðslumat“ í skrefi 1 til að fá þriðja markið, framfærsluna, sem er alla jafna strangast og næst því sem bankinn reiknar.'}</div>`;
+      : `<b>Þú hefur ekki slegið inn nein lánakjör.</b> Hér er því miðað við verðtryggt lán á ${pct(VIDMID_VERD)} til ${VIDMID_AR} ára, með föstum raunvöxtum út lánstímann. Það var meðaltal þeirra kjara sem buðust við 80% veðhlutfall í ${VIDMID_DAGS} skv. <a href="${VIDMID_HEIMILD}" target="_blank" rel="noopener">vaxtatöflu Aurbjargar</a>. Óverðtryggð lán með vexti fasta í þrjú ár báru þá ${pct(VIDMID_OVERD)}. <b>Settu inn þín eigin kjör í skrefi 2</b> um leið og þú færð tilboð, því talan hér breytist með þeim`} og kostnaði við kaupin eins og hann er stilltur hér að ofan. Greiðslubyrðin er reiknuð eftir greiðslubyrðarreglu Seðlabankans (<a href="${REGLUR_URL}" target="_blank" rel="noopener">nr. ${REGLUR_NR}</a>, 4. gr.): miðað er við samningsvexti lánsins, þó aldrei lægri en 3% sé það verðtryggt eða 5,5% sé það óverðtryggt, og lánstíma að hámarki 25 ár eða 40 ár eftir tegund. Lágmarksvextirnir binda því aðeins þegar raunveruleg kjör eru lægri en þeir.${S.hasGm?'':' Hakaðu við „bráðabirgðagreiðslumat“ í skrefi 1 til að fá þriðja markið, framfærsluna, sem er alla jafna strangast og næst því sem bankinn reiknar.'}</div>`;
 }
 
 /* ============ Bráðabirgðagreiðslumat ============ */
