@@ -372,9 +372,6 @@ input.required:placeholder-shown{border-color:color-mix(in srgb,var(--accent) 50
 }
 .infobox b{color:var(--ink)}
 .infobox a{color:var(--accent)}
-.ratenote{margin-top:7px; padding:8px 11px; border-radius:7px; font-size:12px; line-height:1.45;
-  background:var(--accent-soft); border:1px solid color-mix(in srgb,var(--accent) 25%,transparent); color:var(--ink-2)}
-.ratenote b{color:var(--ink)}
 .loan-card.vantar-kjor{border-color:color-mix(in srgb,var(--bad) 45%,var(--hairline))}
 .vantar-merki{margin-left:8px; padding:2px 9px; border-radius:99px; font-size:12px; font-weight:600;
   background:color-mix(in srgb,var(--bad) 14%,transparent); color:var(--bad-text); white-space:nowrap}
@@ -1825,7 +1822,7 @@ function renderLoans(S){
           <div class="inputrow"><input type="text" inputmode="decimal" class="required" data-f="rate" value="${loan.rate?pctIn(loan.rate):''}" placeholder="${loan.indexed?'t.d. 4':'t.d. 8'}"><span class="unit">%</span></div>
           <div class="villa" data-vantarhint hidden>Sæktu þessa tölu í lánatilboðið eða heimabankann. Reiknivélin giskar ekki fyrir þig.</div>
           <div class="ratewarn" data-ratewarn hidden></div>
-          ${loan.rateNote?`<div class="ratenote">Vextirnir voru umreiknaðir úr <b>${pct(loan.rateNote.fra)}</b> ${loan.rateNote.varRaun?'raunvöxtum':'nafnvöxtum'} í <b>${pct(loan.rateNote.til)}</b> ${loan.rateNote.varRaun?'nafnvexti':'raunvexti'} miðað við ${pct(loan.rateNote.verdbolga)} verðbólgu, því þetta eru ekki sami hluturinn. <b>Settu inn þín eigin kjör</b> ef þú ert með tilboð frá lánveitanda.</div>`:''}</div>
+          </div>
         <div class="field"><label>Lánstími <span class="req">*</span></label>
           <div class="inputrow"><input type="number" class="required" step="1" min="1" max="50" data-f="years" value="${loan.years||''}" placeholder="t.d. 30"><span class="unit">ár</span></div></div>
         <div class="field"><label>Aukagreiðsla á mánuði</label>
@@ -1853,19 +1850,12 @@ function renderLoans(S){
         if(f==='name') loan.name=el.value;
         else if(f==='cat'){loan.cat=el.value; delete loan.lansved;}
         else if(f==='indexed'){
-          const adur=loan.indexed, adurVextir=loan.rate;
           loan.indexed=el.value==='1';
-          // Raunvextir og nafnvextir eru ekki sami hluturinn. Væri talan látin
-          // standa óbreytt fengi notandinn stórlega rangan samanburð, svo hún
-          // er umreiknuð með verðbólguforsendu hans sjálfs (Fisher).
-          if(adur!==loan.indexed&&adurVextir>0){
-            const i=(S.inflation||0)/100;
-            const nyir=loan.indexed
-              ? ((1+adurVextir/100)/(1+i)-1)*100     // nafnvextir  → raunvextir
-              : ((1+adurVextir/100)*(1+i)-1)*100;    // raunvextir  → nafnvextir
-            loan.rate=Math.max(0,Math.round(nyir*100)/100);
-            loan.rateNote={fra:adurVextir, til:loan.rate, varRaun:adur, verdbolga:S.inflation};
-          }
+          // Raunvextir og nafnvextir eru ekki sami hluturinn, svo talan sem
+          // stendur eftir tegundaskipti er oftast röng. Reiknivélin umreiknar
+          // hana samt ekki: hún skrifar aldrei vaxtaprósentu fyrir notandann,
+          // sem ber ábyrgð á kjörunum sem hann skráir. Vaxtaviðvörunin grípur
+          // þetta tilvik og segir honum hvað er að.
           // uppfærum sjálfvirk heiti ("Lán 2", "Verðtryggt lán" …) svo kortið fylgi tegundinni;
           // eigin nöfn notandans fá að standa
           if(/^(Verðtryggt lán|Óverðtryggt lán|Lán \d+)( \d+)?$/.test(loan.name.trim())){
@@ -1881,7 +1871,6 @@ function renderLoans(S){
         else if(f==='rate'){
           const v=parsePct(el.value);
           loan.rate=v===null?0:Math.min(30,Math.max(0,v));
-          if(loan.rateNote){delete loan.rateNote; renderLoans(S);}
         }
         else if(f==='years') loan.years=Math.max(0,parseFloat(el.value)||0);
         else if(f==='lumpYear') loan.lumpYear=Math.max(0,parseFloat(el.value)||0);
