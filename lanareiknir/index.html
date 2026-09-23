@@ -110,6 +110,13 @@ h2{
 /* Valkostirnir voru inni í reitagrindinni og litu út eins og innsláttarreitir.
    Nú eru þeir sér, á eftir því sem allir þurfa að fylla út. */
 /* Fræðslumoli við reitinn sem hann skýrir, í stað þess að vera neðst á síðunni */
+/* Svarið við aukagreiðslunni, á kortinu sjálfu en ekki tveimur skjáfyllingum neðar */
+.aukasvar{
+  margin-top:12px; padding:11px 14px; border-radius:9px; font-size:13.5px; line-height:1.5;
+  background:color-mix(in srgb,var(--good) 9%,var(--surface));
+  border:1px solid color-mix(in srgb,var(--good) 32%,var(--hairline)); color:var(--ink-2);
+}
+.aukasvar b{color:var(--good-text)}
 /* Lesefnið tók helming síðunnar. Nú er það samanbrotið en aðgengilegt. */
 .lesefni{margin-top:20px}
 .lesefni > summary{
@@ -1386,7 +1393,7 @@ function renderSvar(S){
   }else if(!stenst&&S.erMedLan){
     // Reglan gildir um ný lán. Sá sem á lánin þegar er ekki að falla á neinu
     // prófi, en hann kemst ekki í endurfjármögnun á meðan hlutfallið er hátt.
-    tonn='bidur'; svar=`Greiðslubyrðin er <b>${pct(ratio)}</b> af laununum, yfir ${cap}%-marki Seðlabankans. Lánin sem þú ert með standa óhögguð og þú greiðir af þeim eins og venjulega, en á meðan kemstu hvorki í endurfjármögnun né nýtt fasteignalán.`;
+    tonn='bidur'; svar=`Greiðslubyrðin er <b>${pct(ratio)}</b> af laununum, yfir ${cap}%-marki Seðlabankans. Lánin sem þú ert með standa óhögguð og þú greiðir af þeim eins og venjulega, en á meðan kemstu hvorki í endurfjármögnun né færð nýtt fasteignalán.`;
   }else if(!stenst){
     tonn='bad'; svar=`<b>Nei.</b> Greiðslubyrðin er ${pct(ratio)} af laununum og fer yfir ${cap}%-mark Seðlabankans, svo þessi lán fást ekki eins og þau standa.`;
   }else if(gmAfgangur!==null&&gmAfgangur<0){
@@ -1786,7 +1793,8 @@ function renderLoans(S){
             ${Object.entries(LOAN_CATS).map(([k,v])=>`<option value="${k}"${k===catOf(loan)?' selected':''}>${v}</option>`).join('')}
           </select></div>
       </div>
-      <div class="loan-stats" data-stats></div>`;
+      <div class="loan-stats" data-stats></div>
+      <div class="aukasvar" data-aukasvar hidden></div>`;
     card.querySelectorAll('[data-f]').forEach(el=>{
       const f=el.dataset.f;
       el.addEventListener(el.tagName==='SELECT'?'change':'input',()=>{
@@ -1948,6 +1956,24 @@ function renderLoanStats(S){
       <div><span>Greiðslubyrði skv. SBÍ</span><b>${inSbi(r.loan)?kr(r.sbi):'utan 35%-viðmiðs'}</b></div>
       <div><span>Uppgreitt eftir</span><b>${yearsMonths(r.sim.payoffMonth)}</b></div>
       <div><span>Raunkostnaður (verðlag dagsins)</span><b>${kr(r.sim.totalPaidReal-r.loan.principal)}</b></div>`;
+    // Svarið við aukagreiðslunni birtist á kortinu sjálfu. Áður þurfti notandinn
+    // að skruna um tvær skjáfyllingar niður í flísarnar til að sjá hvað hún gerði.
+    const svarEl=card.querySelector('[data-aukasvar]');
+    if(svarEl){
+      const b=S.baseline[S.results.indexOf(r)];
+      const sparar=b?Math.round(b.totalPaidReal-r.sim.totalPaidReal):0;
+      const styttir=b?b.payoffMonth-r.sim.payoffMonth:0;
+      const synaSvar=!!b&&(sparar>1||styttir>0);
+      svarEl.hidden=!synaSvar;
+      if(synaSvar){
+        const hvad=[loan.extraMonthly>0?kr(loan.extraMonthly)+' á mánuði':'',
+                    loan.lumpAmount>0?kr(loan.lumpAmount)+(loan.lumpYear>0?' eftir '+loan.lumpYear+' ár':' strax'):'']
+                   .filter(Boolean).join(' og ');
+        svarEl.innerHTML=`<b>Aukagreiðslan borgar sig.</b> ${hvad} sparar þér <b>${kr(sparar)}</b> á verðlagi dagsins`
+          +(styttir>0?` og styttir lánið um <b>${yearsMonths(styttir).replace(/\.$/,'')}</b>.`:'.')
+          +(loan.extraMode==='laekka'?` Þú ert með stillinguna „lækka greiðsluna“. Veldu „stytta lánstímann“ hér að ofan og sjáðu muninn.`:'');
+      }
+    }
   });
 }
 function scenTotals(S){
@@ -2092,7 +2118,7 @@ function renderSbi(S){
       ?`Svigrúmið upp að hámarkinu er <b>${kr(room)}</b> á mánuði í viðbótargreiðslubyrði.`
       :`Til að komast innan marka þyrfti greiðslubyrðin að lækka um <b>${kr(-room)}</b> á mánuði, eða tekjurnar að hækka um <b>${kr(sbiTotal/(cap/100)-income)}</b>`}
     ${outPay>0?` Lán utan viðmiðsins, á lánsveði, bílalán og önnur lán (<b>${kr(outPay)}</b> á mánuði), eru samt inni í greiðslubyrðartölunum og afganginum hér að neðan.`:''}
-    ${!ok?`<div class="infobox" style="border-color:color-mix(in srgb,var(--bad) 35%,transparent)"><b>Hvað þýðir þetta ef þú ert þegar með lánin?</b> Reglan gildir um ný lán, svo hún hróflar ekki við þeim lánum sem þú ert með í dag og þú heldur áfram að greiða af þeim eins og venjulega. En hún þýðir að þú kemst að öllum líkindum <b>hvorki í endurfjármögnun né nýtt fasteignalán</b> á meðan hlutfallið er yfir markinu, því lánveitandinn má ekki veita það. Leiðirnar niður fyrir markið eru að lækka greiðslubyrðina, til dæmis með lengri lánstíma eða uppgreiðslu dýrustu lánanna, eða að tekjurnar hækki.</div>`:''}
+    ${!ok?`<div class="infobox" style="border-color:color-mix(in srgb,var(--bad) 35%,transparent)"><b>Hvað þýðir þetta ef þú ert þegar með lánin?</b> Reglan gildir um ný lán, svo hún hróflar ekki við þeim lánum sem þú ert með í dag og þú heldur áfram að greiða af þeim eins og venjulega. En hún þýðir að þú kemst að öllum líkindum <b>hvorki í endurfjármögnun né færð nýtt fasteignalán</b> á meðan hlutfallið er yfir markinu, því lánveitandinn má ekki veita það. Leiðirnar niður fyrir markið eru að lækka greiðslubyrðina, til dæmis með lengri lánstíma eða uppgreiðslu dýrustu lánanna, eða að tekjurnar hækki.</div>`:''}
     ${!S.rentInDsti&&netRentHms(S)>0?`<br><br><b>Ábending:</b> Þú ert með <b>${kr(netRentHms(S))}</b> í nettóleigutekjur af HMS-skráðum samningum sem telja ekki með í viðmiðinu eins og er, hakaðu við í leigutekjuhlutanum í skrefi 1 til að sjá áhrifin (hlutfallið yrði þá <b>${pct(sbiTotal/(income+netRentHms(S))*100)}</b>).`:''}</p>
     ${infobox}`;
 }
