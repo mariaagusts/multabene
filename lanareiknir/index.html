@@ -994,7 +994,7 @@ function scenarioShell(S, title, removable){
   return `
   <div class="scenario">
     <div class="scenario-head">
-      <span class="scenario-tag"><span class="daemi-dot" style="background:var(--s${S.key==='B'?2:1})"></span>Dæmi ${S.key}</span><h2>${title}</h2>
+      <span class="scenario-tag" data-r="daemitag"${removable?'':' hidden'}><span class="daemi-dot" style="background:var(--s${S.key==='B'?2:1})"></span>Dæmi ${S.key}</span><h2>${title}</h2>
       ${removable
         ?'<div class="btns"><button class="scenario-remove" data-r="remove">Fjarlægja dæmi B</button></div>'
         :husverkBlokk()}
@@ -1570,6 +1570,9 @@ function renderSvar(S){
     const eitt=ofullbuin.length===1;
     svar+=` ${eitt?'Eitt lán er':ofullbuin.length+' lán eru'} ekki ${eitt?'fullbúið':'fullbúin'} og ${eitt?'reiknast':'reiknast'} ekki með, það vantar ${vantarOrd(ofullbuin)}.`;
   }
+  // Kaupverðsspjaldið les þetta svo það slái ekki upp grænum dómi beint undir
+  // rauðum. Sjá renderBuy.
+  S.svarTonn=tonn;
   el.className='svarid '+tonn;
   el.innerHTML=svar;
 }
@@ -1793,7 +1796,12 @@ function renderBuy(S){
   // getur gengið upp þótt ekkert sé hægt að reikna, svo það má ekki staðfesta.
   const okladin=S.loans.filter(l=>buysHome(l)&&l.principal>0&&(!l.rate||!l.years));
   const done=gap<=0&&!okladin.length;
-  el.className='card sbi-card'+(done?' ok':'');
+  // Spjaldið svarar því hvort peningarnir nái upp í verðið, sem er önnur
+  // spurning en hvort lánin fáist. Áður varð það grænt óháð svarinu efst, svo
+  // grænt „nákvæmlega“ gat staðið beint undir rauðu „Nei“ og enginn vissi
+  // hvoru átti að trúa. Græni tónninn bíður nú eftir að svarið efst gangi upp.
+  const domurNeikvaedur=S.svarTonn==='bad'||S.svarTonn==='bidur';
+  el.className='card sbi-card'+(done&&!domurNeikvaedur?' ok':'');
 
   const scaleMax=Math.max(need,have,1);
   const segs=[];
@@ -1821,6 +1829,7 @@ function renderBuy(S){
     ? (gap<0
         ? `Þetta nær upp í kaupverðið og <b>${kr(-gap)}</b> umfram.`
         : 'Þetta nær nákvæmlega upp í kaupverðið.')
+      +(domurNeikvaedur?' Peningarnir ganga upp, en greiðslubyrðin gerir það ekki, sjá svarið efst.':'')
     : vantarEigidFe>gap
       // Lánin eru þegar komin yfir veðþakið, svo tölurnar tvær eru ekki
       // hvor innan í annarri og „þar af“ átti ekki við.
@@ -2641,6 +2650,10 @@ function renderSamantekt(tA,tB){
 }
 function renderCompare(){
   const sec=document.getElementById('compareSec');
+  // „Dæmi A“ merkið segir ekkert fyrr en dæmi B er til. Það lét síðuna líta
+  // út fyrir að vera flóknara kerfi en hún er, strax í fyrstu skjáfyllingu.
+  const tag=A.$&&A.$('daemitag');
+  if(tag) tag.hidden=!(B&&B.root);
   if(!B||!B.root){sec.hidden=true;return;}
   sec.hidden=false;
   renderCompareDiff();
