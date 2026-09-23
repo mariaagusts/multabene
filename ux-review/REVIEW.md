@@ -282,14 +282,18 @@ Reiknað með WCAG 2.1 formúlu úr raunverulegum reiknuðum litum, gegnsæi lag
 
 **Eina breytingin sem þarf: `--muted`.**
 
-| Gildi | Á `#fffdf9` | Á `#f4efe6` | Niðurstaða |
-|---|---|---|---|
-| `#8b7e69` (núverandi) | 3,91 | 3,47 | Fellur á báðum |
-| `#7a6e5b` | 4,91 | 4,36 | Fellur naumlega á ljósbrúnu |
-| **`#736853`** | **5,39** | **4,78** | **Stenst AA á báðum, með borð fyrir báru** |
-| `#655c4b` | 6,49 | 5,76 | Stenst, en munurinn á `--ink-2` er orðinn lítill |
+| Gildi | Á `#fffdf9` | Á `#efe8da` | Á `#f4efe6` | Niðurstaða |
+|---|---|---|---|---|
+| `#8b7e69` (núverandi) | 3,91 | 3,28 | 3,47 | Fellur á öllum |
+| `#736853` | 5,39 | **4,49** | 4,78 | Fellur hárfínt á `--surface-2` |
+| **`#6b6150`** | **5,99** | **4,99** | **5,31** | **Stenst AA alls staðar með borð fyrir báru** |
+| `#685e4d` | 6,27 | 5,22 | 5,56 | Stenst, en munurinn á `--ink-2` verður lítill |
 
-**`#736853`** er tillagan. Hún heldur stigveldinu (`--ink` 15,7 → `--ink-2` 7,6 → `--muted` 5,4) en lyftir minnsta textanum yfir kröfuna. Dökka stillingin þarf sams konar leiðréttingu.
+**`#6b6150`** er tillagan. Hún heldur stigveldinu (`--ink` 15,7 → `--ink-2` 7,6 → `--muted` 6,0) en lyftir minnsta textanum yfir kröfuna á öllum þremur bakgrunnum sem hann situr á.
+
+**Leiðrétting eftir mælingu:** fyrri útgáfa þessa skjals lagði til `#736853` og sagði að dökka stillingin þyrfti sams konar leiðréttingu. Hvort tveggja var ónákvæmt. `#736853` mælist 4,49 á `--surface-2` (`#efe8da`), hárfínt undir kröfunni, og dökka stillingin var nærri lagi fyrir: `#968b7b` mældist 5,01 á `--surface`, 5,53 á `--bg` og aðeins 4,48 á `--surface-2`. Dökka gildið var engu að síður hækkað í **`#9e9384`** (5,56 / 4,97 / 6,13) svo báðar stillingar hafi sama borð fyrir báru.
+
+**Þetta var innleitt.** Mælt eftir breytingu: hjálpartexti 5,99, smáfyrirsögn 5,99, skýring undir tölu 5,99, eining 5,99, fótur 5,31, kvarði 5,51. Allt yfir 4,5. Dökk stilling: 5,56 til 6,13.
 
 Að auki: **hækka `.hint` og `.eyebrow` úr 11 og 11,5px í 12,5px.** Ellefu pixlar er of lítið fyrir þennan markhóp óháð litaskilum.
 
