@@ -896,6 +896,14 @@ const runningTotal=S=>S.running.reduce((a,r)=>a+(r.amount||0),0);
 // Leikskóla- og frístundagjöld eru utan framfærsluviðmiðsins og því sér liður
 const kgOf=S=>S.hasKindergarten?(S.kindergarten||0):0;
 
+// Afgangurinn var reiknaður á tveimur stöðum, á spjaldinu og í
+// samanburðartöflunni, og staðirnir voru ósammála: taflan dró hvorki frá
+// framfærslu, rekstur eignarinnar né leikskólagjöld þótt greiðslumat væri
+// kveikt. Sami notandi sá því tvær ólíkar tölur undir sama orði, og munurinn
+// gat verið hundruð þúsunda. Ein formúla svo þær geti ekki skilið aftur.
+const afgangurOf=(S,t)=>S.income1+S.income2+incomeOffset(S)-t.first-fixedTotal(S)
+  -(S.hasGm?framfOf(S)[7]+runningTotal(S)+kgOf(S):0);
+
 // Hæsta upphæð sem þessi kaupandi getur púslað saman: eigið fé, veðþakið á
 // aðalhúsnæðinu og þau lán sem hvíla annars staðar.
 const buyReach=S=>{
@@ -2096,7 +2104,7 @@ function renderTiles(S){
     // Með greiðslumatinu kveiktu er framfærslan og rekstur eignarinnar dreginn frá
     // líka, svo talan hér stangist ekki á við greiðslumatsspjaldið.
     const framf=S.hasGm?framfOf(S)[7]:0, rek=S.hasGm?runningTotal(S):0, kg=S.hasGm?kgOf(S):0;
-    const left=totalIncome-t.first-fx-framf-rek-kg;
+    const left=afgangurOf(S,t);
     html+=`<div class="card tile" style="border-top:3px solid var(--hairline)"><div class="eyebrow">Afgangur ${S.hasGm?'þegar allt er dregið frá':'eftir greiðslu lána'}</div><div class="big"${left<0?' style="color:var(--bad-text)"':''}>${kr(left)}</div><div class="sub">${S.hasGm
       ?`af ${kr(totalIncome)} heildartekjum, eftir greiðslur allra lána${fx>0?', fastar skuldbindingar':''}, framfærslu heimilisins (${kr(framf)})${rek>0?', rekstur eignarinnar ('+kr(rek)+')':''}${kg>0?' og leikskólagjöld ('+kr(kg)+')':''}`
       :`af ${kr(totalIncome)} heildartekjum á mánuði, eftir greiðslur allra lána${fx>0?' og '+kr(fx)+' í fastar skuldbindingar':''}. <b>Framfærsla heimilisins og rekstur eignarinnar eru ekki dregin frá</b>, hakaðu við „bráðabirgðagreiðslumat“ í skrefi 1 til að fá raunhæfari tölu`}</div></div>`;
@@ -2488,7 +2496,10 @@ function renderCompare(){
     {label:'Heildarhöfuðstóll', a:tA.principal, b:tB.principal, fmt:kr},
     {label:'Greiðslubyrði á mánuði (fyrsta greiðsla)', a:tA.first, b:tB.first, fmt:kr, lowerBetter:true},
     (incomeOffset(A)>0||incomeOffset(B)>0)?{label:'Greiðslan eftir leigu- og aukatekjur', a:Math.max(0,tA.first-incomeOffset(A)), b:Math.max(0,tB.first-incomeOffset(B)), fmt:kr, lowerBetter:true}:null,
-    (A.income1+A.income2+incomeOffset(A)>0&&B.income1+B.income2+incomeOffset(B)>0)?{label:'Afgangur eftir greiðslu lána', a:A.income1+A.income2+incomeOffset(A)-tA.first-fixedTotal(A), b:B.income1+B.income2+incomeOffset(B)-tB.first-fixedTotal(B), fmt:kr, higherBetter:true}:null,
+    (A.income1+A.income2+incomeOffset(A)>0&&B.income1+B.income2+incomeOffset(B)>0)?{label:A.hasGm===B.hasGm
+        ?(A.hasGm?'Afgangur þegar allt er dregið frá':'Afgangur eftir greiðslu lána')
+        :'Afgangur (greiðslumat aðeins í öðru dæminu)',
+      a:afgangurOf(A,tA), b:afgangurOf(B,tB), fmt:kr, higherBetter:true}:null,
     {label:'Greiðslubyrði skv. forsendum SBÍ', a:tA.sbi, b:tB.sbi, fmt:kr, lowerBetter:true},
     incomeA&&incomeB?{label:'Greiðslubyrðarhlutfall', a:tA.sbi/incomeA*100, b:tB.sbi/incomeB*100, fmt:pct, lowerBetter:true}:null,
     {label:'Raunkostnaður (á verðlagi dagsins)', a:tA.costReal, b:tB.costReal, fmt:kr, lowerBetter:true},
