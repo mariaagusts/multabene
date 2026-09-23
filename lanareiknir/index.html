@@ -310,7 +310,9 @@ input.required:placeholder-shown{border-color:color-mix(in srgb,var(--accent) 50
 .add-loan .plus{font-size:22px; line-height:1}
 
 /* --- Samantekt --- */
-.tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px}
+.tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px;
+  /* Án þessa jöfnuðust öll spjöld við hæð þess sem bar lengsta textann */
+  align-items:start}
 .tile{padding:16px 18px}
 .tile .eyebrow{margin-bottom:6px}
 .tile .big{
@@ -752,6 +754,22 @@ function liveFormat(el){
     el.classList.add('hafnad');
     clearTimeout(el._hafnadTimer);
     el._hafnadTimer=setTimeout(()=>el.classList.remove('hafnad'),1400);
+    // Blikkið eitt og sér segir ekki hvað gerðist. Sá sem skrifar 1,5 og fær
+    // 15 þarf að vita að kommunni var hent, ekki að reiturinn hafi hikstað.
+    let bod=el._hafnadBod;
+    if(!bod){
+      bod=document.createElement('div');
+      bod.className='villa';
+      bod.style.marginTop='4px';
+      el.closest('.field')?.appendChild(bod);
+      el._hafnadBod=bod;
+    }
+    bod.textContent=/[,.]/.test(hratt)
+      ? 'Hér fara heilar krónur, svo kommur og aukastafir falla burt.'
+      : 'Aðeins tölustafir komast hér inn.';
+    bod.hidden=false;
+    clearTimeout(el._hafnadBodTimer);
+    el._hafnadBodTimer=setTimeout(()=>{bod.hidden=true;},4000);
   }
 }
 function yearsMonths(months){
@@ -1004,7 +1022,9 @@ function scenarioShell(S, title, removable){
             <button type="button" class="preset" data-p="5.0" title="Meðalverðbólga júní 2006 – júní 2026">Síðustu 20 ár · 5,0%</button>
             <button type="button" class="preset" data-p="2.5" title="Verðbólgumarkmið Seðlabankans">Markmið SBÍ · 2,5%</button>
           </div>
-          <div class="hint">Veldu viðmið eða skrifaðu eigin tölu. Viðmiðin eru reiknuð úr vísitölu neysluverðs Hagstofunnar, m.v. mitt ár 2026.</div></div>
+          <div class="hint">Veldu viðmið eða skrifaðu eigin tölu. Viðmiðin eru reiknuð úr vísitölu neysluverðs Hagstofunnar, m.v. mitt ár 2026.</div>
+          <!-- Tímabilin stóðu aðeins í title, sem sést aldrei í síma. -->
+          <details class="moli"><summary>Hvaðan koma þessar tölur?</summary><b>Núna · 5,3%</b> er tólf mánaða verðbólga í júlí 2026. <b>Síðustu 3 ár · 5,1%</b> er meðaltal júní 2023 til júní 2026, <b>síðustu 5 ár · 6,6%</b> frá júní 2021, <b>síðustu 10 ár · 4,7%</b> frá júní 2016 og <b>síðustu 20 ár · 5,0%</b> frá júní 2006. <b>Markmið SBÍ · 2,5%</b> er verðbólgumarkmið Seðlabankans, ekki mæling. Allt nema markmiðið er reiknað sem árleg jafngild hækkun úr vísitölu neysluverðs.</details></div>
       </div>
       <div class="card valkostir" style="margin-top:14px; padding:16px 18px">
         <div class="eyebrow" style="margin-bottom:4px">Á eitthvað af þessu við þig?</div>
@@ -1080,8 +1100,11 @@ function scenarioShell(S, title, removable){
 
         <div style="border-top:1px solid var(--hairline); margin-top:16px; padding-top:16px">
           <div class="eyebrow" style="margin-bottom:4px">Fjármögnun án mánaðarlegra afborgana (valfrjálst)</div>
-          <p class="hint" style="margin:0 0 10px; max-width:75ch">Hér á hlutdeildarlán HMS heima, og annað fé sem borgar íbúðina en þú greiðir ekkert af í hverjum mánuði. Hlutdeildarlán getur numið allt að 20% af kaupverði, ber hvorki vexti né afborganir, og endurgreiðist þegar eignin er seld sem sama hlutfall af þáverandi verðmæti hennar. Það borgar íbúðina og birtist því í súlunni, en telur hvorki í greiðslubyrðinni né í veðhlutfallinu, enda greiðir þú ekkert af því mánaðarlega. Athugaðu að reiknivélin sýnir ekki hvað endurgreiðslan verður í framtíðinni, því hún fer eftir verðþróun eignarinnar.</p>
-          <div class="infobox" style="margin-top:0; border-color:color-mix(in srgb,var(--bad) 35%,transparent)"><b>Ert þú að kaupa eignarhlut af fyrirtæki og greiða því fyrir afnot af þeirra hlut?</b> Þá gildir annað. Í <a href="${REGLUR_URL}" target="_blank" rel="noopener">reglum Seðlabankans nr. ${REGLUR_NR}</a> (4. gr., 3. mgr., ný frá desember 2025) segir að eigi neytandi íbúðarhúsnæði í sameign með aðila sem heldur á eignarhlutnum <b>í atvinnuskyni</b>, þá teljist allar greiðslur til þess sameiganda fyrir afnot af hlut hans með í greiðslubyrðinni, óháð því hvenær þær koma til greiðslu. Þetta á við um ýmis „leigu til eignar“ úrræði á almennum markaði, en ekki um hlutdeildarlán HMS, þar sem engar mánaðarlegar greiðslur falla til. <b>Reiknivélin reiknar þessar greiðslur ekki með</b>, svo eigi þetta við um þig er 35%-hlutfallið hér of lágt. Spurðu lánveitandann hvernig hann meðhöndlar samninginn.</div>
+          <p class="hint" style="margin:0 0 6px; max-width:75ch">Hér á hlutdeildarlán HMS heima, og annað fé sem borgar íbúðina en þú greiðir ekkert af í hverjum mánuði.</p>
+          <!-- Textarnir tveir hér að neðan eiga við örlítinn hluta kaupenda en
+               allir þurftu að skruna framhjá þeim. Þeir eru nú samanbrotnir. -->
+          <details class="moli" style="margin-bottom:10px"><summary>Hvernig virkar hlutdeildarlán?</summary>Hlutdeildarlán getur numið allt að 20% af kaupverði, ber hvorki vexti né afborganir, og endurgreiðist þegar eignin er seld sem sama hlutfall af þáverandi verðmæti hennar. Það borgar íbúðina og birtist því í súlunni, en telur hvorki í greiðslubyrðinni né í veðhlutfallinu, enda greiðir þú ekkert af því mánaðarlega. Athugaðu að reiknivélin sýnir ekki hvað endurgreiðslan verður í framtíðinni, því hún fer eftir verðþróun eignarinnar.</details>
+          <details class="moli" style="margin-bottom:10px"><summary>Ert þú að kaupa eignarhlut af fyrirtæki og greiða því fyrir afnot af þeirra hlut?</summary>Þá gildir annað. Í <a href="${REGLUR_URL}" target="_blank" rel="noopener">reglum Seðlabankans nr. ${REGLUR_NR}</a> (4. gr., 3. mgr., ný frá desember 2025) segir að eigi neytandi íbúðarhúsnæði í sameign með aðila sem heldur á eignarhlutnum <b>í atvinnuskyni</b>, þá teljist allar greiðslur til þess sameiganda fyrir afnot af hlut hans með í greiðslubyrðinni, óháð því hvenær þær koma til greiðslu. Þetta á við um ýmis „leigu til eignar“ úrræði á almennum markaði, en ekki um hlutdeildarlán HMS, þar sem engar mánaðarlegar greiðslur falla til. <b>Reiknivélin reiknar þessar greiðslur ekki með</b>, svo eigi þetta við um þig er 35%-hlutfallið hér of lágt. Spurðu lánveitandann hvernig hann meðhöndlar samninginn.</details>
           <div data-r="nopayList"></div>
           <button type="button" class="table-toggle" style="margin-top:10px" data-r="addNopay">+ Bæta við hlutdeildarláni</button>
           <div data-r="nopaySummary" style="margin-top:10px; font-size:13.5px; color:var(--ink-2)"></div>
@@ -1406,7 +1429,8 @@ function renderRentals(S){
       <select data-rf="kind" style="flex:1;min-width:230px;max-width:360px" title="Skráður leigusamningur nýtur frítekjumarks (16,5% skattur); greiðsla heimilisfólks fyrir þátttöku í heimilishaldi er ekki skattskyld leigutekja">
         ${Object.entries(RENT_KINDS).map(([k,v])=>`<option value="${k}"${k===kind?' selected':''}>${v.label} (${v.pct} skattur)</option>`).join('')}
       </select>
-      <button class="loan-del" title="Fjarlægja íbúð" aria-label="Fjarlægja íbúð">×</button>`;
+      <button class="loan-del" title="Fjarlægja íbúð" aria-label="Fjarlægja íbúð">×</button>
+    <div class="hint" style="flex-basis:100%">Skráður leigusamningur nýtur frítekjumarks og ber 16,5% skatt. Greiðsla heimilisfólks fyrir þátttöku í heimilishaldi telst ekki skattskyld leigutekja.</div>`;
     row.querySelector('[data-rf="name"]').addEventListener('input',e=>{r.name=e.target.value;saveState();});
     const rentEl=row.querySelector('[data-rf="rent"]');
     rentEl.addEventListener('input',()=>{liveFormat(rentEl);r.rent=parseAmount(rentEl.value);recalc(S);});
@@ -1931,8 +1955,9 @@ function renderLoans(S){
           <div class="inputrow"><input type="text" inputmode="numeric" data-f="extraMonthly" value="${loan.extraMonthly?nf.format(loan.extraMonthly):''}" placeholder="0"><span class="unit">kr.</span></div></div>
         <div class="field"><label>Eingreiðsla</label>
           <div class="inputrow"><input type="text" inputmode="numeric" data-f="lumpAmount" value="${loan.lumpAmount?nf.format(loan.lumpAmount):''}" placeholder="0"><span class="unit">kr.</span></div></div>
-        <div class="field"><label>Eingreiðsla eftir</label>
-          <div class="inputrow"><input type="number" step="1" min="1" max="50" data-f="lumpYear" value="${loan.lumpYear||''}" placeholder="ár nr."><span class="unit">ár</span></div></div>
+        <div class="field"><label>Eingreiðsla eftir hvað mörg ár?</label>
+          <div class="inputrow"><input type="number" step="1" min="1" max="50" data-f="lumpYear" value="${loan.lumpYear||''}" placeholder="t.d. 5"><span class="unit">ár</span></div>
+          <div class="hint">Talið frá deginum í dag, ekki frá því að lánið var tekið.</div></div>
         <div class="field full"><label>Aukagreiðslur eiga að …</label>
           <select data-f="extraMode">
             <option value="stytta"${loan.extraMode==='stytta'?' selected':''}>stytta lánstímann (greiðslan helst)</option>
@@ -2853,6 +2878,20 @@ if(window.matchMedia){
     if(!loadState()) A.loans=[defaultLoan(A,true)];
     remountAll();
   }
+  // Deilihlekkur virkaði ekki ef síðan var þegar opin í flipanum: ástandið var
+  // aðeins lesið við hleðslu, svo smellur á hlekk frá makanum breytti slóðinni
+  // en engu öðru. Nú er hlustað á hashchange og hlekkurinn tekur gildi strax.
+  window.addEventListener('hashchange',async()=>{
+    if(location.hash.length<=3) return;
+    let nytt=null;
+    try{nytt=await decodeStateHash(location.hash.slice(1));}catch(e){}
+    if(!nytt||!nytt.A||!Array.isArray(nytt.A.loans)) return;
+    applyState(nytt);
+    history.replaceState(null,'',location.pathname+location.search);
+    remountAll();
+    saveState();
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
 })();
 </script>
 
