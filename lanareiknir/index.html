@@ -507,7 +507,7 @@ footer a{color:var(--ink-2)}
   <header class="masthead">
     <h1>Ræð ég við lánið?</h1>
     <p>Hér sérðu, án þess að kunna neitt í lánafræðum, hvað lánin þín kosta, hvort þú ráðir við þau og hvað þú kemst hæst í verði þegar þú kaupir.</p>
-    <p class="howto-note">Byrjaðu á skrefi 1. Ertu að kaupa eða langar að vita hvað þú getur keypt? Hakaðu þá við „Ég er að kaupa eign“ þar, og kaupverð, eigið fé og hámarkskaupverð bætast við.</p>
+    <p class="howto-note">Byrjaðu á skrefi 1. Ertu að kaupa eða langar að vita hvað þú getur keypt? Hakaðu þá við „Ég er að kaupa eign eða á eign nú þegar“ þar, og kaupverð, eigið fé og hámarkskaupverð bætast við.</p>
   </header>
   <nav class="skrefastika" id="skrefastika" aria-label="Skrefin í reiknivélinni">
     <button type="button" data-gostep="1"><span class="step-num">1</span><span class="t">Launin og heimilið</span></button>
@@ -1127,8 +1127,17 @@ function mountScenario(S, hostId, title, removable){
   };
   S.$('inflation').addEventListener('input',e=>{
     const v=parsePct(e.target.value);
-    // Autt er í lagi á meðan skrifað er; óskiljanlegur innsláttur fær skilaboð
-    S.$('inflWarn').hidden = (e.target.value.trim()==='' || v!==null);
+    // Autt og núll eru ekki sami hluturinn. Sá sem skrifar 0 vill sjá dæmið án
+    // verðbólgu, sem er gild forsenda. Sá sem tæmdi reitinn er ekki búinn að
+    // svara, og þá á reiknivélin að bíða í stað þess að reikna eins og
+    // verðbólgan væri engin. Áður fóru bæði tilvikin í 0% þegjandi.
+    const autt = e.target.value.trim()==='';
+    S.inflationVantar = autt || v===null;
+    S.$('inflWarn').hidden = !S.inflationVantar;
+    S.$('inflWarn').innerHTML = autt
+      ? 'Settu inn verðbólgutölu, eða veldu viðmið hér fyrir neðan.'
+      : 'Skrifaðu tölu, t.d. <b>5,3</b>. Bæði komma og punktur virka.';
+    S.$('inflation').classList.toggle('vantar', S.inflationVantar);
     S.inflation = v===null?0:Math.min(99,Math.max(0,v));
     syncPresets(); recalc(S);
   });
@@ -1136,7 +1145,9 @@ function mountScenario(S, hostId, title, removable){
     b.addEventListener('click',()=>{
       S.inflation=parseFloat(b.dataset.p);
       S.$('inflation').value=pctIn(b.dataset.p);
+      S.inflationVantar=false;
       S.$('inflWarn').hidden=true;
+      S.$('inflation').classList.remove('vantar');
       syncPresets(); recalc(S);
     });
   });
@@ -1299,7 +1310,20 @@ function mountScenario(S, hostId, title, removable){
     // Dæmi B endar í samanburðinum, sem stendur utan við dæmið sjálft
     const m=naest==='cmp'?document.getElementById('compareSec')
                          :host.querySelector('[data-skref="'+naest+'"]');
-    if(m) m.scrollIntoView({behavior:'smooth',block:'start'});
+    if(!m) return;
+    m.scrollIntoView({behavior:'smooth',block:'start'});
+    // Skrunið eitt og sér skilur lyklaborðsnotandann eftir með fókus á
+    // hnappnum sem hann smellti á, tveimur skjáfyllingum fyrir ofan. Fókusinn
+    // fylgir með í fyrsta reit næsta kafla, eða í kaflann sjálfan sé hann
+    // ekki með reiti (niðurstaðan og samanburðurinn).
+    setTimeout(()=>{
+      // Fyrst reitur sem þarf að fylla, ekki nafnreiturinn á lánakortinu
+      const f=m.querySelector('input.required:not([hidden])')
+            || m.querySelector('input:not([hidden]),select,button:not([hidden])');
+      if(f){ f.focus({preventScroll:true}); return; }
+      m.setAttribute('tabindex','-1');
+      m.focus({preventScroll:true});
+    },450);
   });
   renderLoans(S);
   recalc(S);
@@ -1402,6 +1426,13 @@ function renderSvar(S){
     el.innerHTML=ofullbuin.length
       ? `Svarið bíður þess að lánið verði fullbúið, það vantar ${vantarOrd(ofullbuin)} í skrefi 2. Reiknivélin giskar ekki á þær tölur fyrir þig.`
       : 'Bættu við láni í skrefi 2 til að fá svarið.';
+    return;
+  }
+  // Verðbólgan er forsenda allra raunkostnaðartalna og alls verðtryggðs.
+  // Auður reitur er ósvarað, ekki núll, svo svarið bíður.
+  if(S.inflationVantar){
+    el.className='svarid tomt';
+    el.innerHTML='Svarið bíður verðbólgutölunnar í skrefi 1. Hún ræður því hvað lánin kosta í raun, svo reiknivélin reiknar ekki eins og verðbólgan væri engin. Veldu viðmið eða skrifaðu þína eigin tölu, líka 0 ef þú vilt sjá dæmið án verðbólgu.';
     return;
   }
   const t=scenTotals(S);
