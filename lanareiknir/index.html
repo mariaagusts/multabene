@@ -138,17 +138,16 @@ h2{
 .lesefni > summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 .lesefni[open] > summary{margin-bottom:10px}
 .lesefni .h2-like{font-size:21px}
-/* Blár texti þýðir nú eitt: hlekkur út af síðunni. Ellefu hlekkir í texta
-   höfðu engan stíl og birtust í sjálfgefnum vafrabláum (#0000EE), sem er
-   annar blár en áherslulitur síðunnar. Fræðslumolarnir voru á sama tíma
-   bláir án þess að vera hlekkir. Molarnir víkja: þeir þekkjast á feitu
-   letri og þríhyrningnum, sem er áfram í áherslulit. */
+/* Ellefu hlekkir í texta höfðu engan stíl og birtust í sjálfgefnum vafrabláum
+   (#0000EE), sem er annar blár en áherslulitur síðunnar. Þeir fá hann nú.
+   Fræðslumolarnir eru áfram í sama lit, og það er viljandi: liturinn er það
+   sem segir að hægt sé að smella og fá meira að vita. Prófað var að gera þá
+   dökka og þá hurfu þeir í textann. Munurinn liggur í undirstrikuninni:
+   hlekkur er undirstrikaður, moli er það ekki og ber þríhyrning. */
 a{color:var(--accent)}
 a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 .moli{margin-top:7px; font-size:12.5px; line-height:1.45; color:var(--ink-2)}
-.moli > summary{cursor:pointer; color:var(--ink); font-weight:600; list-style-position:inside}
-.moli > summary::marker{color:var(--accent)}
-.moli > summary:hover{color:var(--accent)}
+.moli > summary{cursor:pointer; color:var(--accent); font-weight:600; list-style-position:inside; text-decoration:none}
 .moli[open]{padding:8px 11px; border-radius:7px; background:var(--accent-soft)}
 .moli[open] > summary{margin-bottom:5px}
 .valkostir-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:10px 22px}
