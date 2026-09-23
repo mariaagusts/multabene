@@ -81,7 +81,46 @@ h2{
 }
 .howto .step-num{width:24px; height:24px; font-size:12.5px; margin:0}
 .howto-note{margin-top:14px; font-size:14px; color:var(--ink-2); max-width:70ch}
+/* Skrefastikan situr föst efst og segir hvar maður er staddur */
+.skrefastika{
+  position:sticky; top:0; z-index:30; display:flex; gap:8px; align-items:center;
+  margin:22px 0 0; padding:9px 0; background:var(--bg);
+  border-bottom:1px solid var(--hairline);
+}
+.skrefastika button{
+  display:flex; align-items:center; gap:8px; flex:0 1 auto; min-width:0;
+  font:inherit; font-size:13.5px; font-weight:600; cursor:pointer; white-space:nowrap;
+  padding:6px 13px 6px 6px; border-radius:99px; border:1px solid transparent;
+  background:transparent; color:var(--ink-2);
+}
+.skrefastika button:hover{background:var(--surface)}
+.skrefastika button:focus-visible{outline:2px solid var(--accent); outline-offset:1px}
+.skrefastika button .step-num{background:var(--surface-2); color:var(--ink-2); margin:0}
+.skrefastika button[aria-current="step"]{background:var(--surface); color:var(--ink); border-color:var(--hairline)}
+.skrefastika button[aria-current="step"] .step-num{background:var(--accent); color:var(--accent-ink)}
+.skrefastika .t{overflow:hidden; text-overflow:ellipsis}
+@media (max-width:760px){
+  .skrefastika{gap:4px; justify-content:flex-start}
+  .skrefastika .t{display:none}
+  .skrefastika button[aria-current="step"] .t{display:inline}
+  .skrefastika button{padding:6px 8px}
+  .skrefastika button[aria-current="step"]{padding-right:13px}
+}
 .vistun-nota{font-size:12.5px; color:var(--muted); max-width:44ch; line-height:1.35}
+.svarid{
+  font-family:"Bricolage Grotesque",system-ui,sans-serif; font-size:23px; line-height:1.35;
+  font-weight:500; color:var(--ink); margin:0 0 18px; padding:18px 22px;
+  border-radius:12px; border:1px solid var(--hairline); background:var(--surface);
+}
+.svarid b{font-weight:700}
+.svarid.ok{background:color-mix(in srgb,var(--good) 7%,var(--surface)); border-color:color-mix(in srgb,var(--good) 32%,var(--hairline))}
+.svarid.bad{background:color-mix(in srgb,var(--bad) 7%,var(--surface)); border-color:color-mix(in srgb,var(--bad) 32%,var(--hairline))}
+.svarid.tomt{font-size:16px; color:var(--ink-2)}
+.nanar{margin-top:18px; border-top:1px solid var(--hairline); padding-top:8px}
+.nanar > summary{cursor:pointer; font-size:14px; font-weight:600; color:var(--accent); padding:8px 0; list-style-position:inside}
+.nanar > summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.nanar[open] > summary{margin-bottom:12px}
+@media (max-width:560px){ .svarid{font-size:19px; padding:15px 17px} }
 .next-step{
   display:block; margin:18px 0 0 auto; font:inherit; font-size:14px; font-weight:600;
   cursor:pointer; padding:10px 18px; border-radius:99px;
@@ -426,14 +465,14 @@ footer a{color:var(--ink-2)}
   <header class="masthead">
     <h1>Ræð ég við lánið?</h1>
     <p>Hér sérðu, án þess að kunna neitt í lánafræðum, hvað lánin þín kosta, hvort þú ráðir við þau og hvað þú kemst hæst í verði þegar þú kaupir.</p>
-    <div class="howto">
-      <div><span class="step-num">1</span>Launin og heimilið</div>
-      <div><span class="step-num">2</span>Lánin þín</div>
-      <div><span class="step-num">3</span>Niðurstaðan</div>
-      <div><span class="step-num">4</span>Þróunin</div>
-    </div>
     <p class="howto-note">Byrjaðu á skrefi 1. Ertu að kaupa eða langar að vita hvað þú getur keypt? Hakaðu þá við „Ég er að kaupa eign“ þar, og kaupverð, eigið fé og hámarkskaupverð bætast við.</p>
   </header>
+  <nav class="skrefastika" id="skrefastika" aria-label="Skrefin í reiknivélinni">
+    <button type="button" data-gostep="1"><span class="step-num">1</span><span class="t">Launin og heimilið</span></button>
+    <button type="button" data-gostep="2"><span class="step-num">2</span><span class="t">Lánin þín</span></button>
+    <button type="button" data-gostep="3"><span class="step-num">3</span><span class="t">Niðurstaðan</span></button>
+    <button type="button" data-gostep="4"><span class="step-num">4</span><span class="t">Þróunin</span></button>
+  </nav>
 
   <div id="scenarioA"></div>
 
@@ -989,16 +1028,20 @@ function scenarioShell(S, title, removable){
         <h2 style="font-size:18px">Niðurstaðan</h2>
         <p class="sec-sub">Svarið við spurningunni og stóru tölurnar á mannamáli.</p>
       </div></div>
-      <p class="plain-summary" data-r="plain"></p>
-      <div class="card sbi-card" data-r="maxcard" hidden style="margin-bottom:14px"></div>
+      <div class="svarid" data-r="svar"></div>
       <div class="card sbi-card" data-r="buycard" hidden style="margin-bottom:14px"></div>
       <div class="card sbi-card" data-r="sbi"></div>
-      <div class="card sbi-card" data-r="gmcard" hidden style="margin-top:14px"></div>
-      <div class="card sbi-card" data-r="ltvcard" hidden style="margin-top:14px"></div>
-      <div class="tiles" data-r="tiles" style="margin-top:14px"></div>
       <div data-r="costwarn"></div>
-      <div class="card" data-r="mix" hidden style="margin-top:14px; padding:18px 22px"></div>
-      <p class="sec-sub" data-r="costnote" style="margin-top:12px; margin-bottom:0; font-size:13px"></p>
+      <div class="tiles" data-r="tiles" style="margin-top:14px"></div>
+      <details class="nanar">
+        <summary>Sjá nánari útreikning</summary>
+        <p class="plain-summary" data-r="plain"></p>
+        <div class="card sbi-card" data-r="maxcard" hidden style="margin-bottom:14px"></div>
+        <div class="card sbi-card" data-r="gmcard" hidden style="margin-bottom:14px"></div>
+        <div class="card sbi-card" data-r="ltvcard" hidden style="margin-bottom:14px"></div>
+        <div class="card" data-r="mix" hidden style="padding:18px 22px"></div>
+        <p class="sec-sub" data-r="costnote" style="margin-top:12px; margin-bottom:0; font-size:13px"></p>
+      </details>
       <button type="button" class="next-step" data-gonext="4">Næsta skref: hvernig þróast þetta?</button>
     </section>
     <section data-skref="4">
@@ -1279,6 +1322,43 @@ function renderRunningSummary(S){
   const el=S.$('runningSummary'); if(!el) return;
   const tot=runningTotal(S);
   el.innerHTML=tot>0?`Rekstur eignarinnar alls <b>${kr(tot)}</b> á mánuði`:'';
+}
+
+/* ============ Svarið, í einni setningu ============ */
+// Skref 3 sýndi sjö spjöld með sama vægi og ekkert þeirra svaraði spurningunni
+// í fyrirsögn síðunnar. Hér er eitt svar efst og hitt fer í samanbrotna kaflann.
+function renderSvar(S){
+  const el=S.$('svar'); if(!el) return;
+  if(!S.results.length){
+    el.className='svarid tomt';
+    el.innerHTML='Bættu við láni í skrefi 2 til að fá svarið.';
+    return;
+  }
+  const t=scenTotals(S);
+  const income=dstiIncome(S);
+  const cap=S.firstBuyer?40:35;
+  const ratio=income>0?t.sbi/income*100:null;
+  const stenst=ratio!==null?ratio<=cap+1e-9:null;
+  // Greiðslumatið er strangara og gengur framar þegar það er kveikt
+  let gmAfgangur=null;
+  if(S.hasGm){
+    const gmTekjur=S.income1+S.income2+incomeOffset(S);
+    if(gmTekjur>0) gmAfgangur=gmTekjur-framfOf(S)[7]-runningTotal(S)-kgOf(S)-fixedTotal(S)-t.first;
+  }
+  let svar, tonn;
+  if(ratio===null){
+    tonn=''; svar=`Greiðslan af lánunum er <b>${kr(t.first)}</b> á mánuði. Settu inn launin í skrefi 1 til að sjá hvort þú ráðir við hana.`;
+  }else if(!stenst){
+    tonn='bad'; svar=`<b>Nei.</b> Greiðslubyrðin er ${pct(ratio)} af laununum og fer yfir ${cap}%-mark Seðlabankans, svo þessi lán fást ekki eins og þau standa.`;
+  }else if(gmAfgangur!==null&&gmAfgangur<0){
+    tonn='bad'; svar=`<b>Varla.</b> Lánin rúmast innan ${cap}%-marksins, en þegar framfærsla heimilisins er dregin frá vantar <b>${kr(-gmAfgangur)}</b> upp á í hverjum mánuði.`;
+  }else{
+    tonn='ok';
+    svar=`<b>Já.</b> Greiðslan er <b>${kr(t.first)}</b> á mánuði, eða ${pct(ratio)} af laununum, innan ${cap}%-marksins`
+      +(gmAfgangur!==null?` og <b>${kr(gmAfgangur)}</b> standa eftir þegar framfærslan er dregin frá.`:'.');
+  }
+  el.className='svarid '+tonn;
+  el.innerHTML=svar;
 }
 
 /* ============ Hvað kemstu hæst? ============ */
@@ -1748,7 +1828,7 @@ function recalc(S){
   }));
   S.baseline=valid.map(l=>(!l.extraMonthly&&!l.lumpAmount)?null
     :simulateLoan({...l,extraMonthly:0,lumpAmount:0,lumpMonth:0},S.inflation,S.horizon));
-  renderLoanStats(S); renderRentSummary(S); renderFixedSummary(S); renderEquitySummary(S); renderNopaySummary(S); renderRunningSummary(S); renderMax(S); renderBuy(S); renderGm(S); renderTiles(S); renderMix(S); renderSbi(S); renderLtv(S); renderChart(S); renderTable(S);
+  renderLoanStats(S); renderRentSummary(S); renderFixedSummary(S); renderEquitySummary(S); renderNopaySummary(S); renderRunningSummary(S); renderSvar(S); renderMax(S); renderBuy(S); renderGm(S); renderTiles(S); renderMix(S); renderSbi(S); renderLtv(S); renderChart(S); renderTable(S);
   renderCompare(); saveState();
 }
 // Upphæð komin inn en kjörin vantar. Reiknivélin giskar aldrei á vexti eða
@@ -2433,6 +2513,31 @@ document.getElementById('addScenarioB').addEventListener('click',()=>{
   renderCompare(); saveState();
   document.getElementById('scenarioB').scrollIntoView({behavior:'smooth',block:'start'});
 });
+/* Skrefastikan: smellt til að fara í skref, og virka skrefið merkt eftir skruni.
+   Miðað er við dæmi A, enda er dæmi B afrit til samanburðar en ekki nýtt ferli. */
+(function(){
+  const stika=document.getElementById('skrefastika');
+  const hnappar=[...stika.querySelectorAll('[data-gostep]')];
+  const kaflar=()=>[1,2,3,4].map(n=>document.querySelector('#scenarioA [data-skref="'+n+'"]'));
+  stika.addEventListener('click',e=>{
+    const b=e.target.closest('[data-gostep]'); if(!b) return;
+    const m=document.querySelector('#scenarioA [data-skref="'+b.dataset.gostep+'"]');
+    if(!m) return;
+    const y=m.getBoundingClientRect().top+scrollY-stika.offsetHeight-10;
+    window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
+  });
+  let bidur=false;
+  const merkja=()=>{
+    bidur=false;
+    const mork=scrollY+stika.offsetHeight+24;
+    let virkt=0;
+    kaflar().forEach((sec,i)=>{ if(sec&&sec.getBoundingClientRect().top+scrollY<=mork) virkt=i; });
+    hnappar.forEach((b,i)=>{ if(i===virkt) b.setAttribute('aria-current','step'); else b.removeAttribute('aria-current'); });
+  };
+  addEventListener('scroll',()=>{ if(!bidur){bidur=true; requestAnimationFrame(merkja);} },{passive:true});
+  addEventListener('resize',merkja);
+  merkja();
+})();
 let resizeTimer=null;
 window.addEventListener('resize',()=>{
   clearTimeout(resizeTimer);
