@@ -12,11 +12,19 @@
   --hairline:#e3dac8; --baseline:#c9bda4; --grid:#ebe4d4;
   --accent:#1266c4; --accent-ink:#fff; --accent-soft:#e4edf9;
   --good:#0ca30c; --good-text:#046b0f; --bad:#d03b3b; --bad-text:#b32626;
-  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4; --s6:#008300;
+  /* Lánalitir. Mældir gegn spjaldbakgrunni #fffdf9 með WCAG 2.1 formúlunni:
+     allir yfir 3:1, sem er krafan um myndræna hluti sem bera merkingu
+     (1.4.11). Fyrri tónar mældust 2,13 til 4,87 og fjórir þeirra féllu.
+     --s6 var grænn og of líkur --s3 og --good, hann er nú indigó. */
+  --s1:#1f6bc7; --s2:#c2410c; --s3:#0f766e; --s4:#8a6300; --s5:#a83262; --s6:#4f46b5;
+  /* Hlýi guli tónninn á fræðslumolum, gulum svörum og fjármögnun án afborgana.
+     Hann var áður sami fasti og lánalitur --s4, svo ekki var hægt að dekkja
+     lánalitinn án þess að molarnir yrðu brúnir. */
+  --warn:#eda100;
   /* Verðtryggt og óverðtryggt fá eigin liti. Áður láðust lánalitirnir --s1 og
      --s3, svo sami litur táknaði bæði tiltekið lán og tiltekna lánategund.
      Tvö þrep af sama tón sýna að þetta eru tveir hlutar af einni heild. */
-  --ovtr:#5a4a9f; --vtr:#b3a6dd;
+  --ovtr:#5a4a9f; --vtr:#8d80c9;
   --shadow:0 1px 2px rgba(84,66,32,.06),0 6px 20px rgba(84,66,32,.09);
   color-scheme:light;
 }
@@ -27,8 +35,9 @@
     --hairline:#352f26; --baseline:#4c4436; --grid:#292319;
     --accent:#5aa2f0; --accent-ink:#161310; --accent-soft:#1e3048;
     --good:#0ca30c; --good-text:#4ecb5c; --bad:#e66767; --bad-text:#f09090;
-    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#00a300;
-  --ovtr:#a294e0; --vtr:#6a5cae;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#8b86e0;
+    --warn:#c98500;
+    --ovtr:#a294e0; --vtr:#6f61b8;
     --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 20px rgba(0,0,0,.3);
     color-scheme:dark;
   }
@@ -39,8 +48,9 @@
   --hairline:#352f26; --baseline:#4c4436; --grid:#292319;
   --accent:#5aa2f0; --accent-ink:#161310; --accent-soft:#1e3048;
   --good:#0ca30c; --good-text:#4ecb5c; --bad:#e66767; --bad-text:#f09090;
-  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#00a300;
-  --ovtr:#a294e0; --vtr:#6a5cae;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#8b86e0;
+  --warn:#c98500;
+  --ovtr:#a294e0; --vtr:#6f61b8;
   --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 20px rgba(0,0,0,.3);
   color-scheme:dark;
 }
@@ -145,7 +155,7 @@ h2{
 .svarid b{font-weight:700}
 .svarid.ok{background:color-mix(in srgb,var(--good) 7%,var(--surface)); border-color:color-mix(in srgb,var(--good) 32%,var(--hairline))}
 .svarid.bad{background:color-mix(in srgb,var(--bad) 7%,var(--surface)); border-color:color-mix(in srgb,var(--bad) 32%,var(--hairline))}
-.svarid.bidur{background:color-mix(in srgb,var(--s4) 11%,var(--surface)); border-color:color-mix(in srgb,var(--s4) 45%,var(--hairline))}
+.svarid.bidur{background:color-mix(in srgb,var(--warn) 11%,var(--surface)); border-color:color-mix(in srgb,var(--warn) 45%,var(--hairline))}
 .svarid.tomt{font-size:16px; color:var(--ink-2)}
 .nanar{margin-top:18px; border-top:1px solid var(--hairline); padding-top:8px}
 .nanar > summary{cursor:pointer; font-size:14px; font-weight:600; color:var(--accent); padding:8px 0; list-style-position:inside}
@@ -383,8 +393,8 @@ input.grunsamlegt{border-color:color-mix(in srgb,var(--bad) 55%,var(--hairline))
   background:var(--surface); border:1px solid var(--hairline); font-size:12.5px; color:var(--ink-2)}
 .didyou{
   margin-top:16px; padding:14px 17px; border-radius:10px;
-  background:color-mix(in srgb,var(--s4) 11%,var(--surface));
-  border:1px solid color-mix(in srgb,var(--s4) 40%,var(--hairline));
+  background:color-mix(in srgb,var(--warn) 11%,var(--surface));
+  border:1px solid color-mix(in srgb,var(--warn) 40%,var(--hairline));
   font-size:13.5px; line-height:1.55; color:var(--ink-2); max-width:75ch;
 }
 .didyou b{color:var(--ink)}
@@ -1597,6 +1607,8 @@ function renderEquity(S){
     host.appendChild(row);
   });
 }
+// Súlubútur sem ber merkingu, svo hann notar dekkri lánalitinn en ekki hlýja
+// tóninn sem er aðeins ætlaður bakgrunnum.
 const NOPAY_COLOR='color-mix(in srgb, var(--s4) 80%, var(--surface))';
 function renderNopay(S){
   const host=S.$('nopayList'); if(!host) return;
@@ -2029,30 +2041,35 @@ function scenTotals(S){
   t.costReal=t.paidReal-t.principal;   // raunkostnaður á verðlagi dagsins
   return t;
 }
+// Spjöldin báru áður fimm liti að ofan, tvo næstum eins bláa og tvo næstum
+// eins græna, og röðunin sagði ekkert. Þeir kepptu við litina sem bera
+// merkingu, lánalitina og dóminn, svo þeir eru nú hlutlausir. Litur situr
+// aðeins eftir þar sem hann segir eitthvað: grænt á sparnaði, rautt á
+// neikvæðum afgangi.
 function renderTiles(S){
   const t=scenTotals(S);
   const savedReal=t.basePaidReal-t.paidReal;
   let html=`
-    <div class="card tile" style="border-top:3px solid var(--s1)"><div class="eyebrow">Tekið að láni</div><div class="big">${kr(t.principal)}</div><div class="sub">${S.results.length} ${S.results.length===1?'lán':'lán samtals'}</div></div>`;
+    <div class="card tile" style="border-top:3px solid var(--hairline)"><div class="eyebrow">Tekið að láni</div><div class="big">${kr(t.principal)}</div><div class="sub">${S.results.length} ${S.results.length===1?'lán':'lán samtals'}</div></div>`;
   const mainV=S.priceBuy||S.priceAssess||0;
   const rentV=S.priceRentalMarket||S.priceRentalAssess||0;
   if(S.hasLtv&&(mainV>0||rentV>0)){
     const totalV=mainV+rentV;
     const equity=totalV-principalOn(S,'fasteign')-principalOn(S,'leigueign');
     const parts=[mainV>0?'aðalhúsnæði '+kr(mainV):'',rentV>0?'útleigueign '+kr(rentV):''].filter(Boolean).join(' · ');
-    html+=`<div class="card tile" style="border-top:3px solid var(--accent)"><div class="eyebrow">Verðmæti eignanna</div><div class="big">${kr(totalV)}</div><div class="sub">${parts}. Eigið fé í eignunum um ${kr(equity)} þegar fasteignalánin eru dregin frá</div></div>`;
+    html+=`<div class="card tile" style="border-top:3px solid var(--hairline)"><div class="eyebrow">Verðmæti eignanna</div><div class="big">${kr(totalV)}</div><div class="sub">${parts}. Eigið fé í eignunum um ${kr(equity)} þegar fasteignalánin eru dregin frá</div></div>`;
   }
   // Aukagreiðslan er inni í t.first, svo talan hækkar þegar notandinn setur hana
   // inn. Það lítur út eins og lánið hafi hækkað, svo hún er sundurliðuð.
   const auka=S.results.reduce((a,r)=>a+(r.loan.extraMonthly||0),0);
   html+=`
-    <div class="card tile" style="border-top:3px solid var(--s3)"><div class="eyebrow">Greiðslan á mánuði</div><div class="big">${kr(t.first)}</div><div class="sub">${auka>0
+    <div class="card tile" style="border-top:3px solid var(--hairline)"><div class="eyebrow">Greiðslan á mánuði</div><div class="big">${kr(t.first)}</div><div class="sub">${auka>0
       ?`afborgun af lánunum ${kr(t.first-auka)} og aukagreiðsla ${kr(auka)} sem þú ræður sjálf(ur)`
       :'fyrsta greiðsla allra lána'}</div></div>`;
   const nr=netRent(S), off=incomeOffset(S);
   if(off>0){
     const offLabel=nr>0&&S.otherIncome>0?'leigu- og aukatekjur':nr>0?'leigutekjur':'aukatekjur';
-    html+=`<div class="card tile" style="border-top:3px solid var(--s5)"><div class="eyebrow">Greiðslan eftir ${offLabel}</div><div class="big">${kr(Math.max(0,t.first-off))}</div><div class="sub">${off>=t.first?kr(off)+' á mánuði standa undir allri greiðslunni og gott betur':kr(off)+' nettó á mánuði dragast frá'}</div></div>`;
+    html+=`<div class="card tile" style="border-top:3px solid var(--hairline)"><div class="eyebrow">Greiðslan eftir ${offLabel}</div><div class="big">${kr(Math.max(0,t.first-off))}</div><div class="sub">${off>=t.first?kr(off)+' á mánuði standa undir allri greiðslunni og gott betur':kr(off)+' nettó á mánuði dragast frá'}</div></div>`;
   }
   const totalIncome=S.income1+S.income2+off;
   const fx=fixedTotal(S);
@@ -2061,12 +2078,12 @@ function renderTiles(S){
     // líka, svo talan hér stangist ekki á við greiðslumatsspjaldið.
     const framf=S.hasGm?framfOf(S)[7]:0, rek=S.hasGm?runningTotal(S):0, kg=S.hasGm?kgOf(S):0;
     const left=totalIncome-t.first-fx-framf-rek-kg;
-    html+=`<div class="card tile" style="border-top:3px solid var(--s6)"><div class="eyebrow">Afgangur ${S.hasGm?'þegar allt er dregið frá':'eftir greiðslu lána'}</div><div class="big"${left<0?' style="color:var(--bad-text)"':''}>${kr(left)}</div><div class="sub">${S.hasGm
+    html+=`<div class="card tile" style="border-top:3px solid var(--hairline)"><div class="eyebrow">Afgangur ${S.hasGm?'þegar allt er dregið frá':'eftir greiðslu lána'}</div><div class="big"${left<0?' style="color:var(--bad-text)"':''}>${kr(left)}</div><div class="sub">${S.hasGm
       ?`af ${kr(totalIncome)} heildartekjum, eftir greiðslur allra lána${fx>0?', fastar skuldbindingar':''}, framfærslu heimilisins (${kr(framf)})${rek>0?', rekstur eignarinnar ('+kr(rek)+')':''}${kg>0?' og leikskólagjöld ('+kr(kg)+')':''}`
       :`af ${kr(totalIncome)} heildartekjum á mánuði, eftir greiðslur allra lána${fx>0?' og '+kr(fx)+' í fastar skuldbindingar':''}. <b>Framfærsla heimilisins og rekstur eignarinnar eru ekki dregin frá</b>, hakaðu við „bráðabirgðagreiðslumat“ í skrefi 1 til að fá raunhæfari tölu`}</div></div>`;
   }
   html+=`
-    <div class="card tile" style="border-top:3px solid var(--s2)"><div class="eyebrow">Raunkostnaðurinn</div><div class="big">${kr(t.costReal)}</div><div class="sub">það sem lánin kosta umfram lánsupphæðina, á verðlagi dagsins í dag</div></div>`;
+    <div class="card tile" style="border-top:3px solid var(--hairline)"><div class="eyebrow">Raunkostnaðurinn</div><div class="big">${kr(t.costReal)}</div><div class="sub">það sem lánin kosta umfram lánsupphæðina, á verðlagi dagsins í dag</div></div>`;
   if(savedReal>1){
     html+=`<div class="card tile" style="border-top:3px solid var(--good)"><div class="eyebrow">Aukagreiðslur spara</div><div class="big" style="color:var(--good-text)">${kr(savedReal)}</div><div class="sub">á verðlagi dagsins og stytta lánstímann um ${yearsMonths(t.basePayoff-t.payoff)}</div></div>`;
   }
