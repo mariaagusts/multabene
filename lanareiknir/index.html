@@ -1978,7 +1978,11 @@ function renderLoanStats(S){
     merkjaVantar(card, loan, S);
     const r=S.results.find(x=>x.loan.id===loan.id);
     if(!r){
-      card.querySelector('[data-stats]').innerHTML='<div style="grid-column:1/-1;color:var(--muted);font-size:12.5px">Settu inn höfuðstól og lánstíma til að sjá útreikninginn.</div>';
+      // Vextir eru líka skilyrði fyrir útreikningi, svo textinn á að nefna
+      // nákvæmlega þá reiti sem standa á, ekki alltaf sömu tvo.
+      const v=[!loan.principal?'höfuðstól':'', !loan.rate?'vexti':'', !loan.years?'lánstíma':''].filter(Boolean);
+      const talin=v.length<2?v.join(''):v.slice(0,-1).join(', ')+' og '+v[v.length-1];
+      card.querySelector('[data-stats]').innerHTML=`<div style="grid-column:1/-1;color:var(--muted);font-size:12.5px">Settu inn ${talin} til að sjá útreikninginn.</div>`;
       return;
     }
     card.querySelector('[data-stats]').innerHTML=`
