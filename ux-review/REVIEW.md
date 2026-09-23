@@ -224,7 +224,7 @@ BYRJUN  Hvað viltu gera?   (þrír stórir hnappar, ekkert annað á skjánum)
         └─ Ég vil bera saman tvo kosti
 
 
-LEIÐ 1 — ÉG ER AÐ KAUPA
+LEIÐ 1: ÉG ER AÐ KAUPA
   1  Eignin            kaupverð, fasteignamat
   2  Peningarnir mínir eigið fé (margar línur), hlutdeildarlán, kostnaður við kaupin
   3  Heimilið          laun, fjöldi í heimili, leikskólagjöld, rekstur eignarinnar
@@ -235,7 +235,7 @@ LEIÐ 1 — ÉG ER AÐ KAUPA
   4  Lánið             tillaga þegar útfyllt, notandi lagar að sínum kjörum
   5  Nánar             35%, veðhlutfall, greiðslumat, línurit, tafla
 
-LEIÐ 2 — ÉG ER MEÐ LÁN
+LEIÐ 2: ÉG ER MEÐ LÁN
   1  Lánið mitt        höfuðstóll, vextir, lánstími, tegund
      ─────────────────────────────────────────────────────────────
      SVAR              „Þú borgar 157.335 kr. á mánuði og lánið kostar þig
@@ -246,7 +246,7 @@ LEIÐ 2 — ÉG ER MEÐ LÁN
   3  Launin mín        valfrjálst, opnar afgang og greiðslumat
   4  Nánar             línurit, tafla
 
-LEIÐ 3 — BERA SAMAN
+LEIÐ 3: BERA SAMAN
   Tvö dæmi hlið við hlið frá byrjun, ekki afrit af öðru.
   Við tegundarskipti: vextir stilltir sjálfkrafa og sagt frá því.
 
@@ -332,7 +332,7 @@ Að auki: **hækka `.hint` og `.eyebrow` úr 11 og 11,5px í 12,5px.** Ellefu pi
 
 Mælitextarnir tveir fóru í 12px en ekki 12,5px, því merkið situr í föstu plássi yfir mælinum. Staðfest eftir breytingu: engin lárétt yfirflæði í 375px, merkið á mælinum helst innan hans, og sömu fjórar spjaldafyrirsagnir brotna í tvær línur í síma og gerðu áður, svo breytingin bætti engu við.
 
-Eftir stendur að fjórar fyrirsagnir eru of langar til að rúmast á einni línu í síma, t.d. „HEIMILIÐ OG REKSTUR EIGNARINNAR — FYRIR GREIÐSLUMATIÐ". Langur hástafatexti er torlesinn óháð stærð. Það er textabreyting, ekki útlitsbreyting.
+Eftir stendur að fjórar fyrirsagnir eru of langar til að rúmast á einni línu í síma, t.d. „HEIMILIÐ OG REKSTUR EIGNARINNAR, FYRIR GREIÐSLUMATIÐ". Langur hástafatexti er torlesinn óháð stærð. Það er textabreyting, ekki útlitsbreyting.
 
 ### Merking litanna
 
