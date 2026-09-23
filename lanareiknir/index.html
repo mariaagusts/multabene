@@ -107,6 +107,18 @@ h2{
   .skrefastika button[aria-current="step"]{padding-right:13px}
 }
 .vistun-nota{font-size:12.5px; color:var(--muted); max-width:44ch; line-height:1.35}
+/* Valkostirnir voru inni í reitagrindinni og litu út eins og innsláttarreitir.
+   Nú eru þeir sér, á eftir því sem allir þurfa að fylla út. */
+/* Fræðslumoli við reitinn sem hann skýrir, í stað þess að vera neðst á síðunni */
+.moli{margin-top:7px; font-size:12.5px; line-height:1.45; color:var(--ink-2)}
+.moli > summary{cursor:pointer; color:var(--accent); font-weight:600; list-style-position:inside}
+.moli[open]{padding:8px 11px; border-radius:7px; background:var(--accent-soft)}
+.moli[open] > summary{margin-bottom:5px}
+.valkostir-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:10px 22px}
+.valkostir-grid .check{margin:0; align-items:flex-start}
+.valkostir-grid .check:first-child{grid-column:1/-1; padding:10px 12px; border-radius:9px;
+  background:var(--accent-soft); border:1px solid color-mix(in srgb,var(--accent) 22%,transparent)}
+@media (max-width:760px){ .valkostir-grid{grid-template-columns:1fr} }
 .svarid{
   font-family:"Bricolage Grotesque",system-ui,sans-serif; font-size:23px; line-height:1.35;
   font-weight:500; color:var(--ink); margin:0 0 18px; padding:18px 22px;
@@ -506,16 +518,12 @@ footer a{color:var(--ink-2)}
     <h2 style="margin-top:44px">Vissir þú? Fræðslumolar</h2>
     <p class="sec-sub">Nokkur atriði um lán sem koma mörgum á óvart. Flest þeirra geturðu prófað sjálf/ur í reiknivélinni hér að ofan.</p>
     <div class="dy-grid">
-      <div class="didyou"><span class="dy-title">Jafnar greiðslur eða jafnar afborganir?</span>
-        Lán með jöfnum afborgunum byrjar með hærri greiðslu sem lækkar svo jafnt og þétt og heildarvextirnir verða talsvert lægri, því höfuðstóllinn lækkar hraðar frá fyrsta degi. Jafnar greiðslur (annuitet) gefa léttari byrjun en kosta meira þegar upp er staðið. Prófaðu að skipta í valmyndinni á lánakorti og berðu saman raunkostnaðinn.</div>
       <div class="didyou"><span class="dy-title">Ekki bera nafnvexti saman við raunvexti</span>
         8% óverðtryggðir vextir eru ekki tvöfalt dýrari en 4% verðtryggðir, verðbæturnar leggjast ofan á verðtryggða lánið. Gróf þumalputtaregla: raunvextir óverðtryggðs láns ≈ nafnvextir mínus verðbólga. Við 5% verðbólgu jafngilda 9% nafnvextir því um 4% raunvöxtum.</div>
       <div class="didyou"><span class="dy-title">Eitt prósentustig skiptir hundruðum þúsunda</span>
         Á 40 m.kr. láni þýðir eitt prósentustig í hærri vöxtum um 400.000 kr. á ári í upphafi lánstímans. Það borgar sig að bera saman kjör milli lánveitenda og að endursemja þegar vextir lækka.</div>
       <div class="didyou"><span class="dy-title">„Fastir“ vextir eru sjaldnast fastir út lánstímann</span>
         Óverðtryggð lán bera oft fasta vexti í 3–5 ár í senn; að þeim tíma liðnum endurskoðast þeir miðað við markaðinn og greiðslan getur tekið stökk. Prófaðu í dæmi B hvað gerist við hærri vexti, það er álagsprófið sem margir sleppa.</div>
-      <div class="didyou"><span class="dy-title">Stytta lánstímann eða lækka greiðsluna?</span>
-        Sama aukagreiðslan sparar mun meira ef hún styttir lánstímann. Ástæðan: þegar greiðslan lækkar í staðinn skilar ávinningurinn sér jafnóðum til baka til þín sem lægri mánaðargreiðsla, þú leggur þá í raun minna inn á lánið í hverjum mánuði og höfuðstóllinn lækkar hægar. „Stytta“ tryggir að hver einasta aukakróna endi í höfuðstólnum. Valmyndin „Aukagreiðslur eiga að …“ á lánakortinu leyfir þér að bera þetta saman.</div>
       <div class="didyou"><span class="dy-title">Eignamyndun er hæg í byrjun</span>
         Fyrstu árin fer stór hluti greiðslunnar í vexti og verðbætur en aðeins lítill hluti í að lækka höfuðstólinn. En hver króna sem þú greiðir aukalega fer beint í höfuðstólinn og flýtir eignamynduninni frá fyrsta degi, aukagreiðslur bíta einmitt fastast fyrstu árin, meðan höfuðstóllinn er hæstur. Flipinn „Skuldin (á verðlagi dagsins í dag)“ sýnir raunverulegu eignamyndunina og hvers vegna hún tekur við sér seinni hluta lánstímans.</div>
       <div class="didyou"><span class="dy-title">Fyrstu kaupendur fá rýmri mörk</span>
@@ -904,11 +912,17 @@ function scenarioShell(S, title, removable){
             <button type="button" class="preset" data-p="2.5" title="Verðbólgumarkmið Seðlabankans">Markmið SBÍ · 2,5%</button>
           </div>
           <div class="hint">Veldu viðmið eða skrifaðu eigin tölu. Viðmiðin eru reiknuð úr vísitölu neysluverðs Hagstofunnar, m.v. mitt ár 2026.</div></div>
-        <div class="field"><label class="check"><input type="checkbox" data-r="firstBuyer"${S.firstBuyer?' checked':''}><span>Við erum að kaupa fyrstu eign<br><small style="color:var(--muted)">Þá má greiðslubyrðin fara í 40% í stað 35%</small></span></label>
-        <label class="check"><input type="checkbox" data-r="hasRentals"${S.hasRentals?' checked':''}><span>Ég er með útleiguíbúð í húsinu<br><small style="color:var(--muted)">Opnar reit fyrir leigutekjur</small></span></label>
-        <label class="check"><input type="checkbox" data-r="hasFixed"${S.hasFixed?' checked':''}><span>Við erum með fastar mánaðarlegar skuldbindingar<br><small style="color:var(--muted)">T.d. meðlag eða rekstrarleigu bíls</small></span></label>
-        <label class="check"><input type="checkbox" data-r="hasLtv"${S.hasLtv?' checked':''}><span>Ég er að kaupa eign eða á eign nú þegar<br><small style="color:var(--muted)">Opnar reiti fyrir kaupverð og eigið fé, og sýnir hvort þetta nái upp í kaupverðið</small></span></label>
-        <label class="check"><input type="checkbox" data-r="hasGm"${S.hasGm?' checked':''}><span>Reikna bráðabirgðagreiðslumat<br><small style="color:var(--muted)">Dregur framfærslu heimilisins og rekstur eignarinnar frá, eins og bankinn gerir</small></span></label></div>
+      </div>
+      <div class="card valkostir" style="margin-top:14px; padding:16px 18px">
+        <div class="eyebrow" style="margin-bottom:4px">Á eitthvað af þessu við þig?</div>
+        <p class="hint" style="margin:0 0 12px; max-width:75ch">Hakaðu við það sem á við. Hver liður opnar reiti hér fyrir neðan. Sé ekkert hakað reiknar vélin einfaldlega greiðslubyrðina af lánunum þínum.</p>
+        <div class="valkostir-grid">
+          <label class="check"><input type="checkbox" data-r="hasLtv"${S.hasLtv?' checked':''}><span>Ég er að kaupa eign eða á eign nú þegar<br><small style="color:var(--muted)">Opnar reiti fyrir kaupverð og eigið fé, og segir hvað þú kemst hæst í verði</small></span></label>
+          <label class="check"><input type="checkbox" data-r="firstBuyer"${S.firstBuyer?' checked':''}><span>Við erum að kaupa fyrstu eign<br><small style="color:var(--muted)">Þá má greiðslubyrðin fara í 40% í stað 35%, og veðhlutfallið í 90% í stað 80%</small></span></label>
+          <label class="check"><input type="checkbox" data-r="hasGm"${S.hasGm?' checked':''}><span>Reikna bráðabirgðagreiðslumat<br><small style="color:var(--muted)">Dregur framfærslu heimilisins og rekstur eignarinnar frá, eins og bankinn gerir</small></span></label>
+          <label class="check"><input type="checkbox" data-r="hasFixed"${S.hasFixed?' checked':''}><span>Við erum með fastar mánaðarlegar skuldbindingar<br><small style="color:var(--muted)">T.d. meðlag eða rekstrarleigu bíls</small></span></label>
+          <label class="check"><input type="checkbox" data-r="hasRentals"${S.hasRentals?' checked':''}><span>Ég er með útleiguíbúð í húsinu<br><small style="color:var(--muted)">Opnar reit fyrir leigutekjur</small></span></label>
+        </div>
       </div>
       <div class="card" style="margin-top:14px; padding:16px 18px" data-r="rentwrap"${S.hasRentals?'':' hidden'}>
         <div class="eyebrow" style="margin-bottom:4px">Leigutekjur (valfrjálst)</div>
@@ -1714,7 +1728,8 @@ function renderLoans(S){
           <select data-f="paymentType">
             <option value="annuitet"${loan.paymentType==='annuitet'?' selected':''}>Jafnar greiðslur</option>
             <option value="jafnar"${loan.paymentType==='jafnar'?' selected':''}>Jafnar afborganir</option>
-          </select></div>
+          </select>
+          ${i===0?`<details class="moli"><summary>Hvort á ég að velja?</summary>Jafnar greiðslur gefa sömu tölu út allan tímann og léttari byrjun. Jafnar afborganir byrja hærra en lækka jafnt og þétt, og heildarvextirnir verða talsvert lægri því höfuðstóllinn lækkar hraðar frá fyrsta degi.</details>`:''}</div>
         <div class="field"><label>Höfuðstóll / eftirstöðvar <span class="req">*</span></label>
           <div class="inputrow"><input type="text" class="required" inputmode="numeric" data-f="principal" value="${loan.principal?nf.format(loan.principal):''}" placeholder="t.d. 30.000.000"><span class="unit">kr.</span></div>
           <div class="hint">Fyrir eldra lán: núverandi eftirstöðvar og árin sem eftir eru.</div></div>
@@ -1735,7 +1750,8 @@ function renderLoans(S){
           <select data-f="extraMode">
             <option value="stytta"${loan.extraMode==='stytta'?' selected':''}>stytta lánstímann (greiðslan helst)</option>
             <option value="laekka"${loan.extraMode==='laekka'?' selected':''}>lækka greiðsluna (lánstíminn helst)</option>
-          </select></div>
+          </select>
+          ${i===0?`<details class="moli"><summary>Hvort borgar sig?</summary>Sama aukagreiðslan sparar mun meira ef hún styttir lánstímann. Lækki greiðslan í staðinn skilar ávinningurinn sér jafnóðum til baka sem lægri mánaðargreiðsla, svo þú leggur í raun minna inn á lánið í hverjum mánuði og höfuðstóllinn lækkar hægar.</details>`:''}</div>
         <div class="field full"><label>Flokkur láns</label>
           <select data-f="cat" title="Flokkurinn ræður tvennu: hvort lánið telst í 35%-viðmiði Seðlabankans (öll fasteignalán þín gera það, líka á útleigueign) og á hvaða veðrými það hvílir: aðalhúsnæði, útleigueign eða lánsveði annarra. Lán utan viðmiðsins telja samt með í mánaðarlegri greiðslubyrði og afganginum af launum.">
             ${Object.entries(LOAN_CATS).map(([k,v])=>`<option value="${k}"${k===catOf(loan)?' selected':''}>${v}</option>`).join('')}

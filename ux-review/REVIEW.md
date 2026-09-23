@@ -261,6 +261,14 @@ NEÐST
   Fróðleikur, 3 til 4 molar.  Hvernig er reiknað (samanbrotið).  Heimildir.
 ```
 
+> **Hvað var innleitt af þessu.** Ekki tvær aðskildar leiðir, heldur léttari útgáfa sem nær meginhluta ávinningsins:
+>
+> * **Skref 1 var klofið í tvennt.** Fyrst kemur það sem allir þurfa, laun og verðbólga. Á eftir því kemur sér kassi, „Á eitthvað af þessu við þig?", með fimm valkostum. Áður lágu þeir inni í reitagrindinni sjálfri og litu út eins og innsláttarreitir. Kaupspurningin er efst í þeim kassa og sjónrænt aðgreind, enda stýrir hún mestu.
+> * **Föst skrefastika** efst sem fylgir skruni, merkir virka skrefið og er smellanleg, auk „næsta skref" hnapps neðst í hverju skrefi. Það leysir leiðsagnarvandann (7 og 12) sem var hluti af sömu rót.
+> * **Tveir fræðslumolar fluttir að reitunum** sem þeir skýra: valið milli jafnra greiðslna og jafnra afborgana, og valið milli þess að stytta lánstímann eða lækka greiðsluna. Þeir birtast aðeins á fyrsta lánakortinu, svo þeir tvítakist ekki þegar lánin eru mörg, og eru samanbrotnir.
+>
+> **Það sem var EKKI gert:** hinir ellefu fræðslumolarnir eru enn í kafla neðst, og reiknivélin hefur áfram eina leið en ekki þrjár. Tvær aðskildar leiðir hefðu tvöfaldað það sem þarf að viðhalda og prófa, fyrir hóp sem er nú þegar kominn fram hjá stærstu hindruninni. Molarnir sem eftir eru skýra atriði sem eiga ekki einn ákveðinn reit, svo sem eignamyndun og fasta vexti, og eiga því betur heima í samfelldum kafla.
+
 **Rökstuðningur fyrir helstu breytingum:**
 
 * **„Ertu að kaupa?" fremst.** Í dag er þetta fjórða hakið í dálki neðan við fyrstu skjáfyllingu. Það ákveður hvort fimm kassar og þrjú niðurstöðuspjöld birtast. Spurning sem stýrir svo miklu á að vera spurð fyrst, ekki falin.
