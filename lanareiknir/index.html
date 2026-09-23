@@ -74,6 +74,15 @@ h2{
   padding:8px 16px 8px 9px; border-radius:99px;
 }
 .howto .step-num{width:24px; height:24px; font-size:12.5px; margin:0}
+.kaup-cta{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-top:18px}
+.kaup-cta b{color:var(--ink)}
+.kaup-cta button{
+  font:inherit; font-size:14px; font-weight:600; cursor:pointer;
+  padding:9px 18px; border-radius:99px; border:1px solid transparent;
+  background:var(--accent); color:var(--accent-ink);
+}
+.kaup-cta button:hover{filter:brightness(1.08)}
+.kaup-cta button:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
 .plain-summary{font-size:15px; color:var(--ink-2); margin:0 0 14px; max-width:70ch}
 .plain-summary b{color:var(--ink); font-variant-numeric:tabular-nums}
 .card{background:var(--surface); border:1px solid var(--hairline); border-radius:10px; box-shadow:var(--shadow)}
@@ -393,6 +402,7 @@ footer a{color:var(--ink-2)}
   .loan-del{min-width:44px; min-height:44px; font-size:20px}
   label.check input[type="checkbox"]{width:24px; height:24px}
   .loan-head input[data-f="name"]{min-height:44px}
+  .kaup-cta button{min-height:44px}
 }
 @media (prefers-reduced-motion: reduce){ *{transition:none !important} }
 </style>
@@ -402,13 +412,14 @@ footer a{color:var(--ink-2)}
 <div class="wrap">
   <header class="masthead">
     <h1>Ræð ég við lánið?</h1>
-    <p>Hér geturðu séð, án þess að kunna neitt í lánafræðum, hvað lánin þín kosta á mánuði, hvernig þau þróast og hvort þau standist 35%&nbsp;reglu Seðlabankans um greiðslubyrði fasteignalána.</p>
+    <p>Hér sérðu, án þess að kunna neitt í lánafræðum, hvað lánin þín kosta, hvort þú ráðir við þau og hvað þú kemst hæst í verði þegar þú kaupir.</p>
     <div class="howto">
-      <div><span class="step-num">1</span>Settu inn launin og verðbólguna</div>
-      <div><span class="step-num">2</span>Skráðu lánin þín</div>
-      <div><span class="step-num">3</span>Sjáðu hvort þú ræður við þau</div>
+      <div><span class="step-num">1</span>Launin og heimilið</div>
+      <div><span class="step-num">2</span>Lánin þín</div>
+      <div><span class="step-num">3</span>Niðurstaðan</div>
+      <div><span class="step-num">4</span>Þróunin</div>
     </div>
-    <p>Ertu að kaupa? Hakaðu við „Ég er að kaupa eign“ í skrefi 1 og settu inn kaupverðið og eigið fé. Þá sérðu í súluriti hvort eigið fé og lánin nái upp í kaupverðið, eða hvað vantar upp á.</p>
+    <p class="kaup-cta"><b>Ertu að kaupa eða langar að vita hvað þú getur keypt?</b> <button type="button" id="kaupStart">Byrja á því</button></p>
   </header>
 
   <div id="scenarioA"></div>
@@ -804,7 +815,7 @@ function scenarioShell(S, title, removable){
     </div>
     <section>
       <div class="step-head"><span class="step-num">1</span><div>
-        <h2 style="font-size:18px">Launin og verðbólgan</h2>
+        <h2 style="font-size:18px">Launin og heimilið</h2>
         <p class="sec-sub">Byrjaðu hér: hvað fáið þið útborgað á mánuði og hvað heldurðu að verðbólgan verði næstu árin?</p>
       </div></div>
       <div class="card assumptions">
@@ -2352,6 +2363,15 @@ document.getElementById('addScenarioB').addEventListener('click',()=>{
   document.getElementById('compareSec').hidden=false;
   renderCompare(); saveState();
   document.getElementById('scenarioB').scrollIntoView({behavior:'smooth',block:'start'});
+});
+// „Byrja á því" gerir sjálft það sem notandinn þurfti áður að lesa sig til um:
+// kveikir á kaupkaflanum og fer með hann beint í kaupverðsreitinn.
+document.getElementById('kaupStart').addEventListener('click',()=>{
+  const hak=A.$('hasLtv');
+  if(!hak.checked){ hak.checked=true; hak.dispatchEvent(new Event('change',{bubbles:true})); }
+  const reitur=A.$('priceBuy');
+  A.$('ltvwrap').scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(()=>reitur.focus({preventScroll:true}),400);
 });
 let resizeTimer=null;
 window.addEventListener('resize',()=>{
