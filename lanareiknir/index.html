@@ -186,6 +186,9 @@ input.hafnad{animation:hafnad-blikk 1.4s ease-out}
 .scenario{border-top:2px solid var(--hairline); margin-top:44px; padding-top:6px}
 .scenario-head{display:flex; align-items:center; gap:12px; margin-top:22px; flex-wrap:wrap}
 .scenario-head .btns{margin-left:auto; display:flex; gap:8px; flex-wrap:wrap; position:relative; align-items:center}
+.husverk{margin-top:26px; padding-top:18px; border-top:1px solid var(--hairline)}
+.husverk .btns{display:flex; gap:8px; flex-wrap:wrap; position:relative; align-items:center}
+.husverk .vistun-nota{margin:10px 0 0}
 .help-dot{
   width:25px; height:25px; border-radius:50%; flex:none;
   border:1px solid var(--hairline); background:var(--surface); color:var(--ink-2);
@@ -930,6 +933,29 @@ const buyReach=S=>{
   return ownFunds(S)+(S.priceBuy||0)*ltvCap(S)/100+utan;
 };
 
+// Húsverkin: deila, vista, opna og hreinsa. Þau stóðu efst, fyrir ofan fyrsta
+// innsláttarreit, svo fyrsta skjáfyllingin í síma fór í fjóra hnappa sem
+// enginn þarf fyrr en eitthvað hefur verið slegið inn, og einn þeirra heitir
+// „Hreinsa allt". Þau eiga heima neðst, þegar dæmið er tilbúið.
+const husverkBlokk=()=>`
+    <div class="husverk">
+      <div class="eyebrow" style="margin-bottom:8px">Vista, deila eða byrja upp á nýtt</div>
+      <div class="btns">
+        <button class="scenario-remove" data-r="share" title="Afritar hlekk með öllum forsendunum, opnaðu hann á annarri tölvu og allt birtist þar">Deila hlekk</button>
+        <button class="scenario-remove" data-r="export" title="Vistar allar forsendurnar í litla .json-skrá">Vista afrit</button>
+        <button class="scenario-remove" data-r="import" title="Les inn .json-afrit sem var vistað áður">Opna afrit</button>
+        <input type="file" data-r="importFile" accept=".json,application/json" hidden>
+        <button class="scenario-remove" data-r="reset" title="Núllstilla reiknivélina og byrja upp á nýtt">Hreinsa allt</button>
+        <button class="help-dot" data-r="btnhelp" aria-label="Hvernig virka þessir hnappar?" title="Hvernig virka þessir hnappar?">?</button>
+        <div class="help-pop" data-r="btnpop" hidden>
+          <p><b>Deila hlekk</b> pakkar öllum forsendunum þínum saman í slóðina sjálfa og afritar hana. Sendu hlekkinn (t.d. í tölvupósti eða skilaboðum) og reiknivélin opnast nákvæmlega eins hjá viðtakandanum, ekkert vistast á netinu, gögnin ferðast bara í hlekknum. Hlekkurinn er skyndimynd: breytingar sem þú gerir eftir á fylgja ekki með.</p>
+          <p><b>Vista afrit</b> hleður lítilli skrá niður á tölvuna þína með öllum forsendunum, og <b>Opna afrit</b> les hana inn aftur, gott til að geyma stöðuna eða flytja hana milli tölva.</p>
+          <p><b>Hreinsa allt</b> núllstillir reiknivélina svo hægt sé að byrja upp á nýtt.</p>
+        </div>
+      </div>
+      <p class="vistun-nota">Það sem þú slærð inn geymist í þessum vafra þótt þú lokir síðunni. Ekkert fer á netið.</p>
+    </div>`;
+
 function scenarioShell(S, title, removable){
   return `
   <div class="scenario">
@@ -937,20 +963,7 @@ function scenarioShell(S, title, removable){
       <span class="scenario-tag"><span class="daemi-dot" style="background:var(--s${S.key==='B'?2:1})"></span>Dæmi ${S.key}</span><h2>${title}</h2>
       ${removable
         ?'<div class="btns"><button class="scenario-remove" data-r="remove">Fjarlægja dæmi B</button></div>'
-        :`<div class="btns">
-            <button class="scenario-remove" data-r="share" title="Afritar hlekk með öllum forsendunum, opnaðu hann á annarri tölvu og allt birtist þar">Deila hlekk</button>
-            <button class="scenario-remove" data-r="export" title="Vistar allar forsendurnar í litla .json-skrá">Vista afrit</button>
-            <button class="scenario-remove" data-r="import" title="Les inn .json-afrit sem var vistað áður">Opna afrit</button>
-            <input type="file" data-r="importFile" accept=".json,application/json" hidden>
-            <button class="scenario-remove" data-r="reset" title="Núllstilla reiknivélina og byrja upp á nýtt">Hreinsa allt</button>
-            <span class="vistun-nota">Það sem þú slærð inn geymist í þessum vafra þótt þú lokir síðunni. Ekkert fer á netið.</span>
-            <button class="help-dot" data-r="btnhelp" aria-label="Hvernig virka þessir hnappar?" title="Hvernig virka þessir hnappar?">?</button>
-            <div class="help-pop" data-r="btnpop" hidden>
-              <p><b>Deila hlekk</b> pakkar öllum forsendunum þínum saman í slóðina sjálfa og afritar hana. Sendu hlekkinn (t.d. í tölvupósti eða skilaboðum) og reiknivélin opnast nákvæmlega eins hjá viðtakandanum, ekkert vistast á netinu, gögnin ferðast bara í hlekknum. Hlekkurinn er skyndimynd: breytingar sem þú gerir eftir á fylgja ekki með.</p>
-              <p><b>Vista afrit</b> hleður lítilli skrá niður á tölvuna þína með öllum forsendunum, og <b>Opna afrit</b> les hana inn aftur, gott til að geyma stöðuna eða flytja hana milli tölva.</p>
-              <p><b>Hreinsa allt</b> núllstillir reiknivélina svo hægt sé að byrja upp á nýtt.</p>
-            </div>
-          </div>`}
+        :''}
     </div>
     <section data-skref="1">
       <div class="step-head"><span class="step-num">1</span><div>
@@ -1113,13 +1126,17 @@ function scenarioShell(S, title, removable){
       </div></div>
       <div class="svarid" data-r="svar" aria-live="polite"></div>
       <div class="card sbi-card" data-r="buycard" hidden style="margin-bottom:14px"></div>
+      <!-- Hausinn lofar því að síðan segi hvað þú kemst hæst í verði. Spjaldið
+           sat inni í lokaða fellilistanum "Sjá nánari útreikning", svo sá sem
+           kom gagngert til að sjá þá tölu fann hana ekki. Það felur sig sjálft
+           þegar kaupverð er ekki komið inn, svo það þvælist ekki fyrir hinum. -->
+      <div class="card sbi-card" data-r="maxcard" hidden style="margin-bottom:14px"></div>
       <div class="card sbi-card" data-r="sbi"></div>
       <div data-r="costwarn"></div>
       <div class="tiles" data-r="tiles" style="margin-top:14px"></div>
       <details class="nanar">
         <summary>Sjá nánari útreikning</summary>
         <p class="plain-summary" data-r="plain"></p>
-        <div class="card sbi-card" data-r="maxcard" hidden style="margin-bottom:14px"></div>
         <div class="card sbi-card" data-r="gmcard" hidden style="margin-bottom:14px"></div>
         <div class="card sbi-card" data-r="ltvcard" hidden style="margin-bottom:14px"></div>
         <div class="card" data-r="mix" hidden style="padding:18px 22px"></div>
@@ -1141,6 +1158,7 @@ function scenarioShell(S, title, removable){
       <button class="table-toggle" data-r="tableToggle" aria-expanded="false">Sýna árlega töflu</button>
       <div class="table-scroll" data-r="tableWrap" hidden></div>
     </section>`}
+    ${removable?'':husverkBlokk()}
   </div>`;
 }
 
