@@ -188,7 +188,10 @@ input.hafnad{animation:hafnad-blikk 1.4s ease-out}
 .plain-summary{font-size:15px; color:var(--ink-2); margin:0 0 14px; max-width:70ch}
 .plain-summary b{color:var(--ink); font-variant-numeric:tabular-nums}
 .card{background:var(--surface); border:1px solid var(--hairline); border-radius:10px; box-shadow:var(--shadow)}
-.eyebrow{font-size:12.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+/* Kaflaheitin runnu saman við textann í kössunum: grá, smá og með sama vægi
+   og hjálpartextinn fyrir neðan. Þau eru heiti og eiga að lesast sem slík. */
+.eyebrow{font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--ink); display:block; margin-bottom:6px}
 
 /* --- Dæmi (sviðsmyndir) --- */
 .scenario{border-top:2px solid var(--hairline); margin-top:44px; padding-top:6px}
