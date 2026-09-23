@@ -110,6 +110,17 @@ h2{
 /* Valkostirnir voru inni í reitagrindinni og litu út eins og innsláttarreitir.
    Nú eru þeir sér, á eftir því sem allir þurfa að fylla út. */
 /* Fræðslumoli við reitinn sem hann skýrir, í stað þess að vera neðst á síðunni */
+/* Lesefnið tók helming síðunnar. Nú er það samanbrotið en aðgengilegt. */
+.lesefni{margin-top:20px}
+.lesefni > summary{
+  cursor:pointer; list-style-position:inside; padding:12px 0;
+  font-family:"Bricolage Grotesque",system-ui,sans-serif; font-size:17px;
+  font-weight:600; color:var(--accent);
+}
+.lesefni > summary small{font-family:inherit; font-weight:400; font-size:14px; color:var(--muted)}
+.lesefni > summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.lesefni[open] > summary{margin-bottom:10px}
+.lesefni .h2-like{font-size:21px}
 .moli{margin-top:7px; font-size:12.5px; line-height:1.45; color:var(--ink-2)}
 .moli > summary{cursor:pointer; color:var(--accent); font-weight:600; list-style-position:inside}
 .moli[open]{padding:8px 11px; border-radius:7px; background:var(--accent-soft)}
@@ -127,6 +138,7 @@ h2{
 .svarid b{font-weight:700}
 .svarid.ok{background:color-mix(in srgb,var(--good) 7%,var(--surface)); border-color:color-mix(in srgb,var(--good) 32%,var(--hairline))}
 .svarid.bad{background:color-mix(in srgb,var(--bad) 7%,var(--surface)); border-color:color-mix(in srgb,var(--bad) 32%,var(--hairline))}
+.svarid.bidur{background:color-mix(in srgb,var(--s4) 11%,var(--surface)); border-color:color-mix(in srgb,var(--s4) 45%,var(--hairline))}
 .svarid.tomt{font-size:16px; color:var(--ink-2)}
 .nanar{margin-top:18px; border-top:1px solid var(--hairline); padding-top:8px}
 .nanar > summary{cursor:pointer; font-size:14px; font-weight:600; color:var(--accent); padding:8px 0; list-style-position:inside}
@@ -526,6 +538,10 @@ footer a{color:var(--ink-2)}
         Óverðtryggð lán bera oft fasta vexti í 3–5 ár í senn; að þeim tíma liðnum endurskoðast þeir miðað við markaðinn og greiðslan getur tekið stökk. Prófaðu í dæmi B hvað gerist við hærri vexti, það er álagsprófið sem margir sleppa.</div>
       <div class="didyou"><span class="dy-title">Eignamyndun er hæg í byrjun</span>
         Fyrstu árin fer stór hluti greiðslunnar í vexti og verðbætur en aðeins lítill hluti í að lækka höfuðstólinn. En hver króna sem þú greiðir aukalega fer beint í höfuðstólinn og flýtir eignamynduninni frá fyrsta degi, aukagreiðslur bíta einmitt fastast fyrstu árin, meðan höfuðstóllinn er hæstur. Flipinn „Skuldin (á verðlagi dagsins í dag)“ sýnir raunverulegu eignamyndunina og hvers vegna hún tekur við sér seinni hluta lánstímans.</div>
+    </div>
+    <details class="lesefni">
+      <summary>Sjá níu mola í viðbót <small>um lánstíma, eignamyndun, séreignarsparnað, greiðslumat og fleira</small></summary>
+      <div class="dy-grid">
       <div class="didyou"><span class="dy-title">Fyrstu kaupendur fá rýmri mörk</span>
         Við kaup á fyrstu eign má greiðslubyrðarhlutfallið fara í 40% í stað 35%, og veðsetningarhlutfallið í allt að 90% af kaupverði í stað 80% (frá október 2025). Hakaðu við „fyrstu eign“ í skrefi 1 til að reikna með 40% viðmiðinu.</div>
       <div class="didyou"><span class="dy-title">Lánstíminn er dýrasta stillingin</span>
@@ -545,10 +561,12 @@ footer a{color:var(--ink-2)}
       <div class="didyou"><span class="dy-title">Hvernig fer greiðslumatið sjálft fram?</span>
         Lánveitanda ber lagaskylda til að framkvæma greiðslumat áður en fasteignalán er veitt (lög nr. 118/2016 um fasteignalán til neytenda). Í grunninn er þetta einfalt bókhald: mánaðarlegar nettótekjur heimilisins, að frádregnum <b>framfærslukostnaði</b> miðað við fjölda heimilismanna, byggt á opinberum neysluviðmiðum og öllum <b>öðrum skuldbindingum</b> sem fyrir eru: afborganir af bílaláni, námsláni, yfirdrætti og raðgreiðslum, auk greiðslunnar af nýja láninu sjálfu. Standi jákvæður <b>afgangur</b> eftir að þetta er allt dregið frá er lánið samþykkt; sé afgangurinn neikvæður er upphæðin lækkuð, lánstíminn lengdur eða umsókninni hafnað. Þetta einstaklingsbundna mat getur því verið strangara en 35%-reglan hér að ofan, reglan setur aðeins þakið, greiðslumatið er raunverulega prófið sem ræður úrslitum hjá hverjum lánveitanda.</div>
     </div>
+    </details>
   </section>
 
   <section>
-    <h2 style="margin-top:44px">Hvernig er reiknað?</h2>
+    <details class="lesefni">
+      <summary><span class="h2-like">Hvernig er reiknað?</span> <small>forsendur, reglur og fyrirvarar</small></summary>
     <div class="card explain">
       <h3>Verðtryggð lán</h3>
       <p>Höfuðstóll verðtryggðs láns fylgir vísitölu neysluverðs: í hverjum mánuði hækkar hann um verðbólgu mánaðarins (verðbætur) áður en vextir og afborgun reiknast. Vextirnir eru raunvextir og reiknast af verðbættum höfuðstól. Greiðslan er því lægri í upphafi en af sambærilegu óverðtryggðu láni, en hún hækkar í takt við verðbólguna og fyrstu árin geta eftirstöðvar á nafnverði hækkað þrátt fyrir að greitt sé af láninu, því verðbæturnar eru hærri en afborgunin. Á föstu verðlagi lækkar skuldin þó frá fyrsta degi. Í jafngreiðsluláni (annuitet) er greiðslan fastur „raunkróna“-fjöldi sem verðbætist; í láni með jöfnum afborgunum greiðist höfuðstóllinn jafnt niður og greiðslubyrðin er hæst fyrst. Útreikningsaðferðin hér hefur verið sannreynd upp á krónu við talnadæmi Neytendastofu um þróun höfuðstóls verðtryggðra lána.</p>
@@ -567,6 +585,7 @@ footer a{color:var(--ink-2)}
       <h3>Fyrirvarar</h3>
       <p>Reiknivélin gerir ráð fyrir jafnri verðbólgu allan lánstímann, föstum vöxtum og engum lántöku- eða greiðslugjöldum. Vaxtabætur, sérstakur húsnæðisstuðningur og skattaáhrif eru ekki með. Niðurstöðurnar eru til glöggvunar og koma ekki í stað greiðslumats lánveitanda eða fjármálaráðgjafar.</p>
     </div>
+    </details>
     <footer>
       Heimildir: <a href="https://sedlabanki.is/fjarmalastodugleiki/thjodhagsvarud/lanthegaskilyrdi-fasteignalana/">Lánþegaskilyrði fasteignalána, Seðlabanki Íslands</a> ·
       <a href="https://island.is/stjornartidindi/nr/f2fc66b9-0dfd-44a6-b795-51117d37a095">Reglur nr. 1300/2025 um hámark greiðslubyrðar fasteignalána</a> ·
@@ -734,7 +753,7 @@ function newScenario(key){
   return {key, loans:[], rentals:[], hasRentals:false, rentInDsti:true, fixed:[], hasFixed:false,
     hasLtv:false, priceBuy:0, priceAssess:0, priceRentalMarket:0, priceRentalAssess:0,
     equity:[], nopay:[], salePrice:0, saleFeePct:1.5, buyCostMode:'auto', buyCost:0,
-    hasGm:false, adults:1, children:0, running:[], hasKindergarten:false, kindergarten:0,
+    hasGm:false, adults:1, children:0, running:[], hasKindergarten:false, kindergarten:0, erMedLan:false,
     nextId:1, currentView:'balance',
     inflation:5.3, income1:0, income2:0, otherIncome:0, firstBuyer:false,
     results:[], baseline:[], horizon:360, root:null};
@@ -920,6 +939,7 @@ function scenarioShell(S, title, removable){
           <label class="check"><input type="checkbox" data-r="hasLtv"${S.hasLtv?' checked':''}><span>Ég er að kaupa eign eða á eign nú þegar<br><small style="color:var(--muted)">Opnar reiti fyrir kaupverð og eigið fé, og segir hvað þú kemst hæst í verði</small></span></label>
           <label class="check"><input type="checkbox" data-r="firstBuyer"${S.firstBuyer?' checked':''}><span>Við erum að kaupa fyrstu eign<br><small style="color:var(--muted)">Þá má greiðslubyrðin fara í 40% í stað 35%, og veðhlutfallið í 90% í stað 80%</small></span></label>
           <label class="check"><input type="checkbox" data-r="hasGm"${S.hasGm?' checked':''}><span>Reikna bráðabirgðagreiðslumat<br><small style="color:var(--muted)">Dregur framfærslu heimilisins og rekstur eignarinnar frá, eins og bankinn gerir</small></span></label>
+          <label class="check"><input type="checkbox" data-r="erMedLan"${S.erMedLan?' checked':''}><span>Ég er þegar með þessi lán<br><small style="color:var(--muted)">Reglan hróflar ekki við lánum sem þú ert með, en hún ræður því hvort þú komist í endurfjármögnun</small></span></label>
           <label class="check"><input type="checkbox" data-r="hasFixed"${S.hasFixed?' checked':''}><span>Við erum með fastar mánaðarlegar skuldbindingar<br><small style="color:var(--muted)">T.d. meðlag eða rekstrarleigu bíls</small></span></label>
           <label class="check"><input type="checkbox" data-r="hasRentals"${S.hasRentals?' checked':''}><span>Ég er með útleiguíbúð í húsinu<br><small style="color:var(--muted)">Opnar reit fyrir leigutekjur</small></span></label>
         </div>
@@ -1117,6 +1137,7 @@ function mountScenario(S, hostId, title, removable){
     if(S.hasLtv&&!S.equity.length){S.equity.push({id:S.nextId++,name:'Sparnaður',amount:0});renderEquity(S);}
     recalc(S);
   });
+  S.$('erMedLan').addEventListener('change',e=>{S.erMedLan=e.target.checked;recalc(S);});
   S.$('hasGm').addEventListener('change',e=>{
     S.hasGm=e.target.checked;
     S.$('gmwrap').hidden=!S.hasGm;
@@ -1362,10 +1383,18 @@ function renderSvar(S){
   let svar, tonn;
   if(ratio===null){
     tonn=''; svar=`Greiðslan af lánunum er <b>${kr(t.first)}</b> á mánuði. Settu inn launin í skrefi 1 til að sjá hvort þú ráðir við hana.`;
+  }else if(!stenst&&S.erMedLan){
+    // Reglan gildir um ný lán. Sá sem á lánin þegar er ekki að falla á neinu
+    // prófi, en hann kemst ekki í endurfjármögnun á meðan hlutfallið er hátt.
+    tonn='bidur'; svar=`Greiðslubyrðin er <b>${pct(ratio)}</b> af laununum, yfir ${cap}%-marki Seðlabankans. Lánin sem þú ert með standa óhögguð og þú greiðir af þeim eins og venjulega, en á meðan kemstu hvorki í endurfjármögnun né nýtt fasteignalán.`;
   }else if(!stenst){
     tonn='bad'; svar=`<b>Nei.</b> Greiðslubyrðin er ${pct(ratio)} af laununum og fer yfir ${cap}%-mark Seðlabankans, svo þessi lán fást ekki eins og þau standa.`;
   }else if(gmAfgangur!==null&&gmAfgangur<0){
     tonn='bad'; svar=`<b>Varla.</b> Lánin rúmast innan ${cap}%-marksins, en þegar framfærsla heimilisins er dregin frá vantar <b>${kr(-gmAfgangur)}</b> upp á í hverjum mánuði.`;
+  }else if(S.erMedLan){
+    tonn='ok';
+    svar=`Greiðslubyrðin er <b>${pct(ratio)}</b> af laununum, innan ${cap}%-marksins, svo endurfjármögnun eða nýtt fasteignalán ætti að standa þér til boða hvað þetta viðmið varðar`
+      +(gmAfgangur!==null?`, og <b>${kr(gmAfgangur)}</b> standa eftir þegar framfærslan er dregin frá.`:'.');
   }else{
     tonn='ok';
     svar=`<b>Já.</b> Greiðslan er <b>${kr(t.first)}</b> á mánuði, eða ${pct(ratio)} af laununum, innan ${cap}%-marksins`
@@ -2047,7 +2076,7 @@ function renderSbi(S){
     <div class="eyebrow">${cap}% regla Seðlabankans, greiðslubyrðarhlutfall</div>
     <div class="verdict-line ${ok?'ok':'bad'}">${ok
       ?'Já, þessi lán rúmast innan reglna Seðlabankans.'
-      :'Nei, þessi lán fara yfir hámark Seðlabankans.'}</div>
+      :(S.erMedLan?'Yfir markinu, sem lokar á endurfjármögnun.':'Nei, þessi lán fara yfir hámark Seðlabankans.')}</div>
     <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:8px">
       <div style="font-size:27px;font-weight:700;font-variant-numeric:tabular-nums">${pct(ratio)}</div>
       <span style="color:var(--ink-2);font-size:14px">af launum ${ok?'fara':'færu'} í greiðslur af lánum</span>
@@ -2485,7 +2514,7 @@ function importStateFile(file,btn){
 
 /* ============ Vistun ============ */
 function packScen(S){
-  return {loans:S.loans,rentals:S.rentals,hasRentals:S.hasRentals,rentInDsti:S.rentInDsti,fixed:S.fixed,hasFixed:S.hasFixed,hasLtv:S.hasLtv,priceBuy:S.priceBuy,priceAssess:S.priceAssess,priceRentalMarket:S.priceRentalMarket,priceRentalAssess:S.priceRentalAssess,equity:S.equity,nopay:S.nopay,salePrice:S.salePrice,saleFeePct:S.saleFeePct,buyCostMode:S.buyCostMode,buyCost:S.buyCost,hasGm:S.hasGm,adults:S.adults,children:S.children,running:S.running,hasKindergarten:S.hasKindergarten,kindergarten:S.kindergarten,nextId:S.nextId,inflation:S.inflation,income1:S.income1,income2:S.income2,otherIncome:S.otherIncome,firstBuyer:S.firstBuyer,view:S.currentView};
+  return {loans:S.loans,rentals:S.rentals,hasRentals:S.hasRentals,rentInDsti:S.rentInDsti,fixed:S.fixed,hasFixed:S.hasFixed,hasLtv:S.hasLtv,priceBuy:S.priceBuy,priceAssess:S.priceAssess,priceRentalMarket:S.priceRentalMarket,priceRentalAssess:S.priceRentalAssess,equity:S.equity,nopay:S.nopay,salePrice:S.salePrice,saleFeePct:S.saleFeePct,buyCostMode:S.buyCostMode,buyCost:S.buyCost,hasGm:S.hasGm,erMedLan:S.erMedLan,adults:S.adults,children:S.children,running:S.running,hasKindergarten:S.hasKindergarten,kindergarten:S.kindergarten,nextId:S.nextId,inflation:S.inflation,income1:S.income1,income2:S.income2,otherIncome:S.otherIncome,firstBuyer:S.firstBuyer,view:S.currentView};
 }
 function unpackScen(S,d){
   S.loans=d.loans||[]; S.rentals=d.rentals||[]; S.hasRentals=!!d.hasRentals;
@@ -2494,7 +2523,7 @@ function unpackScen(S,d){
   S.priceRentalMarket=d.priceRentalMarket||d.priceRental||0; S.priceRentalAssess=d.priceRentalAssess||0;
   S.rentInDsti=d.rentInDsti===undefined?true:!!d.rentInDsti;
   S.equity=d.equity||[]; S.nopay=d.nopay||[]; S.salePrice=d.salePrice||0; S.saleFeePct=d.saleFeePct===undefined?1.5:d.saleFeePct; S.buyCostMode=d.buyCostMode==='manual'?'manual':'auto'; S.buyCost=d.buyCost||0;
-  S.hasGm=!!d.hasGm; S.hasKindergarten=!!d.hasKindergarten; S.kindergarten=d.kindergarten||0; S.adults=d.adults===2?2:1; S.children=Math.min(9,Math.max(0,d.children||0)); S.running=d.running||[];
+  S.hasGm=!!d.hasGm; S.erMedLan=!!d.erMedLan; S.hasKindergarten=!!d.hasKindergarten; S.kindergarten=d.kindergarten||0; S.adults=d.adults===2?2:1; S.children=Math.min(9,Math.max(0,d.children||0)); S.running=d.running||[];
   S.nextId=d.nextId||S.loans.length+S.rentals.length+S.equity.length+S.running.length+1;
   S.inflation=d.inflation??4; S.income1=d.income1||0; S.income2=d.income2||0;
   S.otherIncome=d.otherIncome||0;
