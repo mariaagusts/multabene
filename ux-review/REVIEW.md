@@ -297,6 +297,20 @@ Reiknað með WCAG 2.1 formúlu úr raunverulegum reiknuðum litum, gegnsæi lag
 
 Að auki: **hækka `.hint` og `.eyebrow` úr 11 og 11,5px í 12,5px.** Ellefu pixlar er of lítið fyrir þennan markhóp óháð litaskilum.
 
+**Þetta var innleitt, og náði til fimm staða en ekki tveggja.** Þrír til viðbótar voru undir 12px og féllu undir sömu röksemd:
+
+| Regla | Hvað er þetta | Áður | Nú |
+|---|---|---|---|
+| `.eyebrow` | smáfyrirsögn á hverju spjaldi | 11px | 12,5px |
+| `.field .hint` | hjálpartexti undir hverjum reit | 11,5px | 12,5px |
+| `.loan-stats div span` | merking yfir tölum á lánakorti | 11,5px | 12,5px |
+| `.meter-mark span` | „hámark 35%" á mælinum | 11px | 12px |
+| `.meter-scale` | kvarðinn 0% og 100% | 11px | 12px |
+
+Mælitextarnir tveir fóru í 12px en ekki 12,5px, því merkið situr í föstu plássi yfir mælinum. Staðfest eftir breytingu: engin lárétt yfirflæði í 375px, merkið á mælinum helst innan hans, og sömu fjórar spjaldafyrirsagnir brotna í tvær línur í síma og gerðu áður, svo breytingin bætti engu við.
+
+Eftir stendur að fjórar fyrirsagnir eru of langar til að rúmast á einni línu í síma, t.d. „HEIMILIÐ OG REKSTUR EIGNARINNAR — FYRIR GREIÐSLUMATIÐ". Langur hástafatexti er torlesinn óháð stærð. Það er textabreyting, ekki útlitsbreyting.
+
 ### Merking litanna
 
 Ekki bæta við fleiri litum. Það er einn skýr áherslulitur, `--accent: #1266c4`, og hann er notaður rétt: skrefanúmer og valinn hnappur. Tveir vandamálastaðir í merkingu:
