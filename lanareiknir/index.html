@@ -457,6 +457,7 @@ table.compare{border-collapse:collapse; width:100%; min-width:560px; font-size:1
 .compare th:first-child,.compare td:first-child{text-align:left}
 .compare td{padding:9px 12px; text-align:right; border-bottom:1px solid var(--grid); font-variant-numeric:tabular-nums}
 .compare td.better{color:var(--good-text); font-weight:600}
+.compare td.better .hak{font-weight:700}
 .compare .delta{color:var(--muted); font-size:13px}
 
 /* --- Skýringar --- */
@@ -547,7 +548,7 @@ footer a{color:var(--ink-2)}
       <div class="didyou"><span class="dy-title">„Fastir“ vextir eru sjaldnast fastir út lánstímann</span>
         Óverðtryggð lán bera oft fasta vexti í 3–5 ár í senn; að þeim tíma liðnum endurskoðast þeir miðað við markaðinn og greiðslan getur tekið stökk. Prófaðu í dæmi B hvað gerist við hærri vexti, það er álagsprófið sem margir sleppa. Fastir vextir eru líka einu vextirnir sem lánveitandi má rukka uppgreiðslugjald af: mest 0,2% af því sem þú greiðir inn á fyrir hvert heilt ár sem eftir er af binditímanum, og ekkert gjald ef þú greiðir undir 1.000.000 kr. inn á á ári (<a href="https://www.althingi.is/altext/lagasofn/nuna/2016118.html" target="_blank" rel="noopener">37. gr. laga nr. 118/2016</a>). Reiknivélin reiknar ekki með uppgreiðslugjaldi.</div>
       <div class="didyou"><span class="dy-title">Eignamyndun er hæg í byrjun</span>
-        Fyrstu árin fer stór hluti greiðslunnar í vexti og verðbætur en aðeins lítill hluti í að lækka höfuðstólinn. En hver króna sem þú greiðir aukalega fer beint í höfuðstólinn og flýtir eignamynduninni frá fyrsta degi, aukagreiðslur bíta einmitt fastast fyrstu árin, meðan höfuðstóllinn er hæstur. Flipinn „Skuldin (á verðlagi dagsins í dag)“ sýnir raunverulegu eignamyndunina og hvers vegna hún tekur við sér seinni hluta lánstímans.</div>
+        Fyrstu árin fer stór hluti greiðslunnar í vexti og verðbætur en aðeins lítill hluti í að lækka höfuðstólinn. En hver króna sem þú greiðir aukalega fer beint í höfuðstólinn og flýtir eignamynduninni frá fyrsta degi, aukagreiðslur bíta einmitt fastast fyrstu árin, meðan höfuðstóllinn er hæstur. Flipinn „Skuldin á verðlagi í dag“ sýnir raunverulegu eignamyndunina og hvers vegna hún tekur við sér seinni hluta lánstímans.</div>
     </div>
     <details class="lesefni">
       <summary>Sjá níu mola í viðbót <small>um lánstíma, eignamyndun, séreignarsparnað, greiðslumat og fleira</small></summary>
@@ -736,8 +737,8 @@ const SERIES=['--s1','--s2','--s3','--s4','--s5','--s6'];
 const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
 const VIEWS=[
-  {id:'balance', label:'Skuldin eins og hún stendur á yfirlitinu', note:'Eftirstöðvarnar eins og þær munu standa á lánayfirlitinu á hverjum tíma. Verðtryggður höfuðstóll getur hækkað fyrstu árin þótt greitt sé af láninu, það eru verðbæturnar.'},
-  {id:'balanceReal', label:'Skuldin eins og hún er í raun', note:'Sama skuld umreiknuð í krónur dagsins í dag, leiðrétt fyrir verðbólgu. Hér sést að skuldin lækkar í raun frá fyrsta degi og hér er sanngjarnt að bera verðtryggt og óverðtryggt saman.'},
+  {id:'balance', label:'Skuldin á yfirlitinu', note:'Eftirstöðvarnar eins og þær munu standa á lánayfirlitinu á hverjum tíma. Verðtryggður höfuðstóll getur hækkað fyrstu árin þótt greitt sé af láninu, það eru verðbæturnar.'},
+  {id:'balanceReal', label:'Skuldin á verðlagi í dag', note:'Sama skuld umreiknuð í krónur dagsins í dag, leiðrétt fyrir verðbólgu. Hér sést að skuldin lækkar í raun frá fyrsta degi og hér er sanngjarnt að bera verðtryggt og óverðtryggt saman.'},
   {id:'payment', label:'Greiðslan á mánuði', note:'Það sem þú borgar á mánuði á hverjum tíma, í krónum þess tíma. Greiðslur verðtryggðra lána hækka smám saman með verðbólgunni.'},
   {id:'cost', label:'Hvað lánin hafa kostað', note:'Uppsafnaðir vextir og verðbætur eins og þeir birtast á pappírunum, í krónum hvers tíma, sem eru minna virði en krónur dagsins í dag. Raunkostnaðurinn á verðlagi dagsins stendur í samantektinni. Brotalínan sýnir hvernig þetta liti út án aukagreiðslna.'},
 ];
@@ -1075,7 +1076,7 @@ function scenarioShell(S, title, removable){
         <h2 style="font-size:18px">Niðurstaðan</h2>
         <p class="sec-sub">Svarið við spurningunni og stóru tölurnar á mannamáli.</p>
       </div></div>
-      <div class="svarid" data-r="svar"></div>
+      <div class="svarid" data-r="svar" aria-live="polite"></div>
       <div class="card sbi-card" data-r="buycard" hidden style="margin-bottom:14px"></div>
       <div class="card sbi-card" data-r="sbi"></div>
       <div data-r="costwarn"></div>
@@ -2468,7 +2469,10 @@ function renderCompare(){
       const dTxt=r.fmt===pct?(d>0?'+':'−')+pct(Math.abs(d))
         :r.fmt===yearsMonths?(d>0?'+':'−')+yearsMonths(Math.abs(Math.round(d)))
         :(d>0?'+':'−')+kr(Math.abs(d));
-      return `<tr><td>${r.label}</td><td${aBest?' class="better"':''}>${r.fmt(r.a)}</td><td${bBest?' class="better"':''}>${r.fmt(r.b)}</td><td class="delta">${Math.abs(d)<0.5?'—':dTxt}</td></tr>`;
+      // Græni liturinn einn og sér ber merkinguna ekki fyrir þann sem greinir
+      // ekki rauðgrænt, prentar síðuna eða les hana með skjálesara.
+      const hak=b=>b?'<span class="hak" aria-label="betri kosturinn">✓</span> ':'';
+      return `<tr><td>${r.label}</td><td${aBest?' class="better"':''}>${hak(aBest)}${r.fmt(r.a)}</td><td${bBest?' class="better"':''}>${hak(bBest)}${r.fmt(r.b)}</td><td class="delta">${Math.abs(d)<0.5?'—':dTxt}</td></tr>`;
     }).join('')}</tbody></table>`;
   // Samanburðarlínurit: samtala hvors dæmis
   renderTabsInto(document.getElementById('cmpTabs'),cmpView,id=>{cmpView=id;renderCompare();saveState();});
