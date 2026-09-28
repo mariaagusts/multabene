@@ -1202,7 +1202,7 @@ Hún talar um það eins og hún væri að leiðrétta rangt herbergisnúmer —
 
 **Á Gothia sagði hún Maríu að hún réði ekki við þessar hugsanir.** Það er eina skiptið sem hún hefur útskýrt sjálfa sig, við eina manneskju, og hún orðaði það sem galla en ekki dyggð.
 
-**María veit þetta. Engin önnur veit það.** Þess vegna sagði María takk í S3E4 og misskildi hvað hún var að þakka fyrir — hún hélt að Stefanía væri að gæta að sjálfri sér.
+**María veit þetta. Engin önnur veit það.** Þess vegna sagði María takk í S3E4 og misskildi hvað hún var að þakka fyrir: hún hélt að Stefanía væri að gæta að sjálfri sér. (Ath: misskilningurinn sést ekki í senunni eins og hún er skrifuð. Hann er undirtexti sem leikstjórn þarf að bera, ekki eitthvað sem textinn segir.)
 
 ## Villur sem ég gerði í dag
 
@@ -1253,28 +1253,40 @@ Og það sem gerir það óþolandi fyrir Maríu: **þetta er ekki aðferð sem 
 
 ## Hvernig það sést
 
-Það sést aldrei beint. Það sést í því að **María gefur eftir fyrir Stefaníu og fyrir engri annarri:**
+Það sést aldrei beint. Það sést í því að **María gefur eftir fyrir Stefaníu og fyrir engri annarri.**
 
-- Hún tekur við „Ekki strax" á bílastæðinu og setur símann í vasann
-- Hún segir „Takk" í S3E4 og misskilur hvað hún er að þakka fyrir
-- Hún svarar „Nei" við glugganum í S3E5, sem hún hefði ekki viðurkennt fyrir neinni annarri
-- Í S1 er hún sú eina sem Stefanía sagði frá útgöngunum
+Þetta eru staðirnir eins og þeir standa í handritinu:
+
+| Hvar | Hvað gerist |
+|---|---|
+| S1E5 | Bolurinn. *„Hvað á ég að borga þér." / „Nei."* María situr með hann og lokar svo tölvunni, sem hún hefur ekki gert í sex mánuði. |
+| S1E5 | *„Við sjáum um rútuna"*, sagt tvisvar. María hættir að mótmæla og liggur í fjórtán mínútur án þess að horfa á Google Sheets. |
+| S2E1 | María réttir henni Nocco áður en hún er beðin um það. Hún veit vanann. Engin sér það. |
+| S2E5 | *„Maja."* María lætur lið tvö af hendi eftir að hafa neitað tvisvar. |
+| S2E6 | Stefanía er sú eina í herberginu sem sér að María laug, og sú eina sem ákveður að segja ekki neitt. |
+| S3E2 | Blaðið í hanskahólfinu. *„Það eru tvær villur í þessu." / „Ég veit."* Þar eru þrjú fyrir. |
+| S3E4 | Símtalið. *„Takk." / „Já."* Stefanía leggur á fyrst. |
+| S3E5 | Gluggasenan klukkan 02:10. *„Þú veist ekki hvernig það er." / „Nei." / „Þess vegna."* |
+| S3E5 | *„Ekki strax"* fyrir utan Leifsstöð. Stefanía leggur höndina yfir skjáinn og María setur símann í vasann. |
+
+**Þyngdarpunkturinn er í S1E5 og S3E5.** Allt hitt eru snertingar sem mega ekki verða stærri.
 
 ## Reglur
 
-- **Aldrei sagt, aldrei gefið í skyn með þrá.** Enginn löng augnaráð, engin sena þar sem María horfir á eftir henni.
+- **Aldrei sagt, aldrei gefið í skyn með þrá.** Enginn löng augnaráð, engin sena þar sem María horfir á eftir henni, engin leikstýring í sviga sem nefnir tilfinninguna.
 - **Enginn í hópnum tekur eftir því.** Það er engin undirsaga og engin verður.
-- **María gerir ekkert með það.** Hún hefur ekki hugsað þetta sem tilfinningu og myndi hafna orðinu ef einhver notaði það.
+- **María gerir ekkert með það.** Hún hefur ekki hugsað þetta sem tilfinningu og myndi hafna orðinu ef einhver notaði það. **Hún flýr ekki, roðnar ekki og verður aldrei vandræðaleg.** Vandræðaleiki er þráarmerki og hann færir þráðinn í ranga átt.
 - **Stefanía veit það ekki.**
+- **Eitt viðbragðsskot á Maríu, ekki tvö.** Í gluggasenunni í S3E5 stendur *„María hugsar sig um. Lengi."* og það er eina viðbragðsskotið sem er leyft í öllum þræðinum. Þögn í kringum Stefaníu er skrifuð sem *„Þögn."*, ekki sem *„María segir ekkert."*
 - Það á að lesast sem **virðing sem er einu stigi hlýrri en hún þarf að vera.** Ekkert meira.
 
-*Ath: María er eina lesbían í hópnum og það er skráð frá seríu 1. Þess vegna má þetta aldrei verða söguþráður — það myndi breyta verkinu úr gamanþætti um átta konur í eitthvað allt annað, og það er ekki verkið.*
+*Ath: María er eina lesbían í hópnum og það er skráð frá seríu 1. Þess vegna má þetta aldrei verða söguþráður. Það myndi breyta verkinu úr gamanþætti um átta konur í eitthvað allt annað, og það er ekki verkið.*
 
 ## Uppbyggingin í seríu 1
 
-**Dagar 1–4: Stefanía er ein af fararstjórunum og ekkert annað.** María er í kerfinu — töflum, Gothia-kortum, rútu, mat. Hún horfir ekki á neinn.
+**Þættir 1 til 4: Stefanía er ein af fararstjórunum og ekkert annað.** María er í kerfinu: töflum, Gothia-kortum, rútu, mat. Hún horfir ekki á neinn. Í S1E2 mætir hún Stefaníu á ganginum, fær *„Það er engin sturta. Vatnið kemur úr veggnum"* og skrifar það niður. Það er allt, og það á að vera allt.
 
-**Dagur 5: hún sér konu sem tekur á aðstæðum sem María ræður ekki við.** Hótelgangar, mannfjöldi, unglingar á lausu. Án nokkurs verkfæris.
+**S1E5: hún sér konu sem tekur á aðstæðum sem María ræður ekki við.** Án nokkurs verkfæris. Bolurinn, rútan, fjórtán mínúturnar.
 
 Það er ekki löngun. **Það er athygli.** María hélt að hún væri að stjórna ferðinni og áttar sig á að stjórnin var aldrei í skjölunum.
 
@@ -1282,13 +1294,48 @@ Og það sem gerir það óþolandi fyrir Maríu: **þetta er ekki aðferð sem 
 
 **Hún er ekki að leita.** Kynhneigðin er staðreynd í heiminum, ekki eiginleiki sem knýr hana áfram.
 
-- **Hún gefur útliti kvenna aldrei gaum** — hvorki í samtali, spjalli né sviðsfyrirmælum
-- **Enginn annar byggir brandara á kynhneigð hennar.** Ef brandari byggir á henni þá er það María sem segir hann
-- **Engar viðbragðsmyndir.** *„María lítur upp"*, *„María segir ekkert"* í kringum aðrar konur — bannað
-- **Hámark tvisvar í seríu**, á hvaða formi sem er
+- **Hún gefur útliti kvenna aldrei gaum**, hvorki í samtali, spjalli né sviðsfyrirmælum
+- **Engar viðbragðsmyndir** í kringum aðrar konur
 - **Þriggja ára einhleypni er hvorki brandari né sorgleg.** Sigríður talar um sína einhleypni. María ekki
 - **Tinder: hún er með appið og hún svæpar ekki.** Hún opnar það og lokar því
 
-**Eina skiptið sem þetta kemur upp á yfirborðið í seríu 1 er lyklabrandarinn í S1E4** — Stefanía hefur verið kölluð þrisvar úr sturtu, Unnur leggur til að hún fari nakin niður í lobbýið, og María segir *„Jú kannski ég."* Sjö hláturskallar. Engin lína á eftir.
-
 **Stefanía er gift, veit ekkert, og það er ekki hindrun sem þarf að nefna.**
+
+### Hvar þetta kemur upp á yfirborðið í handritinu
+
+| Hvar | Hvað | Hver byggir brandarann |
+|---|---|---|
+| S1E5 | Liseberg. Sex konur, fjórar hendur og einn sími. Sænska konan. | Hulda, Gyða og Sigríður |
+| S1E6 | *„Síminn liggur á borðinu og enginn er að svæpa."* | Sviðsfyrirmæli |
+| S2E1 | *„Þeir gera þetta alltaf í kringum þig." / „Það segja þeir allir."* | Gyða |
+| S2E1 | Tinder við eldinn. *„Ég er ekki á Tinder."* tvisvar. | Súsanna og Hulda |
+
+**Tvær eldri reglur standast ekki lengur og þarf að taka ákvörðun um:**
+
+1. *„Hámark tvisvar í seríu."* Sería 1 er með tvö tilvik og sería 2 með tvö, bæði í sama þætti. Reglan heldur í fjölda en ekki í þyngd: Liseberg-senan í S1E5 er löng hópsena, ekki snerting.
+2. *„Ef brandari byggir á kynhneigð hennar þá er það María sem segir hann."* Þetta stenst hvergi. Í öllum fjórum tilvikunum eru það hinar sem byggja hann og María sem ber hann.
+
+**Tillaga:** annaðhvort að skrifa Liseberg-senuna og eldsenuna þannig að María eigi brandarann sjálf, eða að fella regluna og viðurkenna að hópurinn grínist með þetta eins og hann grínast með allt annað. Það sem gengur ekki er að hafa regluna skráða og brjóta hana í hvert sinn.
+
+### Ekki setja stefnumótaefni og Stefaníu í sama þátt
+
+Í S1E5 og S2E1 liggja þessir tveir hlutir hlið við hlið. Áhorfandinn tengir það sem er sett saman, og um leið og hann tengir er þráðurinn orðinn að ástarsögu. Ef stefnumótasena er í þætti þá á Stefanía ekki að fá snertingu í sama þætti.
+
+## Breytt 28. september 2026
+
+Fjórar lagfæringar á þræðinum, gerðar í seria1.html, seria2.html, seria3.html og í Moggurnar_S3E5_Afslopppun_IS.md:
+
+1. **S2E1, varðeldurinn.** Flóttinn tekinn út: *„Svo stendur hún upp"*, *„Ertu að fara?"*, *„Ég ætla að sækja meira kaffi"* og fulli brúsinn. Senan endar nú á Noccóinu. Þankastrikið sem benti á stólinn *(„lausa stólinn — þann við hliðina á Maríu")* fellt niður.
+2. **S1E2.** Sviginn *(heilluð af yfirveguninni)* tekinn út, bæði í íslensku og ensku útgáfunni. Eftir stendur *„Já."* og *„Hún skrifar það niður."*
+3. **S2E6.** *„María grípur næstu möppu of hratt"* tekið út, því sama sviðsfyrirmæli stendur orðrétt í S2E5 og er stigmagnað þar. Eftir stendur *„Stefanía horfir á hana."*
+4. **S3E5, gluggasenan.** *„María segir ekkert"* varð *„Þögn."* Aðeins eitt viðbragðsskot á Maríu stendur eftir í senunni.
+
+### Það sem stendur í þessum kafla en er ekki í handritinu
+
+Þrennt var skráð hér sem burðarásar og finnst hvergi í textanum. Það er ekki villa í handritinu heldur skráning sem fylgdi því ekki eftir. Ekki nota þetta sem staðreyndir:
+
+- *„Ekki strax" á bílastæðinu í seríu 1.* Senan er til en hún er fyrir utan Leifsstöð í S3E5.
+- *Lyklabrandarinn í S1E4, „Jú kannski ég."* Hvergi skrifaður.
+- *Stefanía sagði Maríu frá útgöngunum í seríu 1.* Hvergi skrifað. Næsta sem kemst er *„Maja. Þú smíðaðir neyðarútgang inn í þitt eigið eyðublað"* í S2E5, sem er annað efni.
+
+Sama á við um eitt atriði í kaflanum **STEFANÍA ER Á VAKT**: *„Á Gothia sagði hún Maríu að hún réði ekki við þessar hugsanir."* Sú sena er ekki til í seríu 1. Ef hún á að vera til þarf að skrifa hana, og þá helst ekki sem játningu, því reglan um Stefaníu segir að hún útskýri sig aldrei.

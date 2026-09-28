@@ -492,7 +492,7 @@
 
 **STEFANÍA:** Af því að þar er ekkert sem við þurfum að gera.
 
-*María segir ekkert.*
+*Þögn.*
 
 **STEFANÍA** *(áfram)*: Ekkert lið. Engin rúta. Enginn gangur til að vakta.
 
