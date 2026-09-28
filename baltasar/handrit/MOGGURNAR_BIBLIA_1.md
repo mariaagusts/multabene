@@ -231,6 +231,7 @@ Spurning → eins orðs svar → *Þögn.* er taktur Stefaníu og Huldu. Hann er
 **Hámark: helmingur sena má vera í þeim takti.** Hitt á að vera:
 - Spjallblokkir þar sem brandarinn er í fjölda skilaboða, ekki innihaldi
 - Hástafir Súsönnu
+- Broddstafaleysi Stefaníu
 - Löng hlý setning frá Rakel sem enginn bað um
 - Sviðslýsing sem er hraðari en samtalið (sex hlutir gerast í einu)
 - Ein sena þar sem einhver talar of mikið
@@ -300,6 +301,8 @@ Hver kona á **eitt verkfæri** og má ekki taka verkfæri annarrar. Ef sena vir
 
 ## MARÍA (43) — skipulagsperrinn
 
+> **Athugið áður en lengra er haldið:** hún er skrifuð of varnarsinnuð í seríu 1 og það erfist inn í seríur 2 og 3. Sjá kaflann **MARÍA ER SKRIFUÐ OF VARNARSINNUÐ**.
+
 **Grunnur.** Stofnaði hópinn 17. janúar með Google-skjali og orðunum *„ef það eru einhverjar hér sem treysta sér ekki í þessa vinnu þá er hægt að bakka út núna."* Byggði heimasíðu, handbók, þrjú Sheets, matartímatöflu og herbergjaröðun. Sendir skilaboð klukkan 02:38, 03:10, 04:14.
 
 **Verkfærið.** Á lager í Byggakri 12 — límmiðaprentari, kassar, plástrar, skóþurrkari í umbúðum. Talar um heimili sitt eins og vöruhús. Kaupir gjallarhorn af því það vantaði á lagerinn. Setur „frjálsan tíma" á dagskrá, því annars gerist hann ekki.
@@ -341,6 +344,8 @@ Hver kona á **eitt verkfæri** og má ekki taka verkfæri annarrar. Ef sena vir
 **Verkfæri tvö: hún tekur yfir hvaða vettvang sem er.** McDonald's á Kastrup, þar sem afgreiðslan gekk of hægt. Útgangar á Ullevi. Þrepið fyrir framan læstan skála.
 
 **Uppljóstraranetið.** „Eg er komin i innsta hring hja slay queens." Rannsóknarlöggan talar unglingamál sem yfirheyrslutækni.
+
+**Ritstíll í spjalli: engir broddstafir.** *eg, hlo, upphatt, min, a leiðinni, i sturtu, fa.* Hún heldur ð, þ, æ og ö en sleppir á, é, í, ó og ú. Þetta er ekki kæruleysi heldur kona sem skrifar með annarri hendi á vakt. Andstæðan við Maríu, sem skrifar fullri stafsetningu klukkan tvö um nótt, og sú andstæða er brandari í sjálfu sér.
 
 **Gangavörðurinn.** Hvít lygi til að vernda heimildarmenn sína — sem rættist daginn eftir.
 
@@ -1244,6 +1249,57 @@ Hún segir það aldrei. **Hún ræður ekki við að hætta að gera það.**
 
 ---
 
+# MARÍA ER SKRIFUÐ OF VARNARSINNUÐ
+
+*Skráð 28. september 2026. **Þetta er staðfest vandamál, ekki tilgáta.** Lesendur sem lásu seríuna tóku eftir því óháð þessari greiningu, og María staðfestir að þetta sé ólíkt henni í raun.*
+
+## Sönnunin
+
+Sama manneskja, fimm línur í hvoru dæmi.
+
+**Í raunverulegu skilaboðunum** (lyklabrandarinn, 18. júlí 2026):
+
+1. *„3, 9 eða 11 frá platform A4. Út á Stigbergstorget."*
+2. *„Elska hvað þessi hópur er alltaf lausnarmiðaður!"*
+3. *„Jú kannski ég!"*
+4. *„Biðst afsökunar á mér!"*
+5. *„Erum við að missa tökin á þessum fararstjórahópi? Hvað með börnin?"*
+
+Fimm línur, fimm brandarar, og sú síðasta setur upp lokalínu þáttarins.
+
+**Í handritinu** (Liseberg, S1E5):
+
+1. *„Þú sérð ekki myndina."*
+2. *„Já."*
+3. *„Ég veit ekki."*
+4. *„Hulda."*
+5. *„Hulda."*
+
+Fimm línur, fjórar varnir, og senan endar á því að hún endurtaki nafn.
+
+## Af hverju þetta er alvarlegra en ein sena
+
+**Sería 1 er skrifuð upp úr skilaboðunum. Seríur 2 og 3 eru uppspuni, byggður á persónugreiningu sem var unnin úr seríu 1.**
+
+Ef María er lesin sem sú sem ver sig, þá er það líkanið sem allar skálduðu senurnar hvíla á. Villan erfist og hún margfaldast.
+
+**Varðeldurinn í S2E1 er einkennið.** María fær lítið umhyggjuaugnablik, verður vandræðaleg og flýr með fullan kaffibrúsa. Það er ekki slys í einni senu. Það er nákvæmlega það sem kemur út úr líkani þar sem María hörfar. Konan í skilaboðunum hefði setið kyrr og sagt eitthvað þurrt. Flóttinn var tekinn út 28. september en líkanið sem bjó hann til er enn á sínum stað.
+
+## Hvernig María virkar í raun
+
+- **Hún svarar, hún ver sig ekki.** Þegar grínast er með hana kemur hún með þurrari línu til baka
+- **Nákvæmni er brandari hjá henni, ekki skjöldur.** *„3, 9 eða 11 frá platform A4"* er fyndið af því að það er of nákvæmt, ekki af því að hún sé að fela sig á bak við skipulag
+- **Hún setur upp lokalínur fyrir aðrar.** Hún er ekki bara sú sem heldur á möppunni
+- **Hún toppar sjálfa sig.** *„Jú kannski ég!"* og strax á eftir *„Biðst afsökunar á mér!"*
+
+## Það sem þarf að gera
+
+1. **Bera hverja senu í seríu 1 þar sem María er áberandi saman við þráðinn sem hún kemur úr.** Er hún flatari á síðunni en í símanum?
+2. **Endurskrifa persónugreininguna** eftir niðurstöðunni, í stað þess að laga stakar senur
+3. **Fara í gegnum seríur 2 og 3 með nýja líkaninu.** Sérstaklega hverja senu þar sem María bregst við einhverju frekar en að eiga frumkvæðið
+
+Byrjunarreitur: Liseberg-senan í S1E5, því þar er munurinn stærstur og mælanlegur.
+
 # MARÍA VAR SMÁ SKOTIN Í STEFANÍU Á GOTHIA
 
 *Skráð 17. ágúst. **Þetta er aldrei sagt í verkinu og verður aldrei sagt.** Það er áferð, ekki söguþráður.*
@@ -1283,7 +1339,8 @@ Og það sem gerir það óþolandi fyrir Maríu: **þetta er ekki aðferð sem 
 - **Aldrei sagt, aldrei gefið í skyn með þrá.** Enginn löng augnaráð, engin sena þar sem María horfir á eftir henni, engin leikstýring í sviga sem nefnir tilfinninguna.
 - **Enginn í hópnum tekur eftir því.** Það er engin undirsaga og engin verður.
 - **María gerir ekkert með það.** Hún hefur ekki hugsað þetta sem tilfinningu og myndi hafna orðinu ef einhver notaði það. **Hún flýr ekki, roðnar ekki og verður aldrei vandræðaleg.** Vandræðaleiki er þráarmerki og hann færir þráðinn í ranga átt.
-- **Stefanía veit það ekki.**
+- **Skiptu á milli tvenns sem er auðvelt að rugla saman.** Hópurinn **veit hvaða konur María fílar**, því hún sagði þeim það sjálf einhvern tímann: femm konur. Það er opinber staðreynd í heiminum og hún er notuð í brandara án þess að nokkur geri mál úr því. Hópurinn **veit ekki að María sé smá skotin í Stefaníu**, og Stefanía veit það síst allra. Það er hitt og það er aldrei sagt.
+- **Þess vegna virkar *„eg er bara fegin að vera femme"*.** Það er vísun í staðreynd sem allar vita, ekki uppgötvun. Stefanía er hvorki vandræðaleg né þögul, hún tekur brandaranum og heldur áfram, og það er ástæðan fyrir því að atriðið er ekki vandræðalegt. Eftir það er ekkert nefnt aftur.
 - **Eitt viðbragðsskot á Maríu, ekki tvö.** Í gluggasenunni í S3E5 stendur *„María hugsar sig um. Lengi."* og það er eina viðbragðsskotið sem er leyft í öllum þræðinum. Þögn í kringum Stefaníu er skrifuð sem *„Þögn."*, ekki sem *„María segir ekkert."*
 - Það á að lesast sem **virðing sem er einu stigi hlýrri en hún þarf að vera.** Ekkert meira.
 
@@ -1301,14 +1358,20 @@ Og það sem gerir það óþolandi fyrir Maríu: **þetta er ekki aðferð sem 
 
 **Hún er ekki að leita.** Kynhneigðin er staðreynd í heiminum, ekki eiginleiki sem knýr hana áfram.
 
-**Prófið er ekki hversu oft þetta kemur upp heldur hvort brandarinn lendir.** Hann á að vera þurr og frekar svartur. Vandræðalegheit eru eina raunverulega bilunin: um leið og sena verður feimin við efnið, eða María verður vandræðaleg í senunni, missir brandarinn marks og þá er hann orðinn að tilfinningaefni sem hann átti aldrei að vera.
+**Prófið er ekki hversu oft þetta kemur upp heldur hvort brandarinn lendi.** Hann á að vera þurr og frekar svartur. Vandræðalegheit eru eina raunverulega bilunin: um leið og sena verður feimin við efnið, eða María verður vandræðaleg í senunni, missir brandarinn marks og þá er hann orðinn að tilfinningaefni sem hann átti aldrei að vera.
 
-- **Hún gefur útliti kvenna aldrei gaum**, hvorki í samtali, spjalli né sviðsfyrirmælum
+**Þetta er hópíþrótt.** Í raunveruleikanum tóku hinar fararstjórarnir alltaf þátt í bröndurunum. Enginn fór varlega og enginn þurfti þess. Sena þar sem hópurinn grínast saman um stefnumót Maríu er rétt skrifuð sena, ekki regluverk sem þarf að telja.
+
+**María hefur sagt hópnum hvaða konur hún fílar: femm konur.** Það er opinber staðreynd innan hópsins og brandarar byggja á henni. Þess vegna virkar svar Stefaníu í lyklabrandaranum, *„eg er bara fegin að vera femme"*: það er vísun í eitthvað sem allar vita, ekki uppgötvun.
+
+- **Hún horfir ekki á konur í senum.** Engin sviðsfyrirmæli um útlit, engin augnaráð. En hún segir flatt frá smekk sínum ef það er brandarinn
 - **Engar viðbragðsmyndir** í kringum aðrar konur
 - **María verður aldrei vandræðaleg.** Hún flýr ekki og hún roðnar ekki. Hún svarar þurrt eða hún svarar ekki
 - **Tinder: hún er með appið og hún svæpar ekki.** Hún opnar það og lokar því
 
-**Stefanía er gift, veit ekkert, og það er ekki hindrun sem þarf að nefna.**
+**Haltu þessu tvennu aðskildu.** Stefnumótabrandararnir eru háværir, tíðir og allra. Þráðurinn með Stefaníu er ósýnilegur, aldrei nefndur og enginn tekur eftir honum. Það fyrra er áferð. Það seinna er vél sem má ekki sjást.
+
+**Stefanía er gift og það er ekki hindrun sem þarf að nefna.**
 
 ### Hvar þetta kemur upp á yfirborðið í handritinu
 

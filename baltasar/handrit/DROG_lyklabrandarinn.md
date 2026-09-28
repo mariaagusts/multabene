@@ -66,21 +66,21 @@ Staðsetning: **S1E2, „Gangavörðurinn"**, ekki S1E4. Þátturinn opnar þega
 > **HULDA:** Skiptir máli hvaða átt? 🙈
 > **MARÍA:** 3, 9 eða 11 frá platform A4. Út á Stigbergstorget.
 > **STEFANÍA:** Ok Maja með þetta
-> **STEFANÍA:** ætlaði að fletta því upp þegar það væri loksins hætt að hringja í mig og biðja mig að redda lykli í lobbýinu 😂
-> **STEFANÍA:** Þriðja ferðin mín niður. Og alltaf allsber á leiðinni í sturtu þegar þær hringja 😂
+> **STEFANÍA:** ætlaði að fletta þvi upp þegar það væri loksins hætt að hringja i mig og biðja mig að redda lykli i lobby 😂
+> **STEFANÍA:** Þriðja ferðin min niður og alltaf allsber a leiðinni i sturtu þegar þær hringja 😂
 > **UNNUR:** Farðu bara allsber niður, þá hætta þær að hringja
 > **UNNUR:** Færð kannski annars konar símtöl reyndar
 > **MARÍA:** Elska hvað þessi hópur er alltaf lausnarmiðaður
-> **STEFANÍA:** Af hverju fattaði ég það ekki
+> **STEFANÍA:** Af hverju fattaði eg það ekki
 > **STEFANÍA:** Það myndi engin gleyma lykli aftur
 > **MARÍA:** Jú kannski ég!
 > **HULDA:** HAHAHAHAHAHAHA
 > **HULDA:** Maja myndi týna ÖLLU 🙈
 > **MARÍA:** Biðst afsökunar á mér 🤣
-> **STEFANÍA:** Ekki afsaka neitt, ég er bara fegin að vera femme 😂
+> **STEFANÍA:** Ekki afsaka neitt, eg er bara fegin að vera femme 😂
 > **MARÍA:** Erum við að missa tökin á þessum fararstjórahópi
 > **MARÍA:** Hvað með börnin
-> **STEFANÍA:** Börnin fá pizzu
+> **STEFANÍA:** Börnin fa pizzu
 >
 > *Stefanía leggur símann á náttborðið. Slekkur ljósið.*
 >
@@ -88,13 +88,13 @@ Staðsetning: **S1E2, „Gangavörðurinn"**, ekki S1E4. Þátturinn opnar þega
 
 Breytingar frá upprunalegu: lína Gyðu um að labba upp á hótel fellt (hún er úr öðrum þræði), *„Munum það í næstu keppnisferð"* fellt svo punktlínan lendi strax á eftir uppsetningunni, og *„Baaaahaha eg hlo upphatt"* og *„Aldrei"* felld því Hulda er þegar búin að hlæja. Allt annað er orðrétt.
 
-## Tvær ákvarðanir
+## Ákvarðanir teknar 28. september
 
-**A. Svarar Stefanía?** *„Ég er bara fegin að vera femme"* er fyndnasta línan í samtalinu og hún er ástæðan fyrir því að atriðið er ekki vandræðalegt. En hún stangast á við regluna **„Stefanía veit það ekki."**
+**Stefanía heldur línunni.** *„eg er bara fegin að vera femme"* stendur. Hún er vísun í staðreynd sem hópurinn veit, því María hafði sagt þeim að hún fíli femm konur. Þess vegna er hún tilsvar en ekki uppgötvun, og þess vegna er atriðið ekki vandræðalegt.
 
-**Tillaga:** halda línunni og milda regluna. Hún gerir Stefaníu ekki meðvitaða um neitt varanlegt, hún gerir hana að manneskju sem tekur brandara. Ný orðun: *Stefanía tekur eftir þessu í eitt skipti, í spjalli, og það breytir engu eftir það.*
+Reglan í biblíunni var skerpt í samræmi við það: hópurinn veit hvaða konur María fílar, hópurinn veit ekki að hún sé smá skotin í Stefaníu, og Stefanía veit það síst allra.
 
-**B. Skrifar Stefanía án broddstafa?** Í raunveruleikanum gerir hún það, alltaf. Serían gerir þetta þegar fyrir Súsönnu, sem skrifar í hástöfum. Það væri ekta en gæti lesist sem innsláttarvilla á síðu. Ég skrifaði drögin með broddstöfum. Auðvelt að snúa við.
+**Stefanía skrifar án broddstafa.** Eins og hún gerir í raun: *eg, hlo, min, a leiðinni, i sturtu, fa*. Hún heldur ð, þ, æ og ö. Andstæðan við Maríu, sem skrifar fullri stafsetningu um miðja nótt, er brandari í sjálfu sér og hún er núna í drögunum.
 
 ## Hvað þetta leysir
 
