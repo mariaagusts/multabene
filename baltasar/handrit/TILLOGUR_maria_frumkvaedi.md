@@ -1,6 +1,8 @@
 # TILLÖGUR: senur þar sem María á frumkvæðið
 
-*Skrifað 28. september 2026. Ekkert af þessu er komið inn í handritið.*
+*Skrifað 28. september 2026.*
+
+> **STAÐA: liðir 1 og 2 eru komnir inn**, sameinaðir í eina senu í hala S1E6. Sjá kaflann aftast. Liðir 3 og 4 bíða.
 
 Ég leitaði í Messenger-safninu að augnablikunum þar sem María á frumkvæðið, og bar þau saman við handritið. Efnið á að koma úr skilaboðunum en ekki frá mér, svo þetta eru raunveruleg atvik sem enginn hefur notað.
 
@@ -90,3 +92,38 @@ Verkið má þjappa og hækka, og ég held að dómarasenan eigi að standa nák
 2. **Minnispunktarnir sem stutt Á SKJÁ blokk í halanum á S1E6.** Fjórar línur, og serían fær ramma sem hún hefur ekki núna
 3. **Plokkarinn og Duolingo sem línur** ef og þegar senur opnast fyrir þær
 4. **Ekki snerta gjallarhornið og ekki snerta dómarasenuna**
+
+---
+
+## Skrifað 28. september: bótamálið og minnispunktarnir í einni senu
+
+**Leiðrétting á tillögunni hér að ofan.** Ég lagði til að bótamálið yrði köld opnun á S2E1. Það var rangt. Köld opnun S2E1 er þegar sterk María-sena: sama eldhús, autt pláss á hillunni þar sem gjallarhornið á að vera, fjögur sænsk tollbréf á ísskápnum og fjórtán síðna pökkunarlisti fyrir eina helgi án barna. Henni á ekki að ýta til hliðar.
+
+**Og dagsetningarnar leystu þetta.** Bótamálið er 21. til 22. júlí og minnispunktarnir 23. júlí klukkan 01:11. Þetta er sami sólarhringurinn. Þau eru því ein sena en ekki tvær, og hún á heima í hala S1E6, strax á eftir **LOK SERÍU** og á undan grillinu.
+
+Röðin í halanum er núna:
+
+1. Lokatextarnir: fjórtán leikir, þrír unnir, þær átta ætla aftur
+2. **LOK SERÍU**
+3. **Nýja senan: eldhúsið, tveimur dögum síðar** — serían segir að þetta sé búið og María er enn að vinna
+4. Grillið: formaðurinn biður um meira starf
+5. Eftir kreditlista: gjallarhornið, fimm dögum síðar
+
+Stigmögnunin gengur upp: verkið lýsir yfir endalokum, María heldur áfram, félagið biður um meira, og hún kaupir gjallarhorn.
+
+**Senan sjálf** er í tveimur hlutum með klippu á milli, klukkan 23:40 og svo klukkan 01:11 nóttina eftir. Sama eldhús, sama hálftæmda ferðataska í ganginum, sama kona. Allt spjallið er orðrétt úr safninu fyrir utan smávægilega styttingu.
+
+Hún endar svona:
+
+> **MARÍA:** Endilega bætið við hér á meðan það er enn ferskt í minni. Minnispunktar um það sem mætti betur fara eða það sem fór vel í ferðinni okkar
+> **MARÍA:** MINNISPUNKTAR — GOTHIA 2026
+>
+> *Enginn svarar.*
+> *Klukkan verður 01:26.*
+> *Hún bætir við fyrstu línunni sjálf.*
+
+**Þar með er ramminn kominn.** Köld opnun S1E1 er María klukkan 22:29 að skrifa skjal sem engin svarar. Serían endar núna á Maríu klukkan 01:11 að skrifa skjal sem engin svarar. Fyrstu skilaboðin í Messenger-safninu og þau sem ég valdi hér eru sami hluturinn með sex mánaða millibili, og hvorugt þurfti að skálda.
+
+**Punktlínan sem ég sleppti viljandi:** *„mér sýnist enginn þurfa á síðunni að halda úr þessu"* stendur, en hún fær ekki að vera síðasta orðið. Gjallarhornið á eftir er sami brandari (hún útvegar það sem enginn bað um) og tveir slíkir í röð hefðu étið hvor annan.
+
+Báðar útgáfur, íslenska og enska.

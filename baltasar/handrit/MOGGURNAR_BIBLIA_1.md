@@ -1419,6 +1419,8 @@ Fjórar lagfæringar á þræðinum, gerðar í seria1.html, seria2.html, seria3
 
 8. **Lyklabrandarinn skrifaður inn í S1E2.** Brandarinn er sá að María vill fá að sjá Stefaníu nakta og hópurinn skildi hann. Ef hann er spilaður sakleysislega deyr hann. Sjá kaflann **Hvað brandarinn er** í DROG_lyklabrandarinn.md. Í lok fyrsta hluta, klukkan 17:40 á mánudeginum: Stefanía í handklæði á leið í sturtu í þriðja sinn, síminn hringir, hún svarar ekki heldur skrifar. Senan endar á því að síminn hringir aftur þremur sekúndum eftir að hún fer inn á baðherbergið. Sjá DROG_lyklabrandarinn.md.
 
+9. **Bótamálið og minnispunktarnir skrifuð inn í hala S1E6**, strax á eftir LOK SERÍU. Serían endar núna eins og hún byrjar: María ein við tölvuna um nótt að opna skjal sem engin svarar. Sjá TILLOGUR_maria_frumkvaedi.md.
+
 ### Senur sem eiga að vera í handritinu en eru ekki skrifaðar
 
 Þrennt stendur skráð í biblíunni sem burðarásar og finnst hvergi í textanum. Þetta er ekki skráningarvilla heldur efni sem átti að fara inn og skilaði sér ekki. **Það á heima inni og bíður þess að vera skrifað.**
