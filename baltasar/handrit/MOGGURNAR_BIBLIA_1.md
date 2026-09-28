@@ -1195,7 +1195,7 @@ Hún talar um það eins og hún væri að leiðrétta rangt herbergisnúmer —
 
 - Við hliðið í S3E3, með bakið í völlinn, á meðan María dæmir. *„Þú getur ekki bannað mér það." / „Nei."* Hún færir sig ekki.
 - Símtalið í S3E4. Hún sá málið koma áður en það kom.
-- *„Ekki strax"* á bílastæðinu í S3E5, þegar hún tekur símann af Maríu.
+- *„Ekki strax"* fyrir utan Leifsstöð í S3E5, þegar hún leggur höndina yfir símaskjáinn hjá Maríu.
 - Útgangarnir. Hótelgangurinn. Alltaf sami reflexinn.
 
 ## Hún sagði það einu sinni
@@ -1334,12 +1334,22 @@ Fjórar lagfæringar á þræðinum, gerðar í seria1.html, seria2.html, seria3
 4. **S3E5, gluggasenan.** *„María segir ekkert"* varð *„Þögn."* Aðeins eitt viðbragðsskot á Maríu stendur eftir í senunni.
 5. **Kaflinn um kynhneigð endurskoðaður sama dag.** Fyrsta útgáfan taldi upp fjögur „reglubrot" og lagði til að Liseberg-senan í S1E5 yrði endurskrifuð. Það var of vélrænt lesið. Senurnar lenda, hópurinn kemur eins fram við Maríu og við Gyðu í sama þætti, og talningarreglan („hámark tvisvar í seríu") var felld. Eftir stendur eitt: María má ekki vera eini þolandinn í eigin senu, og hún er flöt en aldrei feimin.
 
-### Það sem stendur í þessum kafla en er ekki í handritinu
+### Senur sem eiga að vera í handritinu en eru ekki skrifaðar
 
-Þrennt var skráð hér sem burðarásar og finnst hvergi í textanum. Það er ekki villa í handritinu heldur skráning sem fylgdi því ekki eftir. Ekki nota þetta sem staðreyndir:
+Þrennt stendur skráð í biblíunni sem burðarásar og finnst hvergi í textanum. Þetta er ekki skráningarvilla heldur efni sem átti að fara inn og skilaði sér ekki. **Það á heima inni og bíður þess að vera skrifað.**
 
-- *„Ekki strax" á bílastæðinu í seríu 1.* Senan er til en hún er fyrir utan Leifsstöð í S3E5.
-- *Lyklabrandarinn í S1E4, „Jú kannski ég."* Hvergi skrifaður.
-- *Stefanía sagði Maríu frá útgöngunum í seríu 1.* Hvergi skrifað. Næsta sem kemst er *„Maja. Þú smíðaðir neyðarútgang inn í þitt eigið eyðublað"* í S2E5, sem er annað efni.
+**1. Lyklabrandarinn.** Skráður í S1E4 en sturtuefnið sem hann byggir á er allt í S1E2, þar sem Stefanía kemur blaut og öskureið út af baðherberginu og línan *„Það er engin sturta. Vatnið kemur úr veggnum"* fellur. Ef brandarinn gerðist í hópspjallinu í raunveruleikanum, sem *„sjö hláturskallar"* bendir til, þá er senan Á SKJÁ og er ekki bundin við neinn einn þátt. **Þetta þarf að skrifa upp úr upprunalegu skilaboðunum, ekki upp úr þessari lýsingu.** Lýsingin geymir formið en ekki brandarann.
 
-Sama á við um eitt atriði í kaflanum **STEFANÍA ER Á VAKT**: *„Á Gothia sagði hún Maríu að hún réði ekki við þessar hugsanir."* Sú sena er ekki til í seríu 1. Ef hún á að vera til þarf að skrifa hana, og þá helst ekki sem játningu, því reglan um Stefaníu segir að hún útskýri sig aldrei.
+Hann leysir tvennt í einu: hann er eina skiptið í seríu 1 þar sem María á brandarann sjálf, og hann er svartur.
+
+**2. Stefanía segir Maríu frá útgöngunum.** Mótífið er til og það er sterkt. Í S1E2 er heilt SJÓNARHORN á Ullevi: *„útgönguleiðirnar. Ein göng. Önnur. Tröppurnar. Bilið á milli stúkna."* Hún telur raðirnar að þeirri næstu. Fjórar. En sú sem situr við hliðina á henni er Hulda og Stefanía segir ekki orð.
+
+Það sem vantar er eitt augnablik seinna þar sem hún segir Maríu töluna. Ein lína, ekki útskýring. María spyr einskis. Það er sú eina sem fær að vita, og það er öll senan.
+
+**3. Játningin á Gothia.** Skráð í kaflanum **STEFANÍA ER Á VAKT**: *„Á Gothia sagði hún Maríu að hún réði ekki við þessar hugsanir."* Sú sena er ekki til.
+
+Hér er innri árekstur sem þarf að leysa fyrst: reglan um Stefaníu segir að hún útskýri sig aldrei og biðji aldrei um að vera skilin. Ef hún segir þetta upphátt er hún farin að útskýra sig. Formið þarf því að vera annað en játning. Hún segir eina staðreynd, ekki um sjálfa sig, og María dregur ályktunina.
+
+### Leiðrétt tilvísun
+
+*„Ekki strax"* er skráð hér að ofan sem sönnun úr seríu 1. Það er rangt. Senan er til, hún er fyrir utan Leifsstöð í S3E5, og engin sams konar sena er í seríu 1. Engin sena vantar þarna.
