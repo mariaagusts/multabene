@@ -22,6 +22,13 @@
 
 **Uppruni:** Átta mömmur fóru sem fararstjórar með 58 stelpur, 13–14 ára, á Gothia Cup í Gautaborg í júlí 2026. Sunnudagur til sunnudags. Þær vöktuðu hótelganga á kvöldin — þaðan kemur nafnið — og tvær þeirra eru raunverulega í löggunni og ákæruvaldinu.
 
+
+**Heimildir, og af hverju það skiptir máli:** Sería 1 er skrifuð upp úr raunverulegum Messenger-skilaboðum. Seríur 2 og 3 eru uppspuni, byggður á persónugreiningu sem var unnin úr seríu 1.
+
+Af þessu leiðir ein regla um gæðaeftirlit: **ef persóna er misskrifuð í seríu 1 þá er hún misskrifuð í tvígang í seríum 2 og 3.** Villan fer ekki bara áfram, hún verður að forsendu. Þess vegna er rétta viðbragðið við veikri senu í seríu 2 eða 3 ekki að laga senuna, heldur að fara aftur í skilaboðin og athuga hvort persónugreiningin sjálf hafi verið röng.
+
+*Dæmi: varðeldurinn í S2E1, þar sem María flýr frá eldinum með fullan kaffibrúsa. Sú sena var ekki mistök í einni senu. Hún var rökrétt afleiðing af persónulíkani þar sem María ver sig. Skilaboðin sýna konu sem gerir það ekki.*
+
 **Aðalbrandarinn sem heldur öllu uppi:** *Löggurnar þurfa löggur.* Enginn er að vakta mömmurnar.
 
 **Nöfn:** Vinnuheiti. Verður að skipta út áður en þetta fer nokkuð annað.
