@@ -1371,7 +1371,16 @@ Og það sem gerir það óþolandi fyrir Maríu: **þetta er ekki aðferð sem 
 
 **Haltu þessu tvennu aðskildu.** Stefnumótabrandararnir eru háværir, tíðir og allra. Þráðurinn með Stefaníu er ósýnilegur, aldrei nefndur og enginn tekur eftir honum. Það fyrra er áferð. Það seinna er vél sem má ekki sjást.
 
-**Stefanía er gift og það er ekki hindrun sem þarf að nefna.**
+**Stefanía spilar með.** Hún á eiginmann, allar vita það, og einmitt þess vegna getur hún þóst vera „til" án þess að nokkuð sé í húfi. Hún gerði það í raun: *„eg er bara fegin að vera femme"* er hún að taka þátt í brandara Maríu, ekki að svara honum.
+
+Þetta má misspila í tvær áttir og hvorug er fyndin:
+
+- **Ef Stefanía er spiluð einlæg** verður þetta ástarsaga og verkið er orðið annað verk
+- **Ef Stefanía er spiluð grunlaus** hverfur brandarinn, því hann byggir á því að hún sé með í honum
+
+Rétti takturinn er meðvitað leikrit sem báðar vita að er leikrit. **Hjónabandið er ekki hindrun sem þarf að nefna heldur öryggisnetið sem gerir brandarann mögulegan.**
+
+**Og það er vélin undir öllu þessu:** öruggasti brandari í heimi er í gangi ofan á því eina sem er raunverulegt og má ekki sjást. Hópurinn grínast hátt um nákvæmlega það sem enginn veit að er satt. Það er aldrei orðað og það er aldrei uppljóstrað.
 
 ### Hvar þetta kemur upp á yfirborðið í handritinu
 
