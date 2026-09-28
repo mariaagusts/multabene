@@ -4,6 +4,25 @@
 
 > **STAÐA: komið inn.** Senan er í S1E2, í lok fyrsta hluta, klukkan 17:40 á mánudeginum, á íslensku og ensku. Stefanía skrifar án broddstafa og femme-línan stendur.
 
+
+## Hvað brandarinn er, svo það tapist ekki
+
+**María er að segja að hana langi til að sjá Stefaníu nakta.**
+
+Keðjan er þessi: stelpurnar gleyma lyklum, Stefanía er kölluð niður í lobbý, hún er allsber á leiðinni í sturtu í hvert sinn. Unnur leggur til lausnina: farðu bara allsber niður, þá hætta þær að hringja. Stefanía kaupir hana og segir að þá myndi engin gleyma lykli aftur. **María býðst til að gleyma sínum.** Hún gerir sjálfa sig að vandamálinu, viljandi, til að fá niðurstöðuna sem hún vill.
+
+**Og hópurinn skildi hann.** Það er ekki aukaatriði heldur helmingurinn af brandaranum:
+
+- Hulda hlær og snýr honum strax upp í að Maja myndi týna öllu
+- María biðst afsökunar á sjálfri sér, sem er viðurkenning
+- Stefanía svarar *„eg er bara fegin að vera femme"*, sem gengur bara upp ef hún veit nákvæmlega hvað var sagt
+
+**Ef þetta er spilað sakleysislega deyr það.** Ef leikkonan eða lesandinn heldur að María sé bara að grínast með eigið skipulagsleysi er ekkert eftir. Allar sjö vita hvað hún átti við og engin gerir mál úr því, og sú blanda er tónninn í öllu verkinu.
+
+**Þetta stangast ekki á við regluna um að enginn taki eftir Stefaníuþræðinum.** Hópurinn veit að Maríu finnst Stefanía flott og grínast með það upphátt. Það sem enginn veit, og Stefanía síst, er hitt: að María er farin að horfa á hana stjórna og finnst hún hvíla í því. Brandarinn er hávær. Þráðurinn er þögull. Þeir eiga heima í sama þætti og mega ekki renna saman.
+
+**Í senunni ber Stefanía sönnunina.** Hún hlær upphátt, ein, í handklæði. Hún er ekki vandræðaleg og hún er ekki grunlaus. Hún skildi hann og henni fannst hann fyndinn.
+
 ## Upprunalega samtalið
 
 Eignun staðfest af lit skilaboðanna í Messenger: blátt og fjólublátt eru María, grátt er sendandinn sem stendur fyrir ofan.

@@ -1417,7 +1417,7 @@ Fjórar lagfæringar á þræðinum, gerðar í seria1.html, seria2.html, seria3
 
 7. **Nýr kafli: MARÍA ER SKRIFUÐ OF VARNARSINNUÐ.** Talan sem liggur undir: í spjallinu er María fyrirferðarmesta röddin af átta, í handritinu er hún fjórða og Hulda hefur næstum tvöfalt fleiri línur.
 
-8. **Lyklabrandarinn skrifaður inn í S1E2.** Í lok fyrsta hluta, klukkan 17:40 á mánudeginum: Stefanía í handklæði á leið í sturtu í þriðja sinn, síminn hringir, hún svarar ekki heldur skrifar. Senan endar á því að síminn hringir aftur þremur sekúndum eftir að hún fer inn á baðherbergið. Sjá DROG_lyklabrandarinn.md.
+8. **Lyklabrandarinn skrifaður inn í S1E2.** Brandarinn er sá að María vill fá að sjá Stefaníu nakta og hópurinn skildi hann. Ef hann er spilaður sakleysislega deyr hann. Sjá kaflann **Hvað brandarinn er** í DROG_lyklabrandarinn.md. Í lok fyrsta hluta, klukkan 17:40 á mánudeginum: Stefanía í handklæði á leið í sturtu í þriðja sinn, síminn hringir, hún svarar ekki heldur skrifar. Senan endar á því að síminn hringir aftur þremur sekúndum eftir að hún fer inn á baðherbergið. Sjá DROG_lyklabrandarinn.md.
 
 ### Senur sem eiga að vera í handritinu en eru ekki skrifaðar
 
