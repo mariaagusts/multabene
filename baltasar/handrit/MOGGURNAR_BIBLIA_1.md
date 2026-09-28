@@ -1294,28 +1294,31 @@ Og það sem gerir það óþolandi fyrir Maríu: **þetta er ekki aðferð sem 
 
 **Hún er ekki að leita.** Kynhneigðin er staðreynd í heiminum, ekki eiginleiki sem knýr hana áfram.
 
+**Prófið er ekki hversu oft þetta kemur upp heldur hvort brandarinn lendir.** Hann á að vera þurr og frekar svartur. Vandræðalegheit eru eina raunverulega bilunin: um leið og sena verður feimin við efnið, eða María verður vandræðaleg í senunni, missir brandarinn marks og þá er hann orðinn að tilfinningaefni sem hann átti aldrei að vera.
+
 - **Hún gefur útliti kvenna aldrei gaum**, hvorki í samtali, spjalli né sviðsfyrirmælum
 - **Engar viðbragðsmyndir** í kringum aðrar konur
-- **Þriggja ára einhleypni er hvorki brandari né sorgleg.** Sigríður talar um sína einhleypni. María ekki
+- **María verður aldrei vandræðaleg.** Hún flýr ekki og hún roðnar ekki. Hún svarar þurrt eða hún svarar ekki
 - **Tinder: hún er með appið og hún svæpar ekki.** Hún opnar það og lokar því
 
 **Stefanía er gift, veit ekkert, og það er ekki hindrun sem þarf að nefna.**
 
 ### Hvar þetta kemur upp á yfirborðið í handritinu
 
-| Hvar | Hvað | Hver byggir brandarann |
+| Hvar | Hvað | Lendir hann |
 |---|---|---|
-| S1E5 | Liseberg. Sex konur, fjórar hendur og einn sími. Sænska konan. | Hulda, Gyða og Sigríður |
-| S1E6 | *„Síminn liggur á borðinu og enginn er að svæpa."* | Sviðsfyrirmæli |
-| S2E1 | *„Þeir gera þetta alltaf í kringum þig." / „Það segja þeir allir."* | Gyða |
-| S2E1 | Tinder við eldinn. *„Ég er ekki á Tinder."* tvisvar. | Súsanna og Hulda |
+| S1E5 | Liseberg. Sex konur, fjórar hendur og einn sími. *„Hvað er að honum—" / „Henni." / „Hvað er að henni."* | Já. Leiðréttingin er flöt og samtalið heldur áfram, sem er nákvæmlega rétta meðferðin |
+| S1E5 | *„Ég myndi svæpa hægri á allar." / „Það er ekki kerfi, Sigga."* | Já. Brandarinn er um Siggu, ekki um Maríu |
+| S1E6 | *„Síminn liggur á borðinu og enginn er að svæpa."* | Já, sem sviðsfyrirmæli |
+| S2E1 | *„Þeir gera þetta alltaf í kringum þig." / „Það segja þeir allir."* | Já, og þetta er svartasti brandarinn í þræðinum |
+| S2E1 | Tinder við eldinn. *„Það var síðasti séns."* | Já, og hann er Maríu |
 
-**Tvær eldri reglur standast ekki lengur og þarf að taka ákvörðun um:**
+**Eldri reglan um hámark tvisvar í seríu er felld.** Hún var skrifuð til að verja þráðinn gegn því að verða söguþráður, en hann er ekki í hættu frá fjölda brandara. Hann er í hættu frá vandræðalegheitum. Talningin er úr sögunni.
 
-1. *„Hámark tvisvar í seríu."* Sería 1 er með tvö tilvik og sería 2 með tvö, bæði í sama þætti. Reglan heldur í fjölda en ekki í þyngd: Liseberg-senan í S1E5 er löng hópsena, ekki snerting.
-2. *„Ef brandari byggir á kynhneigð hennar þá er það María sem segir hann."* Þetta stenst hvergi. Í öllum fjórum tilvikunum eru það hinar sem byggja hann og María sem ber hann.
+**Eldri reglan um að María verði sjálf að eiga brandarann er mildari núna.** Hópurinn grínast með stefnumót Maríu nákvæmlega eins og hann grínast með Gyðu og Jonas í sama þætti, og það er rétt: hann kemur eins fram við allar. En tvennt stendur:
 
-**Tillaga:** annaðhvort að skrifa Liseberg-senuna og eldsenuna þannig að María eigi brandarann sjálf, eða að fella regluna og viðurkenna að hópurinn grínist með þetta eins og hann grínast með allt annað. Það sem gengur ekki er að hafa regluna skráða og brjóta hana í hvert sinn.
+- **María má ekki vera eini þolandinn í eigin senu.** Í Liseberg-senunni segir hún fimm línur og fjórar þeirra eru varnir (*„Þú sérð ekki myndina"*, *„Ég veit ekki"*, *„Hulda"*, *„Hulda"*). Hún þarf að lenda einni sjálf.
+- **Ef María ber brandarann þá er hún flöt, ekki feimin.** Þurr afneitun er fyndin. Flótti er það ekki.
 
 ### Ekki setja stefnumótaefni og Stefaníu í sama þátt
 
@@ -1329,6 +1332,7 @@ Fjórar lagfæringar á þræðinum, gerðar í seria1.html, seria2.html, seria3
 2. **S1E2.** Sviginn *(heilluð af yfirveguninni)* tekinn út, bæði í íslensku og ensku útgáfunni. Eftir stendur *„Já."* og *„Hún skrifar það niður."*
 3. **S2E6.** *„María grípur næstu möppu of hratt"* tekið út, því sama sviðsfyrirmæli stendur orðrétt í S2E5 og er stigmagnað þar. Eftir stendur *„Stefanía horfir á hana."*
 4. **S3E5, gluggasenan.** *„María segir ekkert"* varð *„Þögn."* Aðeins eitt viðbragðsskot á Maríu stendur eftir í senunni.
+5. **Kaflinn um kynhneigð endurskoðaður sama dag.** Fyrsta útgáfan taldi upp fjögur „reglubrot" og lagði til að Liseberg-senan í S1E5 yrði endurskrifuð. Það var of vélrænt lesið. Senurnar lenda, hópurinn kemur eins fram við Maríu og við Gyðu í sama þætti, og talningarreglan („hámark tvisvar í seríu") var felld. Eftir stendur eitt: María má ekki vera eini þolandinn í eigin senu, og hún er flöt en aldrei feimin.
 
 ### Það sem stendur í þessum kafla en er ekki í handritinu
 
