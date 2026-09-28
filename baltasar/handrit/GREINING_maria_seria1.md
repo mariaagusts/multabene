@@ -120,3 +120,41 @@ og
 > **MARÍA:** Ég er með þvottavél.
 
 Síðasti takturinn er beint úr spjallinu klukkan 23:12 þann 18. júlí: *„Í hvaða herbergi er Steffý?" / „741 😏"*, og þvottavélin er úr sömu mínútu. Stefanía spilar með, María er alveg bókstafleg, og áhorfandinn veit ekki hvort þar var eitthvað.
+
+## Lagfært 28. september
+
+**1. Veitingastaðurinn.** *„Ég sef bara illa"* er farið af borðinu. Í staðinn fer hún yfir í næsta lið, eins og reglan segir:
+
+> **HULDA:** Það er nákvæmlega það sem manneskja á kókaíni myndi segja.
+> **MARÍA:** Já.
+> *Þögn.*
+> **MARÍA** *(ÁFRAMH.)*: Ég sendi ykkur pökkunarlistann í gær. Hann er fjórtán blaðsíður og þið þurfið ekki að lesa nema ellefu.
+> **HULDA:** Mm.
+> *Hún kaupir það ekki. Hún ýtir samt ekki á það.*
+
+**2. Bíll Huldu klukkan 23:50.** Eftirmálinn var *„Og nei / Ég sef bara illa"*. Núna er hann raunverulega svarið úr spjallinu frá 30. júní, og endirinn er punktlínan:
+
+> **MARÍA:** Takk fyrir í kvöld!! Geggjað 😄
+> **MARÍA:** Og nei
+> **MARÍA:** Sumir dagarnir eru langir. Mjög langir. En þegar orkan er til staðar vil ég klára verkefnin
+> **MARÍA:** Svo nú er komið að ykkur
+
+Hulda spurði hvort hún væri á kókaíni. Sex tímum síðar fær hún þriggja liða svar sem endar á því að úthluta henni verkefni. *„Þrír punktar birtast. Þeir hverfa. Þeir birtast aftur."* virkar núna miklu betur, því Hulda hefur ekkert svar.
+
+**3. Herbergi 738.** *„Ég veit það ekki"* er farið. Hún tekur upp þráðinn þar sem hún var skorin af, eins og ekkert hafi í skorist:
+
+> **MARÍA:** Töskurnar þurfa að vera komnar niður fyrir níu, annars næst þetta ekki, þannig að ef hvert lið tekur sinn gang—
+> **GYÐA:** Maja.
+> *Þögn.*
+> **MARÍA** *(ÁFRAMH.)*: —þá er þetta tuttugu mínútur.
+> *Þögn.*
+> **SIGRÍÐUR ÁSDÍS:** Ókei.
+> *Enginn spyr aftur. Gyða fyllir á glasið hjá henni.*
+
+Um leið hvarf tvítekningin: morgunverðartímarnir koma núna aðeins fyrir einu sinni, á Ullevi, og þar er brandarinn að Hulda sker hana af tvisvar og hún heldur áfram.
+
+**Allar þrjár breytingarnar eru í íslensku og ensku útgáfunni.**
+
+## Það sem stendur eftir og verður ekki lagað með línum
+
+Plássið. María hefur 95 línur á móti 181 hjá Huldu í seríu 1, á meðan hún er fyrirferðarmesta röddin í spjallinu. Það þarf fleiri senur þar sem hún á frumkvæðið, ekki fleiri línur í senum þar sem einhver önnur spyr hana. Það er verk sem þarf að ákveða, ekki lagfæring.

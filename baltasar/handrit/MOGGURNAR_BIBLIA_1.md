@@ -1413,6 +1413,10 @@ Fjórar lagfæringar á þræðinum, gerðar í seria1.html, seria2.html, seria3
 4. **S3E5, gluggasenan.** *„María segir ekkert"* varð *„Þögn."* Aðeins eitt viðbragðsskot á Maríu stendur eftir í senunni.
 5. **Kaflinn um kynhneigð endurskoðaður sama dag.** Fyrsta útgáfan taldi upp fjögur „reglubrot" og lagði til að Liseberg-senan í S1E5 yrði endurskrifuð. Það var of vélrænt lesið. Senurnar lenda, hópurinn kemur eins fram við Maríu og við Gyðu í sama þætti, og talningarreglan („hámark tvisvar í seríu") var felld. Eftir stendur eitt: María má ekki vera eini þolandinn í eigin senu, og hún er flöt en aldrei feimin.
 
+6. **Liseberg-senan og þrjár línur til viðbótar lagfærðar eftir samanburð við Messenger-safnið.** Sjá **GREINING_maria_seria1.md** og **GREINING_liseberg.md**. Í öllum tilvikum var María að svara eða hörfa, og reglan segir að hún geri hvorugt.
+
+7. **Nýr kafli: MARÍA ER SKRIFUÐ OF VARNARSINNUÐ.** Talan sem liggur undir: í spjallinu er María fyrirferðarmesta röddin af átta, í handritinu er hún fjórða og Hulda hefur næstum tvöfalt fleiri línur.
+
 ### Senur sem eiga að vera í handritinu en eru ekki skrifaðar
 
 Þrennt stendur skráð í biblíunni sem burðarásar og finnst hvergi í textanum. Þetta er ekki skráningarvilla heldur efni sem átti að fara inn og skilaði sér ekki. **Það á heima inni og bíður þess að vera skrifað.**
