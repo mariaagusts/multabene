@@ -6,7 +6,7 @@
 
 Eignun staðfest af lit skilaboðanna í Messenger: blátt og fjólublátt eru María, grátt er sendandinn sem stendur fyrir ofan.
 
-> **HULDA:** Tökum 9 eða 11 frá Drottningartorginu
+> **UNNUR:** Tökum 9 eða 11 frá Drottningartorginu
 > **HULDA:** Skiptir máli hvaða átt? 🙈
 > **MARÍA:** 3, 9 eða 11 frá platform A4. Út á Stigbergstorget.
 > **STEFANÍA:** Ok maja með þetta.. ætlaði að finna eftir sma þegar það væri loksins hætt að hringja i mig og biðja mig að redda lykli i lobby 😂
@@ -62,7 +62,7 @@ Staðsetning: **S1E2, „Gangavörðurinn"**, ekki S1E4. Þátturinn opnar þega
 >
 > **Á SKJÁ:**
 >
-> **HULDA:** Tökum 9 eða 11 frá Drottningartorginu
+> **UNNUR:** Tökum 9 eða 11 frá Drottningartorginu
 > **HULDA:** Skiptir máli hvaða átt? 🙈
 > **MARÍA:** 3, 9 eða 11 frá platform A4. Út á Stigbergstorget.
 > **STEFANÍA:** Ok Maja með þetta
