@@ -1,6 +1,8 @@
 # DRÖG: Lyklabrandarinn
 
-*Skrifað 28. september 2026 upp úr upprunalegu skilaboðunum, staðfest með skjámyndum. Ekkert af þessu er komið inn í handritið.*
+*Skrifað 28. september 2026 upp úr upprunalegu skilaboðunum, staðfest með skjámyndum og Messenger-safninu.*
+
+> **STAÐA: komið inn.** Senan er í S1E2, í lok fyrsta hluta, klukkan 17:40 á mánudeginum, á íslensku og ensku. Stefanía skrifar án broddstafa og femme-línan stendur.
 
 ## Upprunalega samtalið
 

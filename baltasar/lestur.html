@@ -396,7 +396,17 @@ function markSpeakers(root){
 /* ---------- skilaboð á skjá ---------- */
 function markChats(root){
   var label = lang === 'is' ? 'Á skjá' : 'On screen';
-  root.querySelectorAll('.chat').forEach(function(el){ el.setAttribute('data-label', label); });
+  root.querySelectorAll('.chat').forEach(function(el){
+    /* Ef senuheitið á undan segir þegar „Á SKJÁ" þarf ekki að endurtaka það. */
+    var prev = el.previousElementSibling;
+    while (prev && prev.textContent.trim() === '') prev = prev.previousElementSibling;
+    if (prev && prev.classList.contains('slug') &&
+        /^(á skjá|on screen|yfir svörtu|over black)/i.test(prev.textContent.trim())) {
+      el.removeAttribute('data-label');
+      return;
+    }
+    el.setAttribute('data-label', label);
+  });
 }
 
 /* ---------- ná í handritið ---------- */
