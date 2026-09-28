@@ -9,11 +9,33 @@
   :root{
     --paper:#faf7f1; --ink:#1d1c1a; --soft:#6d675e; --line:#e3ddd2;
     --accent:#c2452f; --chatbg:#eef1f6; --notebg:#f6efdf;
+    --paperfade:rgba(250,247,241,.96); --actionink:#3d3a35;
+    --chatline:#dde3ec; --inputbg:#ffffff;
+    --spk-maria:#1f6f6b; --spk-hulda:#a9720d; --spk-gyda:#7b4b94;
+    --spk-sigga:#3b6ea5; --spk-stefania:#3f7d43; --spk-unnur:#a8446b;
+    --spk-susanna:#574b9c; --spk-rakel:#7a6a1f; --spk-georg:#5c6b73;
+    --spk-magnus:#6b5344; --spk-asta:#5f8a2e; --spk-thordur:#5847a3;
+    --spk-svanhildur:#8a3d7a;
+  }
+  /* ---------- dökkt þema (aðeins á skjá; prentun er alltaf ljós) ---------- */
+  @media screen{
+    :root[data-theme="dark"]{
+      color-scheme:dark;
+      --paper:#1b1a18; --ink:#e9e5dd; --soft:#a69e93; --line:#37342f;
+      --accent:#ff8a6b; --chatbg:#1f2530; --notebg:#26211a;
+      --paperfade:rgba(27,26,24,.96); --actionink:#c7c1b6;
+      --chatline:#333e4d; --inputbg:#23221f;
+      --spk-maria:#5fc9c2; --spk-hulda:#dda63f; --spk-gyda:#c090dd;
+      --spk-sigga:#7fb6ea; --spk-stefania:#7ec483; --spk-unnur:#ef8aad;
+      --spk-susanna:#a99bf0; --spk-rakel:#c6b452; --spk-georg:#a9bcc6;
+      --spk-magnus:#c3a189; --spk-asta:#a8cc62; --spk-thordur:#9a8ceb;
+      --spk-svanhildur:#dd86c9;
+    }
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--paper);color:var(--ink);
        font-family:"Courier Prime","Courier New",monospace;font-size:17px;line-height:1.65}
-  header{position:sticky;top:0;z-index:10;background:rgba(250,247,241,.96);
+  header{position:sticky;top:0;z-index:10;background:var(--paperfade);
          border-bottom:1px solid var(--line);backdrop-filter:blur(4px)}
   .bar{max-width:760px;margin:0 auto;padding:10px 18px;display:flex;align-items:baseline;gap:14px}
   .bar h1{font-size:17px;letter-spacing:.22em;margin:0;font-weight:700}
@@ -23,6 +45,8 @@
   .langbtn{font:inherit;font-size:13px;letter-spacing:.08em;border:1px solid var(--line);
            background:transparent;color:var(--soft);padding:4px 12px;cursor:pointer;border-radius:3px}
   .langbtn.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .themebtn{font-family:"Segoe UI Symbol","Apple Color Emoji","Noto Sans Symbols 2",sans-serif;
+    font-size:15px;line-height:1.1;padding:4px 9px;min-width:34px}
   .wrap{max-width:760px;margin:0 auto;padding:22px 18px 50px}
   .cover{text-align:center;padding:32px 0 14px}
   .cover .title{font-size:44px;letter-spacing:.18em;font-weight:700;margin:0}
@@ -36,6 +60,7 @@
   .sidetoc a{display:block;color:var(--soft);text-decoration:none;padding:4px 2px;
     border-bottom:1px solid var(--line);transition:.15s}
   .sidetoc a:hover{color:var(--ink);border-bottom-color:var(--accent)}
+  .sidetoc a.readlink{color:var(--ink);font-weight:700}
   .sidetoc .season{display:block;margin:16px 0 4px;font-size:11px;letter-spacing:.1em;
     color:var(--soft);text-transform:uppercase}
   .menubtn{display:none;font:inherit;font-size:13px;letter-spacing:.08em;border:1px solid var(--line);
@@ -89,7 +114,7 @@
   #gate .box p.title{font-size:28px;letter-spacing:.16em;font-weight:700;margin:0 0 6px}
   #gate .box p.hint{color:var(--soft);font-size:14px;margin:0 0 26px}
   #gate input{font:inherit;width:100%;padding:10px 12px;border:1px solid var(--line);
-              border-radius:4px;background:#fff;color:var(--ink);text-align:center;
+              border-radius:4px;background:var(--inputbg);color:var(--ink);text-align:center;
               letter-spacing:.06em}
   #gate input:focus{outline:2px solid var(--accent);outline-offset:1px}
   #gate button{font:inherit;margin-top:12px;width:100%;padding:10px 12px;
@@ -107,23 +132,24 @@
   .say{min-width:0}
   .line[class*="spk-"] .who strong::before{content:"";display:inline-block;width:7px;height:7px;
     border-radius:50%;background:currentColor;margin-right:5px;vertical-align:middle}
-  .line.spk-maria .who strong{color:#1f6f6b}
-  .line.spk-hulda .who strong{color:#a9720d}
-  .line.spk-gyda .who strong{color:#7b4b94}
-  .line.spk-sigga .who strong{color:#3b6ea5}
-  .line.spk-stefania .who strong{color:#3f7d43}
-  .line.spk-unnur .who strong{color:#a8446b}
-  .line.spk-susanna .who strong{color:#4a5a8a}
-  .line.spk-rakel .who strong{color:#7a6a1f}
-  .line.spk-georg .who strong{color:#5c6b73}
-  .line.spk-magnus .who strong{color:#6b5344}
-  .line.spk-asta .who strong{color:#5f8a2e}
-  .line.spk-thordur .who strong{color:#5847a3}
-  .line.spk-svanhildur .who strong{color:#8a3d7a}
+  .line.spk-maria .who strong{color:var(--spk-maria)}
+  .line.spk-hulda .who strong{color:var(--spk-hulda)}
+  .line.spk-gyda .who strong{color:var(--spk-gyda)}
+  .line.spk-sigga .who strong{color:var(--spk-sigga)}
+  .line.spk-stefania .who strong{color:var(--spk-stefania)}
+  .line.spk-unnur .who strong{color:var(--spk-unnur)}
+  .line.spk-susanna .who strong{color:var(--spk-susanna)}
+  .line.spk-rakel .who strong{color:var(--spk-rakel)}
+  .line.spk-georg .who strong{color:var(--spk-georg)}
+  .line.spk-magnus .who strong{color:var(--spk-magnus)}
+  .line.spk-asta .who strong{color:var(--spk-asta)}
+  .line.spk-thordur .who strong{color:var(--spk-thordur)}
+  .line.spk-svanhildur .who strong{color:var(--spk-svanhildur)}
   .dial{max-width:none;margin:0;text-align:left}
   .paren{text-align:left;color:var(--soft);margin:0 0 1px;font-size:15px}
-  .action{color:#3d3a35;line-height:1.65;margin:9px 0;padding-left:128px}
-  .chat{margin-left:128px;margin-right:0}
+  .action{color:var(--actionink);line-height:1.65;margin:9px 0;padding-left:128px}
+  .chat{background:var(--chatbg);border:1px solid var(--chatline);border-radius:8px;
+        padding:8px 14px;font-size:15px;max-width:480px;margin:10px 0 10px 128px}
   .cue{margin:12px 0 0;text-align:center}
   .cue .cuex{color:var(--soft);font-weight:400}
   @media(max-width:700px){
@@ -134,6 +160,17 @@
     .chat{margin-left:0}
   }
 </style>
+<script>
+/* Þemað er sett áður en síðan birtist svo hún blikki ekki hvít. */
+(function(){
+  var t = null;
+  try { t = localStorage.getItem('baltasar-theme'); } catch(e){}
+  if (t !== 'dark' && t !== 'light') {
+    t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  }
+  document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
 </head>
 <body>
 
@@ -157,6 +194,7 @@
     <button class="menubtn" id="btn-menu" onclick="toggleMobileMenu()">
       <span class="is">☰ Kaflar</span><span class="en">☰ Episodes</span>
     </button>
+    <button class="langbtn themebtn" id="btn-theme" onclick="toggleTheme()">&#9790;</button>
     <button class="langbtn active" id="btn-is" onclick="setLang('is')">ÍS</button>
     <button class="langbtn" id="btn-en" onclick="setLang('en')">EN</button>
   </div>
@@ -166,6 +204,7 @@
   <button class="mobileclose" onclick="toggleMobileMenu()" aria-label="Loka">✕</button>
   <div class="is">
     <a href="/baltasar/index.html">← Allar seríur</a>
+    <a class="readlink" href="/baltasar/lestur.html">Læsileg útgáfa &rarr;</a>
     <span class="season">Sería 1</span>
     <a href="#is-ep1">1. Farþegaskráin</a>
     <a href="#is-ep2">2. Gangavörðurinn</a>
@@ -190,6 +229,7 @@
   </div>
   <div class="en">
     <a href="/baltasar/index.html">← All series</a>
+    <a class="readlink" href="/baltasar/lestur.html">Reading view &rarr;</a>
     <span class="season">Series One</span>
     <a href="#ep1">1. The Manifest</a>
     <a href="#ep2">2. The Corridor Guard</a>
@@ -1289,8 +1329,7 @@
 <p class="action"><em>They drink.</em></p>
 <div class="line"><div class="who"><strong>HULDA</strong></div><div class="say"><p class="dial">We're not Pink tonight.</p></div></div>
 <div class="line"><div class="who"><strong>SÚSANNA</strong></div><div class="say"><p class="dial">What are we?</p></div></div>
-<p class="cue"><strong>HULDA</strong></p>
-<p class="action"><em>Bleikar. Blekaðar.</em></p>
+<div class="line"><div class="who"><strong>HULDA</strong></div><div class="say"><p class="dial"><em>Bleikar. Blekaðar.</em></p></div></div>
 <p class="action"><em>A beat while everyone works it out.</em></p>
 <p class="action"><em>Sigríður puts her glass down.</em></p>
 <div class="line"><div class="who"><strong>SIGRÍÐUR ÁSDÍS</strong></div><div class="say"><p class="dial">It's five thirty in the afternoon.</p></div></div>
@@ -1423,8 +1462,7 @@
 <div class="line"><div class="who"><strong>UNNUR</strong></div><div class="say"><p class="dial">Don't.</p></div></div>
 <div class="line"><div class="who"><strong>HULDA</strong></div><div class="say"><p class="paren"><em>(already walking away)</em></p>
 <p class="dial">Come on, elf.</p></div></div>
-<p class="cue"><strong>UNNUR</strong></p>
-<p class="action"><em>Don't.</em></p>
+<div class="line"><div class="who"><strong>UNNUR</strong></div><div class="say"><p class="dial">Don't.</p></div></div>
 <div class="line"><div class="who"><strong>STEFANÍA</strong></div><div class="say"><p class="paren"><em>(holding the door)</em></p>
 <p class="dial">After you, elf.</p></div></div>
 <div class="line"><div class="who"><strong>UNNUR</strong></div><div class="say"><p class="dial">I hate all of you.</p></div></div>
@@ -1666,8 +1704,7 @@
 <div class="line"><div class="who"><strong>STEFANÍA</strong> <span class="cuex"><em>(CONT'D)</em></span></div><div class="say"><p class="paren"><em>(eating a chip)</em></p>
 <p class="dial">Tell me more.</p></div></div>
 <div class="line"><div class="who"><strong>GIRL 3</strong></div><div class="say"><p class="dial">And somebody got kissed.</p></div></div>
-<p class="cue"><strong>STEFANÍA</strong></p>
-<p class="action"><em>Who.</em></p>
+<div class="line"><div class="who"><strong>STEFANÍA</strong></div><div class="say"><p class="dial">Who.</p></div></div>
 <div class="line"><div class="who"><strong>GIRL 3</strong></div><div class="say"><p class="dial">We don't know!</p></div></div>
 <div class="line"><div class="who"><strong>ÍSEY</strong></div><div class="say"><p class="dial">And there's a TikToker in the hotel.</p></div></div>
 <div class="line"><div class="who"><strong>STEFANÍA</strong></div><div class="say"><p class="dial">A what?</p></div></div>
@@ -2366,7 +2403,7 @@
 <p class="action"><em>Eight — no. Six women. Súsanna and Unnur are not here.</em></p>
 <p class="action"><em>Sigríður stands looking at the board. Behind her, a queue of thirteen-year-olds has formed. She is not aware of it yet.</em></p>
 <p class="action"><em>The board flickers.</em></p>
-<p class="cue"><strong>*CANCELLED.</strong> <span class="cuex">*</span></p>
+<p class="action"><em><strong>CANCELLED.</strong></em></p>
 <p class="action"><em>A sound goes through thirty-five girls that is not quite a scream.</em></p>
 <p class="action"><em>Sigríður doesn't turn around. She takes out her phone and starts typing with her thumb, still facing the board.</em></p>
 <p class="slug"><strong>ON SCREEN:</strong></p>
@@ -5283,6 +5320,22 @@ function setLang(l){
 }
 document.body.classList.add('lang-is');
 
+function applyThemeButton(){
+  var b = document.getElementById('btn-theme');
+  if (!b) return;
+  var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  b.textContent = dark ? '☀' : '☾';
+  b.setAttribute('aria-label', dark ? 'Skipta í ljóst þema' : 'Skipta í dökkt þema');
+  b.setAttribute('title', dark ? 'Ljóst þema' : 'Dökkt þema');
+}
+function toggleTheme(){
+  var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem('baltasar-theme', next); } catch(e){}
+  applyThemeButton();
+}
+applyThemeButton();
+
 (function(){
   var HASH = '97eb718234d8b5dfcb7d950796a05a8cf40f45d2c89006c48ea4978942475fdf';
   var gate = document.getElementById('gate');
@@ -5362,6 +5415,10 @@ document.body.classList.add('lang-is');
       a.classList.toggle('active', a.getAttribute('href') === '#' + pfx + n);
     });
     currentEp = n;
+    document.querySelectorAll('a.readlink').forEach(function(a){
+      a.href = '/baltasar/lestur.html?e=' + n +
+        (document.body.classList.contains('lang-is') ? '' : '&l=en');
+    });
     try { localStorage.setItem(STORAGE_KEY, n); } catch(e){}
     if (!opts.noHash) {
       try { history.replaceState(null, '', '#' + pfx + n); } catch(e){}

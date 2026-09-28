@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Möggurnar — læsileg útgáfa</title>
+<style>
+  :root{
+    --paper:#faf7f1; --ink:#1d1c1a; --soft:#6d675e; --line:#e3ddd2;
+    --accent:#c2452f; --chatbg:#eef1f6; --chatline:#dde3ec; --notebg:#f6efdf;
+    --paperfade:rgba(250,247,241,.96); --inputbg:#ffffff;
+    --slugbg:#f0ebe1; --dialink:#1d1c1a; --actionink:#4b463f;
+    --spk-maria:#1f6f6b; --spk-hulda:#a9720d; --spk-gyda:#7b4b94;
+    --spk-sigga:#3b6ea5; --spk-stefania:#3f7d43; --spk-unnur:#a8446b;
+    --spk-susanna:#574b9c; --spk-rakel:#7a6a1f; --spk-georg:#5c6b73;
+    --spk-magnus:#6b5344; --spk-asta:#5f8a2e; --spk-thordur:#5847a3;
+    --spk-svanhildur:#8a3d7a;
+    --fs:19px;
+  }
+  /* ---------- dökkt þema (aðeins á skjá; prentun er alltaf ljós) ---------- */
+  @media screen{
+    :root[data-theme="dark"]{
+      color-scheme:dark;
+      --paper:#1b1a18; --ink:#e9e5dd; --soft:#a69e93; --line:#37342f;
+      --accent:#ff8a6b; --chatbg:#1f2530; --chatline:#333e4d; --notebg:#26211a;
+      --paperfade:rgba(27,26,24,.96); --inputbg:#23221f;
+      --slugbg:#252320; --dialink:#efeae1; --actionink:#bdb7ac;
+      --spk-maria:#5fc9c2; --spk-hulda:#dda63f; --spk-gyda:#c090dd;
+      --spk-sigga:#7fb6ea; --spk-stefania:#7ec483; --spk-unnur:#ef8aad;
+      --spk-susanna:#a99bf0; --spk-rakel:#c6b452; --spk-georg:#a9bcc6;
+      --spk-magnus:#c3a189; --spk-asta:#a8cc62; --spk-thordur:#9a8ceb;
+      --spk-svanhildur:#dd86c9;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-size:var(--fs);
+       font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+       line-height:1.72;-webkit-text-size-adjust:100%}
+
+  /* ---------- haus ---------- */
+  header{position:sticky;top:0;z-index:10;background:var(--paperfade);
+         border-bottom:1px solid var(--line);backdrop-filter:blur(4px)}
+  .bar{max-width:46em;margin:0 auto;padding:9px 18px;display:flex;align-items:center;
+       gap:10px;flex-wrap:wrap}
+  .bar h1{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+          font-size:.72em;letter-spacing:.2em;margin:0;font-weight:700}
+  .bar h1 a{color:inherit;text-decoration:none}
+  .bar h1 a:hover{color:var(--accent)}
+  .bar .spacer{flex:1}
+  .btn{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;font-size:13px;
+       letter-spacing:.06em;border:1px solid var(--line);background:transparent;
+       color:var(--soft);padding:5px 11px;cursor:pointer;border-radius:4px;line-height:1.2}
+  .btn:hover{color:var(--ink);border-color:var(--accent)}
+  .btn.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .btn:disabled{opacity:.4;cursor:default}
+  .btn:disabled:hover{color:var(--soft);border-color:var(--line)}
+  .btn.icon{font-family:"Segoe UI Symbol","Noto Sans Symbols 2",sans-serif;
+            font-size:15px;min-width:34px;padding:4px 9px}
+  .group{display:flex;gap:4px}
+  select#pick{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;font-size:13px;
+    padding:5px 8px;border:1px solid var(--line);border-radius:4px;
+    background:var(--inputbg);color:var(--ink);max-width:14em}
+
+  /* ---------- meginmál ---------- */
+  .wrap{max-width:34em;margin:0 auto;padding:6px 20px 90px}
+  .lead{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;font-size:.74em;
+        color:var(--soft);border-bottom:1px solid var(--line);padding:14px 0 12px;margin:0 0 6px}
+  .lead a{color:var(--soft)}
+  .epname{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+          margin:1.4em 0 .2em;font-size:1.15em;letter-spacing:.02em}
+  .epmeta{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+          color:var(--soft);font-size:.76em;letter-spacing:.06em;text-transform:uppercase;
+          margin:0 0 1.6em}
+
+  /* ---------- handritið ---------- */
+  #script hr{border:0;border-top:1px solid var(--line);margin:2.4em 0}
+  #script h3.act{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    font-size:.72em;letter-spacing:.24em;font-weight:700;color:var(--soft);
+    margin:2.8em 0 1.3em;display:flex;align-items:center;gap:14px;text-transform:uppercase}
+  #script h3.act::before,#script h3.act::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  #script .slug{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    font-size:.74em;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--ink);background:var(--slugbg);border-left:4px solid var(--accent);
+    padding:.75em .95em;margin:2.5em 0 1.2em;border-radius:0 5px 5px 0;line-height:1.5}
+
+  #script .action{color:var(--actionink);margin:1.05em 0;font-size:.97em;line-height:1.75}
+  #script .action > em{font-style:normal}
+
+  #script .line{--spk:var(--soft);margin:1.35em 0;padding-left:.9em;
+    border-left:3px solid var(--spk)}
+  #script .line .who{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    font-size:.76em;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--spk);margin-bottom:.2em;line-height:1.4}
+  #script .line .who .cuex{font-weight:400;letter-spacing:.02em;text-transform:none;
+    color:var(--soft);font-size:.95em}
+  #script .line .who .cuex em{font-style:normal}
+  #script .dial{margin:.1em 0 .35em;color:var(--dialink);font-size:1.02em}
+  #script .paren{margin:0 0 .15em;color:var(--soft);font-size:.8em;
+    font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif}
+  #script .paren em{font-style:normal}
+
+  #script .cue{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    --spk:var(--soft);font-size:.76em;font-weight:700;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--spk);margin:1.35em 0 .15em;padding-left:.9em;
+    border-left:3px solid var(--spk)}
+  #script .cue .cuex{font-weight:400;color:var(--soft);text-transform:none}
+  #script .cue + .action{margin-top:.1em;padding-left:.9em;
+    border-left:3px solid var(--line);color:var(--dialink);font-size:1.02em}
+
+  /* hver kona fær sinn lit svo auðvelt sé að fylgjast með hver talar */
+  #script .spk-maria{--spk:var(--spk-maria)}
+  #script .spk-hulda{--spk:var(--spk-hulda)}
+  #script .spk-gyda{--spk:var(--spk-gyda)}
+  #script .spk-sigga{--spk:var(--spk-sigga)}
+  #script .spk-stefania{--spk:var(--spk-stefania)}
+  #script .spk-unnur{--spk:var(--spk-unnur)}
+  #script .spk-susanna{--spk:var(--spk-susanna)}
+  #script .spk-rakel{--spk:var(--spk-rakel)}
+  #script .spk-georg{--spk:var(--spk-georg)}
+  #script .spk-magnus{--spk:var(--spk-magnus)}
+  #script .spk-asta{--spk:var(--spk-asta)}
+  #script .spk-thordur{--spk:var(--spk-thordur)}
+  #script .spk-svanhildur{--spk:var(--spk-svanhildur)}
+
+  #script .chat{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:var(--chatbg);border:1px solid var(--chatline);border-radius:14px;
+    padding:.8em 1.05em;margin:1.4em 0;max-width:26em;font-size:.88em;line-height:1.6}
+  #script .chat::before{content:attr(data-label);display:block;font-size:.72em;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin-bottom:.45em}
+  #script .chat p{margin:.35em 0}
+
+  #script .note{background:var(--notebg);border-left:4px solid var(--line);
+    padding:.75em 1em;margin:1.4em 0;font-size:.88em;color:var(--soft);
+    font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif}
+
+  #script .bigtitle{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    text-align:center;letter-spacing:.2em;font-size:1.35em;font-weight:700;margin:1.5em 0}
+  #script .subtitle{text-align:center;color:var(--soft);font-size:.85em;margin:.25em 0;
+    font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif}
+  #script .subtitle em{font-style:normal}
+
+  /* ---------- flakk ---------- */
+  .epnav{display:flex;gap:10px;align-items:center;margin:2.8em 0 0;
+         border-top:1px solid var(--line);padding-top:16px}
+  .epnav .spacer{flex:1}
+  .msg{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;font-size:.85em;
+       color:var(--soft);background:var(--notebg);border:1px solid var(--line);
+       padding:14px 16px;border-radius:6px;margin:2em 0}
+  footer{max-width:34em;margin:0 auto;padding:22px 20px 40px;color:var(--soft);
+         font-size:.72em;text-align:center;border-top:1px solid var(--line);
+         font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif}
+
+  .lang-is .en{display:none}
+  body:not(.lang-is) .is{display:none}
+
+  @media print{
+    header,.epnav,.lead,footer{display:none}
+    .wrap{max-width:none}
+  }
+
+  /* ---------- lykilorð ---------- */
+  #gate{position:fixed;inset:0;z-index:100;background:var(--paper);
+        display:flex;align-items:center;justify-content:center;padding:24px}
+  #gate.hidden{display:none}
+  #gate .box{max-width:340px;width:100%;text-align:center}
+  #gate .box p.title{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+        font-size:22px;letter-spacing:.16em;font-weight:700;margin:0 0 6px}
+  #gate .box p.hint{color:var(--soft);font-size:15px;margin:0 0 26px}
+  #gate input{font:inherit;font-size:16px;width:100%;padding:10px 12px;
+        border:1px solid var(--line);border-radius:4px;background:var(--inputbg);
+        color:var(--ink);text-align:center;letter-spacing:.06em}
+  #gate input:focus{outline:2px solid var(--accent);outline-offset:1px}
+  #gate button{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+        margin-top:12px;width:100%;padding:11px 12px;background:var(--ink);
+        color:var(--paper);border:none;border-radius:4px;cursor:pointer;
+        letter-spacing:.08em;font-size:14px}
+  #gate button:hover{background:var(--accent)}
+  #gate .err{color:var(--accent);font-size:14px;margin-top:12px;min-height:1.2em}
+  #site{display:none}
+  #site.shown{display:block}
+</style>
+<script>
+/* Þemað og textastærðin eru sett áður en síðan birtist svo hún blikki ekki. */
+(function(){
+  var t = null, fs = null;
+  try { t = localStorage.getItem('baltasar-theme'); } catch(e){}
+  if (t !== 'dark' && t !== 'light') {
+    t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  }
+  document.documentElement.setAttribute('data-theme', t);
+  try { fs = localStorage.getItem('baltasar-lestur-fs'); } catch(e){}
+  var steps = ['17px','19px','21px','24px','27px'];
+  var i = parseInt(fs, 10);
+  if (isNaN(i) || i < 0 || i >= steps.length) i = 1;
+  document.documentElement.style.setProperty('--fs', steps[i]);
+  window.fsIndex = i;
+  window.fsSteps = steps;
+})();
+</script>
+</head>
+<body>
+
+<div id="gate">
+  <div class="box">
+    <p class="title">MÖGGURNAR</p>
+    <p class="hint">Lykilorð, takk.</p>
+    <form id="gate-form" autocomplete="off">
+      <input type="password" id="gate-pw" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button type="submit">Áfram</button>
+      <p class="err" id="gate-err"></p>
+    </form>
+  </div>
+</div>
+
+<div id="site">
+<header>
+  <div class="bar">
+    <h1><a href="/baltasar/index.html">MÖGGURNAR</a></h1>
+    <select id="pick" aria-label="Veldu þátt"></select>
+    <div class="spacer"></div>
+    <div class="group">
+      <button class="btn icon" id="btn-smaller" onclick="stepSize(-1)" title="Minna letur" aria-label="Minna letur">A&#8722;</button>
+      <button class="btn icon" id="btn-bigger" onclick="stepSize(1)" title="Stærra letur" aria-label="Stærra letur">A+</button>
+    </div>
+    <button class="btn icon" id="btn-theme" onclick="toggleTheme()">&#9790;</button>
+    <div class="group">
+      <button class="btn active" id="btn-is" onclick="setLang('is')">ÍS</button>
+      <button class="btn" id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <p class="lead">
+    <span class="is">Sama handritið, sett upp til lestrar. <a href="/baltasar/index.html">Upprunalega uppsetningin</a> er óbreytt.</span>
+    <span class="en">The same script, laid out for reading. The <a href="/baltasar/index.html">original layout</a> is unchanged.</span>
+  </p>
+
+  <h2 class="epname" id="epname"></h2>
+  <p class="epmeta" id="epmeta"></p>
+
+  <div class="epnav" style="border-top:0;padding-top:0;margin-top:0">
+    <button class="btn" id="prev-top" onclick="go(-1)"></button>
+    <span class="spacer"></span>
+    <button class="btn" id="next-top" onclick="go(1)"></button>
+  </div>
+
+  <div id="script"></div>
+
+  <div class="epnav">
+    <button class="btn" id="prev-bot" onclick="go(-1)"></button>
+    <span class="spacer"></span>
+    <button class="btn" id="next-bot" onclick="go(1)"></button>
+  </div>
+</div>
+
+<footer>
+  <span class="is">MÖGGURNAR · vinnuskjal · læsileg útgáfa</span>
+  <span class="en">MÖGGURNAR · working draft · reading view</span>
+</footer>
+</div>
+
+<script>
+/* ---------------------------------------------------------------
+   Læsileg útgáfa. Sækir sama handritið úr seria1.html, seria2.html
+   og seria3.html og birtir það með annarri uppsetningu.
+   Upprunalegu síðurnar eru óbreyttar.
+   --------------------------------------------------------------- */
+
+var EPISODES = [
+  {n:1,  f:'seria1.html', s:1, is:'Farþegaskráin',      en:'The Manifest'},
+  {n:2,  f:'seria1.html', s:1, is:'Gangavörðurinn',     en:'The Corridor Guard'},
+  {n:3,  f:'seria1.html', s:1, is:'Blekaðar',           en:'Blekaðar'},
+  {n:4,  f:'seria1.html', s:1, is:'Gula spjaldið',      en:'The Yellow Card'},
+  {n:5,  f:'seria1.html', s:1, is:'Eftirlitsaðgerðin',  en:'Operation Oversight'},
+  {n:6,  f:'seria1.html', s:1, is:'Vaktalok',           en:'End of Watch'},
+  {n:7,  f:'seria2.html', s:2, is:'Engin bakvakt',      en:'No Backup'},
+  {n:8,  f:'seria2.html', s:2, is:'Þurrir sokkar',      en:'Dry Socks'},
+  {n:9,  f:'seria2.html', s:2, is:'Útileikurinn',       en:'Away Game'},
+  {n:10, f:'seria2.html', s:2, is:'Fjáröflunin',        en:'Fundraiser'},
+  {n:11, f:'seria2.html', s:2, is:'Engin framboð',      en:'No Nominations'},
+  {n:12, f:'seria2.html', s:2, is:'Of fáar',            en:'Too Few'},
+  {n:13, f:'seria3.html', s:3, is:'Fjórir dagar',       en:'Four Days'},
+  {n:14, f:'seria3.html', s:3, is:'Sex',                en:'Six'},
+  {n:15, f:'seria3.html', s:3, is:'Dómarinn',           en:'The Referee'},
+  {n:16, f:'seria3.html', s:3, is:'Verkefnið',          en:'The Project'},
+  {n:17, f:'seria3.html', s:3, is:'Afslöppun',          en:'Relaxation'},
+  {n:18, f:'seria3.html', s:3, is:'Sextíu og einn',     en:'Sixty-One'}
+];
+
+var SPEAKERS = [
+  ['maria',      /^MAR[IÍ]A/],
+  ['hulda',      /^HULDA/],
+  ['gyda',       /^GY[DÐ]A/],
+  ['sigga',      /^(SIGR[IÍ][DÐ]UR|SIGGA)/],
+  ['stefania',   /^STEFAN[IÍ]A/],
+  ['unnur',      /^UNNUR/],
+  ['susanna',    /^S[UÚ]SANNA/],
+  ['rakel',      /^RAKEL/],
+  ['georg',      /^GEORG/],
+  ['magnus',     /^MAGN[UÚ]S/],
+  ['asta',       /^[AÁ]STA/],
+  ['thordur',    /^[TÞ][OÓ]R[DÐ]UR/],
+  ['svanhildur', /^SVANHILDUR/]
+];
+
+var lang = 'is';
+var current = 1;
+var cache = {};
+
+function ep(n){
+  for (var i = 0; i < EPISODES.length; i++) if (EPISODES[i].n === n) return EPISODES[i];
+  return null;
+}
+function epTitle(e){ return lang === 'is' ? e.is : e.en; }
+function epNo(n){ return (n - 1) % 6 + 1; }
+
+/* ---------- textastærð ---------- */
+function stepSize(d){
+  var i = window.fsIndex + d;
+  if (i < 0) i = 0;
+  if (i >= window.fsSteps.length) i = window.fsSteps.length - 1;
+  window.fsIndex = i;
+  document.documentElement.style.setProperty('--fs', window.fsSteps[i]);
+  try { localStorage.setItem('baltasar-lestur-fs', i); } catch(e){}
+  document.getElementById('btn-smaller').disabled = (i === 0);
+  document.getElementById('btn-bigger').disabled = (i === window.fsSteps.length - 1);
+}
+
+/* ---------- þema ---------- */
+function applyThemeButton(){
+  var b = document.getElementById('btn-theme');
+  if (!b) return;
+  var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  b.textContent = dark ? '☀' : '☾';
+  b.setAttribute('aria-label', dark ? 'Skipta í ljóst þema' : 'Skipta í dökkt þema');
+  b.setAttribute('title', dark ? 'Ljóst þema' : 'Dökkt þema');
+}
+function toggleTheme(){
+  var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem('baltasar-theme', next); } catch(e){}
+  applyThemeButton();
+}
+
+/* ---------- tungumál ---------- */
+function setLang(l){
+  lang = (l === 'is') ? 'is' : 'en';
+  document.body.classList.toggle('lang-is', lang === 'is');
+  document.getElementById('btn-is').classList.toggle('active', lang === 'is');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.documentElement.lang = lang;
+  buildPicker();
+  show(current, true);
+}
+
+/* ---------- valmynd þátta ---------- */
+function buildPicker(){
+  var sel = document.getElementById('pick');
+  sel.innerHTML = '';
+  var groups = {};
+  EPISODES.forEach(function(e){
+    if (!groups[e.s]) {
+      var g = document.createElement('optgroup');
+      g.label = (lang === 'is' ? 'Sería ' : 'Series ') + e.s;
+      sel.appendChild(g);
+      groups[e.s] = g;
+    }
+    var o = document.createElement('option');
+    o.value = e.n;
+    o.textContent = epNo(e.n) + '. ' + epTitle(e);
+    groups[e.s].appendChild(o);
+  });
+  sel.value = current;
+}
+
+/* ---------- hver talar ---------- */
+function markSpeakers(root){
+  function tag(el, strongEl){
+    if (!strongEl) return;
+    var t = (strongEl.textContent || '').toUpperCase().replace(/^[^A-ZÁÉÍÓÚÝÞÆÖÐ]+/, '');
+    for (var i = 0; i < SPEAKERS.length; i++){
+      if (SPEAKERS[i][1].test(t)) { el.classList.add('spk-' + SPEAKERS[i][0]); return; }
+    }
+  }
+  root.querySelectorAll('.line').forEach(function(el){
+    tag(el, el.querySelector('.who strong'));
+  });
+  root.querySelectorAll('.cue').forEach(function(el){
+    tag(el, el.querySelector('strong'));
+  });
+}
+
+/* ---------- skilaboð á skjá ---------- */
+function markChats(root){
+  var label = lang === 'is' ? 'Á skjá' : 'On screen';
+  root.querySelectorAll('.chat').forEach(function(el){ el.setAttribute('data-label', label); });
+}
+
+/* ---------- ná í handritið ---------- */
+function load(file){
+  if (cache[file]) return Promise.resolve(cache[file]);
+  return fetch(file, {credentials:'same-origin'}).then(function(r){
+    if (!r.ok) throw new Error(r.status);
+    return r.text();
+  }).then(function(html){
+    cache[file] = new DOMParser().parseFromString(html, 'text/html');
+    return cache[file];
+  });
+}
+
+function show(n, keepScroll){
+  var e = ep(n);
+  if (!e) return;
+  current = n;
+  var box = document.getElementById('script');
+  document.getElementById('pick').value = n;
+  document.getElementById('epname').textContent = epNo(n) + '. ' + epTitle(e);
+  document.getElementById('epmeta').textContent =
+    (lang === 'is' ? 'Sería ' + e.s + ' · þáttur ' : 'Series ' + e.s + ' · episode ') + epNo(n);
+  navLabels();
+  try { localStorage.setItem('baltasar-lestur-ep', n); } catch(err){}
+  try { history.replaceState(null, '', 'lestur.html?e=' + n + (lang === 'en' ? '&l=en' : '')); } catch(err){}
+
+  box.innerHTML = '<p class="msg">' + (lang === 'is' ? 'Sæki handritið …' : 'Loading …') + '</p>';
+  load(e.f).then(function(doc){
+    if (current !== n) return;
+    var art = doc.getElementById((lang === 'is' ? 'is-ep' : 'ep') + n);
+    if (!art) {
+      box.innerHTML = '<p class="msg">' + (lang === 'is'
+        ? 'Þessi þáttur fannst ekki í handritinu.'
+        : 'This episode was not found in the script.') + '</p>';
+      return;
+    }
+    var holder = document.createElement('div');
+    holder.className = 'episode';
+    holder.innerHTML = art.innerHTML;
+    holder.querySelectorAll('.ep-nav').forEach(function(x){ x.parentNode.removeChild(x); });
+
+    /* Hausinn efst í þættinum (titill, lengd) er þegar kominn hér fyrir ofan,
+       svo hann er tekinn út og lengdin sett í undirlínuna. */
+    var extra = '';
+    while (holder.firstElementChild && holder.firstElementChild.classList.contains('subtitle')) {
+      var t = (holder.firstElementChild.textContent || '').trim();
+      if (/^\d+\s*(mín|min)/i.test(t)) extra = t;
+      holder.removeChild(holder.firstElementChild);
+    }
+    while (holder.firstElementChild && holder.firstElementChild.tagName === 'HR') {
+      holder.removeChild(holder.firstElementChild);
+    }
+    if (extra) {
+      document.getElementById('epmeta').textContent += ' · ' + extra;
+    }
+
+    box.innerHTML = '';
+    box.appendChild(holder);
+    markSpeakers(box);
+    markChats(box);
+    if (!keepScroll) window.scrollTo(0, 0);
+  }).catch(function(){
+    box.innerHTML = '<p class="msg">' + (lang === 'is'
+      ? 'Það næst ekki í handritið. Þessi síða verður að vera opnuð á vefnum (slóð sem byrjar á https), hún vinnur ekki ef skráin er opnuð beint úr tölvunni.'
+      : 'Could not load the script. This page has to be opened over the web, not straight from a local file.') + '</p>';
+  });
+}
+
+function navLabels(){
+  var prevE = ep(current - 1), nextE = ep(current + 1);
+  ['prev-top','prev-bot'].forEach(function(id){
+    var b = document.getElementById(id);
+    b.disabled = !prevE;
+    b.textContent = prevE
+      ? '← ' + epTitle(prevE)
+      : (lang === 'is' ? '← Fyrsti þáttur' : '← First episode');
+  });
+  ['next-top','next-bot'].forEach(function(id){
+    var b = document.getElementById(id);
+    b.disabled = !nextE;
+    b.textContent = nextE
+      ? epTitle(nextE) + ' →'
+      : (lang === 'is' ? 'Síðasti þáttur →' : 'Last episode →');
+  });
+}
+
+function go(d){
+  if (ep(current + d)) show(current + d);
+}
+
+document.getElementById('pick').addEventListener('change', function(){
+  show(parseInt(this.value, 10));
+});
+
+/* ---------- byrjun ---------- */
+var started = false;
+function start(){
+  if (started) return;
+  started = true;
+  var params = new URLSearchParams(location.search);
+  var l = params.get('l') === 'en' ? 'en' : 'is';
+  var n = parseInt(params.get('e'), 10);
+  if (isNaN(n)) {
+    try { n = parseInt(localStorage.getItem('baltasar-lestur-ep'), 10); } catch(err){}
+  }
+  if (isNaN(n) || !ep(n)) n = 1;
+  current = n;
+  stepSize(0);
+  applyThemeButton();
+  setLang(l);
+}
+
+/* ---------- lykilorð ---------- */
+(function(){
+  var HASH = '97eb718234d8b5dfcb7d950796a05a8cf40f45d2c89006c48ea4978942475fdf';
+  var gate = document.getElementById('gate');
+  var site = document.getElementById('site');
+  var form = document.getElementById('gate-form');
+  var pw = document.getElementById('gate-pw');
+  var err = document.getElementById('gate-err');
+
+  function toHex(buf){
+    var bytes = new Uint8Array(buf), hex = '';
+    for (var i = 0; i < bytes.length; i++) hex += bytes[i].toString(16).padStart(2,'0');
+    return hex;
+  }
+  function unlock(){
+    gate.classList.add('hidden');
+    site.classList.add('shown');
+    try { sessionStorage.setItem('baltasar-unlocked', '1'); } catch(e){}
+    start();
+  }
+  if (sessionStorage && sessionStorage.getItem('baltasar-unlocked') === '1') {
+    unlock();
+  }
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var val = (pw.value || '').trim().toLowerCase();
+    crypto.subtle.digest('SHA-256', new TextEncoder().encode(val)).then(function(buf){
+      if (toHex(buf) === HASH) {
+        err.textContent = '';
+        unlock();
+      } else {
+        err.textContent = 'Rangt lykilorð.';
+        pw.value = '';
+        pw.focus();
+      }
+    });
+  });
+})();
+
+document.body.classList.add('lang-is');
+</script>
+</body>
+</html>
