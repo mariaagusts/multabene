@@ -1,0 +1,1211 @@
+<!doctype html>
+<html lang="is" data-level="2">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skref í fjármálum</title>
+<meta name="description" content="Beinagrind að yfirliti yfir fjármál einstaklinga, byggð á bókunum Fyrstu skref í fjármálum og Farsæl skref í fjármálum (Fjármálavit). Þrjú stig: börn, fullorðnir og lengra komnir.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
+<style>
+:root{
+  --bg:#f4efe6; --surface:#fffdf9; --surface-2:#efe8da;
+  --ink:#292018; --ink-2:#5d5140; --muted:#6b6150;
+  --hairline:#e3dac8; --accent:#1266c4; --accent-ink:#fff; --accent-soft:#e4edf9;
+  --l1:#0f766e; --l1-soft:#dff3ef;
+  --l2:#1266c4; --l2-soft:#e4edf9;
+  --l3:#8a4a9f; --l3-soft:#f0e6f5;
+  --warn:#eda100; --warn-soft:#fdf3d8;
+  --shadow:0 1px 2px rgba(84,66,32,.06),0 6px 20px rgba(84,66,32,.09);
+  --r:14px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#161310; --surface:#211d17; --surface-2:#2b2620;
+    --ink:#f3efe8; --ink-2:#cbc2b3; --muted:#9e9384;
+    --hairline:#352f26; --accent:#5aa2f0; --accent-ink:#161310; --accent-soft:#1e3048;
+    --l1:#3fbfae; --l1-soft:#15302c;
+    --l2:#5aa2f0; --l2-soft:#1e3048;
+    --l3:#c28ad8; --l3-soft:#32233a;
+    --warn:#c98500; --warn-soft:#332a14;
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 20px rgba(0,0,0,.3);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#161310; --surface:#211d17; --surface-2:#2b2620;
+  --ink:#f3efe8; --ink-2:#cbc2b3; --muted:#9e9384;
+  --hairline:#352f26; --accent:#5aa2f0; --accent-ink:#161310; --accent-soft:#1e3048;
+  --l1:#3fbfae; --l1-soft:#15302c;
+  --l2:#5aa2f0; --l2-soft:#1e3048;
+  --l3:#c28ad8; --l3-soft:#32233a;
+  --warn:#c98500; --warn-soft:#332a14;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 20px rgba(0,0,0,.3);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  line-height:1.55; font-size:17px;
+}
+a{color:var(--accent)}
+.wrap{max-width:1100px; margin:0 auto; padding:16px 16px 80px}
+
+/* Haus */
+header.top{padding:24px 0 8px}
+.eyebrow{font-size:.8rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin:0 0 6px}
+h1{font-size:clamp(1.8rem,4vw,2.6rem); line-height:1.1; margin:0 0 10px; letter-spacing:-.02em}
+.lead{color:var(--ink-2); max-width:70ch; margin:0}
+.draft{display:inline-block; background:var(--warn-soft); border:1px solid var(--warn); color:var(--ink); border-radius:999px; padding:2px 10px; font-size:.78rem; margin-left:8px; vertical-align:middle}
+
+/* Stigaval */
+.levels{
+  position:sticky; top:0; z-index:10; background:var(--bg);
+  padding:12px 0; margin:12px 0 8px; border-bottom:1px solid var(--hairline);
+}
+.levels .row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+.levels button{
+  flex:1 1 150px; border:2px solid var(--hairline); background:var(--surface); color:var(--ink-2);
+  border-radius:var(--r); padding:10px 12px; font:inherit; font-weight:700; cursor:pointer; text-align:left;
+  transition:border-color .15s, background .15s;
+}
+.levels button small{display:block; font-weight:400; font-size:.8rem; color:var(--muted)}
+.levels button[aria-pressed="true"]{color:var(--ink)}
+.levels button[data-set="1"][aria-pressed="true"]{border-color:var(--l1); background:var(--l1-soft)}
+.levels button[data-set="2"][aria-pressed="true"]{border-color:var(--l2); background:var(--l2-soft)}
+.levels button[data-set="3"][aria-pressed="true"]{border-color:var(--l3); background:var(--l3-soft)}
+.levels button[data-set="all"][aria-pressed="true"]{border-color:var(--ink-2); background:var(--surface-2)}
+.levels button[data-set="all"]{flex:0 1 auto}
+.levels button:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+
+/* Uppbygging */
+.layout{display:grid; grid-template-columns:1fr; gap:24px}
+@media (min-width:900px){ .layout{grid-template-columns:240px 1fr} }
+nav.toc{position:sticky; top:96px; align-self:start; font-size:.9rem; display:none}
+@media (min-width:900px){ nav.toc{display:block} }
+nav.toc ol{list-style:none; padding:0; margin:0}
+nav.toc li{margin:0 0 6px}
+nav.toc a{text-decoration:none; color:var(--ink-2)}
+nav.toc a:hover{color:var(--accent)}
+nav.toc .num{color:var(--muted); margin-right:6px}
+
+section.chapter{margin:0 0 40px; scroll-margin-top:110px}
+section.chapter > h2{
+  font-size:1.5rem; margin:28px 0 4px; letter-spacing:-.01em; padding-top:12px; border-top:2px solid var(--hairline);
+}
+.src{font-size:.78rem; color:var(--muted); margin:0 0 14px}
+.src span{display:inline-block; background:var(--surface-2); border-radius:999px; padding:1px 8px; margin-right:4px}
+article.topic{
+  background:var(--surface); border-radius:var(--r); box-shadow:var(--shadow);
+  padding:14px 16px; margin:0 0 12px; scroll-margin-top:110px;
+}
+article.topic h3{margin:0 0 8px; font-size:1.1rem}
+article.topic p{margin:0 0 8px}
+article.topic ul{margin:0 0 8px; padding-left:20px}
+article.topic li{margin:2px 0}
+.lvl{border-left:4px solid transparent; padding:2px 0 2px 12px; margin:6px 0}
+.lvl .tag{display:none; font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; font-weight:700; margin-bottom:2px}
+.l1{border-color:var(--l1)} .l1 .tag{color:var(--l1)}
+.l2{border-color:var(--l2)} .l2 .tag{color:var(--l2)}
+.l3{border-color:var(--l3)} .l3 .tag{color:var(--l3)}
+/* Stigaval: sýna aðeins valið stig */
+html[data-level="1"] .lvl:not(.l1){display:none}
+html[data-level="2"] .lvl:not(.l2){display:none}
+html[data-level="3"] .lvl:not(.l3){display:none}
+html[data-level="all"] .lvl .tag{display:block}
+html[data-level="all"] .lvl{background:var(--surface-2); border-radius:0 8px 8px 0; padding:8px 12px}
+
+.box{background:var(--surface-2); border-radius:var(--r); padding:12px 16px; margin:8px 0 0}
+.box h3{margin:0 0 6px; font-size:1rem}
+code,.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.92em; background:var(--surface-2); padding:1px 5px; border-radius:5px}
+.formula{display:block; padding:8px 10px; margin:6px 0; overflow-x:auto}
+dl.gloss{margin:0}
+dl.gloss dt{font-weight:700; margin-top:10px}
+dl.gloss dd{margin:0}
+footer.foot{margin-top:40px; padding-top:16px; border-top:1px solid var(--hairline); font-size:.85rem; color:var(--muted)}
+footer.foot ul{padding-left:18px}
+.backtop{position:fixed; right:14px; bottom:14px; background:var(--accent); color:var(--accent-ink); border-radius:999px; padding:10px 14px; text-decoration:none; font-weight:700; box-shadow:var(--shadow)}
+@media print{
+  .levels,.backtop,nav.toc{display:none !important}
+  body{background:#fff; color:#000; font-size:11pt}
+  article.topic{box-shadow:none; border:1px solid #ccc; break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <p class="eyebrow">Fjármál einstaklinga · yfirlit</p>
+  <h1>Skref í fjármálum <span class="draft">beinagrind, drög</span></h1>
+  <p class="lead">
+    Stiklað á stóru um helstu atriði fjármála einstaklinga. Byggt á kennslubókunum
+    <em>Fyrstu skref í fjármálum</em> og <em>Farsæl skref í fjármálum</em> eftir Gunnar Baldvinsson,
+    sem Fjármálavit dreifir í skóla. Veldu stig hér að neðan. Sama efni, þrjár dýptir.
+  </p>
+</header>
+
+<div class="levels" role="group" aria-label="Veldu stig">
+  <div class="row">
+    <button type="button" data-set="1" aria-pressed="false">1. stig: Börn<small>Einfalt mál, dæmi úr daglegu lífi</small></button>
+    <button type="button" data-set="2" aria-pressed="true">2. stig: Fullorðnir og blaðamenn<small>Skýr hugtök, tölur og samhengi</small></button>
+    <button type="button" data-set="3" aria-pressed="false">3. stig: Lengra komnir<small>Formúlur, reglur og fínni blæbrigði</small></button>
+    <button type="button" data-set="all" aria-pressed="false">Öll stig<small>Til yfirlestrar</small></button>
+  </div>
+</div>
+
+<div class="layout">
+
+<nav class="toc" aria-label="Efnisyfirlit">
+  <ol>
+    <li><a href="#k0"><span class="num">0</span>Um efnið</a></li>
+    <li><a href="#k1"><span class="num">1</span>Fjármál alla daga, alla ævi</a></li>
+    <li><a href="#k2"><span class="num">2</span>Verkfærakista fjármálanna</a></li>
+    <li><a href="#k3"><span class="num">3</span>Sparnaður og fjárfestingar</a></li>
+    <li><a href="#k4"><span class="num">4</span>Lán og skuldir</a></li>
+    <li><a href="#k5"><span class="num">5</span>Stórar fjárhagslegar ákvarðanir</a></li>
+    <li><a href="#k6"><span class="num">6</span>Farsæl skref: hollráð</a></li>
+    <li><a href="#ord"><span class="num">·</span>Orðskýringar</a></li>
+    <li><a href="#heim"><span class="num">·</span>Heimildir</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- ============================================================ -->
+<section class="chapter" id="k0">
+  <h2>0. Um efnið</h2>
+  <p class="src"><span>fjarmalavit.is</span><span>Inngangsorð beggja bóka</span></p>
+
+  <article class="topic">
+    <h3>Hvað er þetta og hvaðan kemur það?</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þetta er stutt yfirlit um peninga: hvaðan þeir koma, í hvað þeir fara og hvernig þeir geta vaxið. Það er byggt á bókum sem krakkar í 10. bekk og framhaldsskóla lesa í skólanum.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Fjármálavit er fræðsluverkefni Samtaka fjármálafyrirtækja. Það dreifir þremur bókum eftir Gunnar Baldvinsson ókeypis til skóla: <em>Fyrstu skref í fjármálum</em> (efstu bekkir grunnskóla), <em>Snjöll skref í fjármálum</em> (byrjun framhaldsskóla) og <em>Farsæl skref í fjármálum</em> (eldri nemendur, háskólastig og fullorðnir). Þetta yfirlit fylgir kaflaskipan Farsælla skrefa en fléttar inn grunnatriðum úr Fyrstu skrefum.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Útgefandi bókanna er Framtíðarsýn hf. Fyrstu skref komu fyrst út 2017 (2. útgáfa 2020, vefútgáfa janúar 2022, 58 bls.). Farsæl skref komu út 2020 og önnur útgáfa 2026 (208 bls.), þar sem bætt var við skuldamælikvörðum, lánþegaskilyrðum, nýjum tegundum húsnæðislána og lykilupplýsingaskjölum. Þessi beinagrind fylgir efnisyfirliti 2. útgáfu. Númer sýnidæma (1-74) vísa í bókina.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Rauði þráðurinn í báðum bókum</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <ul>
+        <li>Eyddu minna en þú færð.</li>
+        <li>Leggðu alltaf eitthvað til hliðar.</li>
+        <li>Sparaðu fyrir hlutum í stað þess að fá lánað.</li>
+        <li>Spurðu ef þú skilur ekki.</li>
+      </ul>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <ul>
+        <li>Tekjur mínus útgjöld: jákvæður mismunur verður sparnaður og eignir, neikvæður mismunur verður skuld.</li>
+        <li>Vextir og tími vinna fyrir þann sem sparar og á móti þeim sem skuldar.</li>
+        <li>Verðbólga rýrir kaupmátt, bæði launa og sparnaðar.</li>
+        <li>Stóru ákvarðanirnar (nám, húsnæði, eftirlaun) ráða mestu um fjárhag ævinnar.</li>
+      </ul>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <ul>
+        <li>Fjármál einstaklinga eru stýring á efnahagsreikningi (eignir, skuldir, eigið fé) og rekstrarreikningi (tekjur, gjöld) yfir æviskeiðið.</li>
+        <li>Allar ákvarðanir má setja á sama mælikvarða: núvirði greiðsluflæðis með viðeigandi ávöxtunarkröfu.</li>
+        <li>Raunstærðir (umfram verðbólgu) skipta máli, ekki nafnstærðir.</li>
+        <li>Áhætta er tvíþætt: persónuleg (tekjur, heilsa) og efnahagsleg (eignaverð, vextir, verðbólga).</li>
+      </ul>
+    </div>
+  </article>
+</section>
+
+<!-- ============================================================ -->
+<section class="chapter" id="k1">
+  <h2>1. Fjármál alla daga, alla ævi</h2>
+  <p class="src"><span>Farsæl skref, kafli 1</span><span>Fyrstu skref, kafli 1: Uppruni og ráðstöfun verðmæta</span></p>
+
+  <article class="topic">
+    <h3>Hvaðan koma peningarnir og í hvað fara þeir?</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Peningar koma til þín sem vasapeningar, gjafir eða laun fyrir vinnu. Þeir fara í hluti sem þú þarft (mat, föt) og hluti sem þig langar í (leiki, nammi). Það sem verður eftir getur þú lagt í sparibauk eða á bankareikning.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Tekjur: laun, eignatekjur (vextir, arður, leiga), lífeyrir, eftirlaun, arfur. Útgjöld: matur og nauðsynjar, húsnæði, skattar, samgöngur, afþreying. Mismunurinn ræður öllu: sé hann jákvæður verður til sparnaður og eignir, sé hann neikvæður þarf að ganga á eignir eða taka lán.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Fjármál snúast um að afla, ráðstafa og varðveita verðmæti. Tekjur skiptast í atvinnutekjur, fjármagnstekjur og tilfærslur. Skipting útgjalda í föst og breytileg, nauðsynjar og val, er grunnur greiðsluáætlunar. Sparnaðarhlutfall (sparnaður/ráðstöfunartekjur) er lykilstærð yfir ævina.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Laun og ráðstöfunartekjur, launaseðillinn</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þegar þú vinnur færð þú laun. Hluti af laununum fer í skatt og lífeyrissjóð áður en þú færð þau. Það sem þú færð í hendurnar heitir útborguð laun. Launaseðill er blað eða skjal sem sýnir þetta allt.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Heildarlaun (brúttó) eru laun fyrir frádrátt. Frá þeim dregst iðgjald í lífeyrissjóð (4%), viðbótarlífeyrissparnaður ef við á, tekjuskattur í staðgreiðslu og félagsgjald til stéttarfélags. Eftir stendur það sem fólk ræður yfir: ráðstöfunartekjur. Laun eru samningsatriði en kjarasamningar setja lágmark. Orlof er að lágmarki 10,17% af launum. Launþegi á rétt á launaseðli við hverja útborgun.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Röð útreiknings á launaseðli: heildarlaun → mínus iðgjald í lífeyrissjóð og séreign (skattfrjálst) → skattstofn → tekjuskattur og útsvar í þrepum mínus persónuafsláttur → mínus félagsgjöld → útborgað. Launatengd gjöld atvinnurekanda (mótframlag 11,5%, tryggingagjald o.fl.) sjást ekki á seðlinum en eru hluti af heildarkostnaði við starfsmann. Yfirvinna, vaktaálag og orlof eiga sér stoð í kjarasamningi.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Að ráða sig í vinnu</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Krakkar mega vinna létt störf frá 13-14 ára, til dæmis bera út blöð eða hjálpa í garði. Frá 15 ára má vinna meira, en ekki hættuleg störf. Þegar þú verður 18 ára ræður þú sjálf eða sjálfur peningunum þínum.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Meginregla: börn 14 ára og yngri í skyldunámi eru ekki ráðin í vinnu, með undantekningum fyrir létt störf frá 13 og 14 ára. Unglinga 15-18 ára má ráða í störf sem eru ekki of erfið eða hættuleg. Ráðningarsamningur á alltaf að vera til og tilgreina aðila, starf, starfstíma og laun. Við 18 ára aldur verður fólk lögráða: fjárráða (ber ábyrgð á eigin fjármálum) og sjálfráða.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Reglur um vinnu barna og unglinga byggja á vinnuverndarlögum og reglugerð um vinnu barna og unglinga (vinnutími, hvíld, bönnuð störf). Ófjárráða einstaklingar geta ekki stofnað til skulda, sem skýrir hvers vegna kreditkort fást ekki undir 18 ára nema fyrirframgreidd. Ráðningarsamningur, kjarasamningur og lög mynda þrískipt réttindakerfi þar sem lakari kjör en kjarasamningur kveður á um eru ógild.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Skattar og skattframtal</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Skattur er hluti af launum sem fer til ríkisins og bæjarins. Fyrir skattinn fáum við skóla, spítala, vegi og lögreglu. Krakkar 15 ára og yngri borga bara 6% skatt ef þau vinna sér inn meira en ákveðna upphæð.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Þrír helstu skattar einstaklinga: tekjuskattur (á laun, ríki og útsvar sveitarfélags), fjármagnstekjuskattur (á vexti, arð, söluhagnað) og virðisaukaskattur (á vöru og þjónustu). Tekjuskattur er staðgreiddur og þrepaskiptur. Persónuafsláttur er föst krónutala sem lækkar skattinn og tryggir að laun upp að ákveðnu marki eru skattfrjáls. Frá 16 ára greiðir fólk skatt eins og fullorðnir. Skattframtali er skilað árlega og skatturinn gerður upp, ofgreiðsla endurgreidd og vangreiðsla innheimt.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Tekjuskattur einstaklinga er þrepaskiptur (2021: 31,45% til 46,25% að meðtöldu útsvari). Ónýttur persónuafsláttur safnast innan ársins og nýtist að fullu þótt unnið sé hluta árs, og hjón/sambúðarfólk geta nýtt afslátt hvors annars. Fjármagnstekjuskattur er flatur og leggst á nafnvexti, ekki raunvexti, sem skiptir máli í verðbólgu. Iðgjöld í lífeyrissjóð og séreign eru frádráttarbær frá skattstofni (skattur greiðist við úttekt). Samneysla vs. einkaneysla er grunnhugtak í umræðu um skatta.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Lífeyrissjóður</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Allir sem vinna setja smá hluta af laununum í stóran sameiginlegan sparibauk sem heitir lífeyrissjóður. Þegar fólk er orðið gamalt og hætt að vinna fær það peninga úr honum í hverjum mánuði.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Skylduaðild gildir fyrir alla 16-70 ára sem vinna. Lágmarksiðgjald er 12% en í flestum kjarasamningum 15,5% (launþegi 4%, launagreiðandi 11,5%). Réttindi: ellilífeyrir til æviloka frá 67/70 ára, örorkulífeyrir, maka- og barnalífeyrir. Ellilífeyrir er yfirleitt stærsti hluti eftirlauna. Fylgstu með yfirlitum frá sjóðnum og að iðgjöld skili sér.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Réttindi ávinnast í hlutfalli við greidd iðgjöld. Með 15,5% iðgjaldi í 40 ár má búast við eftirlaunum nálægt 60-70% af meðallaunum, háð launaþróun og afkomu sjóðsins. Sjóðir verða að skerða eða auka réttindi ef eignir og skuldbindingar standast ekki á (tryggingafræðileg staða). Samspil lífeyrissjóðs, almannatrygginga (TR) og séreignar ræður tekjum á eftirlaunaárum, og tekjutengingar TR hafa áhrif á jaðaráhrif sparnaðar.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Peningar: seðlar, kort og rafrænar greiðslur</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Hægt er að borga með seðlum og mynt, með korti eða með síma. Debetkort tekur peninga beint af reikningnum þínum. Kreditkort er lán sem þarf að borga seinna. Krakkar geta oft fengið debetkort 11-12 ára. Segðu aldrei neinum PIN-númerið þitt.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Gjaldmiðill Íslands er króna og Seðlabankinn hefur einkarétt á útgáfu seðla og myntar, sem eru lögeyrir. Flest viðskipti eru rafræn: millifærslur í netbanka, debetkort (tekið beint af reikningi) og kreditkort (skuld við kortafyrirtæki, innheimt næsta tímabil). Farsímagreiðslur eru tengdar korti og varðar með fingrafari eða andliti. Rafræn skilríki jafngilda undirskrift. Kortum fylgja árgjöld og færslugjöld. Undir 18 ára fæst ekki kreditkort nema fyrirframgreitt.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Samanburður greiðslumiðla á fimm ásum: vextir (engir á seðlum, lágmarksvextir á veltureikningi), öryggi (kort og sími má loka, seðlar tapast), aðgengi (posi, hraðbanki, net), kostnaður (gjöld) og notkun erlendis. Kreditkort veita greiðslufrest og oft ferðatryggingar en bera háan kostnað sé skuld ekki greidd á eindaga. Greiðslumiðlun er innviðakerfi: kortafyrirtæki, færsluhirðar, Reiknistofa bankanna og Seðlabankinn (sjá einnig 2.10 og 2.11).</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Greiðsluáætlun: yfirsýn yfir tekjur og gjöld</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Skrifaðu niður hvað þú færð í hverjum mánuði og í hvað það fer. Þá sérðu hvort eitthvað verður eftir til að spara.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Greiðsluáætlun er áætlun um tekjur og gjöld á tímabili. Hún er ekki nóg ein og sér: fylgjast þarf með raunverulegum tölum og bera saman við áætlun. Þannig verður yfirsýn betri, áætlanir nákvæmari og sparnaður kemst í fastan farveg. Netbankinn er helsta hjálpartækið.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Góð áætlun aðgreinir föst gjöld, breytileg gjöld og sparnað sem er færður fyrst („borgaðu sjálfum þér fyrst“). Frávikagreining mánaðarlega. Lausafjárstaða (varasjóður í mánuðum útgjalda) og sparnaðarhlutfall eru stýritölur. Sjóðstreymisyfirlit heimilis er sama hugsun og í fyrirtækjarekstri.</p>
+    </div>
+  </article>
+
+  <div class="box">
+    <h3>Spurningar og verkefni</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div><p>Hvað fékkstu í vasapeninga eða laun í síðasta mánuði? Í hvað fóru þeir? Hvað varð eftir?</p></div>
+    <div class="lvl l2"><div class="tag">2. stig</div><p>Taktu launaseðil og rektu hverja tölu: heildarlaun, lífeyrissjóður, skattur, persónuafsláttur, félagsgjald, útborgað. Reiknaðu hlutfall hvers liðar.</p></div>
+    <div class="lvl l3"><div class="tag">3. stig</div><p>Settu upp greiðsluáætlun heimilis til 12 mánaða með föstum og breytilegum gjöldum. Hvert er sparnaðarhlutfallið? Hvað gerist við 5% launalækkun?</p></div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="chapter" id="k2">
+  <h2>2. Verkfærakista fjármálanna</h2>
+  <p class="src"><span>Farsæl skref, kafli 2</span><span>Fyrstu skref, kafli 2: Vextir og máttur vaxtavaxta</span><span>Fyrstu skref, kafli 3: Taktu tillit til verðbólgu</span></p>
+
+  <article class="topic">
+    <h3>Vextir og vaxtaútreikningur</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Vextir eru leiga fyrir peninga. Ef þú geymir peninga í banka borgar bankinn þér smá aukalega. Ef þú færð lánað hjá banka borgar þú bankanum aukalega. Því lengur sem peningarnir eru í bankanum, því meira bætist við.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Innlánsvextir fást fyrir að geyma fé í banka, útlánsvextir greiðast af lánum. Útlánsvextir eru hærri og mismunurinn, vaxtamunur, er tekjulind bankans. Vextir reiknast sem hlutfall af höfuðstól á ári. Flatir vextir reiknast aðeins af höfuðstól, vaxtavextir leggjast við höfuðstól og bera sjálfir vexti. Vaxtastig ræðst af efnahagsástandi og stýrivöxtum Seðlabankans.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <span class="formula">Vextir = höfuðstóll × vextir(%) × dagar / 360</span>
+      <p>Íslensk venja: 30 vaxtadagar í mánuði, 360 á ári (28. febrúar telur þrjá daga nema í hlaupári). Breytilegir vextir yfir tímabil eru vegið meðaltal: <code>v = Σ vᵢ·tᵢ / t</code>. Dæmi úr bókinni: 3% í 10 daga, 4% í 40, 5% í 40 gefur 4,3%. Vaxtavextir: <code>FV = PV·(1+r)ⁿ</code>. Munur á nafnvöxtum með mismunandi vaxtatímabilum er leystur með árlegri ávöxtun (effective rate).</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Nafnvextir, verðbólga og raunvextir</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Verðbólga þýðir að hlutirnir verða dýrari með tímanum. Ef þú átt 1.000 krónur og ís hækkar í verði getur þú keypt færri ísa fyrir sama pening. Vextirnir þurfa að vera hærri en verðbólgan til að peningarnir þínir vaxi í alvöru.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Nafnvextir eru vextirnir sem standa á pappírnum. Raunvextir eru vextir umfram verðbólgu, það sem kaupmátturinn vex í raun. Séu nafnvextir 5% og verðbólga 4% eru raunvextir um 1%. Sé verðbólga hærri en vextir rýrnar sparnaðurinn þótt talan á reikningnum hækki. Hagstofan mælir verðbólgu með vísitölu neysluverðs.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <span class="formula">Raunvextir = (1 + nafnvextir) / (1 + verðbólga) − 1 ≈ nafnvextir − verðbólga</span>
+      <p>Nálgunin skeikar því meira sem tölurnar eru hærri. Fjármagnstekjuskattur leggst á nafnvexti, svo raunávöxtun eftir skatt getur verið neikvæð við háa verðbólgu. Vænt verðbólga, ekki liðin, ræður ákvörðunum. Verðbólguálag (munur óverðtryggðra og verðtryggðra ríkisbréfa) er markaðsmæling á væntingum.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Breytilegir vextir, vaxtaviðmið og fastir vextir</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Fastir vextir breytast ekki. Breytilegir vextir geta hækkað eða lækkað, og þá breytist líka það sem þú borgar eða færð.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Fastir vextir gilda óbreyttir í ákveðinn tíma (oft 3-5 ár á húsnæðislánum, stundum allan lánstímann). Breytilegir vextir fylgja ákvörðun lánveitanda eða viðmiði, til dæmis stýrivöxtum Seðlabankans. Með föstum vöxtum kaupir lántaki fyrirsjáanleika, oft gegn hærri vöxtum í upphafi. Þegar fastvaxtatímabili lýkur endurákvarðast vextir.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Vaxtaviðmið: stýrivextir (meginvextir SÍ), millibankavextir, ávöxtunarkrafa ríkisbréfa. Breytilegir vextir banka eru oft „ákvörðun bankans“ án skýrs viðmiðs, sem Neytendastofa og dómstólar hafa gert athugasemdir við. Vaxtaáhætta: lántaki með breytilega vexti ber hana, lántaki með fasta vexti ber endurfjármögnunaráhættu og hugsanlegt uppgreiðslugjald. Tímaróf vaxta (yield curve) sýnir hvað markaðurinn verðleggur fastvexti á.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Verðtrygging eða breytilegir vextir</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þetta er fyrir fullorðna. Í stuttu máli: sum lán stækka þegar hlutirnir verða dýrari (verðtryggð), önnur ekki.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Verðtrygging bindur höfuðstól (eða innstæðu) við vísitölu neysluverðs. Verðtryggt lán ber lága raunvexti en höfuðstóll hækkar með verðbólgu og greiðslubyrði er lág í upphafi. Óverðtryggt lán ber hærri nafnvexti sem innihalda verðbólguvæntingar, greiðslubyrði er hærri strax en höfuðstóll lækkar hraðar. Verðtryggðar innstæður verja sparnað gegn verðbólgu.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Verðtryggt jafngreiðslulán: verðbætur leggjast á höfuðstól mánaðarlega og greiðslur eru fastar að raunvirði. Óverðtryggt lán með breytilegum vöxtum: greiðslur sveiflast með vöxtum, raunvirði greiðslna lækkar með tíma. Samanburður þarf að gerast á föstu verðlagi (sjá 2.5) og með sama lánstíma. Verðtryggð lán færa verðbólguáhættu á lántaka, óverðtryggð á lánveitanda (sem verðleggur hana í vöxtunum). Lög um vexti og verðtryggingu nr. 38/2001 setja rammann, þar með talið lágmarkslánstíma verðtryggðra lána.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Fast verðlag, nafn- og raunbreytingar</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þúsund krónur fyrir tíu árum keyptu meira en þúsund krónur í dag. Til að bera saman þarf að „leiðrétta“ fyrir því hvað allt hefur hækkað.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Nafnbreyting er hækkun í krónum talið. Raunbreyting er hækkun umfram verðbólgu. Laun sem hækka um 5% í 7% verðbólgu lækka um 2% að raunvirði. Til að bera saman fjárhæðir frá ólíkum tímum eru þær færðar á fast verðlag með vísitölu neysluverðs.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <span class="formula">Fjárhæð á verðlagi ársins B = fjárhæð á verðlagi A × (vísitala B / vísitala A)</span>
+      <p>Keðjureikningur yfir mörg ár margfaldar verðbólguþætti, ekki leggur saman. Hagstofan birtir VNV mánaðarlega, Seðlabankinn verðbólgureiknivél. Í fjármálalíkönum skal annað hvort nota nafnstærðir með nafnvöxtum eða raunstærðir með raunvöxtum, aldrei blanda.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Verðbólga, laun og raungreiðslubyrði</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Ef laun hækka minna en verðið á hlutunum getur fólk keypt minna, þótt það fái fleiri krónur.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Kaupmáttur launa minnkar ef laun hækka minna en verðlag. Verðbólga stafar af þenslu (eftirspurn umfram framboð) eða kostnaðarhækkunum (laun, hráefni, gengi). Í verðbólgu minnkar líka verðskyn: erfiðara að bera saman verð. Greiðslubyrði lána að raunvirði lækkar með tíma á óverðtryggðum lánum en helst föst á verðtryggðum.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Raungreiðslubyrði = greiðsla / (laun eða verðlag). Á óverðtryggðu láni með föstum vöxtum lækkar hún hratt í verðbólgu („front-loading“), á verðtryggðu er hún jöfn. Þetta skýrir hvers vegna verðtryggð lán hafa lága byrði í upphafi en hærri heildargreiðslur. Launavísitala, VNV og húsnæðisliður VNV eru lykilgögn. Verðbólga rýrir skuldir skuldara á kostnað lánveitanda ef vextir eru fastir og óverðtryggðir.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Núvirði og framtíðarvirði: tímavirði peninga</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þúsund krónur í dag eru meira virði en þúsund krónur eftir ár. Af hverju? Af því að þú getur sett þær í banka núna og fengið vexti á meðan.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Framtíðarvirði: hvað verður fjárhæð að ári með vöxtum. 10.000 kr. á 1% vöxtum verða 10.100 kr. Núvirði: hvers virði er framtíðargreiðsla í dag, reiknað afturábak með sömu vöxtum. Með þessu má bera saman greiðslur á ólíkum tímum, til dæmis „borga núna“ eða „borga eftir tvö ár“.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <span class="formula">FV = PV·(1+r)ⁿ        PV = FV / (1+r)ⁿ        NPV = Σ CFₜ / (1+r)ᵗ</span>
+      <p>Núvirði raðgreiðslu (annuitet): <code>PV = G · [1 − (1+r)⁻ⁿ] / r</code>. Ávöxtunarkrafan r endurspeglar áhættu og fórnarkostnað. Innri vextir (IRR) eru sú r sem gerir NPV = 0, og árleg hlutfallstala kostnaðar á láni er í eðli sínu IRR greiðsluflæðisins. Reglan um 72: tvöföldunartími ≈ 72 / vextir í %.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Máttur vaxtavaxta: snjóboltinn</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Vextir ofan á vexti eru eins og snjóbolti sem rúllar niður brekku: hann stækkar og stækkar, og því lengri sem brekkan er, því stærri verður hann. Þess vegna borgar sig að byrja að spara snemma.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Vaxtavextir eru vextir sem leggjast á áður áunna vexti. Áhrifin ráðast af tvennu: ávöxtun á tímabili og tíma. Sá sem byrjar að leggja fyrir 20 ára þarf mun lægri mánaðarlega fjárhæð en sá sem byrjar 40 ára til að enda á sama stað. Sama lögmál vinnur gegn skuldara sem lætur skuld vaxa.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Veldisvöxtur: <code>FV = PV·(1+r)ⁿ</code>, framtíðarvirði reglulegs sparnaðar <code>FV = G·[(1+r)ⁿ − 1]/r</code>. Við 4% raunávöxtun verða vextir meirihluti uppsafnaðs sparnaðar eftir um 20 ár. Næmni fyrir r er mikil á löngum tíma, sem gerir kostnað sjóða (sjá 3.10) að stórri stærð. Reglan um 72 gefur fljótlegt mat á tvöföldunartíma.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Ávöxtunarkrafa og eignaverð</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þetta er fyrir fullorðna. Í stuttu máli: því meira sem fólk vill fá í vexti, því minna er það tilbúið að borga fyrir hluti sem gefa tekjur, eins og íbúð sem er leigð út.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Ávöxtunarkrafa er sú ávöxtun sem fjárfestir krefst fyrir að binda fé í eign með tiltekinni áhættu. Verð eignar er núvirði væntra tekna af henni. Hækki ávöxtunarkrafa (til dæmis vegna vaxtahækkana) lækkar verð skuldabréfa, hlutabréfa og fasteigna, að öðru óbreyttu. Þetta skýrir hvers vegna vaxtaákvarðanir Seðlabankans hreyfa við eignamörkuðum.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Ávöxtunarkrafa = áhættulausir vextir + áhættuálag. Skuldabréf: öfugt samband verðs og kröfu, næmni mæld með meðaltíma (duration). Hlutabréf: <code>P = D₁ / (r − g)</code> (Gordon). Fasteignir: leiguávöxtun (leiga/verð) borin saman við raunvexti. Áhættuálag ræðst af áhættufælni, lausafjárstöðu og óvissu. Verðbólga hefur áhrif á kröfuna gegnum nafnvexti.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Rafrænar greiðslur og netsvik</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Gefðu aldrei upp lykilorð, PIN eða kortanúmer, ekki einu sinni þótt einhver segist vera frá bankanum. Ef eitthvað er of gott til að vera satt er það oftast svindl. Spurðu fullorðinn.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Algeng svik: veiðipóstar og smáskilaboð sem þykjast vera frá banka, pósti eða yfirvöldum; falskar vefverslanir; „fjárfestingartækifæri“ á samfélagsmiðlum; símtöl um „öryggisvandamál“ á reikningi; ástarsvik. Rafræn skilríki á aldrei að samþykkja nema maður hafi sjálfur sett aðgerð af stað. Bankar biðja aldrei um lykilorð. Tilkynna strax til banka og lögreglu.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Sterk auðkenning (SCA) samkvæmt PSD2 krefst tveggja þátta. Ábyrgð korthafa á óheimilum færslum er takmörkuð nema um gáleysi sé að ræða (lög um greiðsluþjónustu). Áhættustýring heimilis: aðskilin lykilorð, lykilorðastjóri, úttektarmörk á kortum, kortalokun í appi, vöktun á hreyfingum. Félagsverkfræði (social engineering) er veikasti hlekkurinn, ekki tæknin.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Rafmyntir</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Rafmynt er peningur sem er bara til í tölvum og enginn banki eða ríki stendur á bak við hann. Verðið sveiflast mjög mikið. Þetta er ekki sparnaður fyrir krakka.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Rafmyntir (Bitcoin og fleiri) eru stafrænar eignir á dreifðum bókhaldskerfum (bálkakeðjum) án miðlægs útgefanda. Þær eru ekki lögeyrir, bera enga vexti og verð ræðst eingöngu af framboði og eftirspurn. Mikil sveifla, svik og tap á lyklum eru helstu áhættur. Hagnaður er skattskyldur. Í bókunum eru þær flokkaðar sem spákaupmennska fremur en sparnaður.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Greina þarf á milli rafmynta (engin undirliggjandi krafa), stöðugmynta (stablecoins, bundnar við gjaldmiðil, með mótaðilaáhættu útgefanda) og seðlabankarafeyris (CBDC, krafa á seðlabanka). MiCA-reglugerð ESB setur ramma um þjónustuveitendur. Í eignasafni: engin fjárstreymi, því engin innri virðismatsaðferð, há fylgni við áhættusæknar eignir í niðursveiflu. Skattlagning: söluhagnaður sem fjármagnstekjur, hver skipti milli mynta er skattskyldur atburður.</p>
+    </div>
+  </article>
+
+  <div class="box">
+    <h3>Spurningar og verkefni</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div><p>Þú átt 10.000 kr. og bankinn borgar 5% vexti á ári. Hvað áttu eftir eitt ár? Eftir tvö ár, ef vextirnir leggjast ofan á?</p></div>
+    <div class="lvl l2"><div class="tag">2. stig</div><p>Reiknaðu 1,5% vexti af 130.000 kr. í 3 mánuði, hálft ár, 1 ár og 3 ár (sýnidæmi úr Fyrstu skrefum). Hverjir eru raunvextir ef verðbólga er 4%?</p></div>
+    <div class="lvl l3"><div class="tag">3. stig</div><p>Berðu saman 30 milljóna lán til 30 ára: verðtryggt á 2% raunvöxtum við 4% verðbólgu og óverðtryggt á 8% nafnvöxtum. Teiknaðu greiðslubyrði og eftirstöðvar á föstu verðlagi.</p></div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="chapter" id="k3">
+  <h2>3. Sparnaður og fjárfestingar</h2>
+  <p class="src"><span>Farsæl skref, kafli 3</span><span>Fyrstu skref: Að safna fyrir, Sparnaðarform</span></p>
+
+  <article class="topic">
+    <h3>Að safna fyrir: reglulegur sparnaður</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Besta leiðin til að spara er að leggja alltaf smá til hliðar, til dæmis í hvert sinn sem þú færð vasapeninga. Upphæðin þarf ekki að vera stór. Aðalatriðið er að gera það alltaf.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Þrjár reglur úr bókunum: hafðu sparnaðinn sjálfvirkan (bankinn færir fasta fjárhæð af veltureikningi á sparnað um hver mánaðamót), byrjaðu sem fyrst, og láttu fjárhæðina ekki stoppa þig. Flokkaðu sparnað eftir tilgangi: varasjóður, neyslusjóður, langtímasparnaður og eftirlaunasparnaður. Val á sparnaðarformi fer eftir því hvenær á að nota féð.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Markmiðatengd skipting (goal-based) með mismunandi tímalengd og áhættuþoli hvers sjóðs. Stuttur tími: lág en jöfn ávöxtun, innlán eða stutt skuldabréf. Langur tími: hlutabréf og fasteignir þola sveiflur og hafa sögulega gefið hærri raunávöxtun. Meðaltalskaup (dollar-cost averaging) draga úr tímasetningaráhættu. Sjálfvirkni vinnur gegn hegðunarskekkjum (núhyggju, frestun).</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Innlánsreikningar</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Bankareikningur er öruggur staður fyrir peninga. Veltureikningur er fyrir peningana sem þú notar daglega. Sparireikningur er fyrir peningana sem þú ætlar að geyma lengur, og hann gefur hærri vexti.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Veltureikningar bera lágmarksvexti og eru fyrir daglega notkun. Sparireikningar gefa hærri vexti, oft gegn binditíma eða uppsagnarfresti: því lengri binding, því hærri vextir. Til eru verðtryggðir reikningar fyrir lengri tíma. Innstæður eru tryggðar af Tryggingarsjóði innstæðueigenda upp að ákveðnu marki. Berðu saman vexti milli banka, munurinn er oft umtalsverður.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Innlánsvextir fylgja stýrivöxtum með töf og ófullkomlega (lægri „pass-through“ á innlán en útlán). Verðtryggður reikningur hentar sparnaði yfir 3 ár plús, óverðtryggður til skemmri tíma þegar nafnvextir eru yfir væntri verðbólgu. Innstæðutrygging: 100.000 evrur jafnvirði á innstæðueiganda á hverja fjármálastofnun. Fjármagnstekjuskattur dregst í staðgreiðslu af vaxtatekjum, sem lækkar raunávöxtun eftir skatt.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Skuldabréf</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Skuldabréf er loforð: einhver (til dæmis ríkið) fær lánað hjá þér og lofar að borga til baka með vöxtum á ákveðnum degi.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Skuldabréf er skuldaviðurkenning þar sem útgefandi (ríki, sveitarfélag, banki, fyrirtæki) lofar að greiða höfuðstól og vexti á fyrirfram ákveðnum tíma. Ríkisskuldabréf eru öruggust. Ávöxtun er þekkt sé bréfið haldið til gjalddaga, en markaðsverð sveiflast með vöxtum þar til þá. Skuldaraáhætta: útgefandi gæti ekki staðið við greiðslur.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Tegundir: ríkisbréf (RIKB óverðtryggð, RIKS verðtryggð), sértryggð bankabréf, fyrirtækjabréf. Verð = núvirði greiðsluflæðis á ávöxtunarkröfu markaðar. Meðaltími (duration) mælir vaxtanæmni: 1% hækkun kröfu lækkar verð um u.þ.b. duration %. Lánshæfismat (Moody's, S&P) verðleggur skuldaraáhættu. Verðtryggð bréf: raunávöxtun þekkt, nafnávöxtun háð verðbólgu. Einstaklingar fjárfesta oftast gegnum sjóði.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Hlutabréf</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Hlutabréf þýðir að þú átt pínulítinn bita af fyrirtæki. Ef fyrirtækinu gengur vel getur bitinn þinn orðið meira virði og þú fengið smá af hagnaðinum. Ef því gengur illa getur bitinn orðið minna virði.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Hlutabréf er eignarhlutur í hlutafélagi. Ávöxtun kemur sem arður og verðbreytingar. Sögulega hafa hlutabréf gefið hæstu langtímaávöxtun eignaflokka, en með mestu sveiflum. Henta sparnaði til margra ára, ekki fé sem þarf að nota fljótlega. Dreifing á mörg félög og lönd dregur úr áhættu. Á Íslandi er Kauphöllin (Nasdaq Iceland) markaðurinn.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Kennitölur: V/H (P/E), arðsemi eigin fjár, arðgreiðsluhlutfall, markaðsvirði. Kerfisbundin áhætta (markaðurinn) er ekki hægt að dreifa, sértæk áhætta (félagið) er það. Vísitölusjóðir ná markaðsávöxtun með lágum kostnaði; virk stýring reynir að gera betur og tekst það sjaldnast eftir kostnað. Hegðunarhættur: tímasetning, eltingaleikur við ávöxtun, tap-fælni. Skattur: 22% af arði og söluhagnaði, tap má jafna á móti hagnaði sama árs.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Sjóðir</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Sjóður er eins og stór pottur þar sem margir setja peninga saman og sérfræðingur kaupir fyrir þá mörg hlutabréf eða skuldabréf í einu. Þá dreifist áhættan.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Verðbréfasjóðir og fjárfestingarsjóðir safna fé margra og fjárfesta í safni verðbréfa. Kostir: dreifing, fagleg stýring, lág lágmarksfjárhæð, reglulegur sparnaður mögulegur. Gallar: kostnaður (umsýsluþóknun, kaup- og sölugjöld). Séreignarsjóðir eru sjóðir fyrir viðbótarlífeyrissparnað. Lykilupplýsingaskjal (sjá 3.11) segir hvað sjóðurinn gerir og hvað hann kostar.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Flokkar: UCITS verðbréfasjóðir (strangar reglur, lausafjárskylda), fjárfestingarsjóðir (rýmri heimildir), sérhæfðir sjóðir fyrir fagfjárfesta. Kostnaðarmælikvarðar: árlegt kostnaðarhlutfall (TER/OCF), gengismunur. Vísitölusjóðir og ETF með 0,1-0,3% kostnað á móti 1-2% í virkum sjóðum: munurinn margfaldast með vaxtavöxtum yfir áratugi. Skattaleg meðferð: sjóðir á Íslandi eru gegnsæir, hagnaður skattlagður við innlausn.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Söguleg ávöxtun</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þegar horft er mörg ár aftur í tímann hafa hlutabréf vaxið mest, en líka sveiflast mest. Bankareikningar vaxa hægt en stöðugt.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Yfir áratugi hefur raunávöxtun hlutabréfa verið hæst, þá fasteigna, þá skuldabréfa, þá innlána. Á móti kemur að hlutabréf geta lækkað um tugi prósenta á einu ári. Söguleg ávöxtun er ekki trygging fyrir framtíðinni, en sýnir að tími jafnar sveiflur. Íslensk saga: hrun 2008, mikil verðbólgutímabil, sem minna á að innlend dreifing ein nægir ekki.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Langtímagögn (Dimson, Marsh, Staunton; Credit Suisse/UBS Yearbook): heimshlutabréf um 5% raunávöxtun á ári 1900-2023, skuldabréf um 1,5-2%, innlán nálægt núlli. Flökt (staðalfrávik) hlutabréfa 15-20% á ári. Hlutfall hlutabréfa í safni ætti að ráðast af tímalengd og áhættuþoli, ekki spá. Raðáhætta (sequence risk) skiptir máli þegar úttektir hefjast. Mæla skal ávöxtun eftir kostnað, skatt og verðbólgu.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Fasteignir</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Flest fullorðið fólk kaupir íbúð til að búa í. Íbúðin er oft stærsta eignin sem fólk á. Verðið á íbúðum getur bæði hækkað og lækkað.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Fasteign er bæði heimili og fjárfesting. Verð ræðst af framboði og eftirspurn, vöxtum og launum. Ávöxtun er sparaður leigukostnaður (eða leigutekjur) plús verðbreyting, mínus viðhald, gjöld og vextir af láni. Skuldsetning magnar bæði hagnað og tap: með 20% eigið fé tvöfaldar 20% verðhækkun eigið féð, 20% lækkun þurrkar það út.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Vogun (leverage): ávöxtun eigin fjár = (verðbreyting + nettóleiga − vaxtakostnaður) / eigið fé. Ólausafjárhæf eign með háum viðskiptakostnaði (stimpilgjöld, þóknanir, 3-5% samtals). Áhætta: verðsveiflur, vaxtaáhætta á láni, samþjöppun (eitt hús, eitt hverfi). Leiga vs. kaup borið saman með núvirði yfir dvalartíma. Fasteignamat, brunabótamat og fasteignagjöld. Söluhagnaður íbúðarhúsnæðis er skattfrjáls að uppfylltum skilyrðum um eignarhaldstíma.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Erlendur gjaldeyrir og verðbréf</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Önnur lönd nota aðra peninga (evrur, dollara). Verðið á þeim miðað við krónur breytist á hverjum degi. Það er hægt að eiga hlutabréf í fyrirtækjum í öðrum löndum.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Krónan er lítill gjaldmiðill með miklum sveiflum. Erlend verðbréf dreifa áhættu út fyrir íslenskt hagkerfi en bæta við gengisáhættu: styrkist krónan lækkar erlend eign í krónum talið. Fyrir langtímasparnað er alþjóðleg dreifing kostur. Gjaldeyriskaup til spákaupmennsku eru ekki sparnaður.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Heimahlutdrægni (home bias) er stærsta skekkja íslenskra eignasafna. Gengisáhætta má verja (hedge) með framvirkum samningum, en vörn kostar vaxtamun. Lífeyrissjóðir hafa lögbundið hámark erlendra eigna. Skattur: 22% af gengishagnaði og söluhagnaði, gengistap ekki frádráttarbært nema á móti hagnaði. Tvísköttunarsamningar og afdráttarskattur af erlendum arði.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Ábyrgar fjárfestingar</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Sumt fólk vill bara setja peningana sína í fyrirtæki sem fara vel með náttúruna og fólk. Það er hægt að velja þannig sjóði.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Ábyrgar fjárfestingar taka tillit til umhverfis, samfélags og stjórnarhátta (UFS, á ensku ESG) auk ávöxtunar. Aðferðir: útilokun (vopn, tóbak, kol), jákvætt val, virkt eignarhald. Sjóðir merkja sig með mismunandi hætti og orðið „grænn“ er ekki verndað, svo lesa þarf lykilupplýsingaskjal og stefnu sjóðsins.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Regluverk ESB: SFDR flokkar sjóði (6., 8., 9. gr.), flokkunarreglugerð (taxonomy) skilgreinir sjálfbæra starfsemi. Grænþvottur er eftirlitsmál. Rannsóknir sýna hvorki skýrt ávöxtunartap né ávinning af UFS-síun að meðaltali, en útilokun minnkar dreifingu. UN PRI og íslenskar reglur um stefnu lífeyrissjóða um ábyrgar fjárfestingar.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Kostnaður við fjárfestingar</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þegar einhver geymir eða ávaxtar peningana þína tekur hann oft smá þóknun. Lítil þóknun á hverju ári verður að stórri upphæð yfir mörg ár.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Kostnaður er eini þátturinn í ávöxtun sem fjárfestir ræður alveg. Helstu liðir: umsýsluþóknun sjóðs á ári, kaup- og sölugjöld, gengismunur, vörslugjöld, þóknun miðlara. 1% hærri árlegur kostnaður á 30 árum lækkar lokasparnað um fjórðung eða meira. Lykilupplýsingaskjal sýnir áætlaðan heildarkostnað.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Áhrif kostnaðar: <code>FV = PV·(1 + r − c)ⁿ</code>. Dæmi: 6% ávöxtun, 30 ár, kostnaður 0,2% vs. 1,5% gefur um 40% mun á lokavirði. Sýnilegur (TER) og ósýnilegur kostnaður (viðskiptakostnaður innan sjóðs, markaðsáhrif). Þóknanastrúktúr ráðgjafa (söluþóknun vs. föst gjöld) skapar hagsmunaárekstra. MiFID II krefst gagnsæis um kostnað og hvata.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Lykilupplýsingaskjöl</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þetta er fyrir fullorðna. Í stuttu máli: stutt blað sem segir á einfaldan hátt hvað sjóður gerir, hversu áhættusamur hann er og hvað hann kostar.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Lykilupplýsingaskjal (KID) er staðlað skjal, að hámarki þrjár síður, sem allir sjóðir og pakkaðar fjárfestingarvörur verða að afhenda áður en keypt er. Það inniheldur: hvað varan er, áhættukvarða 1-7, sviðsmyndir um ávöxtun, hvað gerist ef útgefandi getur ekki staðið við skuldbindingar, kostnað yfir tíma og ráðlagðan eignarhaldstíma. Nýtt í 2. útgáfu Farsælla skrefa: hvernig má nota skjalið til að bera saman kosti.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>PRIIPs-reglugerð ESB, innleidd á Íslandi. Samantekinn áhættuvísir (SRI) sameinar markaðsáhættu (flökt) og skuldaraáhættu. Sviðsmyndir (óhagstæð, hófleg, hagstæð, álag) byggja á sögulegum gögnum og eru umdeildar. Kostnaðartafla sýnir „lækkun ávöxtunar“ (RIY) í prósentum á ári miðað við eignarhaldstíma. Berðu alltaf saman SRI, RIY og ráðlagðan eignarhaldstíma milli sambærilegra vara.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Skattlagning sparnaðar</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þegar peningar vaxa í banka eða í sjóði tekur ríkið lítinn hluta af vextinum sem skatt. Lífeyrissparnaður er undanþeginn þessu.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Fjármagnstekjuskattur (22%) leggst á vexti, arð, söluhagnað og leigutekjur. Frítekjumark er á vaxtatekjum einstaklinga. Skatturinn reiknast af nafnvöxtum, svo í verðbólgu getur hann étið alla raunávöxtun. Undanþágur: lífeyrissjóðir og viðbótarlífeyrissparnaður (skattur greiðist við úttekt sem tekjuskattur), söluhagnaður eigin íbúðar. Sparnaður barna er talinn fram hjá foreldrum.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Ávöxtun eftir skatt: <code>r_eftir = r_nafn·(1 − 0,22)</code>, raunávöxtun eftir skatt <code>≈ r_nafn·0,78 − π</code>. Við 7% nafnvexti og 5% verðbólgu er hún um 0,5%. Leigutekjur: 50% skattskyldar við langtímaleigu íbúðar. Söluhagnaður hlutabréfa: tap jafnast á móti hagnaði sama árs. Séreign: frestun skatts og engin fjármagnstekjuskattur á ávöxtun er hreint skattalegt forskot, auk 2% mótframlags. Skattalegt hagræði fyrstu íbúðar (sjá 5.6).</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Áhætta og áhættudreifing</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Ekki setja öll eggin í sömu körfu. Ef karfan dettur brotna þau öll. Betra er að dreifa þeim.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Sparnaði fylgir alltaf áhætta. Markaðsáhætta: verð eigna sveiflast. Skuldaraáhætta: útgefandi fer í þrot. Verðbólguáhætta: kaupmáttur rýrnar. Lausafjáráhætta: ekki hægt að selja fljótt. Vörn: dreifa á eignaflokka, útgefendur og lönd, og minnka vægi sveiflukenndra eigna þegar styttist í notkun fjárins.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Safnkenning: dreifing lækkar flökt án þess að lækka vænta ávöxtun, upp að kerfisbundinni áhættu. Fylgni milli eigna hækkar í kreppum, svo dreifing bregst þegar mest á reynir. Áhættuþol (geta) vs. áhættuvilji (vilji). Líftímasöfn (glide path) minnka hlutabréfavægi með aldri. Endurvigtun árlega heldur áhættu stöðugri. Mælikvarðar: staðalfrávik, hámarkstap (drawdown), Sharpe-hlutfall.</p>
+    </div>
+  </article>
+
+  <div class="box">
+    <h3>Spurningar og verkefni</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div><p>Settu þér sparnaðarmarkmið (til dæmis hjól). Hvað kostar það? Hvað þarftu að leggja fyrir á mánuði til að eiga fyrir því eftir ár?</p></div>
+    <div class="lvl l2"><div class="tag">2. stig</div><p>Þú átt 2 milljónir sem þú þarft ekki næstu 10 ár. Berðu saman verðtryggðan reikning, skuldabréfasjóð og hlutabréfasjóð: vænt ávöxtun, áhætta, kostnaður, skattur.</p></div>
+    <div class="lvl l3"><div class="tag">3. stig</div><p>Lestu lykilupplýsingaskjöl tveggja sjóða og berðu saman SRI, kostnað (RIY) og sviðsmyndir. Reiknaðu áhrif kostnaðarmunar á 25 ára sparnað með 50.000 kr. á mánuði.</p></div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="chapter" id="k4">
+  <h2>4. Lán og skuldir</h2>
+  <p class="src"><span>Farsæl skref, kafli 4</span><span>Fyrstu skref: Tegundir lána, Hvað kostar að taka lán?, Að taka lán og greiða af því</span></p>
+
+  <article class="topic">
+    <h3>Lán til skemmri og lengri tíma</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Lán er þegar þú færð peninga núna og lofar að borga þá til baka seinna, með vöxtum. Lán fyrir litlum hlutum á að borga hratt. Stór lán, eins og fyrir íbúð, eru borguð í mörg ár.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Skammtímalán (dagar til 5-7 ára) fjármagna neyslu: kreditkort, yfirdráttur, smálán, raðgreiðslur, bílalán, almenn skuldabréfalán. Þau eru dýr. Langtímalán (allt að 40 ár) fjármagna fjárfestingar sem eðlilegt er að greiða á löngum tíma: húsnæðislán, námslán. Neytendalán eru lán frá aðila sem hefur atvinnu af lánveitingum og lúta sérstökum lögum um upplýsingaskyldu. Hófleg lántaka eykur lífsgæði, óhófleg getur snúist í ógæfu.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Flokkun eftir tryggingu: veðlán (fasteign, bíll) með lægri vöxtum, óveðtryggð lán með hærri. Eftir greiðsluformi: jafnar afborganir, jafngreiðslur, eingreiðslulán (kúlulán), yfirdráttur (engin áætlun). Eftir vöxtum: fastir/breytilegir, verðtryggðir/óverðtryggðir. Lög um neytendalán nr. 33/2013 og lög um fasteignalán til neytenda nr. 118/2016 setja reglur um ÁHK, greiðslumat, uppgreiðslu og upplýsingagjöf. Smálán hafa sætt sérstökum takmörkunum á kostnaði.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Hvað kostar að taka lán? Lánskostnaður og ÁHK</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Lán kostar alltaf meira en það sem þú fékkst lánað. Þú borgar vexti og oft líka gjöld fyrir að fá lánið. Ef þú borgar ekki á réttum tíma bætast við enn hærri vextir.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Kostnaður skiptist í upphafskostnað (lántökugjald, oft 0,5-1,5% á langtímalánum og hærra á skammtímalánum, þinglýsing, greiðslumat, skjalagerð), kostnað á lánstíma (vextir, verðbætur, færslugjöld, innheimtugjöld), uppgreiðslugjald í sumum lánum og vanskilakostnað (dráttarvextir, innheimta). Árleg hlutfallstala kostnaðar (ÁHK) tekur allt þetta saman í eina prósentu á ári og er besta tækið til að bera saman lán, sérstaklega stutt lán þar sem gjöld vega þungt.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <span class="formula">ÁHK: sú árlega ávöxtun r sem gerir núvirði allra greiðslna lántaka = útborgaða lánsfjárhæð (IRR)</span>
+      <p>Einföld nálgun úr Fyrstu skrefum: <code>ÁHK ≈ (lánskostnaður + vextir) / lánsfjárhæð × 360 / vaxtadagar</code>. Þess vegna getur smálán til 30 daga með 3% gjaldi haft ÁHK yfir 40% þótt vextir séu lágir. Á 25 ára húsnæðisláni hefur 50.000 kr. lántökugjald hverfandi áhrif á ÁHK. Dráttarvextir eru ákveðnir af Seðlabankanum mánaðarlega. Uppgreiðslugjald má að hámarki nema tilteknu hlutfalli samkvæmt lögum og er bannað á breytilegum vöxtum.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Greiðslumat og lánshæfismat</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Áður en banki lánar skoðar hann hvort þú getir borgað til baka. Hann skoðar hvað þú færð í laun og hvað þú þarft að borga í hverjum mánuði.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Lánveitandi er skyldugur til að meta lántaka áður en lán er veitt. Lánshæfismat metur líkur á að umsækjandi endurgreiði, byggt á greiðslusögu, vanskilaskrá og fleiru. Greiðslumat er útreikningur á greiðslugetu miðað við tekjur, gjöld (framfærsluviðmið), eignir og skuldir. Vanskil skemma lánshæfismat til margra ára. Að standast greiðslumat þýðir ekki að lánið sé skynsamlegt: það er mat lánveitanda, ekki þitt.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Greiðslumat fasteignalána byggir á neysluviðmiðum (félagsmálaráðuneytið) og álagsprófi á vexti. Lánshæfismat Creditinfo byggir á vanskilaskrá, tengslum við fyrirtæki og lýðfræðilegum breytum, einkunn A-E. Lög um fasteignalán gera greiðslumat skylt yfir tilteknum fjárhæðum og veðhlutföllum. Lánþegi á rétt á rökstuðningi fyrir synjun. Neikvætt greiðslumat má hnekkja með auknu eigin fé eða ábyrgðarmanni, en ábyrgð þriðja aðila er áhættusöm fyrir ábyrgðarmann.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Skuldamælikvarðar</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þetta er fyrir fullorðna. Í stuttu máli: tölur sem sýna hvort einhver skuldar of mikið miðað við það sem hann á og fær í laun.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Nýtt í 2. útgáfu Farsælla skrefa. Þrír helstu: veðsetningarhlutfall (lán / verðmæti eignar), greiðslubyrðarhlutfall (afborganir og vextir / ráðstöfunartekjur) og skuldahlutfall (heildarskuldir / árstekjur). Þumalputtareglur: greiðslubyrði húsnæðis undir 25-30% af ráðstöfunartekjum, heildarskuldir undir 3-4 földum árstekjum. Mælikvarðarnir sýna hversu mikið má út af bera við vaxtahækkun eða tekjufall.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <ul>
+        <li><strong>LTV</strong> (loan-to-value): skuld / markaðsvirði. Yfir 80-85% er lítið svigrúm fyrir verðlækkun.</li>
+        <li><strong>DSTI</strong> (greiðslubyrðarhlutfall): mánaðarleg greiðslubyrð / ráðstöfunartekjur. Seðlabankinn miðar við 35% (40% fyrstu kaupendur).</li>
+        <li><strong>DTI</strong> (skuldahlutfall): heildarskuldir / árstekjur.</li>
+        <li><strong>Eiginfjárhlutfall</strong>: eigið fé / heildareignir.</li>
+      </ul>
+      <p>Næmnigreining: hvað gerist við 2 prósentustiga vaxtahækkun, 10% verðlækkun, 20% tekjufall? Álagsprófaðu eigin efnahag eins og Seðlabankinn álagsprófar banka.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Lánþegaskilyrði íbúðarlána</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þetta er fyrir fullorðna. Í stuttu máli: reglur um hversu stórt lán má taka til að kaupa íbúð.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Seðlabankinn setur reglur um hámark íbúðarlána til að verja fjármálastöðugleika: hámarks veðsetningarhlutfall (80%, 85% fyrir fyrstu kaupendur) og hámarks greiðslubyrðarhlutfall (35%, 40% fyrir fyrstu kaupendur), auk reglna um hámarkslánstíma. Þetta þýðir að kaupandi þarf að eiga að minnsta kosti 15-20% af kaupverði sjálfur, nema með hlutdeildarláni (sjá 4.11).</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Reglur settar með heimild í lögum um fasteignalán til neytenda, fjármálastöðugleikanefnd SÍ ákveður. Við útreikning greiðslubyrðarhlutfalls er miðað við lágmarksvexti og hámarkslánstíma (til dæmis 3% á verðtryggðu, 5,5% á óverðtryggðu, 25/40 ár), svo raunveruleg greiðslubyrð getur verið önnur. Skilyrðin eru þjóðhagsvarúðartæki (macroprudential), sambærileg við reglur annars staðar á Norðurlöndum. Undanþágur fyrir fyrstu kaupendur og takmarkað svigrúm lánveitenda til frávika.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Lán með jöfnum afborgunum</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þú borgar alltaf jafn mikið af sjálfu láninu í hverjum mánuði, plús vexti. Fyrst er greiðslan há, svo lækkar hún.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Höfuðstól er skipt í jafnar afborganir yfir lánstímann. Vextir reiknast af eftirstöðvum og lækka því með hverri greiðslu. Heildargreiðsla er hæst í byrjun og lækkar jafnt og þétt. Heildarvaxtakostnaður er lægri en á jafngreiðsluláni sama lánstíma því höfuðstóll lækkar hraðar.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <span class="formula">Afborgun = H / n       Greiðsla_t = H/n + r·(H − (t−1)·H/n)</span>
+      <p>Línuleg lækkun eftirstöðva. Heildarvextir yfir lánstíma ≈ <code>r·H·(n+1)/2</code> fyrir árlegar greiðslur. Hentar þeim sem þola háa byrði í upphafi og vilja lágmarka heildarkostnað, og þegar tekjur eru hæstar snemma á lánstíma. Verðtryggt lán með jöfnum afborgunum: afborgun verðbætt, byrði lækkar að raunvirði.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Lán með jöfnum greiðslum (annuitet)</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þú borgar alltaf sömu upphæð í hverjum mánuði. Fyrst eru það mest vextir, í lokin mest afborganir af láninu sjálfu.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Heildargreiðsla (afborgun + vextir) er sú sama allan lánstímann (á verðtryggðu láni: sú sama að raunvirði). Í byrjun er stærstur hluti greiðslunnar vextir og höfuðstóll lækkar hægt. Lægri byrði í upphafi en jafnar afborganir, en hærri heildarvextir. Algengasta form húsnæðislána.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <span class="formula">G = H · r / (1 − (1+r)⁻ⁿ)</span>
+      <p>r er vextir á greiðslutímabil, n fjöldi greiðslna. Eftirstöðvar eftir t greiðslur: <code>H_t = G·[1 − (1+r)⁻⁽ⁿ⁻ᵗ⁾]/r</code>. Á 40 ára verðtryggðu jafngreiðsluláni með lágum raunvöxtum geta eftirstöðvar í krónum hækkað í mörg ár („neikvæð eignamyndun“ að nafnvirði) þótt þær lækki að raunvirði. Næmni greiðslu fyrir vöxtum er mikil á löngum lánum: 1 prósentustig á 30 ára láni hækkar greiðslu um 10-15%.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Jafnar afborganir eða jafnar greiðslur?</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Önnur leiðin er dýrari í byrjun en ódýrari í heildina. Hin er léttari í byrjun en dýrari í heildina. Fullorðnir velja eftir því hvað þeir ráða við.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Jafnar afborganir: lægri heildarkostnaður, hraðari eignamyndun, há byrði í upphafi. Jafnar greiðslur: fyrirsjáanleg byrði, lægri í upphafi, hærri heildarkostnaður. Val ræðst af greiðslugetu núna, væntri tekjuþróun og hversu lengi fólk ætlar að eiga eignina. Sé greiðslugeta til staðar er jöfn afborgun yfirleitt hagkvæmari.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Á sömu vöxtum er núvirði beggja greiðsluflæða það sama: munurinn er tímasetning, ekki „ódýrara“ í núvirði. Hærri heildarvextir jafngreiðslulánsins eru verðið fyrir að fresta afborgunum. Rétti samanburðurinn er því við fórnarkostnað fjár: ef lántaki getur ávaxtað mismuninn á greiðslubyrði yfir lánsvöxtum (eftir skatt) er jafngreiðsla hagstæð, annars jöfn afborgun. Sveigjanleiki: jafngreiðslulán með aukagreiðslum nær sömu niðurstöðu og jöfn afborgun.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Verðtryggð eða óverðtryggð lán?</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þetta er fyrir fullorðna. Sjá kafla 2: sum lán hækka með verðbólgu, önnur hafa hærri vexti í staðinn.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Verðtryggt: lág greiðslubyrð í upphafi, höfuðstóll hækkar með verðbólgu, hæg eignamyndun, fyrirsjáanlegt að raunvirði. Óverðtryggt: hærri byrði strax, hraðari eignamyndun, byrði sveiflast með vöxtum (breytilegir) eða er föst í 3-5 ár. Þumalputtaregla bókanna: velja óverðtryggt ef greiðslugeta leyfir, verðtryggt ef byrðin þarf að vera lág, og blanda er algeng. Endurskoða við breyttar aðstæður.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Samanburður krefst sömu raunvaxta: óverðtryggðir nafnvextir = raunvextir + vænt verðbólga + verðbólguálag. Sé verðbólguálag markaðarins hærra en verðbólga reynist er óverðtryggt lán ódýrara eftir á, og öfugt. Verðtryggt lán er í reynd lán með raunvaxtatryggingu þar sem lántaki ber verðbólguáhættu á höfuðstól. Greiðslubyrði óverðtryggðs láns lækkar að raunvirði með tíma, verðtryggðs ekki. Vaxtabætur og skattaleg meðferð vaxtagjalda hafa áhrif á samanburðinn.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Greiðsludreifing</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Stundum má skipta einni stórri greiðslu í margar litlar. Það kostar yfirleitt aukalega.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Raðgreiðslur, „kaupa núna, borga seinna“ og greiðsludreifing á kreditkorti skipta kaupum í margar greiðslur. Oft fylgja lántökugjöld og vextir sem gera þær dýrar sé ÁHK skoðuð. Vaxtalaus greiðsludreifing er oft fjármögnuð með hærra vöruverði eða gjöldum. Margar litlar greiðsludreifingar safnast upp og þrengja að greiðslugetu án þess að fólk taki eftir.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Greiðsludreifing er neytendalán og á að fylgja upplýsingar um ÁHK. „Vaxtalaust“ með 3-5% lántökugjaldi á 12 mánaða lán er 6-10% ÁHK. BNPL-þjónustur (buy now, pay later) falla undir sömu lög eftir nýlegar breytingar í Evrópu. Kreditkortaskuld sem velt er milli mánaða ber hæstu neytendavexti á markaði. Hegðunarþáttur: greiðsludreifing lækkar skynjað verð og eykur neyslu.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Hlutdeildarlán</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þetta er fyrir fullorðna. Í stuttu máli: ríkið hjálpar sumum að kaupa fyrstu íbúð með því að eiga hluta af henni á móti.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Hlutdeildarlán frá Húsnæðis- og mannvirkjastofnun (HMS) fyrir fyrstu kaupendur og tekjulága: ríkið lánar 20% (allt að 30% af ódýrari eignum) af kaupverði án vaxta og afborgana, kaupandi leggur fram 5% og tekur 75% húsnæðislán. Lánið er endurgreitt sem sama hlutfall af söluverði við sölu eða eftir 10-25 ár. Skilyrði um tekjur, að eignin sé ný eða á tilteknum svæðum og hámarksverð.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Hlutdeildarlán er eiginfjárlán (shared equity): endurgreiðsla fylgir verðþróun eignar, ekki vöxtum. Hækki eignin um 30% endurgreiðist 30% hærri fjárhæð, lækki hún ber ríkið hluta tapsins. Þetta skapar vogun sem er ólík hefðbundnu láni og krefst samanburðar á væntri verðþróun við vexti á hefðbundnu láni. Sækja þarf um til HMS, lánið er veðtryggt á 2. veðrétti. Takmarkað fjármagn árlega, úthlutað í lotum.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Sameignarsamningar og verktakalán</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þetta er fyrir fullorðna. Í stuttu máli: stundum kaupa tveir eða fleiri íbúð saman, eða byggingarfyrirtæki lánar kaupanda hluta af verðinu.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Sameignarsamningur skilgreinir eignarhluti, kostnaðarskiptingu og hvað gerist við sölu eða sambúðarslit þegar fleiri en einn kaupa saman, til dæmis par með ójafnt eigið fé eða foreldri og barn. Verktakalán (seljendalán) er þegar byggingaraðili lánar kaupanda hluta kaupverðs, oft með lægri kröfum en bankar en á öðrum kjörum og veðrétti. Lestu skilmála, sérstaklega um vexti, gjalddaga og hvað gerist við endursölu.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Án skriflegs sameignarsamnings gilda almennar reglur sameignar og hjúskapar-/sambúðarlög, sem endurspegla sjaldan raunveruleg framlög. Samningurinn ætti að taka á: eignarhlutföllum, framlögum til afborgana og viðhalds, forkaupsrétti, verðmatsaðferð við útkaup, meðferð við andlát. Verktakalán eru oft á 2. veðrétti á eftir bankaláni, með hærri vöxtum og styttri tíma (kúlulán), og þarf að endurfjármagna. Áhætta ef verktaki fer í þrot og lánið gengur til kröfuhafa.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Endurfjármögnun og skuldastýring</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Ef þú skuldar á mörgum stöðum er best að borga fyrst það sem er dýrast. Og fullorðnir geta skipt gömlu dýru láni út fyrir nýtt ódýrara.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Endurfjármögnun: taka nýtt lán á betri kjörum til að greiða upp eldra. Borgar sig ef sparnaður í vöxtum er meiri en kostnaður (uppgreiðslugjald, lántökugjald, þinglýsing). Skuldastýring: hafa yfirlit yfir allar skuldir, greiða dýrustu skuldir fyrst (yfirdráttur, kreditkort, smálán), sameina smáskuldir í eitt lán með lægri vöxtum, og hafa samband strax við lánveitanda ef greiðsluerfiðleikar blasa við. Umboðsmaður skuldara veitir ókeypis ráðgjöf.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Endurfjármögnun metin með núvirði: NPV = núvirði sparaðra greiðslna − kostnaður. Jafnvægispunktur (break-even) í mánuðum = kostnaður / mánaðarlegur sparnaður. Varúð: lenging lánstíma lækkar greiðslu en hækkar heildarkostnað. Snjóboltaaðferð (minnsta skuld fyrst, hegðunarlegur ávinningur) vs. snjóflóðaaðferð (hæstu vextir fyrst, stærðfræðilega best). Úrræði við greiðsluvanda: greiðsluaðlögun, frysting, skuldbreyting. Lánshæfismat versnar við vanskil, ekki við samninga fyrirfram.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Að taka lán og greiða af því: ferlið og vanskil</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Áður en þú færð eitthvað lánað: Þarf ég þetta? Get ég borgað til baka? Hvað kostar það? Ef þú borgar ekki á réttum tíma verður skuldin stærri og stærri.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Ferli úr Fyrstu skrefum: ákvörðun (tilgangur, ábati, hef ég efni á því?), undirbúningur (bera saman kjör hjá fleiri en einum, lesa skilmála, greiðslumat, tryggingar), lántaka (undirskrift), greiðslur (mánaðarlega eða leggja til hliðar, greiða aukalega inn á ef hægt), uppgreiðsla. Við vanskil bætast dráttarvextir og innheimtukostnaður við, lánshæfismat versnar og að lokum getur komið til fjárnáms eða nauðungarsölu. Hafa strax samband við lánveitanda ef greiðslur stefna í vandræði.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Gott lán skilar varanlegu verðmæti (menntun, húsnæði) og ber lægri vexti en vænt ávöxtun þess sem fjármagnað er. Slæmt lán fjármagnar neyslu sem skilur ekkert eftir á háum vöxtum. Innheimtuferli: ítrekun, milliinnheimta (innheimtulög takmarka kostnað), löginnheimta, fjárnám, nauðungarsala, vanskilaskrá í 4 ár. Réttur lántaka: upplýsingar um ÁHK fyrir samning, 14 daga afturköllunarréttur neytendalána, réttur til uppgreiðslu, bann við ósanngjörnum skilmálum.</p>
+    </div>
+  </article>
+
+  <div class="box">
+    <h3>Spurningar og verkefni</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div><p>Vinkona þín vill fá 2.000 kr. lánaðar og lofar að borga 2.200 eftir mánuð. Hversu mikið eru vextirnir í prósentum? Myndir þú lána?</p></div>
+    <div class="lvl l2"><div class="tag">2. stig</div><p>Berðu saman 500.000 kr. lán til 2 ára hjá banka, með raðgreiðslum og á kreditkorti. Finndu ÁHK hvers kosts og heildargreiðslur.</p></div>
+    <div class="lvl l3"><div class="tag">3. stig</div><p>Settu upp greiðsluferil 40 milljóna húsnæðisláns til 30 ára með jöfnum greiðslum og jöfnum afborgunum. Reiknaðu LTV, DSTI og DTI fyrir heimili með 1,2 milljónir í mánaðartekjur og álagsprófaðu með 3 prósentustiga vaxtahækkun.</p></div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="chapter" id="k5">
+  <h2>5. Stórar fjárhagslegar ákvarðanir</h2>
+  <p class="src"><span>Farsæl skref, kafli 5</span><span>Fyrstu skref: Viðbótarlífeyrissparnaður, Fyrsta fasteign, Gerðu ráð fyrir áföllum</span></p>
+
+  <article class="topic">
+    <h3>Aflaðu tekna, haltu í þær og láttu þær vaxa</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þrjú skref: vinna sér inn peninga, passa að eyða ekki öllu, og láta það sem eftir er vaxa með vöxtum.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Þrír hlutar fjármála yfir ævina: afla (menntun, starfsferill, launaþróun eru stærsta „fjárfestingin“), halda (skattar, kostnaður, verðbólga, óþarfa útgjöld éta tekjur) og ávaxta (sparnaður, vaxtavextir, tími). Flestir einblína á þriðja þáttinn en fyrstu tveir vega þyngra lengst af ævinni.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Mannauður (núvirði framtíðartekna) er langstærsta eign ungs fólks og lækkar með aldri meðan fjármagn eykst, sem réttlætir meiri áhættu í fjárfestingum snemma. Ævisjóðstreymi: tekjur hefjast seint, ná hámarki 45-55 ára, útgjöld dreifast jafnar. Lánsfé brúar ósamræmið (lífsferilskenning). Hækkun eigin launa um 10% slær út margra ára ávöxtunarmun á sparnaði.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Að fara í framhaldsnám</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Skólaganga kostar tíma og stundum peninga, en fólk með menntun fær oftar vinnu sem það vill og hærri laun. Það er fjárfesting í sjálfum sér.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Nám er fjárfesting: kostnaður er skólagjöld, uppihald og tapaðar tekjur á námstíma, ávinningur hærri ævitekjur og fleiri valkostir. Menntasjóður námsmanna veitir námslán með tekjutengdri eða jafngreiðsluendurgreiðslu og niðurfellingu hluta lánsins við námslok á tilsettum tíma. Námslán eru hagstæðasta lán sem flestir taka á ævinni, en samt skuld.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Arðsemi menntunar: IRR á greiðsluflæði (kostnaður og tapaðar tekjur í 3-5 ár, launaálag í 40 ár). Rannsóknir sýna 5-10% árlega arðsemi á hvert námsár, misjafnt eftir greinum. Menntasjóður: verðtryggð lán, vextir með þaki, 30% niðurfelling við námslok innan tilsetts tíma, val um tekjutengda afborgun. Nám erlendis bætir við gengisáhættu á framfærslu. Námsstyrkir og vinna með námi breyta dæminu verulega.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Að velja búsetuform: að byrja að búa</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þegar fólk flytur að heiman getur það leigt íbúð (borgar eigandanum í hverjum mánuði) eða keypt íbúð (tekur lán og borgar bankanum). Hvort tveggja kostar.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Valkostir: búa heima, leigja (sveigjanleiki, engin viðhaldsábyrgð, en engin eignamyndun og óöryggi), kaupa (eignamyndun, stöðugleiki, en hátt eigið fé, viðskiptakostnaður og viðhald), búsetu- eða leiguíbúðir félaga. Samanburður leigu og kaupa þarf að taka allt með: vexti, fasteignagjöld, viðhald (1-2% af verði á ári), tryggingar, hússjóð, og tækifæriskostnað eigin fjár. Að byrja að búa er líka stór aukning í föstum útgjöldum sem greiðsluáætlun þarf að taka á.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Leigu-kaup samanburður með núvirði yfir áætlaðan búsetutíma. Við stuttan tíma (undir 3-5 árum) vinnur leiga vegna viðskiptakostnaðar. Lykilbreytur: leiguávöxtun markaðar (leiga/verð), raunvextir lána, vænt raunverðhækkun, skattalegt hagræði (vaxtabætur, húsnæðisbætur, séreign). Búseturéttaríbúðir og óhagnaðardrifin leigufélög eru millistig. Framfærslukostnaður fyrsta heimilis: innbú, tryggingar, rafmagn, net, matur, skipulagt í greiðsluáætlun.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Að kaupa fasteign</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Að kaupa íbúð er stærsta kaup sem flestir gera. Fólk þarf að eiga hluta af verðinu sjálft og fær lán fyrir restinni.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Skref: meta greiðslugetu og eigið fé (lágmark 15-20% nema með hlutdeildarláni), fá greiðslumat, skoða eignir með ástandsskoðun í huga, gera tilboð með fyrirvörum, kaupsamningur, afsal. Kostnaður umfram kaupverð: stimpilgjald, þinglýsing, lántökugjald, þóknun fasteignasala (seljandi greiðir oftast), mat, flutningur. Skoðaðu söluyfirlit, ástandsskýrslu, hússjóð og fundargerðir húsfélags. Reiknaðu með viðhaldi.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Verðmat: fermetraverð í hverfi, fasteignamat, samanburðareignir, leiguávöxtun. Stimpilgjald 0,8% (helmingsafsláttur fyrstu kaupendur). Fyrirvarar í tilboði: fjármögnun, ástandsskoðun, sala eigin eignar. Gallaréttur samkvæmt lögum um fasteignakaup, ábyrgð seljanda á leyndum göllum. Skipulagsmál: deiliskipulag, framkvæmdir á lóð, fjöleignarhúsalög um sameign. Álagspróf á greiðslubyrði, sjá skuldamælikvarða í kafla 4.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Að taka húsnæðislán</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Húsnæðislán er mjög stórt lán sem er borgað til baka í 25-40 ár. Það er tekið til að kaupa íbúð og íbúðin sjálf er trygging fyrir láninu.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Ákvarðanir: verðtryggt/óverðtryggt, fastir/breytilegir vextir, jafnar afborganir/greiðslur, lánstími, einn lánveitandi eða blanda, lífeyrissjóður eða banki. Berðu saman kjör hjá að minnsta kosti þremur lánveitendum, lífeyrissjóðir bjóða oft lægri vexti sjóðfélögum. Styttri lánstími hækkar greiðslu en lækkar heildarkostnað mikið. Lestu skilmála um uppgreiðslugjald, endurskoðun vaxta og greiðslujöfnun. Nýttu séreign inn á lánið (sjá 5.6).</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Ákvörðunarrammi: (1) hámarkslán = min(LTV-mörk, DSTI-mörk, eigið mat á byrði); (2) raunvaxtasamanburður yfir lánsform; (3) næmni fyrir vaxta- og verðbólgusviðsmyndum; (4) sveigjanleiki (aukagreiðslur, breyting lánsforms án kostnaðar). Fastvaxtatímabil er trygging gegn vaxtahækkun, kostnaður hennar er vaxtamunur. Vaxtabætur: tekjutengdar, með þaki. Sértryggð skuldabréf fjármagna lán banka, sem skýrir hvers vegna kjör fylgja markaðsvöxtum.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Fyrstu kaup með litlum sparnaði</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þetta er fyrir fullorðna. Í stuttu máli: til eru leiðir til að kaupa fyrstu íbúð þótt maður eigi ekki mikið sparað, en þær fylgja reglum.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Þrjár leiðir: (1) viðbótarlífeyrissparnaður skattfrjálst inn á fyrstu íbúð, allt að 500.000 kr. á ári á einstakling í 10 ár (sjá 5.7), (2) hlutdeildarlán HMS fyrir þau sem uppfylla tekjuskilyrði (sjá 4.11), (3) hærra veðsetningarhlutfall (85%) og greiðslubyrðarhlutfall (40%) fyrir fyrstu kaupendur, auk helmings stimpilgjalds. Áhættan: lítið eigið fé þýðir að verðlækkun getur sett eignina undir skuld. Byrja að safna séreign snemma er lykill.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Skilyrði séreignarúrræðis: ekki átt íbúð áður, 30% eignarhlutur að lágmarki, hámark 4% + 2% iðgjald, nýting innan 12 mánaða frá kaupum fyrir útborgun eða samfellt í 10 ár inn á höfuðstól. Skattalegt hagræði = jaðarskattur × fjárhæð (um 37-46% „afsláttur“). Samspil við hlutdeildarlán: séreign má nota sem hluta af 5% framlagi. Neikvætt eigið fé (LTV yfir 100%) er lausafjárvandi fremur en gjaldþrot ef greiðslugeta helst, en lokar á endurfjármögnun og flutning.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Að safna fyrir eftirlaunum</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Þegar fólk er orðið gamalt hættir það að vinna. Þá þarf það að eiga peninga sem það safnaði á meðan það vann. Það borgar sig að byrja snemma, af því snjóboltinn vex.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Þrjár stoðir: almannatryggingar (TR, tekjutengdar), lífeyrissjóður (skylda, 15,5%) og viðbótarlífeyrissparnaður (séreign, valfrjáls). Séreign: launþegi leggur 2-4% og fær 2% mótframlag, sem er launahækkun sem þú afþakkar ef þú sleppir henni. Enginn fjármagnstekjuskattur á ávöxtun, laus frá 60 ára, erfist, varin fyrir kröfuhöfum. Markmið: eftirlaun um 70-80% af launum fyrir starfslok. Fylgstu með réttindum á sjóðfélagavef.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Lífeyrissjóðir: samtryggingarkerfi með réttindaávinnslu, tryggingafræðileg staða ræður skerðingum. TR: ellilífeyrir skerðist um 45% af öðrum tekjum yfir frítekjumarki, sem skapar há jaðaráhrif á sparnað hjá lág- og meðaltekjufólki. Séreign: skattlögð við úttekt sem tekjuskattur (ekki 22% fjármagnstekjuskattur), hagstætt ef jaðarskattur á eftirlaunum er lægri. Úttektarreglur: 4%-reglan sem þumalputti á frjálsum sparnaði, raðáhætta. Jöfnun réttinda milli hjóna möguleg.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Að verja sig fyrir áföllum</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Stundum gerist eitthvað óvænt: hjólið bilar, síminn brotnar, einhver veikist. Þess vegna er gott að eiga varasjóð, smá pening sem er bara fyrir óvænt tilvik.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Enginn kemst áfallalaust í gegnum lífið. Persónulegar áhættur: launalækkun, atvinnumissir, óvinnufærni, andlát. Efnahagslegar áhættur: verðfall eigna, tjón, hækkun skulda og greiðslubyrði. Varnir: varasjóður (3 mánaða útgjöld), hófleg skuldsetning, lífeyrisréttindi, sjúkra- og slysatrygging, líftrygging ef aðrir eru háðir tekjum þínum, eignatryggingar (innbú, hús, bíll). Kortleggðu áhætturnar, metðu áhrifin og ákveddu varnir.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Áhættustýring heimilis: greina (líkur × áhrif), forðast, draga úr, flytja (tryggja), bera sjálfur. Tryggja aðeins stórtjón sem þú þolir ekki, bera sjálfur smátjón (hár sjálfsábyrgð lækkar iðgjald). Örorkuvernd: lífeyrissjóður greiðir örorkulífeyri miðað við áunnin og framreiknuð réttindi, oft ófullnægjandi fyrir hátekjufólk, þá viðbótarsjúkdómatrygging. Líftryggingarþörf = skuldir + framfærsla eftirlifenda − eignir og réttindi. Veðsetning undir 70% gefur svigrúm við verðfall. Varasjóður á lausum, verðtryggðum reikningi.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Að hefja eigin rekstur</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Sumir búa til sitt eigið fyrirtæki, til dæmis selja eitthvað sem þeir búa til. Þá þarf að reikna hvað það kostar að búa það til og hvað má selja það á.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Rekstrarform: einstaklingsrekstur (einföld skráning, ótakmörkuð ábyrgð) eða einkahlutafélag (takmörkuð ábyrgð, stofnfé, meira umstang). Áætlun: stofnkostnaður, rekstraráætlun, sjóðstreymi fyrstu 12-24 mánuði, hvenær reksturinn stendur undir sér. Skattar og skil: virðisaukaskattur, staðgreiðsla af reiknuðu endurgjaldi, tryggingagjald, lífeyrissjóður, ársreikningur. Aðskildu rekstur og einkafjármál frá fyrsta degi. Flest ný fyrirtæki falla á lausafé, ekki hagnaði.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Reiknað endurgjald: eigandi ehf. verður að greiða sér laun samkvæmt viðmiðum Skattsins áður en arður er greiddur. Arður úr ehf. 22% skattur en umfram 20% af eigin fé skattlagður sem laun að hluta. Fjármögnun: eigið fé, lán með persónulegri ábyrgð (algengt hjá bönkum fyrir lítil félög, sem eyðir takmörkuðu ábyrgðinni), styrkir (Tækniþróunarsjóður), englar. Lykiltölur: framlegð, jafnvægispunktur, veltufjárhlutfall, DSO. Persónulegar ábyrgðir og veð í íbúð blanda saman reitum (sjá næsta).</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Að rugla saman reitum</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Ekki blanda saman þínum peningum og annarra. Ef þú geymir pening fyrir vin, hafðu hann sér. Og lánaðu ekki meira en þú mátt við að tapa.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Algeng mistök: skrifa upp á lán fyrir aðra (ábyrgðarmaður ber fulla ábyrgð ef lántaki bregst), veðsetja heimilið fyrir rekstur eða lán annarra, lána ættingjum fé sem þú þarft sjálf, blanda rekstrarfé og einkafé, sameiginlegir reikningar án samkomulags í sambúð, taka lán fyrir fjárfestingu. Reglan: haltu heimilinu, rekstrinum og annarra manna skuldum aðskildum, og gerðu skriflega samninga innan fjölskyldu.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Lög um ábyrgðarmenn kveða á um greiðslumat lántaka og upplýsingaskyldu við ábyrgðarmann, en ábyrgð er eftir sem áður full. Sambúð án hjúskapar: engin lögbundin eignaskipting, sameign ræðst af framlögum og sönnun. Kaupmáli getur skilið eignir frá hjúskapareign. Lán innan fjölskyldu án vaxta geta talist gjöf með skattalegum afleiðingum. Skuldsett fjárfesting (margin) magnar tap og getur kallað á veðkall. Fyrirtækjarekstur í eigin nafni gerir allar eignir heimilis aðfararhæfar.</p>
+    </div>
+  </article>
+
+  <div class="box">
+    <h3>Spurningar og verkefni</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div><p>Hvað gætir þú þurft varasjóð fyrir? Hvað væri góð stærð á honum fyrir þig?</p></div>
+    <div class="lvl l2"><div class="tag">2. stig</div><p>Þú ert 28 ára með 650.000 kr. í mánaðarlaun. Hvað hefur þú safnað í séreign eftir 10 ár með 4% + 2% iðgjaldi og 3% raunávöxtun? Hvað af því mátt þú nota skattfrjálst inn á fyrstu íbúð?</p></div>
+    <div class="lvl l3"><div class="tag">3. stig</div><p>Settu upp ævisjóðstreymi frá 25 til 85 ára með námsláni, íbúðarkaupum 32 ára, börnum, starfslokum 67 ára. Hvaða sparnaðarhlutfall þarf til að halda 75% af launum á eftirlaunum með TR og lífeyrissjóði?</p></div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="chapter" id="k6">
+  <h2>6. Farsæl skref: hollráð</h2>
+  <p class="src"><span>Farsæl skref, kafli 6</span><span>Fyrstu skref, kafli 3: Nokkur hollráð</span></p>
+
+  <article class="topic">
+    <h3>Stefndu að fjárhagslegu sjálfstæði</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Að ráða sjálf eða sjálfur við peningana sína. Byrjaðu á að eiga þinn eigin bankareikning, vita hvað þú átt og passa upp á það.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Fjárhagslegt sjálfstæði er að stjórna eigin fjármálum, eiga eignir og ráðstafa tekjum að eigin vali. Skref úr Fyrstu skrefum: ekki eyða um efni fram, gerðu það sjálf/ur (greiðsluáætlun, skattframtal), opnaðu þinn eigin netbanka, passaðu peningana og mikilvæg skjöl (afrit, bankahólf fyrir frumrit), spyrðu, kannaðu og spyrðu aftur. Það tekur tíma að læra hugtök og venjur, en vafaatriðum fækkar.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Fjárhagslegt sjálfstæði í þrengri merkingu (FI): þegar eignatekjur standa undir útgjöldum, þumalputti 25 sinnum árleg útgjöld við 4% úttekt. Skjalastjórnun: rafræn varsla með afriti utan heimilis, skilmálar og kostnaður gagnaskýja, frumrit lagaskjala í eldtraustri geymslu. Fjármálalæsi sem ferli: námskeið stéttarfélaga, banka og lífeyrissjóða, valáfangar, fjölmiðlaefni, og síðan að gera hlutina sjálf.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Safnaðu frekar en að taka lán</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Ef þú sparar fyrir hlut færðu vexti á meðan. Ef þú færð lánað borgar þú vexti. Að spara fyrst er alltaf ódýrara.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Sparnaður ber innlánsvexti, lán kostar útlánsvexti, og munurinn er mikill, sérstaklega á skammtímalánum. Lántaka er skuldbinding sem fylgir áhætta ef greiðslugeta versnar. Meginreglan er að spara fyrir hlutum, undantekningar eru lán sem skila varanlegu verðmæti (húsnæði, nám) og lán sem eru ódýrari en að bíða.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Munur á neyslu sem er frestað og neyslu sem er flýtt með láni: í núvirði kostar lántaka vaxtamuninn (útlánsvextir − innlánsvextir eftir skatt) á hverju ári, oft 5-15 prósentustig á neytendalánum. Undantekningin er þegar vænt ávöxtun eða ábati af því sem keypt er er hærri en lánsvextir (jákvætt NPV), eða þegar lausafjárstaða gerir sparnað óframkvæmanlegan (lífsferilskenning). Neyslulán hafa aldrei jákvætt NPV.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Flokkaðu sparnað eftir tilgangi</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Hafðu þrjá bauka: einn fyrir óvænt, einn fyrir eitthvað sem þig langar í bráðum, og einn fyrir eitthvað stórt seinna.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Skammtímasparnaður: varasjóður (áföll, 3 mánaða laun) og neyslusjóður (heimilistæki, ferðir, áhugamál). Langtímasparnaður: fasteign, bíll, sumarhús. Eftirlaunasparnaður: lífeyrissjóður (skylda) og séreign (frjáls). Flokkun eykur yfirsýn, og hver flokkur fær sparnaðarform við hæfi: laust og öruggt fyrir stutt, verðbréf fyrir langt. Hve mikið? Fer eftir aðstæðum, en sjálfvirkni og regla skipta meira máli en fjárhæð.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Hugræn bókfærsla (mental accounting) er hér nýtt sem kostur: aðskildir sjóðir koma í veg fyrir að langtímasparnaður fari í skammtímaneyslu. Varasjóður: 3-6 mánaða útgjöld, stærri ef tekjur eru óreglulegar, á lausum verðtryggðum reikningi. Eignasamsetning hvers sjóðs ræðst af tímalengd: undir 3 ár innlán, 3-10 ár blanda, yfir 10 ár hlutabréfaþungt. Séreign er lokaður sjóður til 60 ára nema fyrir fyrstu íbúð, sem er bæði kostur (agi) og galli (lausafé).</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Taktu tillit til verðbólgu</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Hlutirnir hækka í verði með tímanum. Peningar undir koddanum verða minna virði. Peningar á reikningi með vöxtum halda betur í við.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Laun: fylgstu með að þau hækki að minnsta kosti í takt við verðbólgu til lengri tíma. Útgjöld: hækka með verðbólgu, yfirfarðu greiðsluáætlun. Sparnaður: raunvirði rýrnar ef verðbólga er hærri en vextir, verðtryggðir reikningar og ríkisbréf verja til skamms tíma, hlutabréf og fasteignir hækka yfirleitt umfram verðbólgu til langs tíma. Lán: verðtryggð lán hækka með verðbólgu, óverðtryggð hækka í vöxtum. Hugsaðu alltaf í raunstærðum.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Verðbólga er flutningur verðmæta: frá sparifjáreigendum til skuldara (óverðtryggt, fastir vextir), frá launþegum til atvinnurekenda (ef laun fylgja ekki), frá lántökum til lánveitenda (verðtryggt). Skattkerfið magnar áhrifin því það skattleggur nafnvexti. Verja má með verðtryggðum eignum, raunávöxtunareignum (hlutabréf, fasteign) og með því að velja lánsform út frá eigin verðbólguvæntingum miðað við álag markaðarins. Verðbólgumarkmið SÍ er 2,5%.</p>
+    </div>
+  </article>
+
+  <article class="topic">
+    <h3>Gerðu ráð fyrir áföllum og nýttu góð tækifæri</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div>
+      <p>Eigðu varasjóð fyrir óvænt tilvik. Og þegar eitthvað gott býðst, eins og góð tilboð eða vinna sem borgar vel, nýttu það.</p>
+    </div>
+    <div class="lvl l2"><div class="tag">2. stig</div>
+      <p>Áföll (sjá 5.8): kortleggja, meta, verjast með varasjóði, hóflegum skuldum og tryggingum. Tækifæri: hagstæð endurfjármögnun þegar vextir lækka, mótframlag í séreign, skattaleg úrræði fyrir fyrstu íbúð, námskeið og nám sem hækka tekjur, að kaupa þegar aðrir eru hræddir. Hvort tveggja krefst þess að hafa svigrúm: skuldlaus eða skuldlítil staða og laust fé gera kleift að bregðast við.</p>
+    </div>
+    <div class="lvl l3"><div class="tag">3. stig</div>
+      <p>Valréttarhugsun: lausafé og lánsgeta eru valréttur sem fær verðmæti í óvissu. Yfirskuldsett heimili neyðist til að selja á botni, skuldlítið heimili getur keypt þar. Mótframlag launagreiðanda í séreign er 100% tafarlaus ávöxtun á eigin framlag. Endurfjármögnun metin með NPV og jafnvægispunkti. Tímasetning markaða er ekki tækifæri, kerfisbundinn reglulegur sparnaður er það. Reglubundin endurskoðun (árlega): eignir, skuldir, tryggingar, réttindi, erfðaskrá.</p>
+    </div>
+  </article>
+
+  <div class="box">
+    <h3>Spurningar og verkefni</h3>
+    <div class="lvl l1"><div class="tag">1. stig</div><p>Nefndu þrennt sem þú ætlar að gera öðruvísi með peningana þína eftir að hafa lesið þetta.</p></div>
+    <div class="lvl l2"><div class="tag">2. stig</div><p>Settu upp eigin efnahagsreikning (eignir, skuldir, eigið fé) og þriggja ára áætlun: varasjóður, skuldir niður, séreign, langtímasparnaður. Hvar ert þú veikust eða veikastur fyrir áföllum?</p></div>
+    <div class="lvl l3"><div class="tag">3. stig</div><p>Gerðu áhættukort heimilis með líkum og áhrifum átta atburða (atvinnumissir, 20% verðfall, 3% vaxtahækkun, veikindi, bílslys, skilnaður, andlát, vatnstjón) og tilgreindu vörn og kostnað hennar fyrir hvern.</p></div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section class="chapter" id="ord">
+  <h2>Orðskýringar</h2>
+  <p class="src"><span>Úrval, sjá orðskýringar í Farsælum skrefum bls. 172</span></p>
+  <article class="topic">
+    <dl class="gloss">
+      <dt>Ráðstöfunartekjur</dt>
+      <dd class="lvl l1">Það sem þú færð í hendurnar eftir skatt.</dd>
+      <dd class="lvl l2">Laun að frádregnum sköttum, lífeyrisiðgjöldum og öðrum gjöldum.</dd>
+      <dd class="lvl l3">Tekjur eftir beina skatta og skyldubundin iðgjöld, grunnur greiðslubyrðarhlutfalls (DSTI).</dd>
+      <dt>Vextir</dt>
+      <dd class="lvl l1">Leiga fyrir peninga.</dd>
+      <dd class="lvl l2">Hlutfall af höfuðstól á ári sem greitt er fyrir afnot af fé.</dd>
+      <dd class="lvl l3">Verð á tíma og áhættu, sundurliðað í raunvexti, verðbólguvæntingar og áhættuálag.</dd>
+      <dt>Vaxtavextir</dt>
+      <dd class="lvl l1">Vextir ofan á vexti, snjóboltinn.</dd>
+      <dd class="lvl l2">Vextir sem leggjast við höfuðstól og bera sjálfir vexti.</dd>
+      <dd class="lvl l3">Veldisvöxtur, FV = PV·(1+r)ⁿ.</dd>
+      <dt>Verðbólga</dt>
+      <dd class="lvl l1">Þegar hlutirnir verða dýrari með tímanum.</dd>
+      <dd class="lvl l2">Stöðug hækkun almenns verðlags, mæld með vísitölu neysluverðs.</dd>
+      <dd class="lvl l3">Árleg breyting VNV; greint í eftirspurnar- og kostnaðarverðbólgu, væntingar ráða miklu.</dd>
+      <dt>Verðtrygging</dt>
+      <dd class="lvl l1">Lán eða sparnaður sem stækkar jafn mikið og verðið á hlutunum.</dd>
+      <dd class="lvl l2">Höfuðstóll fylgir vísitölu neysluverðs, vextir eru þá raunvextir.</dd>
+      <dd class="lvl l3">Vísitölubinding skuldbindingar; flytur verðbólguáhættu á skuldara, lög nr. 38/2001.</dd>
+      <dt>Árleg hlutfallstala kostnaðar (ÁHK)</dt>
+      <dd class="lvl l1">Ein tala sem sýnir hvað lán kostar í alvöru á ári.</dd>
+      <dd class="lvl l2">Heildarkostnaður láns, vextir og gjöld, sem prósenta á ári. Notuð til að bera saman lán.</dd>
+      <dd class="lvl l3">Innri vextir greiðsluflæðis lánsins að meðtöldum öllum kostnaði, lögbundin upplýsing.</dd>
+      <dt>Greiðslumat</dt>
+      <dd class="lvl l1">Bankinn athugar hvort þú getir borgað lánið.</dd>
+      <dd class="lvl l2">Útreikningur á greiðslugetu miðað við tekjur, gjöld, eignir og skuldir.</dd>
+      <dd class="lvl l3">Lögbundið mat á fasteignalánum, byggt á neysluviðmiðum og álagsprófi vaxta.</dd>
+      <dt>Lánshæfismat</dt>
+      <dd class="lvl l1">Einkunn um hvort þú hefur staðið þig í að borga.</dd>
+      <dd class="lvl l2">Mat á líkum þess að umsækjandi endurgreiði lán, byggt á greiðslusögu.</dd>
+      <dd class="lvl l3">Tölfræðilegt líkan (Creditinfo) með einkunn A-E, vanskilaskrá vegur þyngst.</dd>
+      <dt>Varasjóður</dt>
+      <dd class="lvl l1">Peningar sem eru bara fyrir óvænt tilvik.</dd>
+      <dd class="lvl l2">Laus sparnaður, oft 3 mánaða laun, til að mæta áföllum.</dd>
+      <dd class="lvl l3">Lausafjárbuffer, 3-6 mánaða útgjöld, stærri við óreglulegar tekjur.</dd>
+      <dt>Séreign / viðbótarlífeyrissparnaður</dt>
+      <dd class="lvl l1">Auka sparnaður fyrir ellina sem vinnuveitandinn bætir í.</dd>
+      <dd class="lvl l2">Frjáls lífeyrissparnaður, 2-4% frá launþega og 2% mótframlag, laus frá 60 ára.</dd>
+      <dd class="lvl l3">Skattfrestaður sparnaður í séreignarsjóði, undanþeginn fjármagnstekjuskatti, nýtanlegur skattfrjálst inn á fyrstu íbúð.</dd>
+      <dt>Veðsetningarhlutfall</dt>
+      <dd class="lvl l1">Hversu stór hluti af íbúðinni er í raun bankans.</dd>
+      <dd class="lvl l2">Lán sem hlutfall af verðmæti eignar. Hámark 80-85% samkvæmt reglum Seðlabankans.</dd>
+      <dd class="lvl l3">LTV, þjóðhagsvarúðartæki; ásamt DSTI og DTI helstu skuldamælikvarðar.</dd>
+      <dt>Lykilupplýsingaskjal</dt>
+      <dd class="lvl l1">Stutt blað sem segir hvað sjóður gerir og kostar.</dd>
+      <dd class="lvl l2">Staðlað þriggja síðna skjal um fjárfestingarvöru: áhætta, sviðsmyndir, kostnaður.</dd>
+      <dd class="lvl l3">KID samkvæmt PRIIPs, með SRI-áhættuvísi og RIY-kostnaðarmælikvarða.</dd>
+    </dl>
+  </article>
+</section>
+
+<!-- ============================================================ -->
+<section class="chapter" id="heim">
+  <h2>Heimildir og næstu skref</h2>
+  <article class="topic">
+    <ul>
+      <li><a href="https://fjarmalavit.is/" rel="noopener">Fjármálavit</a>: námsefni, verkefni, myndbönd og reiknivélar.</li>
+      <li><a href="https://fjarmalavit.is/namsefni/" rel="noopener">Fyrstu skref í fjármálum</a> (Gunnar Baldvinsson, Framtíðarsýn, vefútgáfa janúar 2022) og stuðningsefni kennara: glærur, spurningar og svör, vinnubók.</li>
+      <li><a href="https://fjarmalavit.is/4833-2/" rel="noopener">Farsæl skref í fjármálum</a>, 2. útgáfa 2026, efnisyfirlit.</li>
+      <li><a href="https://fjarmalavit.is/snjoll-skref-i-fjarmalum/" rel="noopener">Snjöll skref í fjármálum</a>, millibókin sem þetta yfirlit sleppir.</li>
+    </ul>
+    <div class="lvl l1">
+      <p><strong>Staða:</strong> Þetta er fyrsta uppkast. Sumt á eftir að laga og tölur geta breyst.</p>
+    </div>
+    <div class="lvl l2">
+      <p><strong>Staða skjalsins:</strong> beinagrind. Kaflar 1 til 2 og hollráðin byggja á lesnum texta Fyrstu skrefa. Kaflar 3 til 5 fylgja efnisyfirliti Farsælla skrefa en textinn er samantekt á almennri þekkingu, ekki tilvitnun í bókina. Tölur sem breytast árlega (skatthlutföll, frítekjumörk, lánþegaskilyrði, séreignarúrræði) þarf að sannreyna fyrir birtingu.</p>
+    </div>
+    <div class="lvl l3">
+      <p><strong>Staða skjalsins:</strong> beinagrind. Formúlur og reglur á 3. stigi eru staðlaðar en lagatilvísanir (lög nr. 38/2001, 33/2013, 118/2016, PRIIPs, SFDR, MiCA) og tölur (fjármagnstekjuskattur 22%, iðgjald 15,5%, LTV/DSTI-mörk, 500.000 kr. séreignarþak) þarf að sannreyna gegn gildandi rétti fyrir birtingu. Sýnidæmi 1-74 í Farsælum skrefum mætti tengja við viðeigandi efnisatriði hér.</p>
+    </div>
+  </article>
+</section>
+
+</main>
+</div>
+
+<footer class="foot">
+  <p>Yfirlit byggt á námsefni Fjármálavits. Ekki fjármálaráðgjöf. Drög.</p>
+</footer>
+
+<a class="backtop" href="#top" aria-label="Efst á síðu">↑</a>
+</div>
+
+<script>
+(function(){
+  var root = document.documentElement;
+  var buttons = document.querySelectorAll('.levels button');
+  var valid = {'1':1,'2':1,'3':1,'all':1};
+  function apply(level, push){
+    if(!valid[level]) level = '2';
+    root.setAttribute('data-level', level);
+    buttons.forEach(function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-set') === level ? 'true' : 'false'); });
+    try { localStorage.setItem('skref-stig', level); } catch(e) {}
+    if(push){ try { history.replaceState(null, '', '#stig-' + level); } catch(e) {} }
+  }
+  buttons.forEach(function(b){
+    b.addEventListener('click', function(){ apply(b.getAttribute('data-set'), true); });
+  });
+  var fromHash = (location.hash.match(/^#stig-(1|2|3|all)$/) || [])[1];
+  var saved = null;
+  try { saved = localStorage.getItem('skref-stig'); } catch(e) {}
+  apply(fromHash || saved || '2', false);
+  window.addEventListener('hashchange', function(){
+    var h = (location.hash.match(/^#stig-(1|2|3|all)$/) || [])[1];
+    if(h) apply(h, false);
+  });
+})();
+</script>
+</body>
+</html>
