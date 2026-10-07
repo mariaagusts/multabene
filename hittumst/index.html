@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hittumst</title>
+<meta name="description" content="Finnum dag sem hentar öllum. Búðu til hitting, deildu hlekk og látið hvert og eitt merkja við þegar það getur.">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#0C1720;
+    --panel:#12222E;
+    --cell:#162A38;
+    --cell-hi:#1C3545;
+    --line:#23404F;
+    --frost:#E8F0F2;
+    --dim:#7E97A5;
+    --aurora:111 227 168;
+    --moon:255 201 107;
+    --rose:#F08A8A;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(120% 70% at 50% -10%, #17384A 0%, rgba(12,23,32,0) 60%),
+      var(--night);
+    background-attachment:fixed;
+    color:var(--frost);
+    font-family:"Karla",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:16px;
+    line-height:1.5;
+    -webkit-text-size-adjust:100%;
+    padding:0 0 72px;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:0 16px;}
+  a{color:rgb(var(--aurora));}
+  button{font:inherit;color:inherit;}
+  input,textarea{font:inherit;}
+  [hidden]{display:none !important;}
+
+  /* ---------- haus ---------- */
+  header{padding:34px 0 22px;}
+  .eyebrow{
+    font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--dim);margin:0 0 10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+  }
+  .eyebrow a{color:var(--dim);text-decoration:none;}
+  .eyebrow a:hover{color:var(--frost);}
+  h1{
+    font-family:"Bricolage Grotesque",Georgia,serif;
+    font-weight:800;
+    font-size:clamp(34px,10vw,60px);
+    line-height:.95;
+    letter-spacing:-.03em;
+    margin:0;
+    overflow-wrap:anywhere;
+  }
+  h1 em{font-style:normal;display:block;color:rgb(var(--aurora));}
+  .lede{color:var(--dim);margin:14px 0 0;max-width:38em;white-space:pre-line;}
+  .badge{
+    display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+    padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--dim);
+  }
+  .badge.open{border-color:rgb(var(--aurora) / .5);color:rgb(var(--aurora));}
+  .badge.closed{border-color:rgba(240,138,138,.5);color:var(--rose);}
+  .badge.chosen{border-color:rgb(var(--moon) / .6);color:rgb(var(--moon));}
+
+  /* ---------- spjöld ---------- */
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px;
+    margin:0 0 16px;
+  }
+  .card h2{
+    font-family:"Bricolage Grotesque",Georgia,serif;
+    font-weight:700;font-size:20px;letter-spacing:-.01em;
+    margin:0 0 6px;
+  }
+  .card p.help{color:var(--dim);margin:0 0 12px;font-size:14px;}
+  .card.result{border-color:rgb(var(--moon) / .5);background:linear-gradient(180deg,rgba(255,201,107,.08),rgba(255,201,107,0) 70%),var(--panel);}
+
+  /* ---------- eyðublöð ---------- */
+  label.field{display:block;margin:0 0 14px;}
+  label.field span{display:block;font-size:13px;color:var(--dim);margin:0 0 5px;letter-spacing:.02em;}
+  .input,textarea.input{
+    width:100%;background:var(--cell);border:1px solid var(--line);color:var(--frost);
+    border-radius:10px;padding:10px 12px;font-size:16px;
+  }
+  textarea.input{min-height:70px;resize:vertical;}
+  .input:focus,textarea.input:focus{outline:2px solid rgb(var(--aurora));outline-offset:1px;}
+  .input::placeholder{color:#5B7382;}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .btn{
+    background:rgb(var(--aurora));color:var(--night);border:0;border-radius:10px;
+    padding:11px 18px;font-weight:700;cursor:pointer;font-size:15px;
+  }
+  .btn:disabled{opacity:.5;cursor:default;}
+  .btn.ghost{background:transparent;color:var(--frost);border:1px solid var(--line);font-weight:500;}
+  .btn.ghost:hover{border-color:var(--dim);}
+  .btn.danger{background:transparent;color:var(--rose);border:1px solid rgba(240,138,138,.4);font-weight:500;}
+  .btn.small{padding:6px 11px;font-size:13px;border-radius:8px;}
+  .linkbtn{background:none;border:0;padding:0;color:rgb(var(--aurora));cursor:pointer;text-decoration:underline;font-size:14px;}
+  .status{font-size:13px;color:var(--dim);min-height:1.3em;margin:8px 0 0;}
+  .status.err{color:var(--rose);}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+  .seg button{background:transparent;border:0;padding:9px 14px;cursor:pointer;color:var(--dim);font-weight:500;}
+  .seg button[aria-pressed="true"]{background:var(--cell-hi);color:var(--frost);}
+  .slots-edit{display:grid;gap:8px;grid-template-columns:1fr 1fr;}
+  .slots-edit .input{padding:8px 10px;font-size:15px;}
+  @media (min-width:600px){.slots-edit{grid-template-columns:repeat(5,1fr);}}
+
+  /* ---------- dagatal í eyðublaði ---------- */
+  .cal-head{display:flex;align-items:center;justify-content:space-between;margin:6px 0 8px;}
+  .cal-head h3{margin:0;font-family:"Bricolage Grotesque",Georgia,serif;font-size:18px;font-weight:700;}
+  .cal-tools{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px;}
+  .dow{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:0 0 4px;}
+  .dow span{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);text-align:center;}
+  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+  .cal .pad{aspect-ratio:1;}
+  .cal .day{
+    aspect-ratio:1;border-radius:9px;border:1px solid var(--line);background:var(--cell);
+    cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:500;
+    touch-action:manipulation;user-select:none;
+  }
+  .cal .day.weekend{background:#132431;}
+  .cal .day.past{opacity:.3;cursor:default;}
+  .cal .day[aria-pressed="true"]{background:rgb(var(--aurora));color:var(--night);border-color:rgb(var(--aurora));font-weight:700;}
+  .cal .day:focus-visible{outline:2px solid rgb(var(--aurora));outline-offset:1px;}
+  .picked{color:var(--dim);font-size:14px;margin:10px 0 0;}
+
+  /* ---------- svartafla ---------- */
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--dim);margin:0 0 12px;}
+  .legend i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:5px;border:1px solid var(--line);background:var(--cell);}
+  .legend i.v2{background:rgb(var(--aurora));border-color:rgb(var(--aurora));}
+  .legend i.v1{background:rgb(var(--moon));border-color:rgb(var(--moon));}
+  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -18px;padding:0 18px;}
+  table.grid{border-collapse:separate;border-spacing:4px;width:100%;}
+  table.grid th{font-weight:500;font-size:13px;color:var(--dim);text-align:center;padding:0 0 4px;}
+  table.grid th.date{text-align:left;white-space:nowrap;}
+  table.grid th button{
+    background:transparent;border:0;cursor:pointer;color:inherit;padding:6px 4px;border-radius:6px;width:100%;
+    text-align:inherit;font-size:13px;line-height:1.2;touch-action:manipulation;
+  }
+  table.grid th button:hover{color:var(--frost);background:var(--cell);}
+  table.grid th.date button{text-align:left;padding-left:6px;}
+  table.grid th.date b{color:var(--frost);font-weight:700;display:block;}
+  table.grid th.date small{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;}
+  table.grid tr.weekend th.date b{color:rgb(var(--aurora));}
+  .cellbtn{
+    width:100%;min-width:44px;height:46px;border-radius:9px;border:1px solid var(--line);background:var(--cell);
+    cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;
+    touch-action:manipulation;user-select:none;color:var(--night);
+  }
+  .cellbtn[data-v="2"]{background:rgb(var(--aurora));border-color:rgb(var(--aurora));}
+  .cellbtn[data-v="1"]{background:rgb(var(--moon));border-color:rgb(var(--moon));}
+  .cellbtn:disabled{cursor:default;opacity:.6;}
+  .cellbtn:focus-visible{outline:2px solid var(--frost);outline-offset:1px;}
+  table.grid.days .cellbtn{height:42px;}
+
+  /* ---------- niðurstöður ---------- */
+  table.res{border-collapse:separate;border-spacing:3px;}
+  table.res th{font-size:12px;color:var(--dim);font-weight:500;text-align:center;vertical-align:bottom;padding:0 2px 4px;}
+  table.res th.name{text-align:left;white-space:nowrap;padding-right:8px;}
+  table.res th.opt{min-width:38px;}
+  table.res th.opt b{display:block;color:var(--frost);font-size:13px;}
+  table.res th.opt small{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;}
+  table.res td{text-align:center;}
+  table.res td.name{text-align:left;white-space:nowrap;color:var(--frost);font-weight:500;padding-right:8px;}
+  table.res td.name small{display:block;color:var(--dim);font-weight:400;font-size:12px;white-space:normal;max-width:16em;}
+  table.res td.name button{background:none;border:0;padding:0;color:var(--frost);cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px;font-weight:500;}
+  table.res tr.me td.name{color:rgb(var(--aurora));}
+  table.res .dot{display:inline-block;width:26px;height:26px;border-radius:7px;background:var(--cell);border:1px solid var(--line);vertical-align:middle;}
+  table.res .dot.v2{background:rgb(var(--aurora));border-color:rgb(var(--aurora));}
+  table.res .dot.v1{background:rgb(var(--moon));border-color:rgb(var(--moon));}
+  table.res tr.sum td{color:var(--dim);font-size:12px;padding-top:4px;}
+  table.res tr.sum td b{color:var(--frost);font-size:14px;display:block;}
+  table.res th.opt.chosen b,table.res th.opt.chosen small{color:rgb(var(--moon));}
+  table.res th.opt button{background:none;border:0;padding:4px 2px;cursor:pointer;color:inherit;border-radius:6px;width:100%;}
+  table.res th.opt button:hover{background:var(--cell);}
+
+  .top{list-style:none;margin:0;padding:0;display:grid;gap:8px;}
+  .top li{display:flex;gap:12px;align-items:center;background:var(--cell);border:1px solid var(--line);border-radius:10px;padding:10px 12px;}
+  .top li .rank{font-family:"Bricolage Grotesque",Georgia,serif;font-weight:800;font-size:22px;color:var(--dim);min-width:22px;}
+  .top li .when{flex:1;font-weight:700;}
+  .top li .when small{display:block;font-weight:400;color:var(--dim);font-size:13px;}
+  .top li .n{font-size:13px;color:var(--dim);text-align:right;}
+  .top li .n b{color:rgb(var(--aurora));font-size:16px;display:block;}
+  .top li.chosen{border-color:rgb(var(--moon) / .6);}
+  .top li.chosen .rank{color:rgb(var(--moon));}
+  .empty{color:var(--dim);font-size:14px;margin:0;}
+
+  .result-big{font-family:"Bricolage Grotesque",Georgia,serif;font-weight:800;font-size:clamp(24px,6vw,36px);letter-spacing:-.02em;line-height:1.05;margin:4px 0 8px;color:rgb(var(--moon));}
+  .who{color:var(--dim);font-size:14px;margin:0;}
+  .who b{color:var(--frost);font-weight:500;}
+
+  /* ---------- deilihlekkir ---------- */
+  .share{display:grid;gap:10px;}
+  .share .box{background:var(--cell);border:1px solid var(--line);border-radius:10px;padding:10px 12px;}
+  .share .box small{display:block;color:var(--dim);font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin:0 0 4px;}
+  .share .box code{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;overflow-wrap:anywhere;color:var(--frost);margin:0 0 8px;}
+  .share .box.admin{border-color:rgb(var(--moon) / .4);}
+  .warn{color:rgb(var(--moon));font-size:13px;margin:8px 0 0;}
+
+  .mine{list-style:none;margin:0;padding:0;display:grid;gap:6px;}
+  .mine li{display:flex;justify-content:space-between;gap:10px;align-items:center;background:var(--cell);border:1px solid var(--line);border-radius:10px;padding:9px 12px;}
+  .mine li a{text-decoration:none;color:var(--frost);font-weight:500;}
+  .mine li small{color:var(--dim);font-size:12px;white-space:nowrap;}
+
+  .foot{color:var(--dim);font-size:13px;margin:26px 0 0;}
+  .foot a{color:var(--dim);}
+
+  .toast{
+    position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
+    background:#1E3A4A;border:1px solid var(--line);border-radius:999px;padding:9px 16px;
+    font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.4);opacity:0;transition:opacity .2s;pointer-events:none;
+    max-width:calc(100% - 32px);text-align:center;
+  }
+  .toast.show{opacity:1;}
+
+  .names{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 0;}
+  .names button{background:var(--cell);border:1px solid var(--line);border-radius:999px;padding:5px 11px;cursor:pointer;font-size:14px;}
+  .names button:hover{border-color:var(--dim);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow" id="eyebrow"><a href="/hittumst/">Hittumst</a></p>
+    <h1 id="title">Hittumst<em>og finnum dag</em></h1>
+    <p class="lede" id="lede"></p>
+  </header>
+  <main id="app"></main>
+  <p class="foot" id="foot"></p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ==================================================================
+   Hittumst: Doodle-lík síða fyrir vinahópa. Hver hittingur fær sitt
+   svæði á slóðinni /hittumst/#AUÐKENNI. Gögn eru í Firebase Realtime
+   Database undir /hittumst/{id}. Enginn innskráning: hlekkurinn er lykillinn.
+   ================================================================== */
+const FB = 'https://min-timer-multabeneis-default-rtdb.europe-west1.firebasedatabase.app/hittumst';
+const BASE = location.origin + location.pathname.replace(/[^/]*$/, '');
+
+const MONTH_NAMES = ['janúar','febrúar','mars','apríl','maí','júní','júlí','ágúst','september','október','nóvember','desember'];
+const MONTH_SHORT = ['jan','feb','mar','apr','maí','jún','júl','ágú','sep','okt','nóv','des'];
+const DOW_SHORT = ['mán','þri','mið','fim','fös','lau','sun'];
+const DOW_LONG  = ['mánudagur','þriðjudagur','miðvikudagur','fimmtudagur','föstudagur','laugardagur','sunnudagur'];
+const DEFAULT_SLOTS = ['F.h.','Hádegi','E.h.','Kvöld'];
+const MAX_SLOTS = 5;
+const DAY_SLOT = { id:'d', label:'Allur dagurinn' };
+
+/* ------------------------------------------------------------------
+   Hjálp
+------------------------------------------------------------------ */
+const $ = (sel, root=document) => root.querySelector(sel);
+const el = (tag, attrs={}, ...kids) => {
+  const n = document.createElement(tag);
+  for (const k in attrs){
+    if (k === 'class') n.className = attrs[k];
+    else if (k === 'html') n.innerHTML = attrs[k];
+    else if (k.startsWith('on')) n.addEventListener(k.slice(2), attrs[k]);
+    else if (attrs[k] === false || attrs[k] == null) {}
+    else n.setAttribute(k, attrs[k]);
+  }
+  for (const kid of kids){ if (kid == null) continue; n.append(kid); }
+  return n;
+};
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad2 = n => String(n).padStart(2,'0');
+const iso = (y,m,d) => `${y}-${pad2(m+1)}-${pad2(d)}`;
+const parseIso = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); };
+const dowIndex = date => (date.getDay() + 6) % 7;      /* mánudagur = 0 */
+const todayIso = () => { const t = new Date(); return iso(t.getFullYear(), t.getMonth(), t.getDate()); };
+const isWeekend = s => dowIndex(parseIso(s)) > 4;
+const fmtShort = s => { const d = parseIso(s); return `${DOW_SHORT[dowIndex(d)]} ${d.getDate()}. ${MONTH_SHORT[d.getMonth()]}`; };
+const fmtLong  = s => { const d = parseIso(s); return `${DOW_LONG[dowIndex(d)]} ${d.getDate()}. ${MONTH_NAMES[d.getMonth()]}`; };
+const optKey = (date, slotId) => `${date}_${slotId}`;
+const splitKey = k => { const i = k.lastIndexOf('_'); return { date: k.slice(0,i), slot: k.slice(i+1) }; };
+const ALPHA = 'abcdefghjkmnpqrstuvwxyz23456789';
+const rnd = n => { const a = new Uint32Array(n); crypto.getRandomValues(a); return Array.from(a, x => ALPHA[x % ALPHA.length]).join(''); };
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const plural = (n, one, many) => n === 1 ? one : many;        /* 1 getur, 2 geta */
+const store = {
+  get(k, fb=null){ try { const v = localStorage.getItem(k); return v === null ? fb : JSON.parse(v); } catch(e){ return fb; } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} },
+  del(k){ try { localStorage.removeItem(k); } catch(e){} }
+};
+let toastTimer = null;
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+async function copy(text, okMsg='Afritað'){
+  try { await navigator.clipboard.writeText(text); toast(okMsg); }
+  catch(e){ prompt('Afritaðu hlekkinn:', text); }
+}
+
+/* ------------------------------------------------------------------
+   Firebase REST
+------------------------------------------------------------------ */
+async function fb(method, path, body){
+  const res = await fetch(`${FB}/${path}.json`, {
+    method,
+    headers: body !== undefined ? {'Content-Type':'application/json'} : undefined,
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+    keepalive: method !== 'GET'
+  });
+  if (!res.ok){
+    const e = new Error(res.status === 401 ? 'denied' : 'http'); e.status = res.status; throw e;
+  }
+  return res.json();
+}
+const fbGet    = p => fb('GET', p);
+const fbPut    = (p, b) => fb('PUT', p, b);
+const fbPatch  = (p, b) => fb('PATCH', p, b);
+const fbDelete = p => fb('DELETE', p);
+
+/* ------------------------------------------------------------------
+   Leið: #id  eða  #id/a/TOKEN
+------------------------------------------------------------------ */
+function route(){
+  const h = location.hash.replace(/^#\/?/, '');
+  if (!h) return { view:'home' };
+  const m = h.match(/^([a-z0-9]+)(?:\/a\/([a-z0-9]+))?/i);
+  if (!m) return { view:'home' };
+  return { view:'event', id: m[1].toLowerCase(), admin: m[2] || null };
+}
+
+/* ------------------------------------------------------------------
+   "Þínir hittingar" í vafranum
+------------------------------------------------------------------ */
+function rememberMine(id, title, adminToken){
+  const mine = store.get('hittumst:mine', []).filter(x => x.id !== id);
+  const old = store.get('hittumst:mine', []).find(x => x.id === id) || {};
+  mine.unshift({ id, title, admin: adminToken || old.admin || null, seen: Date.now() });
+  store.set('hittumst:mine', mine.slice(0, 30));
+}
+function forgetMine(id){
+  store.set('hittumst:mine', store.get('hittumst:mine', []).filter(x => x.id !== id));
+}
+
+/* ==================================================================
+   FORSÍÐA: búa til hitting
+   ================================================================== */
+const form = {
+  title:'', desc:'', mode:'days', slots: DEFAULT_SLOTS.slice(), picked: new Set(),
+  calY: new Date().getFullYear(), calM: new Date().getMonth()
+};
+
+function renderHome(){
+  setHeader({ eyebrow:'Hittumst', title:'Hittumst<em>og finnum dag</em>',
+    lede:'Búðu til hitting, deildu hlekknum og látið hvert og eitt merkja við þegar það getur. Ekkert aðgangsorð, engin skráning.' });
+  const app = $('#app'); app.innerHTML = '';
+
+  const mine = store.get('hittumst:mine', []);
+  if (mine.length){
+    const card = el('div', {class:'card'}, el('h2', {}, 'Þínir hittingar'),
+      el('p', {class:'help'}, 'Hittingar sem þú hefur búið til eða svarað í þessum vafra.'));
+    const ul = el('ul', {class:'mine'});
+    for (const m of mine){
+      const href = `${BASE}#${m.id}` + (m.admin ? `/a/${m.admin}` : '');
+      ul.append(el('li', {},
+        el('a', {href}, m.title || m.id),
+        el('small', {}, m.admin ? 'stjórnandi' : 'þátttakandi')));
+    }
+    card.append(ul); app.append(card);
+  }
+
+  /* --- eyðublað --- */
+  const card = el('div', {class:'card'}, el('h2', {}, 'Nýr hittingur'));
+  const titleIn = el('input', {class:'input', maxlength:'80', placeholder:'t.d. Saumaklúbbur í nóvember', value: form.title,
+    oninput: e => form.title = e.target.value});
+  const descIn = el('textarea', {class:'input', maxlength:'400', placeholder:'Valkvætt. Hvar, hvað, hvers vegna.',
+    oninput: e => form.desc = e.target.value}); descIn.value = form.desc;
+  card.append(
+    el('label', {class:'field'}, el('span', {}, 'Heiti hittings'), titleIn),
+    el('label', {class:'field'}, el('span', {}, 'Um hvað'), descIn)
+  );
+
+  /* tímabil */
+  const modeWrap = el('div', {class:'field'}, el('span', {style:'display:block;font-size:13px;color:var(--dim);margin:0 0 6px'}, 'Hvað er valið?'));
+  const seg = el('div', {class:'seg'},
+    el('button', {type:'button', 'aria-pressed': String(form.mode==='days'), onclick: () => { form.mode='days'; renderHome(); }}, 'Heilir dagar'),
+    el('button', {type:'button', 'aria-pressed': String(form.mode==='slots'), onclick: () => { form.mode='slots'; renderHome(); }}, 'Tímabil innan dags'));
+  modeWrap.append(seg);
+  if (form.mode === 'slots'){
+    modeWrap.append(el('p', {class:'help', style:'margin:10px 0 8px'}, 'Allt að fimm tímabil. Breyttu heitunum eða eyddu þeim sem eiga ekki við. Stutt heiti komast best fyrir í síma.'));
+    const grid = el('div', {class:'slots-edit'});
+    for (let i = 0; i < MAX_SLOTS; i++){
+      grid.append(el('input', {class:'input', maxlength:'14', placeholder: i < DEFAULT_SLOTS.length ? '' : 'Bæta við', value: form.slots[i] || '',
+        'aria-label':`Tímabil ${i+1}`, oninput: e => form.slots[i] = e.target.value}));
+    }
+    modeWrap.append(grid);
+  }
+  card.append(modeWrap);
+
+  /* dagatal */
+  card.append(el('p', {class:'help', style:'margin:16px 0 0'}, 'Smelltu á dagana sem koma til greina.'));
+  const calHost = el('div');
+  card.append(calHost);
+  renderPickCalendar(calHost);
+
+  /* senda */
+  const status = el('p', {class:'status'});
+  const submit = el('button', {class:'btn', type:'button', onclick: () => createEvent(submit, status)}, 'Búa til hitting');
+  card.append(el('div', {class:'row', style:'margin-top:16px'}, submit), status);
+  app.append(card);
+
+  $('#foot').innerHTML = 'Hver sem hefur hlekkinn getur séð og breytt svörum. Síðan er hugsuð fyrir vinahópa, ekki fyrir leyndarmál.';
+}
+
+function renderPickCalendar(host){
+  host.innerHTML = '';
+  const { calY:y, calM:m } = form;
+  const today = todayIso();
+  const head = el('div', {class:'cal-head'},
+    el('button', {class:'btn ghost small', type:'button', 'aria-label':'Fyrri mánuður', onclick: () => { form.calM--; if (form.calM < 0){ form.calM = 11; form.calY--; } renderPickCalendar(host); }}, '‹'),
+    el('h3', {}, `${MONTH_NAMES[m][0].toUpperCase()+MONTH_NAMES[m].slice(1)} ${y}`),
+    el('button', {class:'btn ghost small', type:'button', 'aria-label':'Næsti mánuður', onclick: () => { form.calM++; if (form.calM > 11){ form.calM = 0; form.calY++; } renderPickCalendar(host); }}, '›'));
+  host.append(head);
+
+  const days = new Date(y, m+1, 0).getDate();
+  const monthKeys = []; for (let d = 1; d <= days; d++){ const k = iso(y,m,d); if (k >= today) monthKeys.push(k); }
+  const tools = el('div', {class:'cal-tools'},
+    el('button', {class:'btn ghost small', type:'button', onclick: () => { monthKeys.forEach(k => form.picked.add(k)); renderPickCalendar(host); }}, 'Allir dagar'),
+    el('button', {class:'btn ghost small', type:'button', onclick: () => { monthKeys.filter(isWeekend).forEach(k => form.picked.add(k)); renderPickCalendar(host); }}, 'Helgar'),
+    el('button', {class:'btn ghost small', type:'button', onclick: () => { monthKeys.forEach(k => form.picked.delete(k)); renderPickCalendar(host); }}, 'Hreinsa mánuð'));
+  host.append(tools);
+
+  host.append(el('div', {class:'dow', html: DOW_SHORT.map(d => `<span>${d}</span>`).join('')}));
+  const cal = el('div', {class:'cal'});
+  for (let i = 0; i < dowIndex(new Date(y,m,1)); i++) cal.append(el('div', {class:'pad'}));
+  for (let d = 1; d <= days; d++){
+    const k = iso(y,m,d);
+    const past = k < today;
+    const b = el('button', {type:'button', class:'day' + (isWeekend(k) ? ' weekend' : '') + (past ? ' past' : ''),
+      'aria-pressed': String(form.picked.has(k)), 'aria-label': fmtLong(k), disabled: past || null,
+      onclick: () => { form.picked.has(k) ? form.picked.delete(k) : form.picked.add(k); b.setAttribute('aria-pressed', String(form.picked.has(k))); updatePicked(); }}, String(d));
+    cal.append(b);
+  }
+  host.append(cal);
+  host.append(el('p', {class:'picked', id:'pickedInfo'}));
+  updatePicked();
+}
+function updatePicked(){
+  const p = $('#pickedInfo'); if (!p) return;
+  const all = [...form.picked].sort();
+  if (!all.length){ p.textContent = 'Enginn dagur valinn enn.'; return; }
+  p.textContent = `${all.length} ${plural(all.length,'dagur valinn','dagar valdir')}: ${fmtShort(all[0])}` + (all.length > 1 ? ` til ${fmtShort(all[all.length-1])}` : '');
+}
+
+async function createEvent(btn, status){
+  status.className = 'status';
+  const title = form.title.trim();
+  const dates = [...form.picked].sort();
+  const slots = form.mode === 'days'
+    ? [DAY_SLOT]
+    : form.slots.map(s => (s || '').trim()).filter(Boolean).map((label, i) => ({ id:'s'+(i+1), label }));
+  if (!title){ status.textContent = 'Hittingurinn þarf heiti.'; status.classList.add('err'); return; }
+  if (!dates.length){ status.textContent = 'Veldu að minnsta kosti einn dag.'; status.classList.add('err'); return; }
+  if (!slots.length){ status.textContent = 'Að minnsta kosti eitt tímabil þarf að hafa heiti.'; status.classList.add('err'); return; }
+
+  btn.disabled = true; status.textContent = 'Bý til hitting…';
+  try {
+    let id;
+    for (let tries = 0; tries < 5; tries++){
+      id = rnd(7);
+      if ((await fbGet(`${id}/created`)) === null) break;
+      id = null;
+    }
+    if (!id) throw new Error('id');
+    const adminToken = rnd(14);
+    const ev = { title, description: form.desc.trim(), created: new Date().toISOString(), adminToken,
+      mode: form.mode, slots, dates, closed:false, chosen:null, responses:{} };
+    await fbPut(id, ev);
+    rememberMine(id, title, adminToken);
+    form.title = ''; form.desc = ''; form.picked = new Set(); form.slots = DEFAULT_SLOTS.slice(); form.mode = 'days';
+    location.hash = `#${id}/a/${adminToken}`;
+  } catch(e){
+    btn.disabled = false;
+    status.classList.add('err');
+    status.textContent = e.message === 'denied'
+      ? 'Firebase hafnaði skrifum. Reglan fyrir /hittumst vantar í Firebase console.'
+      : 'Tókst ekki að vista. Athugaðu nettengingu og reyndu aftur.';
+  }
+}
+
+/* ==================================================================
+   HITTINGUR
+   ================================================================== */
+let cur = null;          /* { id, admin, ev, pid, draft } */
+let es = null, esTimer = null, pollTimer = null, saveTimer = null, refetchTimer = null;
+
+function stopLive(){
+  if (es){ es.close(); es = null; }
+  clearTimeout(esTimer); clearInterval(pollTimer); clearTimeout(refetchTimer);
+}
+
+async function openEvent(r){
+  stopLive();
+  setHeader({ eyebrow:'Hittumst', title:'Sæki…', lede:'' });
+  $('#app').innerHTML = ''; $('#foot').innerHTML = '';
+  let ev;
+  try { ev = await fbGet(r.id); }
+  catch(e){
+    renderError(e.message === 'denied'
+      ? 'Firebase hafnaði lestri. Reglan fyrir /hittumst vantar í Firebase console.'
+      : 'Náði ekki í gögnin. Athugaðu nettengingu.');
+    return;
+  }
+  if (!ev || !ev.title){ renderError('Þessi hittingur finnst ekki. Kannski var honum eytt, eða hlekkurinn er rangur.'); return; }
+  const isAdmin = !!(r.admin && ev.adminToken && r.admin === ev.adminToken);
+  cur = { id: r.id, admin: isAdmin, ev: normalise(ev), pid: store.get(`hittumst:${r.id}:pid`, null), draft: null, dirty:false };
+  rememberMine(r.id, ev.title, isAdmin ? r.admin : null);
+  loadDraft();
+  renderEvent();
+  startLive();
+}
+
+function normalise(ev){
+  ev.dates = Array.isArray(ev.dates) ? ev.dates.slice().sort() : Object.values(ev.dates || {}).sort();
+  ev.slots = Array.isArray(ev.slots) ? ev.slots : Object.values(ev.slots || {});
+  if (!ev.slots.length) ev.slots = [DAY_SLOT];
+  ev.responses = ev.responses || {};
+  for (const pid in ev.responses){ const r = ev.responses[pid]; r.votes = r.votes || {}; r.name = r.name || '?'; }
+  ev.closed = !!ev.closed; ev.chosen = ev.chosen || null;
+  return ev;
+}
+
+/* Mín svör: afrit af minni færslu sem er breytt og vistað með töf */
+function loadDraft(){
+  const mine = cur.pid && cur.ev.responses[cur.pid];
+  cur.draft = mine ? { name: mine.name, comment: mine.comment || '', votes: {...mine.votes} }
+                   : { name: store.get('hittumst:name', ''), comment:'', votes:{} };
+}
+
+function startLive(){
+  const id = cur.id;
+  const refetch = () => { clearTimeout(refetchTimer); refetchTimer = setTimeout(() => sync(), 250); };
+  if ('EventSource' in window){
+    try {
+      es = new EventSource(`${FB}/${id}.json`);
+      let first = true;
+      const onData = () => { if (first){ first = false; return; } refetch(); };
+      es.addEventListener('put', onData);
+      es.addEventListener('patch', onData);
+      es.onerror = () => { if (es){ es.close(); es = null; } startPolling(); };
+    } catch(e){ startPolling(); }
+  } else startPolling();
+  document.addEventListener('visibilitychange', onVis);
+}
+function onVis(){ if (document.visibilityState === 'visible' && cur) sync(); }
+function startPolling(){ clearInterval(pollTimer); pollTimer = setInterval(() => sync(), 20000); }
+
+async function sync(){
+  if (!cur || saveTimer) return;
+  try {
+    const fresh = await fbGet(cur.id);
+    if (!fresh || !fresh.title){ stopLive(); renderError('Þessum hittingi var eytt.'); cur = null; return; }
+    const r = route();
+    cur.ev = normalise(fresh);
+    cur.admin = !!(r.admin && fresh.adminToken && r.admin === fresh.adminToken);
+    if (!cur.dirty) loadDraft();
+    renderEvent();
+  } catch(e){}
+}
+
+function myVote(key){ return cur.draft.votes[key] || 0; }
+function setVote(key, v){
+  if (v) cur.draft.votes[key] = v; else delete cur.draft.votes[key];
+}
+const NEXT = { 0:2, 2:1, 1:0 };          /* nei -> já -> ef þarf -> nei */
+
+function queueSave(){
+  cur.dirty = true;
+  clearTimeout(saveTimer);
+  setStatus('Vistar…');
+  saveTimer = setTimeout(saveMine, 700);
+}
+async function saveMine(){
+  saveTimer = null;
+  if (!cur) return;
+  const name = cur.draft.name.trim();
+  if (!name){ setStatus('Skrifaðu nafnið þitt svo svörin vistist.', true); return; }
+  if (!cur.pid){ cur.pid = rnd(10); store.set(`hittumst:${cur.id}:pid`, cur.pid); }
+  store.set('hittumst:name', name);
+  const rec = { name, comment: cur.draft.comment.trim(), votes: cur.draft.votes, updated: new Date().toISOString() };
+  try {
+    await fbPut(`${cur.id}/responses/${cur.pid}`, rec);
+    cur.ev.responses[cur.pid] = { ...rec, votes: {...rec.votes} };
+    cur.dirty = false;
+    setStatus('Vistað ✓');
+    renderDerived();
+  } catch(e){
+    setStatus(e.message === 'denied' ? 'Firebase hafnaði skrifum. Reglan fyrir /hittumst vantar.' : 'Vistun tókst ekki. Reyni aftur…', true);
+    if (e.message !== 'denied'){ saveTimer = setTimeout(saveMine, 4000); }
+  }
+}
+function setStatus(msg, err){
+  const s = $('#saveStatus'); if (!s) return;
+  s.textContent = msg; s.className = 'status' + (err ? ' err' : '');
+}
+
+/* ---------- samantekt ---------- */
+function tally(){
+  const { ev } = cur;
+  const out = [];
+  for (const date of ev.dates) for (const s of ev.slots){
+    const key = optKey(date, s.id);
+    let yes = 0, maybe = 0; const who = [], whoMaybe = [];
+    for (const pid in ev.responses){
+      const v = ev.responses[pid].votes[key] || 0;
+      if (v === 2){ yes++; who.push(ev.responses[pid].name); }
+      else if (v === 1){ maybe++; whoMaybe.push(ev.responses[pid].name); }
+    }
+    out.push({ key, date, slot: s, yes, maybe, who, whoMaybe });
+  }
+  return out;
+}
+function optLabel(o, long){
+  const d = long ? fmtLong(o.date) : fmtShort(o.date);
+  return cur.ev.mode === 'days' ? d : `${d}, ${o.slot.label.toLowerCase()}`;
+}
+function findOpt(key){ return tally().find(o => o.key === key) || null; }
+
+/* ---------- teikning ---------- */
+function setHeader({eyebrow, title, lede, badge}){
+  $('#eyebrow').innerHTML = `<a href="/hittumst/">Hittumst</a>` + (eyebrow && eyebrow !== 'Hittumst' ? ` · ${esc(eyebrow)}` : '') + (badge || '');
+  $('#title').innerHTML = title;
+  $('#lede').textContent = lede || '';
+  document.title = title.replace(/<[^>]+>/g, ' ').replace(/\s+/g,' ').trim() + (title === 'Hittumst<em>og finnum dag</em>' ? '' : ' · Hittumst');
+}
+function renderError(msg){
+  setHeader({ title:'Úps', lede:'' });
+  $('#app').innerHTML = `<div class="card"><p style="margin:0 0 12px">${esc(msg)}</p><a class="btn" href="/hittumst/" style="text-decoration:none;display:inline-block">Á forsíðu</a></div>`;
+}
+
+function renderEvent(){
+  const { ev, admin } = cur;
+  const n = Object.keys(ev.responses).length;
+  const badge = ev.chosen ? '<span class="badge chosen">Dagur valinn</span>' : ev.closed ? '<span class="badge closed">Lokað</span>' : '<span class="badge open">Opið</span>';
+  setHeader({ eyebrow: `${n} ${plural(n,'svar','svör')}`, title: esc(ev.title), lede: ev.description, badge });
+
+  const app = $('#app');
+  const focused = document.activeElement && document.activeElement.id;
+  app.innerHTML = '';
+
+  if (admin) app.append(renderAdmin());
+  if (ev.chosen) app.append(renderChosen());
+  app.append(el('div', {id:'summary'}, renderSummary()));
+  app.append(renderMe());
+  app.append(renderGrid());
+  app.append(el('div', {id:'results'}));
+  renderResults();
+
+  if (focused){ const f = document.getElementById(focused); if (f && f.focus) f.focus(); }
+  $('#foot').innerHTML = `Hver sem hefur hlekkinn getur breytt svörum. <button class="linkbtn" id="copyShare">Afrita hlekk til að deila</button>`;
+  $('#copyShare').onclick = () => copy(`${BASE}#${cur.id}`, 'Hlekkur afritaður');
+}
+
+/* Það sem breytist við eigin vistun, án þess að endurteikna innsláttarreiti */
+function renderDerived(){
+  if (!cur) return;
+  const n = Object.keys(cur.ev.responses).length;
+  const e = $('#eyebrow'); if (e) e.innerHTML = e.innerHTML.replace(/\d+ svö?r/, `${n} ${plural(n,'svar','svör')}`);
+  const s = $('#summary'); if (s){ s.innerHTML = ''; s.append(renderSummary()); }
+  renderResults();
+}
+
+function renderChosen(){
+  const o = findOpt(cur.ev.chosen);
+  const card = el('div', {class:'card result'}, el('h2', {}, 'Niðurstaða'));
+  if (!o){ card.append(el('p', {class:'empty'}, 'Valinn dagur er ekki lengur í boði.')); return card; }
+  card.append(el('p', {class:'result-big'}, optLabel(o, true)));
+  const who = el('p', {class:'who'});
+  who.innerHTML = o.yes ? `<b>${o.yes}</b> ${plural(o.yes,'getur','geta')}: ${esc(o.who.join(', '))}` : 'Enginn hefur merkt við þennan dag.';
+  if (o.maybe) who.innerHTML += `<br>Ef þarf: ${esc(o.whoMaybe.join(', '))}`;
+  card.append(who);
+  return card;
+}
+
+function renderSummary(){
+  const card = el('div', {class:'card'}, el('h2', {}, 'Hvenær henta flestum?'));
+  const all = tally().filter(o => o.yes || o.maybe).sort((a,b) => b.yes - a.yes || b.maybe - a.maybe || a.key.localeCompare(b.key));
+  if (!all.length){ card.append(el('p', {class:'empty'}, 'Enginn hefur svarað enn. Merktu við hér fyrir neðan.')); return card; }
+  const ul = el('ul', {class:'top'});
+  all.slice(0, 3).forEach((o, i) => {
+    const li = el('li', {class: o.key === cur.ev.chosen ? 'chosen' : ''},
+      el('span', {class:'rank'}, o.key === cur.ev.chosen ? '★' : String(i+1)),
+      el('span', {class:'when', html: `${esc(optLabel(o))}<small>${esc(o.who.join(', '))}${o.maybe ? (o.who.length ? ' · ' : '') + 'ef þarf: ' + esc(o.whoMaybe.join(', ')) : ''}</small>`}),
+      el('span', {class:'n', html: `<b>${o.yes}</b>${o.maybe ? `+${o.maybe} ef þarf` : plural(o.yes,'getur','geta')}`}));
+    if (cur.admin){
+      li.append(el('button', {class:'btn ghost small', type:'button', onclick: () => choose(o.key)}, o.key === cur.ev.chosen ? 'Afturkalla' : 'Velja'));
+    }
+    ul.append(li);
+  });
+  card.append(ul);
+  return card;
+}
+
+function renderMe(){
+  const { ev, draft } = cur;
+  const card = el('div', {class:'card'}, el('h2', {}, 'Hver ert þú?'));
+  if (ev.closed && !cur.admin){
+    card.append(el('p', {class:'help', style:'margin:0'}, 'Könnuninni hefur verið lokað. Svörin standa en ekki er hægt að breyta þeim.'));
+    return card;
+  }
+  const nameIn = el('input', {class:'input', id:'nameIn', maxlength:'30', placeholder:'Nafnið þitt', value: draft.name, autocomplete:'name',
+    oninput: e => { draft.name = e.target.value; if (Object.keys(draft.votes).length || cur.pid) queueSave(); }});
+  const commIn = el('input', {class:'input', id:'commIn', maxlength:'120', placeholder:'Valkvætt. t.d. "kem seint á föstudögum"', value: draft.comment,
+    oninput: e => { draft.comment = e.target.value; queueSave(); }});
+  card.append(
+    el('div', {class:'row', style:'align-items:stretch'},
+      el('label', {class:'field', style:'flex:1 1 180px;margin:0'}, el('span', {}, 'Nafn'), nameIn),
+      el('label', {class:'field', style:'flex:2 1 220px;margin:0'}, el('span', {}, 'Athugasemd'), commIn)));
+
+  const others = Object.entries(ev.responses).filter(([pid]) => pid !== cur.pid);
+  if (!cur.pid && others.length){
+    const wrap = el('div', {style:'margin-top:12px'}, el('p', {class:'help', style:'margin:0 0 4px'}, 'Hefur þú svarað áður í öðru tæki? Veldu nafnið þitt til að breyta þeim svörum:'));
+    const names = el('div', {class:'names'});
+    for (const [pid, r] of others){
+      names.append(el('button', {type:'button', onclick: () => adopt(pid)}, r.name));
+    }
+    wrap.append(names); card.append(wrap);
+  }
+  card.append(el('p', {class:'status', id:'saveStatus'}, cur.pid ? 'Breytingar vistast sjálfkrafa.' : ''));
+  return card;
+}
+function adopt(pid){
+  if (!cur.ev.responses[pid]) return;
+  if (!confirm(`Breyta svörum fyrir ${cur.ev.responses[pid].name}?`)) return;
+  cur.pid = pid; store.set(`hittumst:${cur.id}:pid`, pid);
+  cur.dirty = false; loadDraft(); renderEvent();
+}
+
+function renderGrid(){
+  const { ev } = cur;
+  const locked = ev.closed && !cur.admin;
+  const card = el('div', {class:'card'}, el('h2', {}, 'Hvenær getur þú?'));
+  card.append(el('div', {class:'legend', html:
+    `<span><i class="v2"></i>Já</span><span><i class="v1"></i>Ef þarf</span><span><i></i>Nei</span>` +
+    `<span style="margin-left:auto">${ev.mode === 'days' ? 'Smelltu á dag til að skipta um svar.' : 'Smelltu á reit. Smelltu á dag eða tímabil til að merkja röð eða dálk.'}</span>`}));
+  const scroll = el('div', {class:'scroll'});
+  const table = el('table', {class:'grid' + (ev.mode === 'days' ? ' days' : '')});
+  const thead = el('thead'); const hr = el('tr');
+  hr.append(el('th', {class:'date'}, ev.mode === 'days' ? '' : ''));
+  for (const s of ev.slots){
+    const th = el('th');
+    th.append(el('button', {type:'button', disabled: locked || null, title: 'Merkja allan dálkinn', onclick: () => toggleCol(s.id)}, ev.mode === 'days' ? 'Merkja alla daga' : s.label));
+    hr.append(th);
+  }
+  thead.append(hr); table.append(thead);
+  const tb = el('tbody');
+  for (const date of ev.dates){
+    const tr = el('tr', {class: isWeekend(date) ? 'weekend' : ''});
+    const d = parseIso(date);
+    const th = el('th', {class:'date'});
+    th.append(el('button', {type:'button', disabled: locked || null, title: 'Merkja allan daginn',
+      html: `<b>${DOW_SHORT[dowIndex(d)]} ${d.getDate()}. ${MONTH_SHORT[d.getMonth()]}</b>`,
+      onclick: () => toggleRow(date)}));
+    tr.append(th);
+    for (const s of ev.slots){
+      const key = optKey(date, s.id);
+      const td = el('td');
+      const v = myVote(key);
+      td.append(el('button', {class:'cellbtn', type:'button', 'data-key': key, 'data-v': String(v), disabled: locked || null,
+        'aria-label': `${fmtLong(date)}${ev.mode === 'days' ? '' : ', ' + s.label}: ${v === 2 ? 'já' : v === 1 ? 'ef þarf' : 'nei'}`}, v === 2 ? '✓' : v === 1 ? '?' : ''));
+      tr.append(td);
+    }
+    tb.append(tr);
+  }
+  table.append(tb); scroll.append(table); card.append(scroll);
+  if (!locked){
+    card.append(el('div', {class:'row', style:'margin-top:12px;justify-content:space-between'},
+      el('button', {class:'btn ghost small', type:'button', onclick: () => { if (confirm('Hreinsa öll þín svör?')){ cur.draft.votes = {}; paintAll(); queueSave(); } }}, 'Hreinsa mín svör')));
+  }
+  return card;
+}
+function paintCell(key){
+  const b = document.querySelector(`.cellbtn[data-key="${key}"]`); if (!b) return;
+  const v = myVote(key);
+  b.dataset.v = String(v); b.textContent = v === 2 ? '✓' : v === 1 ? '?' : '';
+  b.setAttribute('aria-label', b.getAttribute('aria-label').replace(/: .*$/, ': ' + (v === 2 ? 'já' : v === 1 ? 'ef þarf' : 'nei')));
+}
+function paintAll(){ document.querySelectorAll('.cellbtn').forEach(b => paintCell(b.dataset.key)); }
+function toggle(key, force){
+  const v = force !== undefined ? force : NEXT[myVote(key)];
+  setVote(key, v); paintCell(key); queueSave();
+  return v;
+}
+function toggleRow(date){
+  const keys = cur.ev.slots.map(s => optKey(date, s.id));
+  const allYes = keys.every(k => myVote(k) === 2);
+  keys.forEach(k => { setVote(k, allYes ? 0 : 2); paintCell(k); });
+  queueSave();
+}
+function toggleCol(slotId){
+  const keys = cur.ev.dates.map(d => optKey(d, slotId));
+  const allYes = keys.every(k => myVote(k) === 2);
+  keys.forEach(k => { setVote(k, allYes ? 0 : 2); paintCell(k); });
+  queueSave();
+}
+
+/* Mús: strjúka yfir marga reiti, en aðeins eftir greinilega hreyfingu.
+   Snerting og lyklaborð: venjulegur smellur. Sama mynstur og í /moggurnar. */
+let dragValue = null, skipClick = false, dragArmed = false, dragX = 0, dragY = 0;
+const DRAG_THRESHOLD = 10;
+document.addEventListener('pointerdown', e => {
+  if (e.pointerType !== 'mouse' || !cur) return;
+  const cell = e.target.closest('.cellbtn'); if (!cell || cell.disabled) return;
+  dragValue = toggle(cell.dataset.key);
+  dragArmed = false; dragX = e.clientX; dragY = e.clientY; skipClick = true;
+});
+document.addEventListener('pointermove', e => {
+  if (dragValue === null || e.pointerType !== 'mouse' || !e.buttons) return;
+  if (!dragArmed){ if (Math.hypot(e.clientX - dragX, e.clientY - dragY) < DRAG_THRESHOLD) return; dragArmed = true; }
+  const t = document.elementFromPoint(e.clientX, e.clientY);
+  const cell = t && t.closest ? t.closest('.cellbtn') : null;
+  if (cell && !cell.disabled && myVote(cell.dataset.key) !== dragValue) toggle(cell.dataset.key, dragValue);
+});
+document.addEventListener('pointerup', () => { dragValue = null; dragArmed = false; });
+document.addEventListener('pointercancel', () => { dragValue = null; dragArmed = false; });
+document.addEventListener('click', e => {
+  const cell = e.target.closest('.cellbtn'); if (!cell || cell.disabled) return;
+  if (skipClick){ skipClick = false; return; }
+  toggle(cell.dataset.key);
+});
+
+function renderResults(){
+  const host = $('#results'); if (!host || !cur) return;
+  host.innerHTML = '';
+  const { ev } = cur;
+  const card = el('div', {class:'card'}, el('h2', {}, 'Öll svör'));
+  const pids = Object.keys(ev.responses).sort((a,b) => (ev.responses[a].updated || '').localeCompare(ev.responses[b].updated || ''));
+  if (!pids.length){ card.append(el('p', {class:'empty'}, 'Engin svör enn.')); host.append(card); return; }
+  const opts = tally();
+  const scroll = el('div', {class:'scroll'});
+  const table = el('table', {class:'res'});
+  const hr = el('tr'); hr.append(el('th', {class:'name'}, ''));
+  for (const o of opts){
+    const th = el('th', {class:'opt' + (o.key === ev.chosen ? ' chosen' : '')});
+    const d = parseIso(o.date);
+    const inner = `<small>${DOW_SHORT[dowIndex(d)]}</small><b>${d.getDate()}.${d.getMonth()+1}</b>` + (ev.mode === 'days' ? '' : `<small>${esc(o.slot.label)}</small>`);
+    if (cur.admin) th.append(el('button', {type:'button', html: inner, title:'Velja þennan dag sem niðurstöðu', onclick: () => choose(o.key)}));
+    else th.innerHTML = inner;
+    hr.append(th);
+  }
+  table.append(el('thead', {}, hr));
+  const tb = el('tbody');
+  for (const pid of pids){
+    const r = ev.responses[pid];
+    const tr = el('tr', {class: pid === cur.pid ? 'me' : ''});
+    const nameTd = el('td', {class:'name'});
+    if (pid === cur.pid) nameTd.append(document.createTextNode(r.name + ' (þú)'));
+    else nameTd.append(el('button', {type:'button', title:'Breyta svörum þessa aðila', onclick: () => adopt(pid)}, r.name));
+    if (r.comment) nameTd.append(el('small', {}, r.comment));
+    tr.append(nameTd);
+    for (const o of opts){
+      const v = r.votes[o.key] || 0;
+      tr.append(el('td', {}, el('span', {class:'dot' + (v ? ' v' + v : ''), title: `${r.name}: ${optLabel(o)}: ${v === 2 ? 'já' : v === 1 ? 'ef þarf' : 'nei'}`})));
+    }
+    tb.append(tr);
+  }
+  const sum = el('tr', {class:'sum'}); sum.append(el('td', {class:'name'}, 'Geta'));
+  for (const o of opts) sum.append(el('td', {html: `<b>${o.yes}</b>${o.maybe ? '+' + o.maybe : ''}`}));
+  tb.append(sum);
+  table.append(tb); scroll.append(table); card.append(scroll);
+  if (cur.admin){
+    const del = el('p', {class:'help', style:'margin:12px 0 0'}, 'Stjórnandi: smelltu á nafn til að breyta svörum þess aðila, eða á dag efst til að velja hann sem niðurstöðu.');
+    card.append(del);
+    const rm = el('div', {class:'row', style:'margin-top:8px'});
+    for (const pid of pids){
+      rm.append(el('button', {class:'btn danger small', type:'button', onclick: () => removeResponse(pid)}, `Eyða ${ev.responses[pid].name}`));
+    }
+    card.append(rm);
+  }
+  host.append(card);
+}
+
+/* ---------- stjórnandi ---------- */
+function renderAdmin(){
+  const { ev, id } = cur;
+  const share = `${BASE}#${id}`;
+  const adminLink = `${BASE}#${id}/a/${ev.adminToken}`;
+  const card = el('div', {class:'card'}, el('h2', {}, 'Þú ert stjórnandi'));
+  const sh = el('div', {class:'share'});
+  sh.append(el('div', {class:'box'}, el('small', {}, 'Hlekkur til að deila með hópnum'), el('code', {}, share),
+    el('div', {class:'row'},
+      el('button', {class:'btn small', type:'button', onclick: () => copy(share, 'Hlekkur afritaður')}, 'Afrita'),
+      navigator.share ? el('button', {class:'btn ghost small', type:'button', onclick: () => navigator.share({ title: ev.title, text: `Hvenær getur þú? ${ev.title}`, url: share }).catch(() => {})}, 'Deila…') : null)));
+  sh.append(el('div', {class:'box admin'}, el('small', {}, 'Stjórnandahlekkur, aðeins fyrir þig'), el('code', {}, adminLink),
+    el('div', {class:'row'}, el('button', {class:'btn ghost small', type:'button', onclick: () => copy(adminLink, 'Stjórnandahlekkur afritaður')}, 'Afrita')),
+    el('p', {class:'warn'}, 'Geymdu þennan hlekk. Hann er eina leiðin til að stjórna hittingnum í öðru tæki.')));
+  card.append(sh);
+
+  const details = el('details', {style:'margin-top:14px'});
+  details.append(el('summary', {style:'cursor:pointer;color:var(--dim)'}, 'Breyta heiti, lýsingu, dögum og tímabilum'));
+  const body = el('div', {style:'margin-top:12px'});
+  const tIn = el('input', {class:'input', id:'admTitle', maxlength:'80', value: ev.title});
+  const dIn = el('textarea', {class:'input', id:'admDesc', maxlength:'400'}); dIn.value = ev.description || '';
+  body.append(el('label', {class:'field'}, el('span', {}, 'Heiti'), tIn), el('label', {class:'field'}, el('span', {}, 'Um hvað'), dIn));
+  if (ev.mode !== 'days'){
+    const sgrid = el('div', {class:'slots-edit', style:'margin:0 0 14px'});
+    for (let i = 0; i < MAX_SLOTS; i++){
+      const s = ev.slots[i];
+      sgrid.append(el('input', {class:'input', id:'admSlot'+i, maxlength:'14', value: s ? s.label : '', 'data-id': s ? s.id : '', placeholder: s ? '' : 'Bæta við', 'aria-label':`Tímabil ${i+1}`}));
+    }
+    body.append(el('p', {class:'help', style:'margin:0 0 6px'}, 'Tímabil. Tómt heiti fjarlægir tímabilið og svör við því.'), sgrid);
+  }
+  body.append(el('p', {class:'help', style:'margin:0 0 6px'}, 'Dagar. Smelltu til að bæta við eða taka út. Svör við dögum sem eru teknir út hverfa.'));
+  const calHost = el('div');
+  const adminPick = { picked: new Set(ev.dates), calY: parseIso(ev.dates[0] || todayIso()).getFullYear(), calM: parseIso(ev.dates[0] || todayIso()).getMonth() };
+  renderAdminCalendar(calHost, adminPick);
+  body.append(calHost);
+  const st = el('p', {class:'status', id:'admStatus'});
+  body.append(el('div', {class:'row', style:'margin-top:12px'},
+    el('button', {class:'btn', type:'button', onclick: () => saveAdmin(adminPick, st)}, 'Vista breytingar')), st);
+  details.append(body); card.append(details);
+
+  const actions = el('div', {class:'row', style:'margin-top:14px'});
+  actions.append(el('button', {class:'btn ghost small', type:'button', onclick: () => patchEvent({ closed: !ev.closed }, ev.closed ? 'Könnun opnuð' : 'Könnun lokuð')}, ev.closed ? 'Opna könnun aftur' : 'Loka könnun'));
+  if (ev.chosen) actions.append(el('button', {class:'btn ghost small', type:'button', onclick: () => patchEvent({ chosen: null }, 'Niðurstaða afturkölluð')}, 'Afturkalla niðurstöðu'));
+  actions.append(el('button', {class:'btn danger small', type:'button', onclick: deleteEvent}, 'Eyða hittingi'));
+  card.append(actions);
+  card.append(el('p', {class:'help', style:'margin:10px 0 0'}, 'Til að velja daginn sem varð ofan á: smelltu á "Velja" í listanum hér fyrir neðan, eða á dag efst í töflunni "Öll svör".'));
+  return card;
+}
+function renderAdminCalendar(host, p){
+  host.innerHTML = '';
+  const { calY:y, calM:m } = p;
+  host.append(el('div', {class:'cal-head'},
+    el('button', {class:'btn ghost small', type:'button', 'aria-label':'Fyrri mánuður', onclick: () => { p.calM--; if (p.calM < 0){ p.calM = 11; p.calY--; } renderAdminCalendar(host, p); }}, '‹'),
+    el('h3', {}, `${MONTH_NAMES[m][0].toUpperCase()+MONTH_NAMES[m].slice(1)} ${y}`),
+    el('button', {class:'btn ghost small', type:'button', 'aria-label':'Næsti mánuður', onclick: () => { p.calM++; if (p.calM > 11){ p.calM = 0; p.calY++; } renderAdminCalendar(host, p); }}, '›')));
+  host.append(el('div', {class:'dow', html: DOW_SHORT.map(d => `<span>${d}</span>`).join('')}));
+  const cal = el('div', {class:'cal'});
+  for (let i = 0; i < dowIndex(new Date(y,m,1)); i++) cal.append(el('div', {class:'pad'}));
+  const days = new Date(y, m+1, 0).getDate();
+  for (let d = 1; d <= days; d++){
+    const k = iso(y,m,d);
+    const b = el('button', {type:'button', class:'day' + (isWeekend(k) ? ' weekend' : ''), 'aria-pressed': String(p.picked.has(k)), 'aria-label': fmtLong(k),
+      onclick: () => { p.picked.has(k) ? p.picked.delete(k) : p.picked.add(k); b.setAttribute('aria-pressed', String(p.picked.has(k))); }}, String(d));
+    cal.append(b);
+  }
+  host.append(cal);
+}
+async function saveAdmin(p, st){
+  const { ev } = cur;
+  const title = $('#admTitle').value.trim();
+  const description = $('#admDesc').value.trim();
+  const dates = [...p.picked].sort();
+  st.className = 'status';
+  if (!title){ st.textContent = 'Heiti má ekki vera tómt.'; st.classList.add('err'); return; }
+  if (!dates.length){ st.textContent = 'Að minnsta kosti einn dagur þarf að vera í boði.'; st.classList.add('err'); return; }
+  let slots = ev.slots;
+  if (ev.mode !== 'days'){
+    slots = [];
+    const used = new Set(ev.slots.map(s => s.id));
+    for (let i = 0; i < MAX_SLOTS; i++){
+      const inp = $('#admSlot'+i); if (!inp) continue;
+      const label = inp.value.trim(); if (!label) continue;
+      let id = inp.dataset.id;
+      if (!id){ let n = 1; while (used.has('s'+n)) n++; id = 's'+n; used.add(id); }
+      slots.push({ id, label });
+    }
+    if (!slots.length){ st.textContent = 'Að minnsta kosti eitt tímabil þarf heiti.'; st.classList.add('err'); return; }
+  }
+  /* Hreinsa svör við valkostum sem eru ekki lengur til */
+  const valid = new Set(); for (const d of dates) for (const s of slots) valid.add(optKey(d, s.id));
+  const responses = {};
+  for (const pid in ev.responses){
+    const r = ev.responses[pid]; const votes = {};
+    for (const k in r.votes) if (valid.has(k)) votes[k] = r.votes[k];
+    responses[pid] = { ...r, votes };
+  }
+  const chosen = ev.chosen && valid.has(ev.chosen) ? ev.chosen : null;
+  st.textContent = 'Vistar…';
+  try {
+    await fbPatch(cur.id, { title, description, dates, slots, responses, chosen });
+    rememberMine(cur.id, title, ev.adminToken);
+    toast('Breytingar vistaðar');
+    await sync();
+  } catch(e){ st.textContent = 'Vistun tókst ekki.'; st.classList.add('err'); }
+}
+async function patchEvent(patch, msg){
+  try { await fbPatch(cur.id, patch); toast(msg); await sync(); }
+  catch(e){ toast('Tókst ekki að vista.'); }
+}
+function choose(key){
+  if (!cur.admin) return;
+  if (cur.ev.chosen === key) return patchEvent({ chosen:null }, 'Niðurstaða afturkölluð');
+  const o = findOpt(key); if (!o) return;
+  if (!confirm(`Velja ${optLabel(o, true)} sem niðurstöðu?`)) return;
+  patchEvent({ chosen:key, closed:true }, 'Niðurstaða valin og könnun lokuð');
+}
+async function removeResponse(pid){
+  const r = cur.ev.responses[pid]; if (!r) return;
+  if (!confirm(`Eyða svörum ${r.name}?`)) return;
+  try { await fbDelete(`${cur.id}/responses/${pid}`); if (pid === cur.pid){ cur.pid = null; store.del(`hittumst:${cur.id}:pid`); } toast('Svörum eytt'); await sync(); }
+  catch(e){ toast('Tókst ekki að eyða.'); }
+}
+async function deleteEvent(){
+  if (!confirm(`Eyða hittingnum "${cur.ev.title}" og öllum svörum? Þetta er endanlegt.`)) return;
+  try { await fbDelete(cur.id); forgetMine(cur.id); store.del(`hittumst:${cur.id}:pid`); stopLive(); cur = null; toast('Hittingi eytt'); location.hash = ''; }
+  catch(e){ toast('Tókst ekki að eyða.'); }
+}
+
+/* ------------------------------------------------------------------
+   Ræsing
+------------------------------------------------------------------ */
+function go(){
+  const r = route();
+  if (r.view === 'home'){ stopLive(); document.removeEventListener('visibilitychange', onVis); cur = null; renderHome(); }
+  else openEvent(r);
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', go);
+window.addEventListener('pagehide', () => { if (saveTimer){ clearTimeout(saveTimer); saveTimer = null; saveMine(); } });
+go();
+</script>
+</body>
+</html>
