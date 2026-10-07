@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ferðir</title>
+<meta name="description" content="Ferðaáætlun: gisting, flug, afþreying og allt sem er bókað, dag fyrir dag, í dagatali og á korti.">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* Þemu skipta um þessar breytur, sjá THEMES í kóðanum */
+  :root{
+    --bg:#F3F6F6;
+    --panel:#FFFFFF;
+    --panel-2:#E9EFF0;
+    --line:#D5DEE0;
+    --fg:#17262B;
+    --dim:#5F7378;
+    --accent:#0F7C8C;
+    --accent-soft:#D7EDF0;
+    --hotel:#4F5BD5;
+    --flight:#3A4A52;
+    --move:#C98A1B;
+    --act:#E0694B;
+    --note:#7A8C92;
+    --danger:#B8524A;
+    --display:"Fraunces",Georgia,serif;
+    --body:"Karla",-apple-system,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%;}
+  .wrap{max-width:900px;margin:0 auto;padding:0 16px 70px;}
+  h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;}
+  button{font:inherit;color:inherit;cursor:pointer;}
+  input,select,textarea{font:inherit;}
+  a{color:var(--accent);}
+  [hidden]{display:none!important;}
+
+  /* ---------- haus ---------- */
+  header.hero{position:relative;padding:26px 0 18px;overflow:hidden;}
+  header.hero .motif{position:absolute;right:-10px;top:0;height:100%;width:min(46%,320px);opacity:.9;pointer-events:none;}
+  header.hero .motif svg{width:100%;height:100%;display:block;}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:0 0 6px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+  .eyebrow a{color:var(--accent);text-decoration:none;}
+  .eyebrow a:hover{text-decoration:underline;}
+  h1{font-size:clamp(30px,6vw,44px);font-weight:700;line-height:1;letter-spacing:-.02em;position:relative;max-width:70%;overflow-wrap:anywhere;}
+  h1 small{display:block;font-family:var(--body);font-size:15px;font-weight:400;color:var(--dim);letter-spacing:0;margin-top:8px;}
+  @media (max-width:560px){ h1{max-width:100%;} header.hero .motif{opacity:.35;} }
+  .userbar{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--dim);margin:14px 0 0;position:relative;flex-wrap:wrap;}
+  .avatar{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-size:12px;overflow:hidden;}
+  .avatar img{width:100%;height:100%;object-fit:cover;}
+
+  nav.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin:0 0 18px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  nav.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 12px;color:var(--dim);font-weight:500;white-space:nowrap;}
+  nav.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent);}
+  nav.tabs button .n{display:inline-block;min-width:18px;padding:0 5px;border-radius:999px;background:var(--act);color:#fff;font-size:11px;font-weight:700;margin-left:4px;text-align:center;}
+
+  /* ---------- spjöld og hnappar ---------- */
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 14px;}
+  .card h2{font-size:20px;margin:0 0 6px;}
+  .help{color:var(--dim);font-size:14px;margin:0;}
+  .btn{background:var(--accent);color:#fff;border:0;border-radius:10px;padding:10px 16px;font-weight:700;}
+  .btn:disabled{opacity:.5;cursor:default;}
+  .btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line);font-weight:500;}
+  .btn.ghost:hover{border-color:var(--dim);}
+  .btn.danger{background:transparent;color:var(--danger);border:1px solid color-mix(in srgb,var(--danger) 40%,transparent);font-weight:500;}
+  .btn.small{padding:6px 10px;font-size:13px;border-radius:8px;}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .status{font-size:13px;color:var(--dim);min-height:1.3em;margin:8px 0 0;}
+  .status.err{color:var(--danger);}
+  .gbtn{display:flex;align-items:center;gap:10px;justify-content:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px;font-weight:500;width:100%;max-width:360px;}
+  .gbtn:hover{border-color:var(--accent);}
+  .glogo{width:18px;height:18px;border-radius:50%;background:conic-gradient(#4285F4 0 25%,#34A853 0 50%,#FBBC05 0 75%,#EA4335 0);flex:0 0 18px;}
+  .notice{background:var(--accent-soft);border-radius:10px;padding:10px 14px;font-size:14px;margin:0 0 14px;}
+  .notice.warn{background:#FFF1D6;color:#5A3D07;}
+
+  /* ---------- eyðublöð ---------- */
+  .form{display:grid;gap:12px;grid-template-columns:1fr 1fr;}
+  .form label{display:grid;gap:4px;font-size:13px;color:var(--dim);min-width:0;}
+  .form label.full{grid-column:1 / -1;}
+  .form input,.form select,.form textarea{width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--fg);border-radius:9px;padding:9px 11px;font-size:16px;}
+  .form input:focus,.form select:focus,.form textarea:focus{outline:2px solid var(--accent);outline-offset:1px;}
+  .form .row{grid-column:1 / -1;}
+  @media (max-width:560px){.form{grid-template-columns:1fr;}}
+  .themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;grid-column:1 / -1;}
+  .theme{border:2px solid var(--line);border-radius:12px;padding:10px;background:var(--t-bg,#fff);color:var(--t-fg,#000);text-align:left;display:grid;gap:6px;}
+  .theme[aria-pressed="true"]{border-color:var(--t-accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--t-accent) 30%,transparent);}
+  .theme b{font-family:var(--display);font-size:15px;}
+  .theme i{display:block;height:8px;border-radius:4px;background:var(--t-accent);}
+  gmp-place-autocomplete{width:100%;display:block;--gmp-mat-color-surface:var(--panel-2);--gmp-mat-color-on-surface:var(--fg);}
+
+  /* ---------- listar ---------- */
+  .trips{list-style:none;margin:0;padding:0;display:grid;gap:8px;}
+  .trips li{display:flex;justify-content:space-between;gap:12px;align-items:center;background:var(--panel-2);border-radius:10px;padding:12px 14px;}
+  .trips li a{color:var(--fg);text-decoration:none;font-weight:700;display:block;}
+  .trips li small{color:var(--dim);display:block;}
+
+  /* ---------- dagur fyrir dag ---------- */
+  .days{display:grid;grid-template-columns:64px minmax(0,1fr) 180px;gap:14px 12px;align-items:start;}
+  .days .date{position:sticky;top:0;align-self:start;text-align:center;padding:6px 0;}
+  .days .date b{font-family:var(--display);font-size:26px;display:block;line-height:1;}
+  .days .date span{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);display:block;margin-top:4px;}
+  .days .date.we b{color:var(--act);}
+  .days .date.today b{color:var(--accent);}
+  .items{display:grid;gap:8px;min-width:0;}
+  .stay{grid-column:3;align-self:stretch;background:color-mix(in srgb,var(--hotel) 9%,var(--panel));border:1px solid color-mix(in srgb,var(--hotel) 35%,var(--line));border-left:4px solid var(--hotel);border-radius:12px;padding:10px 12px;font-size:13px;display:flex;flex-direction:column;gap:3px;min-width:0;}
+  .stay .kind{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--hotel);font-weight:700;}
+  .stay b.name{font-weight:700;font-size:14px;overflow-wrap:anywhere;}
+  .stay .d{color:var(--dim);overflow-wrap:anywhere;}
+  .stay .full{display:contents;}
+  .stay .short{display:none;}
+  .stay{overflow:hidden;}
+  .stay .acts{display:flex;flex-direction:column;gap:4px;margin-top:4px;align-items:flex-start;}
+  .stayhead{grid-column:3;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding:6px 0 0;}
+  @media (max-width:640px){
+    .days{grid-template-columns:50px minmax(0,1fr) 36px;gap:12px 8px;}
+    .days .date b{font-size:22px;}
+    .stay{padding:10px 0;align-items:center;cursor:pointer;border-left-width:3px;}
+    .stay .full{display:none;}
+    .stay .short{display:block;writing-mode:vertical-rl;text-orientation:mixed;font-weight:700;font-size:12px;white-space:nowrap;overflow:hidden;max-height:100%;color:var(--hotel);}
+    .stayhead{display:none;}
+  }
+  .item{display:grid;grid-template-columns:4px 1fr auto;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px 12px 0;overflow:hidden;min-width:0;}
+  .item i.bar{display:block;border-radius:0 3px 3px 0;background:var(--c);}
+  .item .main{min-width:0;}
+  .item .kind{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--c);font-weight:700;}
+  .item .title{font-weight:700;margin:2px 0;overflow-wrap:anywhere;}
+  .item .meta{font-size:14px;color:var(--dim);overflow-wrap:anywhere;}
+  .item .meta span+span::before{content:" · ";}
+  .item .time{font-variant-numeric:tabular-nums;font-weight:500;white-space:nowrap;text-align:right;font-size:14px;}
+  .item .time small{display:block;color:var(--dim);font-weight:400;}
+
+  .item .acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center;}
+  .conf{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;background:var(--panel-2);padding:1px 6px;border-radius:5px;}
+  .maplink{font-size:13px;color:var(--accent);text-decoration:none;font-weight:500;}
+  .maplink:hover{text-decoration:underline;}
+  .linkbtn{background:none;border:0;padding:0;color:var(--accent);font-size:13px;font-weight:500;text-decoration:underline;text-underline-offset:2px;}
+  .empty{color:var(--dim);font-size:14px;padding:8px 0;margin:0;}
+  .fab{position:fixed;right:16px;bottom:18px;z-index:5;box-shadow:0 8px 24px rgba(0,0,0,.18);border-radius:999px;padding:12px 18px;}
+
+  /* ---------- dagatal ---------- */
+  .months{display:grid;gap:22px;}
+  .cal-head h3{font-size:20px;margin:0 0 8px;}
+  .dow{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin:0 0 3px;}
+  .dow span{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);text-align:center;}
+  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+  .cal .c{min-height:76px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:4px;font-size:12px;min-width:0;cursor:pointer;}
+  .cal .c.pad{background:transparent;border-color:transparent;cursor:default;}
+  .cal .c.out{opacity:.35;}
+  .cal .c .n{font-weight:700;font-size:13px;}
+  .cal .c .n.we{color:var(--act);}
+  .cal .stay{height:6px;border-radius:0;background:var(--hotel);margin:4px -5px 0 -5px;}
+  .cal .stay.start{margin-left:4px;border-radius:3px 0 0 3px;}
+  .cal .stay.end{margin-right:4px;border-radius:0 3px 3px 0;}
+  .cal .stay.start.end{margin-inline:4px;border-radius:3px;}
+  .cal .ev{display:flex;gap:4px;align-items:center;margin-top:3px;line-height:1.2;min-width:0;}
+  .cal .ev i{width:7px;height:7px;border-radius:50%;flex:0 0 7px;background:var(--c);}
+  .cal .ev span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--dim);margin:12px 0 0;}
+  .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c);margin-right:5px;vertical-align:-1px;}
+  @media (max-width:560px){ .cal .c{min-height:58px;} .cal .ev span{display:none;} .cal .ev{margin-top:4px;} }
+
+  /* ---------- kort ---------- */
+  #gmap{width:100%;height:min(70vh,520px);border-radius:14px;border:1px solid var(--line);background:var(--panel-2);}
+  .pinlist{display:grid;gap:4px;margin:12px 0 0;}
+  .pin{display:flex;gap:10px;align-items:center;font-size:14px;padding:6px 8px;border-radius:8px;background:none;border:0;text-align:left;width:100%;}
+  .pin:hover,.pin.on{background:var(--panel-2);}
+  .pin i{width:12px;height:12px;border-radius:50%;background:var(--c);flex:0 0 12px;}
+  .pin b{font-weight:500;overflow-wrap:anywhere;}
+  .pin small{color:var(--dim);margin-left:auto;white-space:nowrap;}
+
+  /* ---------- gisting ---------- */
+  .hotels{display:grid;gap:10px;}
+  .hotel{display:grid;grid-template-columns:1fr auto;gap:12px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--hotel);border-radius:12px;padding:12px 14px;}
+  .hotel h3{font-size:18px;overflow-wrap:anywhere;}
+  .hotel .nights{text-align:right;font-variant-numeric:tabular-nums;}
+  .hotel .nights b{font-family:var(--display);font-size:26px;display:block;line-height:1;}
+  .hotel .nights span{font-size:12px;color:var(--dim);}
+  .hotel .io{font-size:14px;color:var(--dim);margin-top:4px;overflow-wrap:anywhere;}
+  .hotel .io b{color:var(--fg);font-weight:500;}
+
+  /* ---------- gluggi ---------- */
+  dialog{border:0;border-radius:16px;padding:0;max-width:640px;width:calc(100% - 24px);background:var(--panel);color:var(--fg);box-shadow:0 20px 60px rgba(0,0,0,.3);}
+  dialog::backdrop{background:rgba(20,30,34,.45);}
+  dialog .inner{padding:18px;max-height:85vh;overflow:auto;}
+  dialog h2{font-size:22px;margin:0 0 12px;}
+  .share-box{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:var(--panel-2);padding:8px 10px;border-radius:8px;overflow-wrap:anywhere;margin:6px 0 8px;}
+
+  .toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--fg);color:var(--bg);border-radius:999px;padding:9px 16px;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100% - 32px);text-align:center;z-index:20;}
+  .toast.show{opacity:1;}
+  .foot{color:var(--dim);font-size:13px;margin:26px 0 0;}
+  .support{color:var(--dim);font-size:13px;margin:18px 0 0;padding-top:14px;border-top:1px solid var(--line);}
+  .support b{color:var(--fg);font-weight:500;font-variant-numeric:tabular-nums;}
+  .idea{display:grid;grid-template-columns:1fr auto;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;}
+  .idea h3{font-size:17px;overflow-wrap:anywhere;}
+  .idea .by{font-size:12px;color:var(--dim);}
+  .idea.done{opacity:.6;}
+  .tag{display:inline-block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:700;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="motif" id="motif" aria-hidden="true"></div>
+    <p class="eyebrow" id="eyebrow"><a href="/travel/">Ferðir</a></p>
+    <h1 id="title">Ferðir<small>Allt sem er bókað, á einum stað.</small></h1>
+    <div class="userbar" id="userbar"></div>
+  </header>
+  <nav class="tabs" id="tabs" role="tablist" hidden></nav>
+  <main id="app"></main>
+  <p class="foot" id="foot"></p>
+  <p class="support">Finnst þér þessi síða hjálpleg? Það má endilega styrkja síðuna um nokkrar krónur. Reikningur <b>0527-26-1416</b>, kt. <b>471025-0380</b>.</p>
+</div>
+<dialog id="dlg"><div class="inner" id="dlgInner"></div></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+/* ==================================================================
+   STILLINGAR. Tvennt þarf að líma inn:
+   1) FIREBASE_CONFIG: Firebase console > Project settings > Your apps > Web app > "Config".
+      Gögnin og hittumst eru í sama verkefni (min-timer-multabeneis).
+   2) MAPS_KEY: Google Cloud console > APIs & Services > Credentials.
+      Lykillinn þarf Maps JavaScript API og Places API (New), og takmörkun
+      á vefslóðir multabene.is/* og www.multabene.is/*.
+   Síðan virkar til skoðunar þótt hvort tveggja vanti. Innskráning þarf 1),
+   kortið og staðaleit þurfa 2).
+   ================================================================== */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBb6Vax46EK9dURINz-dVMM05jO4dvqsoY",
+  authDomain: "min-timer-multabeneis.firebaseapp.com",
+  databaseURL: "https://min-timer-multabeneis-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "min-timer-multabeneis",
+  appId: "1:521296265172:web:0c2f96da6e5eb276c9e041"
+};
+const MAPS_KEY = "";
+const AUTH_READY = !!FIREBASE_CONFIG.apiKey;
+const MAPS_READY = !!MAPS_KEY;
+const BASE = location.origin + location.pathname.replace(/[^/]*$/, '');
+
+/* ------------------------------------------------------------------
+   Þemu. Hvert þema skiptir um liti og mynstur í haus.
+------------------------------------------------------------------ */
+const THEMES = {
+  sjor: { name:'Sjór og sandur', desc:'Sjávarlitir, hlutlaust', motif:'waves',
+    vars:{ '--bg':'#F3F6F6','--panel':'#FFFFFF','--panel-2':'#E9EFF0','--line':'#D5DEE0','--fg':'#17262B','--dim':'#5F7378','--accent':'#0F7C8C','--accent-soft':'#D7EDF0','--act':'#E0694B' } },
+  sol:  { name:'Sól og pálmar', desc:'Sólarlönd og strendur', motif:'palm',
+    vars:{ '--bg':'#FFF7E9','--panel':'#FFFFFF','--panel-2':'#FBEBD2','--line':'#EFD9B8','--fg':'#3A2A14','--dim':'#8A7154','--accent':'#E0761C','--accent-soft':'#FFE4C2','--act':'#D9483B' } },
+  snjor:{ name:'Snjór og skíði', desc:'Fjöll og vetur', motif:'mountains',
+    vars:{ '--bg':'#EEF3F8','--panel':'#FFFFFF','--panel-2':'#DFE8F1','--line':'#C6D5E4','--fg':'#14212E','--dim':'#5B6E82','--accent':'#2A62B8','--accent-soft':'#D6E4F7','--act':'#D0574C' } },
+  borg: { name:'Borgarferð', desc:'Steinn, gler og kaffi', motif:'skyline',
+    vars:{ '--bg':'#F4F3F0','--panel':'#FFFFFF','--panel-2':'#E8E6E1','--line':'#D3D0C8','--fg':'#1E1D1A','--dim':'#6B6862','--accent':'#A8294A','--accent-soft':'#F6D9E0','--act':'#D27A1F' } },
+  sveit:{ name:'Sveit og skógur', desc:'Grænt og rólegt', motif:'forest',
+    vars:{ '--bg':'#F2F5EE','--panel':'#FFFFFF','--panel-2':'#E3EAD9','--line':'#CBD6BC','--fg':'#1C261A','--dim':'#5F6E58','--accent':'#3F7A3A','--accent-soft':'#D9EBD3','--act':'#C7652E' } }
+};
+const MOTIFS = {
+  waves: `<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid slice"><g fill="none" stroke="var(--accent)" stroke-width="3" opacity=".35"><path d="M-10 70c30-20 60-20 90 0s60 20 90 0 60-20 90 0 60 20 90 0"/><path d="M-10 110c30-20 60-20 90 0s60 20 90 0 60-20 90 0 60 20 90 0"/><path d="M-10 150c30-20 60-20 90 0s60 20 90 0 60-20 90 0 60 20 90 0"/></g><circle cx="250" cy="34" r="18" fill="var(--act)" opacity=".5"/></svg>`,
+  palm:  `<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid slice"><circle cx="230" cy="52" r="34" fill="var(--act)" opacity=".55"/><g fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round" opacity=".55"><path d="M290 200c-4-60-2-100 14-140"/><path d="M304 60c-30-18-60-10-80 10"/><path d="M304 60c20-24 50-28 76-14"/><path d="M304 60c-6-28 6-50 26-62"/><path d="M304 60c26-6 50 6 64 30"/><path d="M304 60c-26 4-44 24-50 50"/></g><g fill="none" stroke="var(--accent)" stroke-width="3" opacity=".3"><path d="M0 170c30-16 60-16 90 0s60 16 90 0 60-16 90 0 60 16 90 0"/></g></svg>`,
+  mountains:`<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid slice"><g opacity=".5"><path d="M20 200L130 60l40 48 30-30 110 122z" fill="var(--accent)" opacity=".5"/><path d="M130 60l-24 30 14 6 10-10 12 12 10-8 12 10 6-10-40-30z" fill="#fff" opacity=".9"/><path d="M200 78l-14 18 10 4 8-8 10 10 8-6 8 10 10-6-40-22z" fill="#fff" opacity=".9"/></g><g fill="var(--accent)" opacity=".35"><circle cx="60" cy="40" r="3"/><circle cx="90" cy="24" r="2"/><circle cx="250" cy="30" r="3"/><circle cx="290" cy="60" r="2"/><circle cx="40" cy="90" r="2"/><circle cx="270" cy="16" r="2"/></g></svg>`,
+  skyline:`<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid slice"><g fill="var(--accent)" opacity=".35"><rect x="30" y="110" width="30" height="90"/><rect x="66" y="70" width="24" height="130"/><rect x="96" y="90" width="40" height="110"/><rect x="142" y="40" width="22" height="160"/><rect x="170" y="100" width="34" height="100"/><rect x="210" y="60" width="28" height="140"/><rect x="244" y="120" width="40" height="80"/><rect x="290" y="80" width="26" height="120"/></g><g fill="var(--bg)" opacity=".9"><rect x="72" y="80" width="5" height="6"/><rect x="82" y="80" width="5" height="6"/><rect x="72" y="94" width="5" height="6"/><rect x="148" y="52" width="4" height="6"/><rect x="156" y="52" width="4" height="6"/><rect x="148" y="66" width="4" height="6"/><rect x="216" y="72" width="5" height="6"/><rect x="226" y="72" width="5" height="6"/><rect x="216" y="86" width="5" height="6"/></g><circle cx="270" cy="34" r="14" fill="var(--act)" opacity=".5"/></svg>`,
+  forest: `<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid slice"><g fill="var(--accent)" opacity=".4"><path d="M60 200V120l-30 0 30-50-20 0 30-50 30 50-20 0 30 50-30 0v80z"/><path d="M160 200V110l-34 0 34-56-22 0 34-54 34 54-22 0 34 56-34 0v90z"/><path d="M260 200V130l-26 0 26-44-16 0 26-44 26 44-16 0 26 44-26 0v70z"/></g><circle cx="40" cy="36" r="16" fill="var(--act)" opacity=".45"/></svg>`
+};
+function applyTheme(key){
+  const t = THEMES[key] || THEMES.sjor;
+  for (const k in THEMES.sjor.vars) document.documentElement.style.setProperty(k, t.vars[k]);
+  document.getElementById('motif').innerHTML = MOTIFS[t.motif] || '';
+}
+
+/* ------------------------------------------------------------------
+   Hjálp
+------------------------------------------------------------------ */
+const $ = (s, r=document) => r.querySelector(s);
+const el = (tag, attrs={}, ...kids) => {
+  const n = document.createElement(tag);
+  for (const k in attrs){
+    if (k === 'class') n.className = attrs[k];
+    else if (k === 'html') n.innerHTML = attrs[k];
+    else if (k.startsWith('on')) n.addEventListener(k.slice(2), attrs[k]);
+    else if (attrs[k] === false || attrs[k] == null) {}
+    else n.setAttribute(k, attrs[k]);
+  }
+  for (const kid of kids){ if (kid != null) n.append(kid); }
+  return n;
+};
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad = n => String(n).padStart(2,'0');
+const MONTH = ['janúar','febrúar','mars','apríl','maí','júní','júlí','ágúst','september','október','nóvember','desember'];
+const MONTH_S = ['jan','feb','mar','apr','maí','jún','júl','ágú','sep','okt','nóv','des'];
+const DOW = ['mán','þri','mið','fim','fös','lau','sun'];
+const dpart = s => (s || '').slice(0,10);
+const tpart = s => (s || '').slice(11,16);
+const parse = s => { const [y,m,d] = dpart(s).split('-').map(Number); return new Date(y, m-1, d); };
+const iso = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const dow = d => (d.getDay()+6)%7;
+const todayIso = () => iso(new Date());
+const fmtD = s => { const d = parse(s); return `${DOW[dow(d)]} ${d.getDate()}. ${MONTH_S[d.getMonth()]}`; };
+const fmtRange = (a,b) => { const A = parse(a), B = parse(b); return `${A.getDate()}. ${MONTH_S[A.getMonth()]}${A.getFullYear() !== B.getFullYear() ? ' ' + A.getFullYear() : ''} til ${B.getDate()}. ${MONTH_S[B.getMonth()]} ${B.getFullYear()}`; };
+const ALPHA = 'abcdefghjkmnpqrstuvwxyz23456789';
+const rnd = n => { const a = new Uint32Array(n); crypto.getRandomValues(a); return Array.from(a, x => ALPHA[x % ALPHA.length]).join(''); };
+const store = {
+  get(k, fb=null){ try { const v = localStorage.getItem(k); return v === null ? fb : JSON.parse(v); } catch(e){ return fb; } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+};
+let toastTimer;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2600); }
+async function copy(text, msg='Afritað'){ try { await navigator.clipboard.writeText(text); toast(msg); } catch(e){ prompt('Afritaðu:', text); } }
+
+const KINDS = {
+  hotel:  { label:'Gisting',          c:'var(--hotel)' },
+  flight: { label:'Flug',             c:'var(--flight)' },
+  move:   { label:'Ferð milli staða', c:'var(--move)' },
+  act:    { label:'Afþreying',        c:'var(--act)' },
+  note:   { label:'Minnispunktur',    c:'var(--note)' }
+};
+const kindOf = k => KINDS[k] || KINDS.note;
+function gmapsLink(it){
+  if (it.placeId && it.place) return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(it.place)}&query_place_id=${encodeURIComponent(it.placeId)}`;
+  if (it.lat != null && it.lng != null) return `https://www.google.com/maps/search/?api=1&query=${it.lat},${it.lng}`;
+  if (it.place) return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(it.place)}`;
+  return null;
+}
+/* Les hnit úr Google Maps hlekk: .../@21.1,-86.8,15z  eða  ?q=21.1,-86.8  eða  !3d21.1!4d-86.8 */
+function coordsFromLink(s){
+  if (!s) return null;
+  let m = s.match(/@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/) || s.match(/[?&]q=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/) || s.match(/!3d(-?\d+(?:\.\d+)?)!4d(-?\d+(?:\.\d+)?)/) || s.match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/);
+  return m ? { lat: +m[1], lng: +m[2] } : null;
+}
+
+/* ------------------------------------------------------------------
+   Firebase
+------------------------------------------------------------------ */
+firebase.initializeApp(FIREBASE_CONFIG);
+const db = firebase.database();
+const auth = AUTH_READY ? firebase.auth() : null;
+let user = null;
+if (auth){
+  auth.onAuthStateChanged(u => { user = u; renderUserbar(); go(); });
+}
+async function signIn(){
+  if (!auth){ toast('Innskráning er ekki stillt enn.'); return; }
+  try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
+  catch(e){
+    const code = e && e.code || '';
+    if (code === 'auth/unauthorized-domain') toast('Lénið vantar í Authorized domains í Firebase.');
+    else if (code === 'auth/operation-not-allowed') toast('Google-innskráning er ekki virkjuð í Firebase.');
+    else if (code !== 'auth/popup-closed-by-user' && code !== 'auth/cancelled-popup-request') toast('Innskráning tókst ekki: ' + code);
+  }
+}
+function renderUserbar(){
+  const ub = $('#userbar'); ub.innerHTML = '';
+  if (user){
+    const av = el('span', {class:'avatar'});
+    if (user.photoURL) av.append(el('img', {src:user.photoURL, alt:'', referrerpolicy:'no-referrer'})); else av.textContent = (user.displayName || '?')[0].toUpperCase();
+    ub.append(av, el('span', {}, user.displayName || user.email || ''), el('button', {class:'linkbtn', onclick: () => auth.signOut()}, 'Skrá út'));
+  } else if (route().view === 'trip'){
+    ub.append(el('span', {}, 'Þú skoðar sem gestur.'), el('button', {class:'linkbtn', onclick: signIn}, 'Skrá inn'));
+  }
+}
+
+/* ------------------------------------------------------------------
+   Leið: #  |  #t/{tripId}  |  #t/{tripId}/{tab}
+------------------------------------------------------------------ */
+function route(){
+  const m = location.hash.replace(/^#\/?/, '').match(/^t\/([a-z0-9]+)(?:\/([a-z]+))?/i);
+  if (!m) return { view:'home' };
+  return { view:'trip', id: m[1].toLowerCase(), tab: m[2] || null };
+}
+function setHeader(title, sub, eyebrow){
+  $('#title').innerHTML = esc(title) + (sub ? `<small>${esc(sub)}</small>` : '');
+  $('#eyebrow').innerHTML = `<a href="/travel/">Ferðir</a>` + (eyebrow ? ` · ${esc(eyebrow)}` : '');
+  document.title = title === 'Ferðir' ? 'Ferðir' : `${title} · Ferðir`;
+}
+
+/* ==================================================================
+   FORSÍÐA
+   ================================================================== */
+let myTripsRef = null;
+function renderHome(){
+  stopTrip();
+  applyTheme('sjor');
+  setHeader('Ferðir', 'Allt sem er bókað, á einum stað.');
+  $('#tabs').hidden = true;
+  const app = $('#app'); app.innerHTML = '';
+  $('#foot').textContent = '';
+
+  if (!AUTH_READY){
+    app.append(el('div', {class:'notice warn', html:'<b>Innskráning er ekki stillt enn.</b> Firebase-stillingarnar (apiKey og appId) vantar í kóðann. Ferðir sem þegar eru til má samt skoða með hlekk.'}));
+  }
+  if (!user){
+    const card = el('div', {class:'card'}, el('h2', {}, 'Skráðu þig inn'),
+      el('p', {class:'help', style:'margin:0 0 14px'}, 'Innskráning með Google. Aðeins þú sérð og breytir þínum ferðum. Samferðafólk fær hlekk og þarf ekki að skrá sig inn.'));
+    card.append(el('button', {class:'gbtn', type:'button', onclick: signIn}, el('span', {class:'glogo'}), 'Halda áfram með Google'));
+    app.append(card);
+    return;
+  }
+
+  const listCard = el('div', {class:'card'}, el('h2', {}, 'Þínar ferðir'));
+  const ul = el('ul', {class:'trips'}); listCard.append(ul);
+  const empty = el('p', {class:'empty'}, 'Engin ferð enn. Búðu til þá fyrstu hér fyrir neðan.');
+  listCard.append(empty);
+  app.append(listCard);
+  myTripsRef = db.ref(`travel/users/${user.uid}/trips`);
+  myTripsRef.on('value', snap => {
+    ul.innerHTML = '';
+    const v = snap.val() || {};
+    const ids = Object.keys(v).sort((a,b) => (v[b].start || '').localeCompare(v[a].start || ''));
+    empty.hidden = ids.length > 0;
+    for (const id of ids){
+      const t = v[id];
+      ul.append(el('li', {}, el('div', {}, el('a', {href:`#t/${id}`}, t.title || id), el('small', {}, t.start && t.end ? fmtRange(t.start, t.end) : '')),
+        el('a', {class:'btn small', href:`#t/${id}`, style:'text-decoration:none'}, 'Opna')));
+    }
+  }, err => { empty.textContent = 'Náði ekki í ferðirnar. Reglurnar fyrir /travel vantar líklega í Firebase.'; empty.hidden = false; });
+
+  app.append(tripForm(null));
+}
+
+/* Eyðublað fyrir nýja ferð, eða stillingar ferðar sem er til */
+function tripForm(trip){
+  const isNew = !trip;
+  const card = el('div', {class:'card'}, el('h2', {}, isNew ? 'Ný ferð' : 'Stillingar ferðar'));
+  const f = el('form', {class:'form', onsubmit: e => { e.preventDefault(); saveTrip(); }});
+  const title = el('input', {id:'tTitle', maxlength:'80', required:'', placeholder:'t.d. Mexíkó 2026', value: trip ? trip.title : ''});
+  const start = el('input', {id:'tStart', type:'date', required:'', value: trip ? trip.start : ''});
+  const end = el('input', {id:'tEnd', type:'date', required:'', value: trip ? trip.end : ''});
+  const desc = el('textarea', {id:'tDesc', rows:'2', maxlength:'300', placeholder:'Valkvætt'}); desc.value = trip && trip.description || '';
+  let theme = trip ? (trip.theme || 'sjor') : 'sjor';
+  const themes = el('div', {class:'themes'});
+  function paintThemes(){
+    themes.innerHTML = '';
+    for (const k in THEMES){
+      const t = THEMES[k];
+      themes.append(el('button', {type:'button', class:'theme', 'aria-pressed': String(theme === k),
+        style:`--t-bg:${t.vars['--bg']};--t-fg:${t.vars['--fg']};--t-accent:${t.vars['--accent']}`,
+        onclick: () => { theme = k; paintThemes(); if (!isNew) applyTheme(k); }},
+        el('b', {}, t.name), el('i'), el('span', {style:'font-size:12px;opacity:.75'}, t.desc)));
+    }
+  }
+  paintThemes();
+  f.append(
+    el('label', {class:'full'}, 'Heiti ferðar', title),
+    el('label', {}, 'Fyrsti dagur', start),
+    el('label', {}, 'Síðasti dagur', end),
+    el('label', {class:'full'}, 'Um ferðina', desc),
+    el('div', {class:'full', style:'font-size:13px;color:var(--dim)'}, 'Útlit'),
+    themes
+  );
+  const st = el('p', {class:'status'});
+  const row = el('div', {class:'row'}, el('button', {class:'btn', type:'submit'}, isNew ? 'Búa til ferð' : 'Vista'));
+  if (!isNew) row.append(el('button', {class:'btn danger', type:'button', onclick: deleteTrip}, 'Eyða ferð'));
+  f.append(row, st);
+  card.append(f);
+
+  async function saveTrip(){
+    st.className = 'status';
+    const t = title.value.trim(), s = start.value, e = end.value;
+    if (!t || !s || !e){ st.textContent = 'Heiti og báðar dagsetningar þarf.'; st.classList.add('err'); return; }
+    if (e < s){ st.textContent = 'Síðasti dagur er á undan þeim fyrsta.'; st.classList.add('err'); return; }
+    st.textContent = 'Vistar…';
+    try {
+      if (isNew){
+        const id = rnd(10);
+        const data = { owner: user.uid, title: t, start: s, end: e, description: desc.value.trim(), theme, created: new Date().toISOString() };
+        await db.ref().update({ [`travel/trips/${id}`]: data, [`travel/users/${user.uid}/trips/${id}`]: { title: t, start: s, end: e } });
+        location.hash = `#t/${id}`;
+      } else {
+        await db.ref().update({
+          [`travel/trips/${cur.id}/title`]: t, [`travel/trips/${cur.id}/start`]: s, [`travel/trips/${cur.id}/end`]: e,
+          [`travel/trips/${cur.id}/description`]: desc.value.trim(), [`travel/trips/${cur.id}/theme`]: theme,
+          [`travel/users/${user.uid}/trips/${cur.id}`]: { title: t, start: s, end: e }
+        });
+        toast('Vistað');
+      }
+    } catch(err){ st.textContent = 'Vistun tókst ekki: ' + (err.code || err.message); st.classList.add('err'); }
+  }
+  async function deleteTrip(){
+    if (!confirm(`Eyða ferðinni "${cur.trip.title}" með öllum færslum? Þetta er endanlegt.`)) return;
+    try {
+      await db.ref().update({ [`travel/trips/${cur.id}`]: null, [`travel/users/${user.uid}/trips/${cur.id}`]: null });
+      toast('Ferð eytt'); location.hash = '';
+    } catch(err){ toast('Tókst ekki að eyða: ' + (err.code || '')); }
+  }
+  return card;
+}
+
+/* ==================================================================
+   FERÐ
+   ================================================================== */
+let cur = null;       /* { id, trip, items:[], suggestions:{}, ref, tab } */
+let map = null, markers = [], infoWin = null;
+
+function stopTrip(){
+  if (cur && cur.ref) cur.ref.off();
+  if (myTripsRef){ myTripsRef.off(); myTripsRef = null; }
+  cur = null; map = null; markers = [];
+}
+function isOwner(){ return !!(user && cur && cur.trip && cur.trip.owner === user.uid); }
+
+function openTrip(r){
+  if (cur && cur.id === r.id){ cur.tab = r.tab || cur.tab; renderTrip(); return; }
+  stopTrip();
+  cur = { id: r.id, trip: null, items: [], suggestions: {}, ideas: [], ref: db.ref(`travel/trips/${r.id}`), tab: r.tab || store.get('travel:tab', 'dagar') };
+  $('#app').innerHTML = '<p class="empty">Sæki ferðina…</p>';
+  setHeader('Sæki…', '');
+  cur.ref.on('value', snap => {
+    const v = snap.val();
+    if (!v){ renderMissing(); return; }
+    cur.trip = v;
+    cur.items = Object.entries(v.items || {}).map(([id, it]) => ({ id, ...it })).sort((a,b) => (a.start || '').localeCompare(b.start || ''));
+    cur.suggestions = v.suggestions || {};
+    cur.ideas = Object.entries(v.ideas || {}).map(([id, x]) => ({ id, ...x })).sort((a,b) => (a.created || '').localeCompare(b.created || ''));
+    renderTrip();
+  }, err => {
+    $('#app').innerHTML = `<div class="card"><p style="margin:0 0 12px">Náði ekki í ferðina. ${err && err.code === 'PERMISSION_DENIED' ? 'Reglurnar fyrir /travel vantar í Firebase.' : ''}</p><a class="btn" href="/travel/" style="text-decoration:none;display:inline-block">Á forsíðu</a></div>`;
+  });
+}
+function renderMissing(){
+  stopTrip(); $('#tabs').hidden = true;
+  setHeader('Úps', '');
+  $('#app').innerHTML = `<div class="card"><p style="margin:0 0 12px">Þessi ferð finnst ekki. Kannski var henni eytt, eða hlekkurinn er rangur.</p><a class="btn" href="/travel/" style="text-decoration:none;display:inline-block">Á forsíðu</a></div>`;
+}
+
+function renderTrip(){
+  const { trip } = cur; if (!trip) return;
+  applyTheme(trip.theme);
+  const nights = Math.max(0, Math.round((parse(trip.end) - parse(trip.start)) / 86400000));
+  const hotels = cur.items.filter(i => i.kind === 'hotel').length;
+  setHeader(trip.title, `${fmtRange(trip.start, trip.end)} · ${nights} ${nights === 1 ? 'nótt' : 'nætur'}${hotels ? ` · ${hotels} ${hotels === 1 ? 'gisting' : 'gistingar'}` : ''}`, isOwner() ? 'þín ferð' : 'gestur');
+  renderUserbar();
+
+  const owner = isOwner();
+  const nSug = Object.keys(cur.suggestions).length;
+  const nIdeas = cur.ideas.filter(i => !i.scheduled).length;
+  const tabs = [['dagar','Dagur fyrir dag'],['dagatal','Dagatal'],['kort','Kort'],['gisting','Gisting'],['hugmyndir','Hugmyndabanki' + (nIdeas ? ` <span style="color:var(--dim);font-weight:400">${nIdeas}</span>` : '')]];
+  if (owner) tabs.push(['stillingar', 'Stillingar' + (nSug ? `<span class="n">${nSug}</span>` : '')]);
+  if (!tabs.some(t => t[0] === cur.tab)) cur.tab = 'dagar';
+  const nav = $('#tabs'); nav.hidden = false; nav.innerHTML = '';
+  for (const [k, label] of tabs){
+    nav.append(el('button', {role:'tab', 'aria-selected': String(cur.tab === k), html: label, onclick: () => { cur.tab = k; store.set('travel:tab', k); history.replaceState(null, '', `#t/${cur.id}/${k}`); renderTrip(); }}));
+  }
+
+  const app = $('#app'); app.innerHTML = '';
+  if (trip.description && cur.tab === 'dagar') app.append(el('p', {class:'help', style:'margin:0 0 14px;white-space:pre-line'}, trip.description));
+  if (owner && nSug && cur.tab !== 'stillingar'){
+    app.append(el('div', {class:'notice', html:`<b>${nSug} ${nSug === 1 ? 'tillaga bíður' : 'tillögur bíða'} samþykkis.</b> <button class="linkbtn" type="button" id="goSug">Skoða</button>`}));
+    $('#goSug').onclick = () => { cur.tab = 'stillingar'; renderTrip(); };
+  }
+  if (cur.tab === 'dagar') renderDays(app);
+  else if (cur.tab === 'dagatal') renderCal(app);
+  else if (cur.tab === 'kort') renderMap(app);
+  else if (cur.tab === 'gisting') renderHotels(app);
+  else if (cur.tab === 'hugmyndir') renderIdeas(app);
+  else if (cur.tab === 'stillingar') renderSettings(app);
+
+  const old = $('#fab'); if (old) old.remove();
+  if (cur.tab === 'hugmyndir'){
+    document.body.append(el('button', {class:'btn fab', id:'fab', type:'button', onclick: () => openIdeaDialog()}, '+ Hugmynd'));
+  } else if (cur.tab !== 'stillingar'){
+    if (owner) document.body.append(el('button', {class:'btn fab', id:'fab', type:'button', onclick: () => openItemDialog(null)}, '+ Bæta við'));
+    else document.body.append(el('button', {class:'btn fab', id:'fab', type:'button', onclick: () => openItemDialog(null, true)}, '+ Senda tillögu'));
+  }
+  $('#foot').innerHTML = owner ? `Hver sem hefur hlekkinn getur skoðað ferðina, sent tillögu og bætt í hugmyndabankann. Aðeins þú breytir áætluninni. <button class="linkbtn" id="copyShare">Afrita hlekk</button>` : 'Þú skoðar þessa ferð sem gestur. Þú getur sent tillögu að færslu sem eigandi samþykkir.';
+  const cs = $('#copyShare'); if (cs) cs.onclick = () => copy(`${BASE}#t/${cur.id}`, 'Hlekkur afritaður');
+}
+
+/* ---------- dagur fyrir dag ---------- */
+function allDays(){
+  const out = []; const d = parse(cur.trip.start), end = parse(cur.trip.end);
+  let guard = 0;
+  while (d <= end && guard++ < 400){ out.push(iso(d)); d.setDate(d.getDate()+1); }
+  return out;
+}
+const stayOn = day => cur.items.find(i => i.kind === 'hotel' && dpart(i.start) <= day && dpart(i.end) > day);
+
+function renderDays(host){
+  const days = allDays();
+  const grid = el('div', {class:'days'});
+  const today = todayIso();
+  const stays = cur.items.filter(i => i.kind === 'hotel');
+  const outside = cur.items.filter(i => i.kind !== 'hotel' && (dpart(i.start) < cur.trip.start || dpart(i.start) > cur.trip.end));
+  if (!cur.items.length) host.append(el('p', {class:'empty'}, isOwner() ? 'Engin færsla enn. Smelltu á "Bæta við" til að skrá fyrsta flugið eða hótelið.' : 'Engin færsla enn.'));
+  const placed = new Set();
+  days.forEach((day, idx) => {
+    const row = idx + 1;
+    const d = parse(day);
+    grid.append(el('div', {class:'date' + (dow(d) > 4 ? ' we' : '') + (day === today ? ' today' : ''), style:`grid-row:${row}`, html:`<b>${d.getDate()}</b><span>${DOW[dow(d)]} ${MONTH_S[d.getMonth()]}</span>`}));
+    const todays = cur.items.filter(i => i.kind !== 'hotel' && dpart(i.start) === day).sort((a,b) => a.start.localeCompare(b.start));
+    const items = el('div', {class:'items', style:`grid-row:${row}`});
+    if (!todays.length) items.append(el('p', {class:'empty'}, 'Frjáls dagur.'));
+    for (const it of todays) items.append(itemCard(it));
+    grid.append(items);
+    /* Gisting sem rönd í þriðja dálki yfir næturnar */
+    for (const h of stays){
+      if (placed.has(h.id)) continue;
+      const hs = dpart(h.start), he = dpart(h.end || h.start);
+      if (hs === day || (hs < day && he > day)){
+        let n = 0; while (idx + n < days.length && days[idx + n] < he) n++;
+        if (n === 0) n = 1;
+        placed.add(h.id);
+        grid.append(stayCell(h, row, n));
+      }
+    }
+  });
+  const unplaced = stays.filter(h => !placed.has(h.id));
+  host.append(grid);
+  if (outside.length || unplaced.length){
+    const wrap = el('div', {class:'card', style:'margin-top:16px'}, el('h2', {style:'font-size:17px'}, 'Utan ferðatímabils'));
+    const items = el('div', {class:'items'});
+    for (const it of outside.concat(unplaced)) items.append(itemCard(it));
+    wrap.append(items); host.append(wrap);
+  }
+}
+function stayCell(h, row, n){
+  const link = gmapsLink(h);
+  const c = el('div', {class:'stay', style:`grid-row:${row} / span ${n}`, title: h.title});
+  const full = el('div', {class:'full'});
+  full.append(el('span', {class:'kind'}, 'Gisting'), el('b', {class:'name'}, h.title),
+    el('span', {class:'d'}, `${n} ${n === 1 ? 'nótt' : 'nætur'}`),
+    el('span', {class:'d'}, `Inn ${fmtD(h.start)}${tpart(h.start) ? ' kl. ' + tpart(h.start) : ''}`),
+    el('span', {class:'d'}, h.end ? `Út ${fmtD(h.end)}${tpart(h.end) ? ' kl. ' + tpart(h.end) : ''}` : ''));
+  if (h.place) full.append(el('span', {class:'d'}, h.place));
+  if (h.conf) full.append(el('span', {class:'conf', style:'align-self:flex-start'}, h.conf));
+  if (h.note) full.append(el('span', {class:'d', style:'white-space:pre-line'}, h.note));
+  const acts = el('div', {class:'acts'});
+  if (link) acts.append(el('a', {class:'maplink', href:link, target:'_blank', rel:'noopener'}, 'Opna í Google Maps ↗'));
+  if (h.url) acts.append(el('a', {class:'maplink', href:h.url, target:'_blank', rel:'noopener'}, 'Bókun ↗'));
+  if (isOwner()) acts.append(el('button', {class:'linkbtn', type:'button', onclick: () => openItemDialog(h)}, 'Breyta'));
+  full.append(acts);
+  c.append(full, el('span', {class:'short'}, h.title));
+  c.addEventListener('click', e => {
+    if (e.target.closest('a,button')) return;
+    if (window.matchMedia('(max-width:640px)').matches){ cur.tab = 'gisting'; store.set('travel:tab','gisting'); renderTrip(); }
+  });
+  return c;
+}
+function itemCard(it, asNight){
+  const k = kindOf(it.kind);
+  const card = el('div', {class:'item' + (asNight ? ' night' : ''), style:`--c:${k.c}`});
+  let time;
+  if (asNight) time = `<span class="time">Gisting<small>nótt</small></span>`;
+  else if (it.kind === 'hotel') time = `<span class="time">${esc(tpart(it.start)) || ''}<small>innritun</small></span>`;
+  else {
+    const sameDay = dpart(it.end) === dpart(it.start) || !it.end;
+    time = `<span class="time">${esc(tpart(it.start))}<small>${it.end ? 'til ' + (sameDay ? '' : parse(it.end).getDate() + '. ' + MONTH_S[parse(it.end).getMonth()] + ' ') + esc(tpart(it.end)) : ''}</small></span>`;
+  }
+  const meta = [it.flightNo ? `<span class="conf">${esc(it.flightNo)}</span>` : '', it.place ? esc(it.place) : '', it.conf ? `<span class="conf">${esc(it.conf)}</span>` : '', it.price ? esc(it.price) : ''].filter(Boolean).map(s => `<span>${s}</span>`).join('');
+  const link = gmapsLink(it);
+  if (it.flightNo) card.dataset.flight = it.flightNo;
+  if (asNight){
+    card.innerHTML = `<i class="bar"></i><div class="main"><div class="kind">Gisting</div><div class="title" style="font-weight:500">${esc(it.title)}</div></div>${time}`;
+    return card;
+  }
+  card.innerHTML = `<i class="bar"></i><div class="main"><div class="kind">${k.label}</div><div class="title">${esc(it.title)}</div>${meta ? `<div class="meta">${meta}</div>` : ''}${it.note ? `<div class="meta" style="margin-top:4px;white-space:pre-line">${esc(it.note)}</div>` : ''}<div class="acts"></div></div>${time}`;
+  const acts = card.querySelector('.acts');
+  if (link) acts.append(el('a', {class:'maplink', href:link, target:'_blank', rel:'noopener'}, 'Opna í Google Maps ↗'));
+  if (it.flightNo) acts.append(el('a', {class:'maplink', href:`https://www.flightradar24.com/data/flights/${encodeURIComponent(it.flightNo.replace(/\s+/g,'').toLowerCase())}`, target:'_blank', rel:'noopener'}, 'Staða flugs ↗'));
+  if (it.url) acts.append(el('a', {class:'maplink', href:it.url, target:'_blank', rel:'noopener'}, 'Bókun ↗'));
+  if (isOwner() && !asNight) acts.append(el('button', {class:'linkbtn', type:'button', onclick: () => openItemDialog(it)}, 'Breyta'));
+  return card;
+}
+
+/* ---------- dagatal ---------- */
+function renderCal(host){
+  const months = el('div', {class:'months'});
+  const s = parse(cur.trip.start), e = parse(cur.trip.end);
+  const list = []; let y = s.getFullYear(), m = s.getMonth();
+  while (y < e.getFullYear() || (y === e.getFullYear() && m <= e.getMonth())){ list.push([y,m]); m++; if (m > 11){ m = 0; y++; } if (list.length > 24) break; }
+  for (const [yy,mm] of list){
+    const sec = el('div');
+    sec.innerHTML = `<div class="cal-head"><h3>${MONTH[mm][0].toUpperCase()+MONTH[mm].slice(1)} ${yy}</h3></div><div class="dow">${DOW.map(d => `<span>${d}</span>`).join('')}</div><div class="cal"></div>`;
+    const cal = sec.querySelector('.cal');
+    for (let i = 0; i < dow(new Date(yy,mm,1)); i++) cal.append(el('div', {class:'c pad'}));
+    const days = new Date(yy,mm+1,0).getDate();
+    for (let d = 1; d <= days; d++){
+      const key = iso(new Date(yy,mm,d));
+      const inTrip = key >= cur.trip.start && key <= cur.trip.end;
+      const c = el('div', {class:'c' + (inTrip ? '' : ' out'), onclick: () => { if (!inTrip) return; cur.tab = 'dagar'; renderTrip(); } });
+      let html = `<div class="n${dow(new Date(yy,mm,d)) > 4 ? ' we' : ''}">${d}</div>`;
+      const stay = stayOn(key);
+      if (stay){
+        const start = dpart(stay.start) === key;
+        const end = iso(new Date(parse(stay.end).getTime() - 86400000)) === key;
+        html += `<div class="stay${start ? ' start' : ''}${end ? ' end' : ''}" title="${esc(stay.title)}"></div>`;
+      }
+      for (const it of cur.items.filter(i => dpart(i.start) === key && i.kind !== 'hotel')){
+        html += `<div class="ev" style="--c:${kindOf(it.kind).c}" title="${esc(it.title)}"><i></i><span>${esc(it.title)}</span></div>`;
+      }
+      c.innerHTML = html; cal.append(c);
+    }
+    months.append(sec);
+  }
+  host.append(months);
+  host.append(el('div', {class:'legend', html:`<span style="--c:var(--hotel)">Gisting (rönd)</span><span style="--c:var(--flight)">Flug</span><span style="--c:var(--move)">Ferð milli staða</span><span style="--c:var(--act)">Afþreying</span><span style="--c:var(--note)">Minnispunktur</span>`}));
+}
+
+/* ---------- kort ---------- */
+let mapsLoading = null;
+function loadMaps(){
+  if (window.google && google.maps) return Promise.resolve();
+  if (mapsLoading) return mapsLoading;
+  mapsLoading = new Promise((res, rej) => {
+    window.__mapsReady = () => res();
+    const s = document.createElement('script');
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(MAPS_KEY)}&libraries=places,marker&language=is&region=IS&loading=async&callback=__mapsReady`;
+    s.onerror = () => rej(new Error('maps'));
+    document.head.append(s);
+  });
+  return mapsLoading;
+}
+const pinned = () => cur.items.filter(i => i.lat != null && i.lng != null);
+function renderMap(host){
+  if (!MAPS_READY){
+    host.append(el('div', {class:'notice warn', html:'<b>Google Maps er ekki stillt enn.</b> Google Maps lykilinn vantar í kóðann. Hlekkurinn "Opna í Google Maps" á hverri færslu virkar samt.'}));
+  } else {
+    host.append(el('div', {id:'gmap'}));
+  }
+  const pts = pinned();
+  const list = el('div', {class:'pinlist'});
+  if (!pts.length) list.append(el('p', {class:'empty'}, 'Engin færsla með staðsetningu enn. Veldu stað úr leitinni þegar þú skráir færslu, eða límdu Google Maps hlekk.'));
+  pts.forEach((it, i) => {
+    const d = parse(it.start);
+    list.append(el('button', {type:'button', class:'pin', id:'pin-'+it.id, style:`--c:${kindOf(it.kind).c}`, html:`<i></i><b>${esc(it.title)}</b><small>${d.getDate()}. ${MONTH_S[d.getMonth()]}</small>`, onclick: () => focusPin(it.id)}));
+  });
+  host.append(list);
+  if (!MAPS_READY) return;
+  loadMaps().then(() => {
+    const elMap = $('#gmap'); if (!elMap) return;
+    map = new google.maps.Map(elMap, { center: { lat: 64.1, lng: -21.9 }, zoom: 5, mapTypeControl: false, streetViewControl: false, fullscreenControl: true });
+    infoWin = new google.maps.InfoWindow();
+    markers = [];
+    const bounds = new google.maps.LatLngBounds();
+    const colors = { hotel:'#4F5BD5', flight:'#3A4A52', move:'#C98A1B', act:'#E0694B', note:'#7A8C92' };
+    for (const it of pts){
+      const pos = { lat: +it.lat, lng: +it.lng };
+      const mk = new google.maps.Marker({ position: pos, map, title: it.title,
+        icon: { path: google.maps.SymbolPath.CIRCLE, scale: 9, fillColor: colors[it.kind] || colors.note, fillOpacity: 1, strokeColor: '#fff', strokeWeight: 2 } });
+      mk.addListener('click', () => focusPin(it.id));
+      markers.push({ id: it.id, mk, it }); bounds.extend(pos);
+    }
+    if (pts.length === 1) { map.setCenter(bounds.getCenter()); map.setZoom(13); }
+    else if (pts.length > 1) map.fitBounds(bounds, 40);
+  }).catch(() => toast('Google Maps hlaðst ekki. Athugaðu lykilinn.'));
+}
+function focusPin(id){
+  document.querySelectorAll('.pin').forEach(p => p.classList.toggle('on', p.id === 'pin-' + id));
+  const m = markers.find(x => x.id === id);
+  if (m && map){
+    map.panTo(m.mk.getPosition()); if (map.getZoom() < 12) map.setZoom(13);
+    const it = m.it; const link = gmapsLink(it);
+    infoWin.setContent(`<div style="font-family:Karla,sans-serif;max-width:220px"><b>${esc(it.title)}</b><br><span style="color:#666">${fmtD(it.start)}${tpart(it.start) ? ' kl. ' + esc(tpart(it.start)) : ''}</span>${it.place ? `<br>${esc(it.place)}` : ''}${link ? `<br><a href="${link}" target="_blank" rel="noopener">Opna í Google Maps</a>` : ''}</div>`);
+    infoWin.open({ map, anchor: m.mk });
+  } else {
+    const it = cur.items.find(i => i.id === id); if (it) toast(`${it.title}${it.place ? ' · ' + it.place : ''}`);
+  }
+}
+
+/* ---------- gisting ---------- */
+function renderHotels(host){
+  const hs = cur.items.filter(i => i.kind === 'hotel');
+  if (!hs.length){ host.append(el('p', {class:'empty'}, 'Engin gisting skráð enn.')); return; }
+  const wrap = el('div', {class:'hotels'});
+  for (const h of hs){
+    const a = parse(h.start), b = parse(h.end || h.start);
+    const nights = Math.max(0, Math.round((b - a) / 86400000));
+    const link = gmapsLink(h);
+    const card = el('div', {class:'hotel'});
+    card.innerHTML = `<div><h3>${esc(h.title)}</h3><div class="io">Innritun <b>${fmtD(h.start)}${tpart(h.start) ? ' kl. ' + esc(tpart(h.start)) : ''}</b> · Útritun <b>${h.end ? fmtD(h.end) + (tpart(h.end) ? ' kl. ' + esc(tpart(h.end)) : '') : '?'}</b></div>${h.place || h.conf ? `<div class="io">${esc(h.place || '')}${h.conf ? ` · <span class="conf">${esc(h.conf)}</span>` : ''}</div>` : ''}${h.note ? `<div class="io" style="white-space:pre-line">${esc(h.note)}</div>` : ''}<div class="acts" style="display:flex;gap:10px;margin-top:6px;flex-wrap:wrap"></div></div><div class="nights"><b>${nights}</b><span>${nights === 1 ? 'nótt' : 'nætur'}</span></div>`;
+    const acts = card.querySelector('.acts');
+    if (link) acts.append(el('a', {class:'maplink', href:link, target:'_blank', rel:'noopener'}, 'Opna í Google Maps ↗'));
+    if (h.url) acts.append(el('a', {class:'maplink', href:h.url, target:'_blank', rel:'noopener'}, 'Bókun ↗'));
+    if (isOwner()) acts.append(el('button', {class:'linkbtn', type:'button', onclick: () => openItemDialog(h)}, 'Breyta'));
+    wrap.append(card);
+  }
+  host.append(wrap);
+}
+
+/* ---------- hugmyndabanki ---------- */
+function renderIdeas(host){
+  host.append(el('p', {class:'help', style:'margin:0 0 12px'}, 'Staðir og afþreying sem koma til greina. Finndu staðinn í Google Maps leitinni, geymdu hann hér og settu á dag þegar það er ákveðið.'));
+  if (!cur.ideas.length){ host.append(el('p', {class:'empty'}, 'Engin hugmynd enn. Smelltu á "+ Hugmynd".')); return; }
+  const wrap = el('div', {class:'hotels'});
+  for (const idea of cur.ideas){
+    const sched = idea.scheduled ? cur.items.find(i => i.id === idea.scheduled) : null;
+    const card = el('div', {class:'idea' + (idea.scheduled ? ' done' : '')});
+    const link = gmapsLink(idea);
+    const left = el('div');
+    left.append(el('h3', {}, idea.title));
+    if (idea.place) left.append(el('div', {class:'io', style:'font-size:14px;color:var(--dim)'}, idea.place));
+    if (idea.note) left.append(el('div', {class:'io', style:'font-size:14px;color:var(--dim);white-space:pre-line;margin-top:4px'}, idea.note));
+    left.append(el('div', {class:'by'}, `Frá ${idea.by || 'eiganda'}` + (sched ? ` · á dagskrá ${fmtD(sched.start)}` : idea.scheduled ? ' · komið á dagskrá' : '')));
+    const acts = el('div', {class:'acts', style:'display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;align-items:center'});
+    if (link) acts.append(el('a', {class:'maplink', href:link, target:'_blank', rel:'noopener'}, 'Opna í Google Maps ↗'));
+    if (idea.url) acts.append(el('a', {class:'maplink', href:idea.url, target:'_blank', rel:'noopener'}, 'Vefsíða ↗'));
+    if (isOwner()){
+      if (!idea.scheduled) acts.append(el('button', {class:'btn small', type:'button', onclick: () => openItemDialog({ kind:'act', title: idea.title, place: idea.place, lat: idea.lat, lng: idea.lng, placeId: idea.placeId, note: idea.note, url: idea.url, start: cur.trip.start + 'T10:00', end: cur.trip.start + 'T12:00' }, false, { ideaId: idea.id })}, 'Setja á dag'));
+      acts.append(el('button', {class:'linkbtn', type:'button', onclick: async () => { if (!confirm(`Eyða hugmyndinni "${idea.title}"?`)) return; try { await db.ref(`travel/trips/${cur.id}/ideas/${idea.id}`).remove(); } catch(e){ toast('Tókst ekki.'); } }}, 'Eyða'));
+    }
+    left.append(acts);
+    card.append(left);
+    if (idea.scheduled) card.append(el('span', {class:'tag', style:'align-self:start'}, 'Á dagskrá'));
+    wrap.append(card);
+  }
+  host.append(wrap);
+}
+function openIdeaDialog(){
+  const dlg = $('#dlg'), inner = $('#dlgInner'); inner.innerHTML = '';
+  inner.append(el('h2', {}, 'Ný hugmynd'));
+  const f = el('form', {class:'form'});
+  const title = el('input', {id:'gTitle', maxlength:'100', required:'', placeholder:'t.d. Cenote Dos Ojos'});
+  const place = el('input', {id:'gPlace', maxlength:'200', placeholder: MAPS_READY ? 'Leitaðu að stað' : 'Heiti staðar eða heimilisfang', autocomplete:'off'});
+  const gl = el('input', {id:'gLink', placeholder:'Límdu hlekk úr Google Maps, eða hnit'});
+  const url = el('input', {id:'gUrl', type:'url', placeholder:'https://…'});
+  const note = el('textarea', {id:'gNote', rows:'2', maxlength:'400', placeholder:'Hvers vegna, hvað kostar, hver mælti með'});
+  const by = el('input', {id:'gBy', maxlength:'40', placeholder:'Nafnið þitt', value: user && isOwner() ? (user.displayName || '') : store.get('travel:name', '')});
+  let loc = { lat:null, lng:null, placeId:null };
+  const locInfo = el('span', {class:'help', style:'font-size:12px'}, 'Engin staðsetning á korti enn.');
+  gl.addEventListener('input', () => { const c = coordsFromLink(gl.value); if (c){ loc = { ...c, placeId:null }; locInfo.textContent = `Staðsetning: ${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}`; } });
+  const placeWrap = el('label', {class:'full'}, 'Staður', place);
+  f.append(
+    el('label', {class:'full'}, 'Heiti', title),
+    placeWrap,
+    el('label', {class:'full'}, 'Google Maps hlekkur eða hnit (valkvætt)', gl),
+    el('div', {class:'full'}, locInfo),
+    el('label', {class:'full'}, 'Vefsíða (valkvætt)', url),
+    el('label', {class:'full'}, 'Athugasemd', note),
+    el('label', {}, 'Frá hverjum', by)
+  );
+  const st = el('p', {class:'status'});
+  f.append(el('div', {class:'row'}, el('button', {class:'btn', type:'submit'}, 'Geyma hugmynd'), el('button', {class:'btn ghost', type:'button', onclick: () => dlg.close()}, 'Hætta við')), st);
+  inner.append(f); dlg.showModal();
+  if (MAPS_READY){
+    loadMaps().then(async () => {
+      if (!google.maps.places || !google.maps.places.PlaceAutocompleteElement) return;
+      const pac = new google.maps.places.PlaceAutocompleteElement(); pac.id = 'gPac';
+      placeWrap.firstChild.textContent = 'Staður (leit)'; place.hidden = true; placeWrap.append(pac);
+      const onPick = async (ev) => {
+        try {
+          const p = ev.placePrediction ? ev.placePrediction.toPlace() : ev.place;
+          await p.fetchFields({ fields: ['displayName','formattedAddress','location','id','websiteURI'] });
+          const name = p.displayName || '', addr = p.formattedAddress || '';
+          place.value = name && addr && !addr.startsWith(name) ? `${name}, ${addr}` : (addr || name);
+          loc = { lat: p.location.lat(), lng: p.location.lng(), placeId: p.id || null };
+          locInfo.textContent = `Staðsetning: ${loc.lat.toFixed(4)}, ${loc.lng.toFixed(4)}`;
+          if (!title.value.trim() && name) title.value = name;
+          if (!url.value && p.websiteURI) url.value = p.websiteURI;
+        } catch(e){ toast('Náði ekki í staðinn.'); }
+      };
+      pac.addEventListener('gmp-select', onPick); pac.addEventListener('gmp-placeselect', onPick);
+    }).catch(() => {});
+  }
+  f.addEventListener('submit', async e => {
+    e.preventDefault(); st.className = 'status';
+    if (!title.value.trim()){ st.textContent = 'Heiti þarf.'; st.classList.add('err'); return; }
+    const name = by.value.trim() || (isOwner() ? 'eiganda' : 'gesti'); if (!isOwner()) store.set('travel:name', name);
+    const data = { title: title.value.trim(), place: place.value.trim() || null, lat: loc.lat, lng: loc.lng, placeId: loc.placeId, url: url.value.trim() || null, note: note.value.trim() || null, by: name, created: new Date().toISOString() };
+    st.textContent = 'Vistar…';
+    try { await db.ref(`travel/trips/${cur.id}/ideas`).push(data); dlg.close(); toast('Hugmynd geymd'); }
+    catch(err){ st.textContent = 'Vistun tókst ekki: ' + (err.code || err.message); st.classList.add('err'); }
+  });
+}
+
+/* ---------- stillingar og tillögur ---------- */
+function renderSettings(host){
+  const sug = Object.entries(cur.suggestions).sort((a,b) => (a[1].created || '').localeCompare(b[1].created || ''));
+  const sc = el('div', {class:'card'}, el('h2', {}, 'Tillögur'), el('p', {class:'help', style:'margin:0 0 10px'}, 'Samferðafólk með hlekkinn getur sent tillögu. Hún birtist ekki í áætluninni fyrr en þú samþykkir.'));
+  if (!sug.length) sc.append(el('p', {class:'empty'}, 'Engin tillaga bíður.'));
+  for (const [sid, s] of sug){
+    const c = itemCard({ ...s, title: s.title }, false);
+    c.querySelector('.kind').textContent = `${kindOf(s.kind).label} · tillaga frá ${s.by || 'gesti'}`;
+    const acts = c.querySelector('.acts'); acts.querySelectorAll('button').forEach(b => b.remove());
+    acts.append(
+      el('button', {class:'btn small', type:'button', onclick: async () => {
+        const { by, created, ...item } = s;
+        try { await db.ref().update({ [`travel/trips/${cur.id}/items/${rnd(12)}`]: item, [`travel/trips/${cur.id}/suggestions/${sid}`]: null }); toast('Tillaga samþykkt'); } catch(e){ toast('Tókst ekki.'); }
+      }}, 'Samþykkja'),
+      el('button', {class:'btn ghost small', type:'button', onclick: async () => { try { await db.ref(`travel/trips/${cur.id}/suggestions/${sid}`).remove(); toast('Tillögu hafnað'); } catch(e){ toast('Tókst ekki.'); } }}, 'Hafna'));
+    sc.append(c);
+  }
+  host.append(sc);
+
+  const share = `${BASE}#t/${cur.id}`;
+  const shc = el('div', {class:'card'}, el('h2', {}, 'Deila ferð'), el('p', {class:'help'}, 'Þeir sem fá hlekkinn sjá allt án innskráningar og geta sent tillögu. Þeir geta ekki breytt.'),
+    el('div', {class:'share-box'}, share),
+    el('div', {class:'row'}, el('button', {class:'btn small', type:'button', onclick: () => copy(share, 'Hlekkur afritaður')}, 'Afrita'),
+      navigator.share ? el('button', {class:'btn ghost small', type:'button', onclick: () => navigator.share({ title: cur.trip.title, url: share }).catch(() => {})}, 'Deila…') : null));
+  host.append(shc);
+  host.append(tripForm(cur.trip));
+}
+
+/* ---------- færsla: nýtt, breyta, tillaga ---------- */
+function openItemDialog(it, asSuggestion, opts={}){
+  const dlg = $('#dlg'), inner = $('#dlgInner'); inner.innerHTML = '';
+  const isNew = !it || !it.id;
+  inner.append(el('h2', {}, asSuggestion ? 'Senda tillögu' : isNew ? 'Ný færsla' : 'Breyta færslu'));
+  if (asSuggestion) inner.append(el('p', {class:'help', style:'margin:0 0 12px'}, 'Tillagan fer til eiganda ferðarinnar sem samþykkir hana eða hafnar.'));
+  const f = el('form', {class:'form'});
+  const v = it || { kind:'act', start: (cur.trip.start || todayIso()) + 'T10:00', end:'' };
+  const kind = el('select', {id:'iKind'});
+  for (const k in KINDS) kind.append(el('option', {value:k, selected: v.kind === k ? '' : null}, KINDS[k].label));
+  const title = el('input', {id:'iTitle', maxlength:'100', required:'', placeholder:'t.d. Hotel Playa Norte', value: v.title || ''});
+  const start = el('input', {id:'iStart', type:'datetime-local', required:'', value: v.start || ''});
+  const end = el('input', {id:'iEnd', type:'datetime-local', value: v.end || ''});
+  const place = el('input', {id:'iPlace', maxlength:'200', placeholder: MAPS_READY ? 'Leitaðu að stað eða heimilisfangi' : 'Heiti staðar eða heimilisfang', value: v.place || '', autocomplete:'off'});
+  const gl = el('input', {id:'iLink', placeholder:'Límdu hlekk úr Google Maps, eða hnit', value:''});
+  const conf = el('input', {id:'iConf', maxlength:'60', placeholder:'Bókunarnúmer', value: v.conf || ''});
+  const flightNo = el('input', {id:'iFlight', maxlength:'10', placeholder:'t.d. FI 681', value: v.flightNo || '', autocapitalize:'characters'});
+  const flightLabel = el('label', {}, 'Flugnúmer', flightNo);
+  const price = el('input', {id:'iPrice', maxlength:'40', placeholder:'t.d. 4.200 MXN', value: v.price || ''});
+  const url = el('input', {id:'iUrl', type:'url', placeholder:'https://…', value: v.url || ''});
+  const note = el('textarea', {id:'iNote', rows:'3', maxlength:'600'}); note.value = v.note || '';
+  const by = el('input', {id:'iBy', maxlength:'40', placeholder:'Nafnið þitt', value: store.get('travel:name', '')});
+  let loc = { lat: v.lat ?? null, lng: v.lng ?? null, placeId: v.placeId || null };
+  const locInfo = el('span', {class:'help', style:'font-size:12px'});
+  const paintLoc = () => { locInfo.textContent = loc.lat != null ? `Staðsetning á korti: ${(+loc.lat).toFixed(4)}, ${(+loc.lng).toFixed(4)}` : 'Engin staðsetning á korti enn.'; };
+  paintLoc();
+  gl.addEventListener('input', () => { const c = coordsFromLink(gl.value); if (c){ loc = { ...c, placeId: null }; paintLoc(); } });
+  place.addEventListener('input', () => { if (!MAPS_READY) return; });
+
+  const kindLabel = el('label', {}, 'Gerð', kind);
+  const endLabel = el('label', {}, 'Endar', end);
+  const paintKind = () => { const h = kind.value === 'hotel'; endLabel.firstChild.textContent = h ? 'Útritun' : 'Endar'; f.querySelector('#iStartL').firstChild.textContent = h ? 'Innritun' : 'Byrjar'; flightLabel.hidden = kind.value !== 'flight'; };
+  kind.addEventListener('change', paintKind);
+  const placeWrap = el('label', {class:'full'}, 'Staður', place);
+  f.append(
+    kindLabel,
+    el('label', {class:'full'}, 'Heiti', title),
+    el('label', {id:'iStartL'}, 'Byrjar', start),
+    endLabel,
+    placeWrap,
+    el('label', {class:'full'}, 'Google Maps hlekkur eða hnit (valkvætt)', gl),
+    el('div', {class:'full'}, locInfo),
+    flightLabel,
+    el('label', {}, 'Bókunarnúmer', conf),
+    el('label', {}, 'Verð', price),
+    el('label', {class:'full'}, 'Hlekkur á bókun', url),
+    el('label', {class:'full'}, 'Athugasemd', note)
+  );
+  if (asSuggestion) f.prepend(el('label', {class:'full'}, 'Frá hverjum', by));
+  const st = el('p', {class:'status'});
+  const row = el('div', {class:'row'},
+    el('button', {class:'btn', type:'submit'}, asSuggestion ? 'Senda tillögu' : 'Vista'),
+    el('button', {class:'btn ghost', type:'button', onclick: () => dlg.close()}, 'Hætta við'));
+  if (!isNew && !asSuggestion) row.append(el('button', {class:'btn danger', type:'button', style:'margin-left:auto', onclick: async () => {
+    if (!confirm(`Eyða "${it.title}"?`)) return;
+    try { await db.ref(`travel/trips/${cur.id}/items/${it.id}`).remove(); dlg.close(); toast('Færslu eytt'); } catch(e){ st.textContent = 'Tókst ekki að eyða.'; st.classList.add('err'); }
+  }}, 'Eyða'));
+  f.append(row, st);
+  inner.append(f);
+  dlg.showModal();
+  paintKind();
+
+  /* Google staðaleit, nýja vefeiningin */
+  if (MAPS_READY){
+    loadMaps().then(async () => {
+      if (!google.maps.places || !google.maps.places.PlaceAutocompleteElement) return;
+      try { await google.maps.importLibrary('places'); } catch(e){}
+      const pac = new google.maps.places.PlaceAutocompleteElement();
+      pac.id = 'iPac';
+      placeWrap.firstChild.textContent = 'Staður (leit)';
+      place.hidden = true;
+      placeWrap.append(pac);
+      const onPick = async (ev) => {
+        try {
+          const p = ev.placePrediction ? ev.placePrediction.toPlace() : ev.place;
+          await p.fetchFields({ fields: ['displayName','formattedAddress','location','id'] });
+          const name = p.displayName || ''; const addr = p.formattedAddress || '';
+          place.value = name && addr && !addr.startsWith(name) ? `${name}, ${addr}` : (addr || name);
+          loc = { lat: p.location.lat(), lng: p.location.lng(), placeId: p.id || null };
+          paintLoc();
+          if (!title.value.trim() && name) title.value = name;
+        } catch(e){ toast('Náði ekki í staðinn.'); }
+      };
+      pac.addEventListener('gmp-select', onPick);
+      pac.addEventListener('gmp-placeselect', onPick);
+    }).catch(() => {});
+  }
+
+  f.addEventListener('submit', async e => {
+    e.preventDefault(); st.className = 'status';
+    const data = {
+      kind: kind.value, title: title.value.trim(), start: start.value, end: end.value || null, place: place.value.trim() || null,
+      lat: loc.lat != null ? +loc.lat : null, lng: loc.lng != null ? +loc.lng : null, placeId: loc.placeId || null,
+      conf: conf.value.trim() || null, price: price.value.trim() || null, url: url.value.trim() || null, note: note.value.trim() || null,
+      flightNo: kind.value === 'flight' ? (flightNo.value.trim().toUpperCase() || null) : null,
+      ideaId: opts.ideaId || v.ideaId || null
+    };
+    if (!data.title || !data.start){ st.textContent = 'Heiti og byrjun þarf.'; st.classList.add('err'); return; }
+    if (data.end && data.end < data.start){ st.textContent = 'Lok eru á undan byrjun.'; st.classList.add('err'); return; }
+    if (data.kind === 'hotel' && !data.end){ st.textContent = 'Gisting þarf útritunardag.'; st.classList.add('err'); return; }
+    st.textContent = 'Vistar…';
+    try {
+      if (asSuggestion){
+        const name = by.value.trim() || 'gestur'; store.set('travel:name', name);
+        await db.ref(`travel/trips/${cur.id}/suggestions`).push({ ...data, by: name, created: new Date().toISOString() });
+        dlg.close(); toast('Tillaga send. Eigandi ferðarinnar fær hana til samþykktar.');
+      } else {
+        const iid = isNew ? rnd(12) : it.id;
+        const upd = { [`travel/trips/${cur.id}/items/${iid}`]: data };
+        if (opts.ideaId) upd[`travel/trips/${cur.id}/ideas/${opts.ideaId}/scheduled`] = iid;
+        await db.ref().update(upd);
+        dlg.close(); toast(opts.ideaId ? 'Hugmynd komin á dagskrá' : 'Vistað');
+      }
+    } catch(err){ st.textContent = 'Vistun tókst ekki: ' + (err.code || err.message); st.classList.add('err'); }
+  });
+}
+
+/* ------------------------------------------------------------------
+   Ræsing
+------------------------------------------------------------------ */
+function go(){
+  const r = route();
+  if (r.view === 'home'){ const f = $('#fab'); if (f) f.remove(); renderHome(); renderUserbar(); }
+  else openTrip(r);
+}
+window.addEventListener('hashchange', go);
+if (!auth) go();
+</script>
+</body>
+</html>
