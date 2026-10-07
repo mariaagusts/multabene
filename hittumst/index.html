@@ -14,24 +14,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --night:#0C1720;
-    --panel:#12222E;
-    --cell:#162A38;
-    --cell-hi:#1C3545;
-    --line:#23404F;
-    --frost:#E8F0F2;
-    --dim:#7E97A5;
-    --aurora:111 227 168;
-    --moon:255 201 107;
-    --rose:#F08A8A;
+    --night:#2A2420;      /* dökkur texti á lituðum reitum og hnöppum */
+    --panel:#FFFCF7;      /* spjöld */
+    --cell:#F3EDE2;       /* reitir */
+    --cell-hi:#EADFCF;
+    --line:#E2D7C6;
+    --frost:#2A2420;      /* meginlitur texta */
+    --dim:#7B6F63;
+    --aurora:76 160 110;  /* já: hlýgrænn */
+    --moon:240 184 80;    /* ef þarf: gulur */
+    --copper:#B86B4B;
+    --rose:#B8524A;
     --radius:14px;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     background:
-      radial-gradient(120% 70% at 50% -10%, #17384A 0%, rgba(12,23,32,0) 60%),
-      var(--night);
+      radial-gradient(120% 60% at 50% -10%, #F8E4CF 0%, rgba(246,241,232,0) 60%),
+      #F6F1E8;
     background-attachment:fixed;
     color:var(--frost);
     font-family:"Karla",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
@@ -41,7 +42,7 @@
     padding:0 0 72px;
   }
   .wrap{max-width:860px;margin:0 auto;padding:0 16px;}
-  a{color:rgb(var(--aurora));}
+  a{color:var(--copper);}
   button{font:inherit;color:inherit;}
   input,textarea{font:inherit;}
   [hidden]{display:none !important;}
@@ -52,8 +53,8 @@
     font-size:12px;letter-spacing:.18em;text-transform:uppercase;
     color:var(--dim);margin:0 0 10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;
   }
-  .eyebrow a{color:var(--dim);text-decoration:none;}
-  .eyebrow a:hover{color:var(--frost);}
+  .eyebrow a{color:var(--copper);text-decoration:none;}
+  .eyebrow a:hover{text-decoration:underline;}
   h1{
     font-family:"Bricolage Grotesque",Georgia,serif;
     font-weight:800;
@@ -63,20 +64,21 @@
     margin:0;
     overflow-wrap:anywhere;
   }
-  h1 em{font-style:normal;display:block;color:rgb(var(--aurora));}
+  h1 em{font-style:normal;display:block;color:var(--copper);}
   .lede{color:var(--dim);margin:14px 0 0;max-width:38em;white-space:pre-line;}
   .badge{
     display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;
     padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--dim);
   }
   .badge.open{border-color:rgb(var(--aurora) / .5);color:rgb(var(--aurora));}
-  .badge.closed{border-color:rgba(240,138,138,.5);color:var(--rose);}
-  .badge.chosen{border-color:rgb(var(--moon) / .6);color:rgb(var(--moon));}
+  .badge.closed{border-color:rgba(184,82,74,.5);color:var(--rose);}
+  .badge.chosen{border-color:rgb(var(--moon) / .9);color:#9A6A1C;}
 
   /* ---------- spjöld ---------- */
   .card{
     background:var(--panel);
     border:1px solid var(--line);
+    box-shadow:0 1px 2px rgba(42,36,32,.04), 0 6px 20px rgba(42,36,32,.05);
     border-radius:var(--radius);
     padding:18px;
     margin:0 0 16px;
@@ -87,7 +89,7 @@
     margin:0 0 6px;
   }
   .card p.help{color:var(--dim);margin:0 0 12px;font-size:14px;}
-  .card.result{border-color:rgb(var(--moon) / .5);background:linear-gradient(180deg,rgba(255,201,107,.08),rgba(255,201,107,0) 70%),var(--panel);}
+  .card.result{border-color:rgb(var(--moon) / .7);background:linear-gradient(180deg,rgba(240,184,80,.14),rgba(240,184,80,0) 70%),var(--panel);}
 
   /* ---------- eyðublöð ---------- */
   label.field{display:block;margin:0 0 14px;}
@@ -97,19 +99,19 @@
     border-radius:10px;padding:10px 12px;font-size:16px;
   }
   textarea.input{min-height:70px;resize:vertical;}
-  .input:focus,textarea.input:focus{outline:2px solid rgb(var(--aurora));outline-offset:1px;}
-  .input::placeholder{color:#5B7382;}
+  .input:focus,textarea.input:focus{outline:2px solid var(--copper);outline-offset:1px;}
+  .input::placeholder{color:#A4978A;}
   .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
   .btn{
-    background:rgb(var(--aurora));color:var(--night);border:0;border-radius:10px;
+    background:var(--copper);color:#fff;border:0;border-radius:10px;
     padding:11px 18px;font-weight:700;cursor:pointer;font-size:15px;
   }
   .btn:disabled{opacity:.5;cursor:default;}
   .btn.ghost{background:transparent;color:var(--frost);border:1px solid var(--line);font-weight:500;}
   .btn.ghost:hover{border-color:var(--dim);}
-  .btn.danger{background:transparent;color:var(--rose);border:1px solid rgba(240,138,138,.4);font-weight:500;}
+  .btn.danger{background:transparent;color:var(--rose);border:1px solid rgba(184,82,74,.4);font-weight:500;}
   .btn.small{padding:6px 11px;font-size:13px;border-radius:8px;}
-  .linkbtn{background:none;border:0;padding:0;color:rgb(var(--aurora));cursor:pointer;text-decoration:underline;font-size:14px;}
+  .linkbtn{background:none;border:0;padding:0;color:var(--copper);cursor:pointer;text-decoration:underline;font-size:14px;}
   .status{font-size:13px;color:var(--dim);min-height:1.3em;margin:8px 0 0;}
   .status.err{color:var(--rose);}
   .seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;}
@@ -132,10 +134,10 @@
     cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:500;
     touch-action:manipulation;user-select:none;
   }
-  .cal .day.weekend{background:#132431;}
+  .cal .day.weekend{background:#EEE4D4;}
   .cal .day.past{opacity:.3;cursor:default;}
-  .cal .day[aria-pressed="true"]{background:rgb(var(--aurora));color:var(--night);border-color:rgb(var(--aurora));font-weight:700;}
-  .cal .day:focus-visible{outline:2px solid rgb(var(--aurora));outline-offset:1px;}
+  .cal .day[aria-pressed="true"]{background:rgb(var(--aurora));color:#fff;border-color:rgb(var(--aurora));font-weight:700;}
+  .cal .day:focus-visible{outline:2px solid var(--copper);outline-offset:1px;}
   .picked{color:var(--dim);font-size:14px;margin:10px 0 0;}
 
   /* ---------- svartafla ---------- */
@@ -155,16 +157,16 @@
   table.grid th.date button{text-align:left;padding-left:6px;}
   table.grid th.date b{color:var(--frost);font-weight:700;display:block;}
   table.grid th.date small{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;}
-  table.grid tr.weekend th.date b{color:rgb(var(--aurora));}
+  table.grid tr.weekend th.date b{color:var(--copper);}
   .cellbtn{
     width:100%;min-width:44px;height:46px;border-radius:9px;border:1px solid var(--line);background:var(--cell);
     cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;
     touch-action:manipulation;user-select:none;color:var(--night);
   }
-  .cellbtn[data-v="2"]{background:rgb(var(--aurora));border-color:rgb(var(--aurora));}
+  .cellbtn[data-v="2"]{background:rgb(var(--aurora));border-color:rgb(var(--aurora));color:#fff;}
   .cellbtn[data-v="1"]{background:rgb(var(--moon));border-color:rgb(var(--moon));}
   .cellbtn:disabled{cursor:default;opacity:.6;}
-  .cellbtn:focus-visible{outline:2px solid var(--frost);outline-offset:1px;}
+  .cellbtn:focus-visible{outline:2px solid var(--copper);outline-offset:1px;}
   table.grid.days .cellbtn{height:42px;}
 
   /* ---------- niðurstöður ---------- */
@@ -178,13 +180,13 @@
   table.res td.name{text-align:left;white-space:nowrap;color:var(--frost);font-weight:500;padding-right:8px;}
   table.res td.name small{display:block;color:var(--dim);font-weight:400;font-size:12px;white-space:normal;max-width:16em;}
   table.res td.name button{background:none;border:0;padding:0;color:var(--frost);cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px;font-weight:500;}
-  table.res tr.me td.name{color:rgb(var(--aurora));}
+  table.res tr.me td.name{color:var(--copper);}
   table.res .dot{display:inline-block;width:26px;height:26px;border-radius:7px;background:var(--cell);border:1px solid var(--line);vertical-align:middle;}
   table.res .dot.v2{background:rgb(var(--aurora));border-color:rgb(var(--aurora));}
   table.res .dot.v1{background:rgb(var(--moon));border-color:rgb(var(--moon));}
   table.res tr.sum td{color:var(--dim);font-size:12px;padding-top:4px;}
   table.res tr.sum td b{color:var(--frost);font-size:14px;display:block;}
-  table.res th.opt.chosen b,table.res th.opt.chosen small{color:rgb(var(--moon));}
+  table.res th.opt.chosen b,table.res th.opt.chosen small{color:var(--copper);}
   table.res th.opt button{background:none;border:0;padding:4px 2px;cursor:pointer;color:inherit;border-radius:6px;width:100%;}
   table.res th.opt button:hover{background:var(--cell);}
 
@@ -195,11 +197,11 @@
   .top li .when small{display:block;font-weight:400;color:var(--dim);font-size:13px;}
   .top li .n{font-size:13px;color:var(--dim);text-align:right;}
   .top li .n b{color:rgb(var(--aurora));font-size:16px;display:block;}
-  .top li.chosen{border-color:rgb(var(--moon) / .6);}
-  .top li.chosen .rank{color:rgb(var(--moon));}
+  .top li.chosen{border-color:rgb(var(--moon) / .9);}
+  .top li.chosen .rank{color:var(--copper);}
   .empty{color:var(--dim);font-size:14px;margin:0;}
 
-  .result-big{font-family:"Bricolage Grotesque",Georgia,serif;font-weight:800;font-size:clamp(24px,6vw,36px);letter-spacing:-.02em;line-height:1.05;margin:4px 0 8px;color:rgb(var(--moon));}
+  .result-big{font-family:"Bricolage Grotesque",Georgia,serif;font-weight:800;font-size:clamp(24px,6vw,36px);letter-spacing:-.02em;line-height:1.05;margin:4px 0 8px;color:var(--copper);}
   .who{color:var(--dim);font-size:14px;margin:0;}
   .who b{color:var(--frost);font-weight:500;}
 
@@ -208,8 +210,8 @@
   .share .box{background:var(--cell);border:1px solid var(--line);border-radius:10px;padding:10px 12px;}
   .share .box small{display:block;color:var(--dim);font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin:0 0 4px;}
   .share .box code{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;overflow-wrap:anywhere;color:var(--frost);margin:0 0 8px;}
-  .share .box.admin{border-color:rgb(var(--moon) / .4);}
-  .warn{color:rgb(var(--moon));font-size:13px;margin:8px 0 0;}
+  .share .box.admin{border-color:rgb(var(--moon) / .8);}
+  .warn{color:#9A6A1C;font-size:13px;margin:8px 0 0;}
 
   .mine{list-style:none;margin:0;padding:0;display:grid;gap:6px;}
   .mine li{display:flex;justify-content:space-between;gap:10px;align-items:center;background:var(--cell);border:1px solid var(--line);border-radius:10px;padding:9px 12px;}
@@ -221,8 +223,8 @@
 
   .toast{
     position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
-    background:#1E3A4A;border:1px solid var(--line);border-radius:999px;padding:9px 16px;
-    font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.4);opacity:0;transition:opacity .2s;pointer-events:none;
+    background:var(--night);color:#FFFCF7;border:0;border-radius:999px;padding:9px 16px;
+    font-size:14px;box-shadow:0 10px 30px rgba(42,36,32,.25);opacity:0;transition:opacity .2s;pointer-events:none;
     max-width:calc(100% - 32px);text-align:center;
   }
   .toast.show{opacity:1;}
