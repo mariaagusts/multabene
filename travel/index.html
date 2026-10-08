@@ -211,6 +211,18 @@
   .toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--fg);color:var(--bg);border-radius:999px;padding:9px 16px;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100% - 32px);text-align:center;z-index:20;}
   .toast.show{opacity:1;}
   .foot{color:var(--dim);font-size:13px;margin:26px 0 0;}
+  .viewseg{display:flex;justify-content:flex-end;margin:0 0 12px;}
+  .pack{display:grid;gap:14px;}
+  .pack .cat h3{font-size:16px;margin:0 0 6px;font-family:var(--display);}
+  .pack .pi{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--line);}
+  .pack .pi input[type=checkbox]{width:20px;height:20px;margin:2px 0 0;accent-color:var(--accent);flex:0 0 20px;}
+  .pack .pi label{flex:1;min-width:0;overflow-wrap:anywhere;cursor:pointer;}
+  .pack .pi.done label{text-decoration:line-through;color:var(--dim);}
+  .pack .pi small{color:var(--dim);margin-left:6px;}
+  .pack .pi .x{background:none;border:0;color:var(--dim);font-size:18px;line-height:1;padding:0 4px;cursor:pointer;}
+  .pack .pi .x:hover{color:var(--danger);}
+  .progress{height:6px;background:var(--panel-2);border-radius:3px;overflow:hidden;margin:6px 0 0;}
+  .progress i{display:block;height:100%;background:var(--accent);}
   .clock{display:inline-flex;gap:14px;font-size:13px;color:var(--dim);margin-left:12px;font-variant-numeric:tabular-nums;}
   .clock b{color:var(--fg);font-weight:700;}
   #print{display:none;}
@@ -606,15 +618,16 @@ function cacheTrip(){
 }
 function applyTripData(v){
   cur.trip = v;
-  cur.items = Object.entries(v.items || {}).map(([id, it]) => ({ id, ...it, conf: (cur.priv[id] && cur.priv[id].conf) || it.conf || null })).sort((a,b) => (a.start || '').localeCompare(b.start || ''));
+  cur.items = Object.entries(v.items || {}).map(([id, it]) => ({ id, ...it, conf: (cur.priv[id] && cur.priv[id].conf) || it.conf || null, price: (cur.priv[id] && cur.priv[id].price) || it.price || null })).sort((a,b) => (a.start || '').localeCompare(b.start || ''));
   cur.suggestions = v.suggestions || {};
   cur.ideas = Object.entries(v.ideas || {}).map(([id, x]) => ({ id, ...x })).sort((a,b) => (a.created || '').localeCompare(b.created || ''));
+  cur.packing = Object.entries(v.packing || {}).map(([id, x]) => ({ id, ...x })).sort((a,b) => (a.created || '').localeCompare(b.created || ''));
 }
 function openTrip(r){
   if (cur && cur.id === r.id){ cur.tab = r.tab || cur.tab; renderTrip(); return; }
   stopTrip();
   store.set('travel:last', r.id);
-  cur = { id: r.id, trip: null, items: [], suggestions: {}, ideas: [], priv: {}, privRef: null, ref: db.ref(`travel/trips/${r.id}`), tab: r.tab || store.get('travel:tab', 'dagar'), fromCache: false, live: false };
+  cur = { id: r.id, trip: null, items: [], suggestions: {}, ideas: [], packing: [], priv: {}, privRef: null, ref: db.ref(`travel/trips/${r.id}`), tab: r.tab || store.get('travel:tab', 'dagar'), fromCache: false, live: false };
   $('#app').innerHTML = '<p class="empty">Sæki ferðina…</p>';
   setHeader('Sæki…', '');
   const cached = store.get(`travel:cache:${r.id}`, null);
@@ -630,10 +643,11 @@ function openTrip(r){
     if (!v){ renderMissing(); return; }
     cur.fromCache = false; cur.live = true;
     cur.trip = v;
-    cur.items = Object.entries(v.items || {}).map(([id, it]) => ({ id, ...it, conf: (cur.priv[id] && cur.priv[id].conf) || it.conf || null })).sort((a,b) => (a.start || '').localeCompare(b.start || ''));
+    cur.items = Object.entries(v.items || {}).map(([id, it]) => ({ id, ...it, conf: (cur.priv[id] && cur.priv[id].conf) || it.conf || null, price: (cur.priv[id] && cur.priv[id].price) || it.price || null })).sort((a,b) => (a.start || '').localeCompare(b.start || ''));
     watchPrivate();
     cur.suggestions = v.suggestions || {};
     cur.ideas = Object.entries(v.ideas || {}).map(([id, x]) => ({ id, ...x })).sort((a,b) => (a.created || '').localeCompare(b.created || ''));
+    cur.packing = Object.entries(v.packing || {}).map(([id, x]) => ({ id, ...x })).sort((a,b) => (a.created || '').localeCompare(b.created || ''));
     if (isOwner() && cur.privOk) migrateConf();
     cacheTrip();
     renderTrip();
@@ -650,7 +664,7 @@ function watchPrivate(){
     if (!cur) return;
     cur.priv = snap.val() || {};
     cur.privOk = true;
-    cur.items = cur.items.map(it => ({ ...it, conf: (cur.priv[it.id] && cur.priv[it.id].conf) || it.conf || null }));
+    cur.items = cur.items.map(it => ({ ...it, conf: (cur.priv[it.id] && cur.priv[it.id].conf) || it.conf || null, price: (cur.priv[it.id] && cur.priv[it.id].price) || it.price || null }));
     migrateConf();
     cacheTrip();
     renderTrip();
@@ -667,10 +681,11 @@ async function migrateConf(){
   const upd = {};
   for (const [id, it] of Object.entries(cur.trip.items || {})){
     if (it && it.conf){ upd[`travel/private/${cur.id}/${id}/conf`] = it.conf; upd[`travel/trips/${cur.id}/items/${id}/conf`] = null; }
+    if (it && it.price){ upd[`travel/private/${cur.id}/${id}/price`] = it.price; upd[`travel/trips/${cur.id}/items/${id}/price`] = null; }
   }
   if (!Object.keys(upd).length) return;
   migrating = true;
-  try { await db.ref().update(upd); toast('Bókunarnúmer færð í einkahólf'); }
+  try { await db.ref().update(upd); toast('Bókunarnúmer og verð færð í einkahólf'); }
   catch(e){ toast('Náði ekki að færa bókunarnúmer í einkahólf: ' + (e.code || e.message)); }
   finally { migrating = false; }
 }
@@ -702,7 +717,9 @@ function renderTrip(){
   const owner = isOwner();
   const nSug = Object.keys(cur.suggestions).length;
   const nIdeas = cur.ideas.filter(i => !i.scheduled).length;
-  const tabs = [['dagar','Dagur fyrir dag'],['dagatal','Dagatal'],['kort','Kort'],['gisting','Gisting'],['hugmyndir','Hugmyndabanki' + (nIdeas ? ` <span style="color:var(--dim);font-weight:400">${nIdeas}</span>` : '')]];
+  if (cur.tab === 'dagatal'){ cur.tab = 'dagar'; store.set('travel:dagview', 'cal'); }
+  const nPack = cur.packing.length, nPackDone = cur.packing.filter(x => x.done).length;
+  const tabs = [['dagar','Dagskrá'],['kort','Kort'],['gisting','Gisting'],['hugmyndir','Hugmyndabanki' + (nIdeas ? ` <span style="color:var(--dim);font-weight:400">${nIdeas}</span>` : '')],['pokkun','Pökkun' + (nPack ? ` <span style="color:var(--dim);font-weight:400">${nPackDone}/${nPack}</span>` : '')]];
   if (owner) tabs.push(['mikilvaegt', 'Mikilvægt']);
   if (owner) tabs.push(['stillingar', 'Stillingar' + (nSug ? `<span class="n">${nSug}</span>` : '')]);
   if (!tabs.some(t => t[0] === cur.tab)) cur.tab = 'dagar';
@@ -726,18 +743,24 @@ function renderTrip(){
     $('#goSug').onclick = () => { cur.tab = 'stillingar'; renderTrip(); };
   }
   if (cur.tab === 'dagar'){
-    renderDays(app);
+    const view = store.get('travel:dagview', 'list');
+    const seg = el('div', {class:'viewseg'}, el('div', {class:'seg'},
+      el('button', {type:'button', 'aria-pressed': String(view === 'list'), onclick: () => { store.set('travel:dagview', 'list'); renderTrip(); }}, 'Dagur fyrir dag'),
+      el('button', {type:'button', 'aria-pressed': String(view === 'cal'), onclick: () => { store.set('travel:dagview', 'cal'); renderTrip(); }}, 'Dagatal')));
+    app.append(seg);
+    if (view === 'cal'){ renderCal(app); }
+    else renderDays(app);
     /* Fyrsta skipti sem ferð í gangi opnast: skruna að deginum í dag */
     if (!cur.scrolled && today >= trip.start && today <= trip.end){
       cur.scrolled = true;
       const t = $('#day-today'); if (t) setTimeout(() => t.scrollIntoView({ block:'start', behavior:'smooth' }), 50);
     }
   }
-  else if (cur.tab === 'dagatal') renderCal(app);
   else if (cur.tab === 'kort') renderMap(app);
   else if (cur.tab === 'gisting') renderHotels(app);
   else if (cur.tab === 'hugmyndir') renderIdeas(app);
   else if (cur.tab === 'mikilvaegt') renderInfo(app);
+  else if (cur.tab === 'pokkun') renderPacking(app);
   else if (cur.tab === 'stillingar') renderSettings(app);
 
   /* Hnappur til að bæta við: í flipalínunni á tölvu, fljótandi neðst í síma */
@@ -745,6 +768,7 @@ function renderTrip(){
   const top = $('#addTop');
   let addLabel = null, addFn = null;
   if (cur.tab === 'hugmyndir'){ addLabel = '+ Hugmynd'; addFn = () => openIdeaDialog(); }
+  else if (cur.tab === 'pokkun'){ addLabel = '+ Pökkun'; addFn = () => openPackDialog(); }
   else if (cur.tab !== 'stillingar' && cur.tab !== 'mikilvaegt'){
     if (owner){ addLabel = '+ Bæta við'; addFn = () => openItemDialog(null); }
     else { addLabel = '+ Senda tillögu'; addFn = () => openItemDialog(null, true); }
@@ -882,7 +906,7 @@ function renderCal(host){
     for (let d = 1; d <= days; d++){
       const key = iso(new Date(yy,mm,d));
       const inTrip = key >= cur.trip.start && key <= cur.trip.end;
-      const c = el('div', {class:'c' + (inTrip ? '' : ' out'), onclick: () => { if (!inTrip) return; cur.tab = 'dagar'; renderTrip(); } });
+      const c = el('div', {class:'c' + (inTrip ? '' : ' out'), onclick: () => { if (!inTrip) return; store.set('travel:dagview', 'list'); cur.tab = 'dagar'; renderTrip(); } });
       let html = `<div class="n${dow(new Date(yy,mm,d)) > 4 ? ' we' : ''}">${d}</div>`;
       const stay = stayOn(key);
       if (stay){
@@ -1166,17 +1190,94 @@ function printTrip(){
   setTimeout(() => window.print(), 50);
 }
 
+/* ---------- pökkunarlisti: sameiginlegur, allir með hlekk geta hakað og bætt við ---------- */
+const PACK_CATS = ['Föt', 'Snyrtivörur', 'Skjöl og peningar', 'Rafmagn', 'Lyf', 'Annað'];
+const PACK_TEMPLATE = {
+  'Skjöl og peningar': ['Vegabréf', 'Greiðslukort', 'Reiðufé', 'Ferðatrygging, skírteini', 'Útprentuð áætlun'],
+  'Rafmagn': ['Hleðslutæki fyrir síma', 'Hleðslubanki', 'Millistykki fyrir innstungur', 'Heyrnartól'],
+  'Snyrtivörur': ['Sólarvörn', 'Tannbursti og tannkrem', 'Sjampó', 'Svitalyktareyðir', 'After sun'],
+  'Lyf': ['Verkjalyf', 'Plástrar', 'Ferðaveikitöflur', 'Eigin lyf'],
+  'Föt': ['Sundföt', 'Stuttbuxur', 'Bolir', 'Kjóll eða fín föt', 'Sandalar', 'Göngusko', 'Hattur', 'Sólgleraugu', 'Léttur jakki', 'Nærföt', 'Sokkar'],
+  'Annað': ['Handklæði fyrir strönd', 'Bakpoki', 'Vatnsflaska', 'Bók']
+};
+function renderPacking(host){
+  const items = cur.packing;
+  const done = items.filter(x => x.done).length;
+  host.append(el('p', {class:'help', style:'margin:0 0 10px'}, 'Sameiginlegur listi fyrir alla með hlekkinn. Hakið við þegar pakkað er. Merktu hlut með nafni ef hann er bara fyrir eina.'));
+  if (items.length){
+    const bar = el('div', {class:'progress'}); bar.append(el('i', {style:`width:${Math.round(done / items.length * 100)}%`}));
+    host.append(el('div', {style:'margin:0 0 14px'}, el('div', {class:'help'}, `${done} af ${items.length} pakkað`), bar));
+  }
+  const hideDone = store.get('travel:packhide', false);
+  const wrap = el('div', {class:'pack'});
+  if (!items.length){
+    wrap.append(el('p', {class:'empty'}, 'Listinn er tómur.'));
+    wrap.append(el('div', {class:'row'}, el('button', {class:'btn small', type:'button', onclick: addTemplate}, 'Setja inn grunnlista'), el('button', {class:'btn ghost small', type:'button', onclick: () => openPackDialog()}, 'Bæta við sjálf')));
+  }
+  for (const cat of PACK_CATS.concat([...new Set(items.map(x => x.cat).filter(c => c && !PACK_CATS.includes(c)))])){
+    const list = items.filter(x => (x.cat || 'Annað') === cat && (!hideDone || !x.done));
+    if (!list.length) continue;
+    const sec = el('div', {class:'cat'}); sec.append(el('h3', {}, cat));
+    for (const it of list){
+      const row = el('div', {class:'pi' + (it.done ? ' done' : '')});
+      const cb = el('input', {type:'checkbox', id:'pk-' + it.id, checked: it.done ? '' : null, onchange: async () => { try { await db.ref(`travel/trips/${cur.id}/packing/${it.id}/done`).set(cb.checked); } catch(e){ toast('Tókst ekki að vista.'); cb.checked = !cb.checked; } }});
+      row.append(cb, el('label', {for:'pk-' + it.id}, it.text, it.by ? el('small', {}, it.by) : null),
+        el('button', {class:'x', type:'button', title:'Eyða', onclick: async () => { if (!confirm(`Eyða "${it.text}"?`)) return; try { await db.ref(`travel/trips/${cur.id}/packing/${it.id}`).remove(); } catch(e){ toast('Tókst ekki.'); } }}, '×'));
+      sec.append(row);
+    }
+    wrap.append(sec);
+  }
+  host.append(wrap);
+  if (items.length){
+    host.append(el('div', {class:'row', style:'margin-top:14px'},
+      el('button', {class:'btn ghost small', type:'button', onclick: () => { store.set('travel:packhide', !hideDone); renderTrip(); }}, hideDone ? 'Sýna afgreitt' : 'Fela afgreitt'),
+      el('button', {class:'btn ghost small', type:'button', onclick: addTemplate}, 'Bæta grunnlista við'),
+      done ? el('button', {class:'btn ghost small', type:'button', onclick: async () => { if (!confirm('Taka hakið af öllu? Gott fyrir heimferðina.')) return; const upd = {}; for (const x of items) if (x.done) upd[`travel/trips/${cur.id}/packing/${x.id}/done`] = false; try { await db.ref().update(upd); } catch(e){ toast('Tókst ekki.'); } }}, 'Taka hak af öllu') : null));
+  }
+}
+async function addTemplate(){
+  const have = new Set(cur.packing.map(x => (x.text || '').toLowerCase()));
+  const upd = {}; let n = 0; const now = new Date().toISOString();
+  for (const cat in PACK_TEMPLATE) for (const t of PACK_TEMPLATE[cat]){ if (have.has(t.toLowerCase())) continue; upd[`travel/trips/${cur.id}/packing/${rnd(10)}`] = { text: t, cat, done: false, by: null, created: now }; n++; }
+  if (!n){ toast('Allt úr grunnlistanum er þegar á listanum.'); return; }
+  try { await db.ref().update(upd); toast(`${n} hlutir settir á listann`); } catch(e){ toast('Tókst ekki að vista: ' + (e.code || '')); }
+}
+function openPackDialog(){
+  const dlg = $('#dlg'), inner = $('#dlgInner'); inner.innerHTML = '';
+  inner.append(el('h2', {}, 'Bæta á pökkunarlista'));
+  const f = el('form', {class:'form'});
+  const text = el('textarea', {id:'pkText', rows:'4', placeholder:'Einn hlutur í hverja línu'});
+  const cat = el('select', {id:'pkCat'}); for (const c of PACK_CATS) cat.append(el('option', {value:c}, c));
+  const by = el('input', {id:'pkBy', maxlength:'30', placeholder:'Tómt = fyrir alla', value: isOwner() ? '' : store.get('travel:name', '')});
+  f.append(el('label', {class:'full'}, 'Hlutir', text), el('label', {}, 'Flokkur', cat), el('label', {}, 'Fyrir hvern (valkvætt)', by));
+  const st = el('p', {class:'status'});
+  f.append(el('div', {class:'row'}, el('button', {class:'btn', type:'submit'}, 'Bæta við'), el('button', {class:'btn ghost', type:'button', onclick: () => dlg.close()}, 'Hætta við')), st);
+  f.addEventListener('submit', async e => {
+    e.preventDefault();
+    const lines = text.value.split('\n').map(x => x.trim()).filter(Boolean);
+    if (!lines.length){ st.textContent = 'Skrifaðu að minnsta kosti einn hlut.'; st.classList.add('err'); return; }
+    const upd = {}; const now = new Date().toISOString();
+    for (const t of lines) upd[`travel/trips/${cur.id}/packing/${rnd(10)}`] = { text: t.slice(0, 80), cat: cat.value, done: false, by: by.value.trim() || null, created: now };
+    if (!isOwner() && by.value.trim()) store.set('travel:name', by.value.trim());
+    try { await db.ref().update(upd); dlg.close(); toast(`${lines.length} ${lines.length === 1 ? 'hlutur' : 'hlutir'} á listann`); }
+    catch(err){ st.textContent = 'Vistun tókst ekki: ' + (err.code || err.message) + (err.code === 'PERMISSION_DENIED' ? '. Reglan "packing" vantar í Firebase.' : ''); st.classList.add('err'); }
+  });
+  inner.append(f); dlg.showModal(); text.focus();
+}
+
 /* ---------- hjálp ---------- */
 const FAQ = [
   ['Virkar síðan án nets, til dæmis í útlöndum?', 'Já, ef þú opnar ferðina með neti fyrst. Síðan geymir þá ferðina í símanum og sýnir hana aftur þótt net vanti, með tilkynningunni "Án nets". Breytingar vistast þegar net næst.\n\nÖruggast er að setja síðuna á heimaskjá símans (sjá næstu spurningu), skrá sig inn þar og opna ferðina einu sinni með neti. Appið á heimaskjánum er með sína eigin geymslu, aðskilda frá vafranum.'],
   ['Hvernig set ég síðuna á heimaskjá?', 'iPhone: opnaðu síðuna í Safari, smelltu á deilitáknið neðst (ferningur með ör upp) og veldu "Bæta á heimaskjá".\n\nAndroid: opnaðu síðuna í Chrome, smelltu á þrjá punkta efst til hægri og veldu "Setja upp app" eða "Bæta á heimaskjá".\n\nAppið heitir Travel. Skráðu þig inn í því sjálfu, innskráning í vafranum fylgir ekki með.'],
-  ['Hver sér hvað?', 'Þú, innskráð, sérð allt og breytir öllu.\n\nÞeir sem fá hlekkinn sjá áætlunina án innskráningar, en ekki bókunarnúmer og ekki flipann Mikilvægt. Þeir geta sent tillögu að færslu, sem þú samþykkir undir Stillingar, og bætt hugmyndum í hugmyndabankann.\n\nHlekkurinn er lykillinn. Deildu honum aðeins með þeim sem eiga að sjá ferðina.'],
+  ['Hver sér hvað?', 'Þú, innskráð, sérð allt og breytir öllu.\n\nÞeir sem fá hlekkinn sjá áætlunina án innskráningar, en ekki bókunarnúmer, ekki verð og ekki flipann Mikilvægt. Þeir geta sent tillögu að færslu, sem þú samþykkir undir Stillingar, og bætt hugmyndum í hugmyndabankann.\n\nHlekkurinn er lykillinn. Deildu honum aðeins með þeim sem eiga að sjá ferðina.'],
   ['Hvernig deili ég ferðinni?', 'Smelltu á "Afrita hlekk" neðst á síðunni, eða á "Afrita" undir Stillingar, og sendu hlekkinn. Hann byrjar á www.multabene.is/travel/#t/.'],
   ['Hvernig skrái ég stað svo hann birtist á korti?', 'Í reitnum "Staður (leit)" skrifaðu nafn hótels eða staðar og veldu úr listanum frá Google. Þá fær færslan staðsetningu, birtist á kortinu og fær hlekkina "Opna í Google Maps" og "Leið frá hótelinu".\n\nEf leitin finnur ekki staðinn, límdu hlekk úr Google Maps í reitinn fyrir neðan.'],
   ['Hvernig fær ég ferðina í dagatal símans?', 'Smelltu á "Sækja í dagatal símans" neðst á síðunni. Síminn býður þá að bæta öllum færslum í dagatalið. Gisting verður heilsdagsviðburður yfir næturnar.\n\nSkráin uppfærist ekki sjálfkrafa. Ef þú breytir ferðinni þarftu að sækja hana aftur.'],
   ['Hvernig skrifa ég verð svo kostnaðaryfirlitið telji rétt?', 'Tölu og gjaldmiðil, í hvaða rithætti sem er: "121.384 kr.", "US$905.62", "USD 1,007.45", "257,84 CAD", "4.200 MXN". Kr. og kr merkja íslenskar krónur, dollaramerki eitt og sér merkir bandaríska dollara.\n\nYfirlitið er undir Stillingar. Gengi dagsins er sótt sjálfkrafa frá Seðlabanka Evrópu. Ef þú vilt nota gengið sem kortið þitt notaði, skráðu það undir "Nota eigið gengi".'],
   ['Í hvaða tímabelti eru tímarnir?', 'Alltaf staðartími á áfangastað. Flug frá Keflavík kl. 17:00 er íslenskur tími, lending í Cancún kl. 18:05 er mexíkóskur tími. Síðan umreiknar ekkert.'],
   ['Hvað er Mikilvægt?', 'Flipi sem aðeins þú sérð, fyrir vegabréfsnúmer, tryggingar, neyðarnúmer, sendiráð, kortafyrirtæki og wifi-lykilorð. Geymt í sama læsta hólfi og bókunarnúmerin. Gott að hafa þetta við höndina án nets.'],
+  ['Hvernig virkar pökkunarlistinn?', 'Flipinn Pökkun er sameiginlegur listi fyrir alla með hlekkinn. Allir geta bætt við og hakað við. "Setja inn grunnlista" gefur algenga hluti til að byrja með. Merktu hlut með nafni ef hann er bara fyrir eina. "Taka hak af öllu" er gott fyrir heimferðina.'],
+  ['Hvar er dagatalið?', 'Undir Dagskrá. Efst hægra megin velur þú milli "Dagur fyrir dag" og "Dagatal". Valið helst í símanum.'],
   ['Hvað er klukkan í hausnum?', 'Ef þú velur tímabelti áfangastaðar undir Stillingar sýnir hausinn klukkuna þar og heima. Gott fyrir símtöl og skilaboð heim.'],
   ['Get ég prentað ferðina?', 'Já, "Prenta" neðst á síðunni gefur hreina útgáfu af dagskrá, gistingu og Mikilvægt (aðeins hjá eiganda). Í síma má velja "Vista sem PDF" í prentglugganum. Pappír er góð varaleið ef síminn er tómur eða týndur.'],
   ['Hvernig breyti ég eða eyði ferð?', 'Undir Stillingar, neðst. Þar breytir þú heiti, dagsetningum, lýsingu og útliti, og getur eytt ferðinni. Eyðing er endanleg.']
@@ -1374,9 +1475,9 @@ function renderSettings(host){
     const acts = c.querySelector('.acts'); acts.querySelectorAll('button').forEach(b => b.remove());
     acts.append(
       el('button', {class:'btn small', type:'button', title:'Setja færsluna inn í áætlunina á þeim degi sem tillagan nefnir', onclick: async () => {
-        const { by, created, conf, ...item } = s;
+        const { by, created, conf, price, ...item } = s;
         const nid = rnd(12);
-        try { await db.ref().update({ [`travel/trips/${cur.id}/items/${nid}`]: item, [`travel/private/${cur.id}/${nid}/conf`]: conf || null, [`travel/trips/${cur.id}/suggestions/${sid}`]: null }); toast('Tillaga komin á dagskrá'); } catch(e){ toast('Tókst ekki.'); }
+        try { await db.ref().update({ [`travel/trips/${cur.id}/items/${nid}`]: item, [`travel/private/${cur.id}/${nid}`]: { conf: conf || null, price: price || null }, [`travel/trips/${cur.id}/suggestions/${sid}`]: null }); toast('Tillaga komin á dagskrá'); } catch(e){ toast('Tókst ekki.'); }
       }}, 'Á dagskrá'),
       el('button', {class:'btn ghost small', type:'button', title:'Geyma í hugmyndabankanum og ákveða daginn síðar', onclick: async () => {
         const idea = { title: s.title, place: s.place || null, lat: s.lat ?? null, lng: s.lng ?? null, placeId: s.placeId || null, url: s.url || null, note: s.note || null, by: s.by || 'gesti', created: new Date().toISOString() };
@@ -1393,10 +1494,10 @@ function renderSettings(host){
     el('div', {class:'row'}, el('button', {class:'btn small', type:'button', onclick: () => copy(share, 'Hlekkur afritaður')}, 'Afrita'),
       navigator.share ? el('button', {class:'btn ghost small', type:'button', onclick: () => navigator.share({ title: cur.trip.title, url: share }).catch(() => {})}, 'Deila…') : null));
   host.append(shc);
-  const nPriv = Object.entries(cur.priv || {}).filter(([k, x]) => k !== '_info' && x && x.conf).length;
-  const nPub = Object.values(cur.trip.items || {}).filter(x => x && x.conf).length;
-  host.append(el('div', {class:'card'}, el('h2', {}, 'Bókunarnúmer'),
-    el('p', {class:'help'}, `Einkahólf: ${cur.privOk === true ? 'opið' : cur.privOk === false ? 'lokað (' + (cur.privErr || '') + ')' : 'ekki svarað enn'}. ${nPriv} ${nPriv === 1 ? 'númer vistað' : 'númer vistuð'} í einkahólfi, ${nPub} í opna hlutanum. Gestir sjá aðeins opna hlutann.`)));
+  const nPriv = Object.entries(cur.priv || {}).filter(([k, x]) => k !== '_info' && x && (x.conf || x.price)).length;
+  const nPub = Object.values(cur.trip.items || {}).filter(x => x && (x.conf || x.price)).length;
+  host.append(el('div', {class:'card'}, el('h2', {}, 'Bókunarnúmer og verð'),
+    el('p', {class:'help'}, `Einkahólf: ${cur.privOk === true ? 'opið' : cur.privOk === false ? 'lokað (' + (cur.privErr || '') + ')' : 'ekki svarað enn'}. Bókunarnúmer og verð: ${nPriv} ${nPriv === 1 ? 'færsla' : 'færslur'} í einkahólfi, ${nPub} í opna hlutanum. Gestir sjá aðeins opna hlutann.`)));
   renderCosts(host);
   host.append(el('div', {class:'card'}, el('h2', {}, 'Dagatal símans'),
     el('p', {class:'help', style:'margin:0 0 10px'}, 'Sækir ics-skrá með öllum færslum. Opnaðu hana í símanum og veldu að bæta í dagatalið. Tímar eru staðartími áfangastaðar. Skráin uppfærist ekki sjálfkrafa, sæktu hana aftur eftir breytingar.'),
@@ -1522,8 +1623,8 @@ function openItemDialog(it, asSuggestion, opts={}){
         dlg.close(); toast('Tillaga send. Eigandi ferðarinnar fær hana til samþykktar.');
       } else {
         const iid = isNew ? rnd(12) : it.id;
-        const { conf: confVal, ...pub } = data;
-        const upd = { [`travel/trips/${cur.id}/items/${iid}`]: pub, [`travel/private/${cur.id}/${iid}/conf`]: confVal || null };
+        const { conf: confVal, price: priceVal, ...pub } = data;
+        const upd = { [`travel/trips/${cur.id}/items/${iid}`]: pub, [`travel/private/${cur.id}/${iid}`]: { conf: confVal || null, price: priceVal || null } };
         if (opts.ideaId) upd[`travel/trips/${cur.id}/ideas/${opts.ideaId}/scheduled`] = iid;
         await db.ref().update(upd);
         dlg.close(); toast(opts.ideaId ? 'Hugmynd komin á dagskrá' : 'Vistað');
