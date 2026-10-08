@@ -160,7 +160,9 @@ h2{
 a{color:var(--accent)}
 a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 .moli{margin-top:7px; font-size:12.5px; line-height:1.45; color:var(--ink-2)}
-.moli > summary{cursor:pointer; color:var(--accent); font-weight:600; list-style-position:inside; text-decoration:none}
+.moli > summary{cursor:pointer; color:var(--ink-2); font-weight:500; list-style-position:inside; text-decoration:none}
+.moli > summary::marker{color:var(--muted)}
+.moli > summary:hover, .moli[open] > summary{color:var(--accent)}
 .moli[open]{padding:8px 11px; border-radius:7px; background:var(--accent-soft)}
 .moli[open] > summary{margin-bottom:5px}
 .valkostir-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:10px 22px}
@@ -289,7 +291,7 @@ input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid 
 .rental-row{display:flex; gap:10px; align-items:center; margin-top:8px; flex-wrap:wrap}
 
 /* --- Lán --- */
-.loans{display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:16px}
+.loans{display:grid; grid-template-columns:1fr; gap:16px}
 .loan-card{padding:16px 18px 14px; position:relative; border-top:3px solid var(--loan-color,var(--accent))}
 .loan-head{display:flex; align-items:center; gap:10px; margin-bottom:12px}
 .loan-dot{width:10px;height:10px;border-radius:50%;background:var(--loan-color,var(--accent));flex:none}
@@ -306,21 +308,23 @@ input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid 
   font-size:18px; line-height:1; padding:4px 6px; border-radius:6px;
 }
 .loan-del:hover{color:var(--bad-text); background:var(--surface-2)}
-.loan-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px 12px}
+.loan-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px 16px}
+@media (max-width:900px){ .loan-grid{grid-template-columns:1fr 1fr} }
 .req{color:var(--bad-text); font-weight:700}
 input.required:placeholder-shown{border-color:color-mix(in srgb,var(--accent) 50%,var(--hairline))}
 .loan-grid .full{grid-column:1 / -1}
 .loan-stats{
   margin-top:14px; padding-top:12px; border-top:1px solid var(--hairline);
-  display:grid; grid-template-columns:1fr 1fr; gap:8px 12px; font-size:13px;
+  display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px 12px; font-size:13px;
 }
+@media (max-width:900px){ .loan-stats{grid-template-columns:1fr 1fr} }
 .loan-stats div span{display:block; color:var(--muted); font-size:12.5px}
 .loan-stats div b{font-variant-numeric:tabular-nums; font-weight:600}
 .loan-stats div em{display:block; color:var(--muted); font-size:11.5px; font-style:normal; line-height:1.35; margin-top:2px}
 .add-loan{
   border:1.5px dashed var(--baseline); border-radius:10px; background:none;
   color:var(--ink-2); font:inherit; font-weight:600; cursor:pointer;
-  min-height:120px; display:flex; align-items:center; justify-content:center; gap:8px;
+  min-height:56px; padding:12px 16px; display:flex; align-items:center; justify-content:center; gap:8px;
 }
 .add-loan:hover{border-color:var(--accent); color:var(--accent); background:var(--accent-soft)}
 .add-loan .plus{font-size:22px; line-height:1}
@@ -460,6 +464,7 @@ input.grunsamlegt{border-color:color-mix(in srgb,var(--bad) 55%,var(--hairline))
 .chart-card{padding:18px 18px 12px}
 .chart-note{font-size:12.5px; color:var(--muted); margin:2px 0 10px}
 svg.chart{width:100%; display:block; overflow:visible}
+.chart-empty{margin:4px 0 8px; color:var(--muted); font-size:14px}
 svg.chart text{font-family:"Public Sans",system-ui,sans-serif}
 .legend{display:flex; flex-wrap:wrap; gap:14px; padding:10px 4px 4px; font-size:12.5px; color:var(--ink-2)}
 .legend .sw{display:inline-block; width:14px; height:3px; border-radius:2px; vertical-align:middle; margin-right:6px}
@@ -1853,7 +1858,9 @@ function renderBuy(S){
       // hvor innan í annarri og „þar af“ átti ekki við.
       ? `Lánin eru komin yfir veðþakið (${ltvCap(S)}% af kaupverði). Miðað við það vantar <b>${kr(vantarEigidFe)}</b> í eigið fé.`
     : vantarEigidFe>0
-      ? `Það vantar ${kr(gap)} upp í kaupverðið og þar af ${kr(vantarEigidFe)} sem ekkert lán getur brúað.`
+      ? (vantarEigidFe>=gap
+          ? `Það vantar ${kr(gap)} upp í kaupverðið með kostnaði, og það þarf að koma úr eigin fé: lánin mega ekki fara hærra vegna veðþaksins.`
+          : `Það vantar ${kr(gap)} upp í kaupverðið og þar af ${kr(vantarEigidFe)} sem ekkert lán getur brúað.`)
       : `Það vantar ${kr(gap)} upp í kaupverðið.`;
 
   // Hnappur sem setur mismuninn inn á lán, aldrei sjálfkrafa, þú smellir sjálf(ur)
@@ -1894,7 +1901,7 @@ function renderBuy(S){
         ${np>0?`<div class="rowline"><span>Fjármögnun án afborgana</span><b>${kr(np)}</b></div>`:''}
         <div class="rowline"><span>Lán í kaupin</span><b>${kr(ln)}</b></div>
         <div class="rowline"><span><b>Samtals í boði</b></span><b>${kr(have)}</b></div>
-        ${vantarEigidFe>0?`<div class="rowline"><span><span class="dash"></span>Hæst kemstu í</span><b>${kr(Math.round(reach))}</b></div>`:''}
+        ${vantarEigidFe>0?`<div class="rowline"><span><span class="dash"></span>Hæsta kaupverð sem eigið féð ber</span><b>${kr(Math.round(reach))}</b></div>`:''}
         <div class="rowline sumline"><span>Kaupverð</span><b>${kr(S.priceBuy)}</b></div>
         <div class="rowline"><span>Kostnaður við kaupin</span><b>${kr(cost)}</b></div>
         <div class="rowline"><span><span class="solid"></span><b>Þarf alls</b></span><b>${kr(need)}</b></div>
@@ -2259,7 +2266,7 @@ function renderTiles(S){
   if(savedReal>1){
     html+=`<div class="card tile" style="border-top:3px solid var(--good)"><div class="eyebrow">Aukagreiðslur spara</div><div class="big" style="color:var(--good-text)">${kr(savedReal)}</div><div class="sub">á verðlagi dagsins og stytta lánstímann um ${yearsMonths(t.basePayoff-t.payoff)}</div></div>`;
   }
-  S.$('tiles').innerHTML=html;
+  S.$('tiles').innerHTML=S.results.length?html:'';
   S.$('plain').innerHTML=S.results.length
     ?`Lánin eru samtals <b>${kr(t.principal)}</b> og greiðslan af þeim er um <b>${kr(t.first)} á mánuði</b> til að byrja með. Á verðlagi dagsins í dag kosta þau um <b>${kr(t.costReal)}</b> í vexti og verðbætur yfir allan lánstímann.${off>0?` Með <b>${kr(off)}</b> í nettótekjur á móti (leiga og aðrar tekjur) er greiðslan í raun um <b>${kr(Math.max(0,t.first-off))} á mánuði</b>.`:''}`
     :'Bættu við láni í skrefi 2 til að sjá niðurstöðuna.';
@@ -2545,7 +2552,14 @@ function renderChart(S){
   if(!S.$("chart")) return;
   renderTabsInto(S.$('tabs'),S.currentView,id=>{S.currentView=id;renderChart(S);saveState();});
   S.$('note').textContent=VIEWS.find(v=>v.id===S.currentView).note;
-  if(!S.results.length){S.$('chart').innerHTML='';S.$('legend').innerHTML='';return;}
+  if(!S.results.length){
+    S.$('tabs').style.display='none'; S.$('note').hidden=true; S.$('chart').style.display='none';
+    if(S.$('tableToggle')) S.$('tableToggle').style.display='none';
+    S.$('legend').innerHTML='<p class="chart-empty">Línuritið birtist þegar launin eru komin inn í skrefi 1 og lán í skrefi 2.</p>';
+    return;
+  }
+  S.$('tabs').style.display=''; S.$('note').hidden=false; S.$('chart').style.display='';
+  if(S.$('tableToggle')) S.$('tableToggle').style.display='';
   drawChart(S.$('chart'),S.$('legend'),buildSeries(S,S.currentView),S.horizon,340);
 }
 
