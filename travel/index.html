@@ -489,7 +489,7 @@ function tripForm(trip){
   async function deleteTrip(){
     if (!confirm(`Eyða ferðinni "${cur.trip.title}" með öllum færslum? Þetta er endanlegt.`)) return;
     try {
-      await db.ref().update({ [`travel/trips/${cur.id}`]: null, [`travel/users/${user.uid}/trips/${cur.id}`]: null });
+      await db.ref().update({ [`travel/trips/${cur.id}`]: null, [`travel/private/${cur.id}`]: null, [`travel/users/${user.uid}/trips/${cur.id}`]: null });
       toast('Ferð eytt'); location.hash = '';
     } catch(err){ toast('Tókst ekki að eyða: ' + (err.code || '')); }
   }
@@ -504,6 +504,7 @@ let map = null, markers = [], infoWin = null;
 
 function stopTrip(){
   if (cur && cur.ref) cur.ref.off();
+  if (cur && cur.privRef) cur.privRef.off();
   if (myTripsRef){ myTripsRef.off(); myTripsRef = null; }
   cur = null; map = null; markers = [];
 }
@@ -512,20 +513,46 @@ function isOwner(){ return !!(user && cur && cur.trip && cur.trip.owner === user
 function openTrip(r){
   if (cur && cur.id === r.id){ cur.tab = r.tab || cur.tab; renderTrip(); return; }
   stopTrip();
-  cur = { id: r.id, trip: null, items: [], suggestions: {}, ideas: [], ref: db.ref(`travel/trips/${r.id}`), tab: r.tab || store.get('travel:tab', 'dagar') };
+  cur = { id: r.id, trip: null, items: [], suggestions: {}, ideas: [], priv: {}, privRef: null, ref: db.ref(`travel/trips/${r.id}`), tab: r.tab || store.get('travel:tab', 'dagar') };
   $('#app').innerHTML = '<p class="empty">Sæki ferðina…</p>';
   setHeader('Sæki…', '');
   cur.ref.on('value', snap => {
     const v = snap.val();
     if (!v){ renderMissing(); return; }
     cur.trip = v;
-    cur.items = Object.entries(v.items || {}).map(([id, it]) => ({ id, ...it })).sort((a,b) => (a.start || '').localeCompare(b.start || ''));
+    cur.items = Object.entries(v.items || {}).map(([id, it]) => ({ id, ...it, conf: (cur.priv[id] && cur.priv[id].conf) || it.conf || null })).sort((a,b) => (a.start || '').localeCompare(b.start || ''));
+    watchPrivate();
     cur.suggestions = v.suggestions || {};
     cur.ideas = Object.entries(v.ideas || {}).map(([id, x]) => ({ id, ...x })).sort((a,b) => (a.created || '').localeCompare(b.created || ''));
     renderTrip();
   }, err => {
     $('#app').innerHTML = `<div class="card"><p style="margin:0 0 12px">Náði ekki í ferðina. ${err && err.code === 'PERMISSION_DENIED' ? 'Reglurnar fyrir /travel vantar í Firebase.' : ''}</p><a class="btn" href="/travel/" style="text-decoration:none;display:inline-block">Á forsíðu</a></div>`;
   });
+}
+/* Bókunarnúmer eru geymd í travel/private/{tid}, sem aðeins eigandi má lesa.
+   Eigandi fær þau hér og þau renna saman við færslurnar. Gestir sjá þau aldrei. */
+function watchPrivate(){
+  if (!cur || cur.privRef || !isOwner()) return;
+  cur.privRef = db.ref(`travel/private/${cur.id}`);
+  cur.privRef.on('value', snap => {
+    if (!cur) return;
+    cur.priv = snap.val() || {};
+    cur.items = cur.items.map(it => ({ ...it, conf: (cur.priv[it.id] && cur.priv[it.id].conf) || it.conf || null }));
+    migrateConf();
+    renderTrip();
+  }, () => {});
+}
+/* Eldri færslur með bókunarnúmer í opna hlutanum: færa í einkahólfið, einu sinni */
+let migrating = false;
+async function migrateConf(){
+  if (migrating || !isOwner() || !cur.trip) return;
+  const upd = {};
+  for (const [id, it] of Object.entries(cur.trip.items || {})){
+    if (it && it.conf){ upd[`travel/private/${cur.id}/${id}/conf`] = it.conf; upd[`travel/trips/${cur.id}/items/${id}/conf`] = null; }
+  }
+  if (!Object.keys(upd).length) return;
+  migrating = true;
+  try { await db.ref().update(upd); } catch(e){} finally { migrating = false; }
 }
 function renderMissing(){
   stopTrip(); $('#tabrow').hidden = true;
@@ -933,8 +960,9 @@ function renderSettings(host){
     const acts = c.querySelector('.acts'); acts.querySelectorAll('button').forEach(b => b.remove());
     acts.append(
       el('button', {class:'btn small', type:'button', onclick: async () => {
-        const { by, created, ...item } = s;
-        try { await db.ref().update({ [`travel/trips/${cur.id}/items/${rnd(12)}`]: item, [`travel/trips/${cur.id}/suggestions/${sid}`]: null }); toast('Tillaga samþykkt'); } catch(e){ toast('Tókst ekki.'); }
+        const { by, created, conf, ...item } = s;
+        const nid = rnd(12);
+        try { await db.ref().update({ [`travel/trips/${cur.id}/items/${nid}`]: item, [`travel/private/${cur.id}/${nid}/conf`]: conf || null, [`travel/trips/${cur.id}/suggestions/${sid}`]: null }); toast('Tillaga samþykkt'); } catch(e){ toast('Tókst ekki.'); }
       }}, 'Samþykkja'),
       el('button', {class:'btn ghost small', type:'button', onclick: async () => { try { await db.ref(`travel/trips/${cur.id}/suggestions/${sid}`).remove(); toast('Tillögu hafnað'); } catch(e){ toast('Tókst ekki.'); } }}, 'Hafna'));
     sc.append(c);
@@ -1006,7 +1034,7 @@ function openItemDialog(it, asSuggestion, opts={}){
     el('label', {class:'full'}, 'Google Maps hlekkur eða hnit (valkvætt)', gl),
     el('div', {class:'full'}, locInfo),
     flightLabel,
-    el('label', {}, 'Bókunarnúmer', conf),
+    asSuggestion ? null : el('label', {}, 'Bókunarnúmer', conf),
     el('label', {}, 'Verð', price),
     el('label', {class:'full'}, 'Hlekkur á bókun', url),
     el('label', {class:'full'}, 'Athugasemd', note)
@@ -1018,7 +1046,7 @@ function openItemDialog(it, asSuggestion, opts={}){
     el('button', {class:'btn ghost', type:'button', onclick: () => dlg.close()}, 'Hætta við'));
   if (!isNew && !asSuggestion) row.append(el('button', {class:'btn danger', type:'button', style:'margin-left:auto', onclick: async () => {
     if (!confirm(`Eyða "${it.title}"?`)) return;
-    try { await db.ref(`travel/trips/${cur.id}/items/${it.id}`).remove(); dlg.close(); toast('Færslu eytt'); } catch(e){ st.textContent = 'Tókst ekki að eyða.'; st.classList.add('err'); }
+    try { await db.ref().update({ [`travel/trips/${cur.id}/items/${it.id}`]: null, [`travel/private/${cur.id}/${it.id}`]: null }); dlg.close(); toast('Færslu eytt'); } catch(e){ st.textContent = 'Tókst ekki að eyða.'; st.classList.add('err'); }
   }}, 'Eyða'));
   f.append(row, st);
   inner.append(f);
@@ -1071,7 +1099,8 @@ function openItemDialog(it, asSuggestion, opts={}){
         dlg.close(); toast('Tillaga send. Eigandi ferðarinnar fær hana til samþykktar.');
       } else {
         const iid = isNew ? rnd(12) : it.id;
-        const upd = { [`travel/trips/${cur.id}/items/${iid}`]: data };
+        const { conf: confVal, ...pub } = data;
+        const upd = { [`travel/trips/${cur.id}/items/${iid}`]: pub, [`travel/private/${cur.id}/${iid}/conf`]: confVal || null };
         if (opts.ideaId) upd[`travel/trips/${cur.id}/ideas/${opts.ideaId}/scheduled`] = iid;
         await db.ref().update(upd);
         dlg.close(); toast(opts.ideaId ? 'Hugmynd komin á dagskrá' : 'Vistað');
