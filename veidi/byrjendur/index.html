@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="is">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Byrjendablað í fluguveiði</title>
+<meta name="description" content="Byrjendablað í fluguveiði á Íslandi: hvaða flugu á að velja eftir vatnshæð, vatnshita, birtu, vindi og árstíð, hvaða búnað þarf, hvernig hylur er veiddur og hvernig á að bregðast við töku.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --river-deep:#0f2229; --river:#15303a; --panel:#1b3a44; --panel-2:#214651; --line:#2f5560;
+    --mist:#e7f0f1; --mist-dim:#a9c2c7; --salmon:#f0907a; --moss:#9bb892; --gold:#e9c46a;
+    --radius:14px; --shadow:0 10px 30px rgba(0,0,0,.28);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:'Inter',system-ui,sans-serif;color:var(--mist);line-height:1.55;min-height:100vh;
+    background:
+      radial-gradient(1100px 520px at 82% -12%, #2a3b5e 0%, transparent 55%),
+      radial-gradient(900px 520px at 98% -6%, #1f5a55 0%, transparent 48%),
+      radial-gradient(900px 500px at 0% 0%, #173640 0%, transparent 55%),
+      linear-gradient(180deg,#0f2229 0%, #0c1a20 100%);
+    background-attachment:fixed;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:28px 20px 80px}
+  .back{font-size:13px;color:var(--mist-dim);text-decoration:none}
+  .back:hover{color:var(--salmon)}
+  header{padding:14px 0 4px}
+  .eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--moss);font-weight:600;margin:0 0 6px}
+  h1{font-family:'Fraunces',Georgia,serif;font-weight:800;font-size:clamp(34px,6vw,58px);line-height:.98;margin:0;letter-spacing:-.02em}
+  h1 em{font-style:italic;color:var(--gold)}
+  .sub{margin:12px 0 0;color:var(--mist-dim);font-size:clamp(15px,2.2vw,17px);max-width:62ch}
+  .toc{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0 6px}
+  .toc a{font-size:12.5px;color:var(--mist-dim);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 11px}
+  .toc a:hover{color:var(--gold);border-color:rgba(233,196,106,.5)}
+
+  .card{background:linear-gradient(180deg,var(--panel),var(--river));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px 16px;margin-top:18px;scroll-margin-top:16px}
+  .card-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid rgba(233,196,106,.16)}
+  .card-head h2{font-family:'Fraunces',serif;font-weight:600;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--mist);margin:0;display:flex;align-items:center;gap:9px}
+  .card-head .ico{font-size:17px}
+  .card p{margin:0 0 10px;font-size:14.5px;color:var(--mist)}
+  .card p.dim{color:var(--mist-dim);font-size:13.5px}
+  .card a{color:var(--salmon)}
+  h3{font-family:'Fraunces',serif;font-weight:600;font-size:18px;margin:16px 0 6px;color:var(--gold)}
+  ul,ol{margin:0 0 10px;padding-left:20px}
+  li{margin:4px 0;font-size:14.5px}
+  li b,p b{color:var(--gold);font-weight:600}
+  .note{background:var(--river-deep);border:1px solid rgba(233,196,106,.3);border-radius:10px;padding:10px 13px;margin:12px 0;font-size:13.5px;color:var(--mist-dim)}
+  .note b{color:var(--gold)}
+  .warn{border-color:rgba(240,144,122,.5)}
+  .warn b{color:var(--salmon)}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:6px 0 12px}
+  th{text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mist-dim);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--line)}
+  td{padding:8px 8px;border-bottom:1px solid rgba(47,85,96,.5);vertical-align:top;color:var(--mist)}
+  td:first-child{font-weight:600;white-space:nowrap}
+  td .fl{color:var(--moss);font-weight:600}
+  tr:last-child td{border-bottom:none}
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  @media(max-width:620px){
+    table{font-size:12.5px} td{padding:7px 6px} td:first-child{white-space:normal}
+  }
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:620px){.grid2{grid-template-columns:1fr}}
+  .box{background:var(--river-deep);border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+  .box h4{margin:0 0 6px;font-size:13px;color:var(--moss);letter-spacing:.04em;text-transform:uppercase}
+  .box ul{margin:0}
+  .box li{font-size:13.5px}
+
+  .flybox{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+  .flybox div{background:var(--river-deep);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:13px}
+  .flybox b{display:block;color:var(--mist);font-size:14px;margin-bottom:2px}
+  .flybox span{color:var(--mist-dim)}
+
+  .glossary dt{font-weight:600;color:var(--gold);margin-top:8px;font-size:14px}
+  .glossary dd{margin:0 0 4px;font-size:13.5px;color:var(--mist-dim)}
+  .src{font-size:12px;color:#7c989f;line-height:1.6}
+  .src a{color:#a9c2c7}
+  .credit{font-size:13px;color:var(--mist-dim);margin-top:30px;text-align:center}
+  .credit em{font-family:'Fraunces',serif;color:var(--moss);font-style:italic}
+  .support{color:var(--mist-dim);font-size:13px;margin:26px 0 0;padding-top:14px;border-top:1px solid var(--line);text-align:center;line-height:1.5}
+  .support b{color:var(--gold);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .support .acct{display:block;margin-top:6px}
+  .printbtn{float:right;background:transparent;color:var(--mist-dim);border:1px solid var(--line);border-radius:10px;padding:7px 12px;font:inherit;font-size:13px;cursor:pointer}
+  .printbtn:hover{color:var(--mist);border-color:var(--salmon)}
+
+  @media print{
+    body{background:#fff;color:#111}
+    .wrap{max-width:none;padding:0}
+    .card{background:#fff;border:1px solid #bbb;box-shadow:none;break-inside:avoid;page-break-inside:avoid;margin-top:12px}
+    .card p,li,td{color:#111}
+    .card-head h2,.card p.dim,.note,.src,.sub,th,.flybox span,.glossary dd{color:#333}
+    h3,li b,p b,.note b,.box h4,td .fl,h1 em,.flybox b{color:#111}
+    .box,.flybox div,.note{background:#fff;border-color:#bbb}
+    .toc,.printbtn,.back,.support,.credit{display:none}
+    a{color:#111;text-decoration:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="/veidi/">← Til baka á veiðisíðuna</a>
+  <header>
+    <button class="printbtn" onclick="window.print()">🖨️ Prenta</button>
+    <p class="eyebrow">Veiðiferð · sumar 2026</p>
+    <h1>Byrjendablað <em>í fluguveiði</em></h1>
+    <p class="sub">Hvaða flugu á að velja eftir aðstæðum, hvaða búnað þarf, hvernig hylur er veiddur og hvað gerist þegar fiskurinn tekur. Tekið saman úr greinum íslenskra veiðimanna og leiðsögumanna, heimildir neðst.</p>
+    <nav class="toc" aria-label="Efnisyfirlit">
+      <a href="#adur">Áður en þú ferð</a><a href="#bunadur">Búnaður</a><a href="#taumur">Taumlengd</a><a href="#adstaedur">Aðstæður og fluguval</a><a href="#arnar">Árnar þínar</a><a href="#litir">Litir og krókar</a><a href="#box">Byrjendaboxið</a><a href="#hylur">Að veiða hyl</a><a href="#hitch">Hitch</a><a href="#hnutar">Hnútar</a><a href="#taka">Takan og viðureignin</a><a href="#silungur">Silungur</a><a href="#siggi">Siggi Haugur</a><a href="#mistok">Algeng mistök</a><a href="#ord">Orðalisti</a>
+    </nav>
+  </header>
+
+  <section class="card" id="adur">
+    <div class="card-head"><h2><span class="ico">📋</span> Áður en þú ferð</h2></div>
+    <ul>
+      <li><b>Veiðileyfi</b> fylgir ákveðnu svæði, ákveðnum degi og oftast ákveðinni vakt. Í flestum laxveiðiám eru tvær vaktir á dag, morgunvakt og kvöldvakt, og lögbundið hámark er 12 klukkustunda veiði á sólarhring. Nákvæm tímasetning stendur í reglum árinnar.</li>
+      <li><b>Reglur árinnar</b> ráða öllu sem lögin segja ekki: fjöldi stanga á svæði, hvort skylt sé að sleppa fiski (veiða og sleppa), hvort krókar eigi að vera agnhaldslausir, hvort aðeins megi veiða á flugu, hámarksstærð á krók og kvóti á landaða fiska. Lestu þær áður en þú leggur af stað, þær eru oftast á vef veiðifélagsins eða söluaðilans.</li>
+      <li><b>Laxveiðitímabilið</b> er samkvæmt lögum frá 20. maí til 30. september, mest 105 dagar í hverri á. Flestar ár opna um eða eftir miðjan júní.</li>
+      <li><b>Veiðibókin.</b> Í hverju veiðihúsi er veiðibók, oft rafræn (Angling iQ). Þar skráir þú hvern fisk: staður, stærð, fluga, hvort sleppt. Skoðaðu hana þegar þú kemur, hún segir þér hvaða flugur hafa gefið síðustu daga.</li>
+      <li><b>Vatnshæðin.</b> Veðurstofan birtir <a href="https://www.vedur.is/vatnafar/vatnshaed/" target="_blank" rel="noopener">rennsli og vatnshæð</a> í mörgum ám. Hátt eða lágt vatn ræður meiru um fluguval en veðrið.</li>
+    </ul>
+  </section>
+
+  <section class="card" id="bunadur">
+    <div class="card-head"><h2><span class="ico">🎣</span> Búnaðurinn</h2></div>
+    <div class="grid2">
+      <div class="box"><h4>Stöng og hjól</h4><ul>
+        <li><b>Lax, einhenda:</b> 9 til 10 fet, línuþyngd #7 eða #8. Algengasta val á Íslandi.</li>
+        <li><b>Lax, tvíhenda eða switch:</b> 11 til 13 fet, #7 til #8. Auðveldari löng köst og í hvassviðri, en meiri lærdómur.</li>
+        <li><b>Silungur:</b> 9 fet, #5 eða #6.</li>
+        <li><b>Hjól</b> með góðri hemlu og baklínu. Laxinn fer með línuna.</li>
+      </ul></div>
+      <div class="box"><h4>Lína</h4><ul>
+        <li><b>Flotlína</b> dugar nær alltaf, leiðsögumenn tala um 98% tilvika.</li>
+        <li><b>Heil lína eða skotlína:</b> heil lína (WF) er ein samfelld lína og auðveldust að læra á. Skotlína er stuttur þungur skothaus og grönn runninglína fyrir aftan, kastar lengra með minni fyrirhöfn og er reglan með tvíhendu. Skothaus er til sem flot, sökk og intermediate, svo „skotlína“ segir ekkert um hvort hún flýtur.</li>
+        <li><b>Sökkendi</b> (sink tip eða sökkandi taumhluti) í vaxandi, lituðu eða mjög köldu vatni, þegar flugan þarf að fara niður að fiskinum.</li>
+        <li><b>Hitch</b> gengur best með flotlínu og stuttum taum.</li>
+      </ul></div>
+      <div class="box"><h4>Taumur fyrir lax</h4><ul>
+        <li><b>Lengd:</b> um ein stangarlengd í flestum tilvikum. Sjá <a href="#taumur">kaflann um taumlengd</a>.</li>
+        <li><b>Sverleiki:</b> 0,28 til 0,35 mm, sem er um 12 til 20 pund. Íslenskar ár eru tærar, svo grannara er oft betra, en ekki fara undir 0,25 mm í laxinn.</li>
+        <li><b>Flúorkarbon</b> er taumefni úr öðru plasti en venjulegt nælon. Það brýtur ljós nánast eins og vatn, svo fiskurinn sér það síður, og það sekkur betur. Ókostir: stífara, dýrara og hnútarnir þurfa meiri vætu og rólegri herslu. Venjulegt nælon dugar vel í byrjun.</li>
+        <li>Hnútur veikir tauminn. Skiptu um taumenda ef hann er krumpaður eða með hnút.</li>
+      </ul></div>
+      <div class="box"><h4>Taumur fyrir silung</h4><ul>
+        <li><b>Sverleiki:</b> 0,18 til 0,22 mm, um 4 til 6 pund. Urriði bítur grannan taum í sundur, farðu í sverari.</li>
+        <li><b>Lengd:</b> ein til ein og hálf stangarlengd. Sjá <a href="#taumur">kaflann um taumlengd</a>.</li>
+        <li><b>Tökuvari</b> hjálpar að sjá smáar tökur í vatni.</li>
+      </ul></div>
+    </div>
+    <div class="note"><b>Annað sem skiptir máli:</b> vöðlur með belti (beltið er öryggisatriði, það heldur lofti í vöðlunum ef þú dettur), vöðluskór með gripi, <b>gleraugu, alltaf</b> (flugan með krók fer framhjá andlitinu á þér á fullri ferð í hverju kasti, og í vindi eða við feilkast kemur hún beint á þig; sólgleraugu með skautun, polarized, verja augun og sýna þér fiskinn og botninn, glær gleraugu í rökkri), veiðiklippur, auka taumefni, flugnanet. Sjá <a href="/veidi/">pökkunarlistann</a>.</div>
+  </section>
+
+  <section class="card" id="taumur">
+    <div class="card-head"><h2><span class="ico">📏</span> Lengd á taumi</h2></div>
+    <p class="dim">Taumurinn er samsettur úr tveimur hlutum: keyptum taum sem mjókkar frá flugulínunni (9 eða 12 feta), og taumenda, 50 til 80 cm bút af grennra taumefni sem er hnýttur fremst og flugan fest í. Taumendinn er það sem slitnar og styttist, þú skiptir um hann, ekki allan tauminn. Þegar hann er orðinn styttri en 30 cm, hnýttu nýjan.</p>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Aðstæður</th><th>Lengd</th><th>Af hverju</th></tr></thead>
+      <tbody>
+        <tr><td>Lax, venjuleg veiði með flotlínu</td><td>9 til 11 fet, um ein stangarlengd</td><td>Nógu langt til að línan fæli ekki fiskinn, nógu stutt til að kastið réttist úr sér.</td></tr>
+        <tr><td>Lax, hitch</td><td>Ein stangarlengd eða aðeins styttri, 8 til 9 fet</td><td>Of langur taumur, túpan sekkur og hættir að gára. Of stuttur, línan sést. Margir eiga aðra stöng eða auka hjólspólu með stuttum taum fyrir hitch.</td></tr>
+        <tr><td>Lax, lágt og tært vatn</td><td>10 til 12 fet, grennri taumendi</td><td>Fiskurinn sér allt. Lengra bil milli flugu og línu. Flúorkarbon sést síður.</td></tr>
+        <tr><td>Lax, micro-keila eða þyngd fluga</td><td>11 til 15 fet, langur og grannur</td><td>Langur taumur lætur þungu fluguna sökkva frjálst og reka náttúrulega.</td></tr>
+        <tr><td>Lax, sökkendi á línu</td><td>Stuttur, 3 til 5 fet</td><td>Sökkendinn á að draga fluguna niður. Langur taumur lætur hana fljóta upp aftur.</td></tr>
+        <tr><td>Silungur í á</td><td>9 til 12 fet</td><td>Ein stangarlengd fyrir straumflugu og votflugu, lengra fyrir þurrflugu og púpu.</td></tr>
+        <tr><td>Silungur í vatni</td><td>12 til 14 fet, ein og hálf stangarlengd</td><td>Lygnt vatn, fiskurinn sér línuna lenda. Lengri taumur, mýkri lending.</td></tr>
+        <tr><td>Hvasst veður</td><td>Styttu um 2 til 3 fet</td><td>Langur taumur réttist ekki úr sér í vindi og flugan lendir í hrúgu.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note"><b>Þumalputtaregla:</b> byrjaðu með 9 feta keyptan taum og 60 cm taumenda. Lengdu ef fiskurinn styggist, styttu ef kastið réttist ekki úr sér eða hitch-túpan sekkur. Allt þar á milli er smekksatriði. Siggi Haugur notar lengri taum í laxinn, 1,5 til 2 stangarlengdir, sjá <a href="#siggi">kaflann um námskeiðið</a>.</div>
+  </section>
+
+  <section class="card" id="adstaedur">
+    <div class="card-head"><h2><span class="ico">🌦️</span> Aðstæður og fluguval</h2></div>
+    <p class="dim">Hugsaðu um þrennt í þessari röð: vatnið (hæð, litur, hiti), svo birtan, svo veðrið. Fiskurinn er í vatninu, ekki í loftinu. Stærðartölur: hærri tala er minni fluga, #16 er örsmá, #8 er stór.</p>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Aðstæður</th><th>Hvað er að gerast</th><th>Fluga og stærð</th><th>Hvernig</th></tr></thead>
+      <tbody>
+        <tr><td>Hátt og litað vatn<br><span class="dim">eftir rigningu, snemmsumars</span></td><td>Fiskurinn sér stutt og heldur sig neðarlega. Nýr fiskur gengur í ána.</td><td><span class="fl">Sunray Shadow 1 til 2"</span>, <span class="fl">Collie Dog túpa</span>, <span class="fl">Snælda</span>, <span class="fl">Frances keila</span>. Stærri og sýnilegri fluga.</td><td>Sökkendi ef þarf. Láttu fluguna sveiflast rólega og djúpt. Veiddu nær bakkanum, fiskurinn færir sig úr straumnum.</td></tr>
+        <tr><td>Lágt og tært vatn<br><span class="dim">síðsumar, þurrkur</span></td><td>Fiskurinn sér allt, þar með talið þig. Hann er var um sig og liggur í dýpstu hyljunum.</td><td><span class="fl">Frances #14 til 16</span>, <span class="fl">Green Butt #14 til 16</span>, <span class="fl">Silver Sheep #16</span>, <span class="fl">micro Sunray</span>, <span class="fl">micro hitch</span>. Smáar flugur gefa betur en stórar túpur.</td><td>Lengri og grennri taumur. Kastaðu lengra niður, 25 til 30 gráður í stað 45. Haltu þig lágt og fjarri bakkanum. Stórar þungar flugur fæla hylinn.</td></tr>
+        <tr><td>Kalt vatn<br><span class="dim">undir um 8 til 9°C</span></td><td>Laxinn er latur og hreyfir sig stutt eftir flugu. Algengt í júní og á köldum morgnum.</td><td>Stærri túpa eða keila, <span class="fl">Sunray</span>, <span class="fl">Collie Dog</span>, <span class="fl">Frances keila</span>.</td><td>Hægt og djúpt, flugan þarf að fara nálægt fiskinum. Sökkendi kemur sér vel. Heimildir eru ekki sammála um nákvæm hitamörk: Siggi Haugur fer ekki í stórar flugur fyrr en vatnið er komið niður í um 6°C. Prófaðu þig áfram.</td></tr>
+        <tr><td>Hæfilegt vatn<br><span class="dim">um 9 til 14°C</span></td><td>Laxinn lyftir sér úr dýpinu eftir smáflugu við yfirborðið. Besti tíminn.</td><td><span class="fl">Hitch</span>, <span class="fl">Frances #12 til 14</span>, <span class="fl">Collie Dog #14</span>, <span class="fl">Sunray</span> í miðstærð.</td><td>Flotlína. Byrjaðu á hitch til að leita, svo smáa flugu á krók.</td></tr>
+        <tr><td>Hlýtt vatn<br><span class="dim">yfir um 15°C</span></td><td>Fiskurinn verður sljór í hita og sólskini.</td><td>Mjög smáar flugur, <span class="fl">micro hitch</span>, <span class="fl">#16 til 18</span>.</td><td>Veiddu snemma morguns og seint á kvöldin þegar vatnið kólnar.</td></tr>
+        <tr><td>Sól og heiðskírt</td><td>Skuggar og glampi. Fiskurinn sér tauminn og línuna.</td><td>Smáar dekkri flugur, <span class="fl">svartur Frances #14</span>, <span class="fl">Green Butt</span>, <span class="fl">Black Sheep</span>. Hitch ef vatnið er tært og hæfilega heitt.</td><td>Gættu að skugganum þínum, hann fælir. Veiddu þannig að sólin sé ekki beint á bak við þig.</td></tr>
+        <tr><td>Skýjað og milt</td><td>Jöfn birta, fiskurinn rólegur. Klassískar aðstæður.</td><td>Flugurnar sem eru oftast efstar í veiðibókunum: <span class="fl">Sunray</span>, <span class="fl">rauður Frances #12 til 14</span>, <span class="fl">Collie Dog</span>, <span class="fl">Silver Sheep</span>.</td><td>Hefðbundið 45 gráðu kast og sveifla.</td></tr>
+        <tr><td>Hvasst</td><td>Erfitt að kasta léttri flugu. Gárur á yfirborði fela tauminn.</td><td>Lítil þung keila, <span class="fl">Frances hexagon</span>, <span class="fl">Friggi micro-keila</span>, <span class="fl">Snælda</span>. Smáar þungar keilur gefa betur en stórar.</td><td>Kastaðu undan vindi þegar hægt er. Styttri taumur. Micro-hitch virkar líka í vindi og kulda.</td></tr>
+        <tr><td>Rigning eftir þurrk<br><span class="dim">í ágúst og september</span></td><td>Áin vex, fiskurinn lifnar við og gengur upp. Eins og nýtt sumar.</td><td><span class="fl">Collie Dog</span>, <span class="fl">svartur Frances</span>, <span class="fl">hitch</span>, <span class="fl">stutt Sunray</span>.</td><td>Veiddu eins og í júní. Bestu dagarnir á seinni hluta sumars.</td></tr>
+        <tr><td>Morgunn og kvöld</td><td>Lægri sól, minni glampi, kaldara vatn. Fiskurinn tekur oftar.</td><td>Sama fluga og dagurinn kallar á, en hitch og yfirborðsflugur ganga sérstaklega vel í lágri sól.</td><td>Fyrsta og síðasta klukkutímann á vaktinni skaltu veiða af mestri alúð.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Árstíðin</h3>
+    <ul>
+      <li><b>Júní til miðs júlí:</b> hátt vatn, nýgenginn fiskur. Stærri flugur, Collie Dog flottúpa til að leita, Sunray 1", tvíkrækjur #12 til 14. Hitch um leið og fiskur sést.</li>
+      <li><b>Miðjan júlí til ágúst:</b> vatnið lækkar og fiskurinn hefur séð margar flugur. Smáar flugur #14 til 16, micro Sunray, micro hitch, Silver Sheep #16, Undertaker. Lítil þung keila þegar fiskur kemur upp en tekur ekki.</li>
+      <li><b>September:</b> lágt vatn og legnir fiskar. Smáar flugur, svartur Frances á gullkrók. Meira af appelsínugulu og gulu í flugunum. Rigning breytir öllu, sjá töfluna.</li>
+    </ul>
+  </section>
+
+  <section class="card" id="arnar">
+    <div class="card-head"><h2><span class="ico">🗺️</span> Árnar þínar</h2></div>
+    <p class="dim">Sumar ár hafa svo fastan karakter að þær lenda nær alltaf í sömu línum töflunnar hér að ofan. Þetta er það sem heimildir um árnar sjálfar segja. Taflan segir hvað er ríkjandi, ekki hvað gerist í dag: Norðurá í úrhelli í ágúst er allt í einu „hátt og litað vatn“, og vatnshæðin hjá Veðurstofunni ræður alltaf yfir þessari töflu.</p>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Á</th><th>Karakter</th><th>Oftast í töflunni</th><th>Flugur sem heimildir nefna</th></tr></thead>
+      <tbody>
+        <tr><td>Norðurá</td><td>Tær bergvatnsá. Hátt vatn í júní, fellur í 7 til 10 m³ eftir miðjan júlí og niður í 5 m³ á haustin.</td><td>Hátt vatn í júní, svo lágt og tært mest allt sumarið.</td><td><span class="fl">Collie Dog</span> túpa til að leita og #14 tvíkrækja, <span class="fl">Silver Sheep #16</span> í Dalnum, <span class="fl">Undertaker</span>, micro <span class="fl">Sunray</span>, svartur <span class="fl">Frances</span> á gullkrók síðsumars.</td></tr>
+        <tr><td>Þverá og Kjarrá</td><td>Kristaltært vatn. Kjarrá er efri hlutinn.</td><td>Lágt og tært, hæfilegt vatn. Hitch-ár.</td><td><span class="fl">Hitch</span>, <span class="fl">Sunray</span>, smáflugur #12 til 16 og niður í #18 í Þverá, <span class="fl">Silver Sheep</span>, <span class="fl">Collie Dog</span>, Arndilly Fancy, Evening Dress.</td></tr>
+        <tr><td>Grímsá</td><td>Tær, lygn, breiður dalur og aðgengilegir hyljir.</td><td>Hitch-á, hæfilegt vatn.</td><td><span class="fl">Hitch</span>, smáar þríkrækjur #14 til 18, <span class="fl">Sunray</span> í öllum stærðum, kopar- og wolframtúpur til vara.</td></tr>
+        <tr><td>Laxá í Kjós</td><td>Tær, grannur taumur gengur.</td><td>Lágt og tært, sól og heiðskírt.</td><td>Svartur <span class="fl">Frances</span> var aflahæstur 2023.</td></tr>
+        <tr><td>Elliðaár</td><td>Lítil, tær borgará.</td><td>Lágt og tært.</td><td><span class="fl">BóBó</span> nefnd sem mjög sterk þar, annars smáflugur.</td></tr>
+        <tr><td>Haffjarðará</td><td>Tær, eingöngu fluguveiði síðan 1974.</td><td>Líklega sama og Þverá og Grímsá. Engar flugur nefndar fyrir hana sérstaklega.</td><td>Smáflugur og hitch, ályktað.</td></tr>
+        <tr><td>Miðfjarðará</td><td>Tær, margir smáir hyljir.</td><td>Lágt og tært, hitch.</td><td><span class="fl">Hitch</span> fyrst í hverjum hyl, #14 til 18 á krók, micro-keila sem síðasta úrræði. Veiða hylina hratt og færa sig.</td></tr>
+        <tr><td>Laxá í Aðaldal</td><td>Vatnsmikil, stórir fiskar.</td><td>Hátt vatn og skýjað, oft sökkendi.</td><td>Stærri flugur en annars staðar: <span class="fl">Sunray</span>, Erna, Stormy Daniels, Radian.</td></tr>
+        <tr><td>Blanda</td><td>Jökulá, vatnsmikil og straumhörð. Gruggast þegar lónið fer á yfirfall eða virkjunin keyrir hart.</td><td>Nánast alltaf hátt og litað vatn, oft hvasst.</td><td>Gárutúpur, <span class="fl">Frances</span>, <span class="fl">Sunray</span>, <span class="fl">Snælda</span>. Þyngri línur, #8 til 10. HKA Sunray var hönnuð þar og í Rangánum.</td></tr>
+        <tr><td>Selá og Hofsá í Vopnafirði</td><td>Vatnsmiklar norðausturár.</td><td>Skýjað og hátt vatn, stærri túpur en á Vesturlandi.</td><td><span class="fl">Collie Dog</span> ¾" áltúpa sérstaklega sterk. <span class="fl">Sunray</span> tók fjórðung aflans 2023.</td></tr>
+        <tr><td>Rangárnar</td><td>Heimildir ósammála um hversu jökulblandaðar. Eystri-Rangá fær jökulvatn úr Tindfjallajökli.</td><td>Oftast hátt og litað vatn.</td><td>Stærri flugur, <span class="fl">Sunray</span>, Classic de Monkey, HKA Sunray.</td></tr>
+        <tr><td>Hítará</td><td>Lítil Vesturlandsá.</td><td>Lágt og tært.</td><td>Rauður <span class="fl">Frances</span> var aflahæstur 2023.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note"><b>Fyrir hópinn þinn:</b> fimm af ánum á veiðisíðunni, Norðurá, Þverá og Kjarrá, Grímsá, Laxá í Kjós og Elliðaár, eru allar tærar Vesturlandsár. Niðurstaðan er einföld: smáflugur, hitch og Collie Dog, nema það rigni. Aflatölurnar eru frá einu sumri, 2023, sem var Sunray-sumar nánast alls staðar. Annað sumar getur litið öðruvísi út.</div>
+  </section>
+
+  <section class="card" id="litir">
+    <div class="card-head"><h2><span class="ico">🎨</span> Litir, krókar og þyngd</h2></div>
+    <div class="grid2">
+      <div class="box"><h4>Litur á flugu</h4><ul>
+        <li><b>Svart og dökkt</b> í tæru vatni og björtu veðri. Dökk fluga sést sem skuggi á móti himni, sem er það sem fiskurinn sér neðan frá.</li>
+        <li><b>Rautt, appelsínugult og gult</b> í lituðu vatni, vaxandi vatni og á haustin. Munro Killer er dæmi: meira svart í tæru vatni, meira appelsínugult í september.</li>
+        <li><b>Silfur og blátt</b> í klassískum flugum sem henta flestum aðstæðum (Silver Sheep, Blue Charm).</li>
+        <li><b>Sjóbleikja</b> vill skæra liti, bleikt, appelsínugult og rautt. Urriði vill dökkt og náttúrulegt.</li>
+      </ul></div>
+      <div class="box"><h4>Litur á krók</h4><ul>
+        <li><b>Gullkrókur:</b> venjan með Frances, rauðan og svartan, sérstaklega smáan síðsumars. Gullið glampar smá og gefur flugunni líf.</li>
+        <li><b>Silfurkrókur:</b> Silver Sheep og smáar Collie Dog ganga best á silfri. Einnig micro-þríkrækjur undir hitch-túpum.</li>
+        <li><b>Svartur krókur:</b> hlutlaus, dregur ekki athygli frá flugunni. Haugur og margar svartar flugur.</li>
+        <li>Þetta eru venjur veiðimanna, ekki vísindi. Ef fiskur eltir en tekur ekki, skiptu um krókalit áður en þú skiptir um flugu.</li>
+      </ul></div>
+      <div class="box"><h4>Krókategundir</h4><ul>
+        <li><b>Einkrækja:</b> einn krókur. Oft krafa í veiða-og-sleppa ám, fer betur með fiskinn.</li>
+        <li><b>Tvíkrækja:</b> tveir krókar, klassíska laxaflugan. Collie Dog #14 tvíkrækja er talin ómissandi í Norðurá.</li>
+        <li><b>Þríkrækja:</b> þrír krókar. Frances og Silver Sheep eru oftast á þríkrækju #12 til 16. Festir vel en fer verr með fisk.</li>
+        <li><b>Túpa:</b> flugan er hnýtt á rör og laus krókur settur aftan í. Sunray, Collie Dog og Snælda eru túpur.</li>
+      </ul></div>
+      <div class="box"><h4>Þyngd</h4><ul>
+        <li><b>Flottúpa:</b> létt plasttúpa sem syndir grunnt. Sunray.</li>
+        <li><b>Keila (conehead):</b> þungur haus úr málmi sem dregur fluguna niður. Frances keila, micro-keila.</li>
+        <li><b>Hexagon:</b> þyngd wolfram-túpa, fer hratt niður í straumi.</li>
+        <li>Reglan úr Norðurá: smáar þungar keilur gefa betur en stórar, þú þarft sjaldnast að skrapa botninn.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section class="card" id="box">
+    <div class="card-head"><h2><span class="ico">🪰</span> Byrjendaboxið</h2></div>
+    <p class="dim">Tólf flugur sem duga í flestar íslenskar laxár sumarlangt. Keyptu tvær til þrjár af hverri, flugur tapast. Myndir og lýsingar eru í <a href="/veidi/#flugur">fluguyfirlitinu</a>.</p>
+    <div class="flybox">
+      <div><b>Sunray Shadow</b><span>1" túpa og micro. Aflahæsta fluga landsins.</span></div>
+      <div><b>Collie Dog</b><span>¼" túpa og tvíkrækja #14. Leitarflugan.</span></div>
+      <div><b>Frances rauður</b><span>#12 og #14 á gullkrók, ein keila.</span></div>
+      <div><b>Frances svartur</b><span>#14 og #16 á gullkrók.</span></div>
+      <div><b>Silver Sheep</b><span>#14 tvíkrækja, #16 þríkrækja á silfri.</span></div>
+      <div><b>Green Butt</b><span>#14 og #16. Lágt og tært vatn.</span></div>
+      <div><b>Haugur hitch</b><span>1 til 2 cm túpa. Rauði hausinn sést.</span></div>
+      <div><b>Collie Dog hitch</b><span>micro-hitch fyrir síðsumar.</span></div>
+      <div><b>Black Sheep</b><span>#12 og #14. Bjart og svalt.</span></div>
+      <div><b>Undertaker</b><span>#14 og #16. Júlí og ágúst.</span></div>
+      <div><b>Snælda</b><span>½ til 1" túpa. Straumur og litað vatn.</span></div>
+      <div><b>Munro Killer</b><span>#10 og #12. Haustfluga, líka hitch.</span></div>
+    </div>
+    <div class="note"><b>Þrjár flugur til viðbótar</b> sem Siggi Haugur mælir með, sjá kaflann um námskeiðið: Vonin (græn), Haugur á krók (blár) og Collie Dog Campari.</div>
+    <div class="note">Tveir aukahlutir sem þarf með túpunum: <b>túpukrókar</b> (lausar þríkrækjur eða einkrækjur #10 til 14) og <b>hitch-krókar</b> (#14 til 16, léttir og hvassir). Spurðu í versluninni um hvaða krókar passa við túpurnar sem þú kaupir.</div>
+  </section>
+
+  <section class="card" id="hylur">
+    <div class="card-head"><h2><span class="ico">🌊</span> Að veiða hyl</h2></div>
+    <ol>
+      <li><b>Byrjaðu efst.</b> Fiskurinn liggur oftast þar sem straumurinn hægir á sér: við brotið efst í hylnum, í strengnum, við steina og þar sem djúpt vatn mætir grunnu. Byrjaðu efst í hylnum og vinn þig niður.</li>
+      <li><b>Kastaðu á ská niður, um 45 gráður</b> frá bakkanum. Línan og taumurinn eiga að vera nokkurn veginn bein lína.</li>
+      <li><b>Láttu fluguna sveiflast</b> með straumnum yfir hylinn þar til hún stöðvast beint fyrir neðan þig. Haltu stangartoppnum lágt. Laxinn tekur oft þegar flugan réttir úr sér í lokin.</li>
+      <li><b>Strippaðu</b> línuna inn í stuttum rykkjum í lokin, 2 til 3 strip, svo kastaðu aftur. Sunray og Collie Dog eru oft strippaðar hratt alla leið.</li>
+      <li><b>Lengdu fyrst, stígðu svo.</b> Byrjaðu með stutta línu, um 3 metra, og lengdu um eitt strip (20 cm) í hverju kasti þar til þú ert kominn með þá lengd sem þú ræður við, oftast 6 köst. Dragðu línuna inn, stígðu svo eitt skref niður og kastaðu aftur. Aldrei kasta og stíga á meðan flugan er úti. Þannig fer flugan yfir allan hylinn á jöfnum bilum.</li>
+      <li><b>Mending:</b> ef línan dregur fluguna of hratt skaltu lyfta stangartoppnum og færa línuna upp fyrir fluguna. Ekki vippa, það kippir í fluguna og styttir tímann sem hún veiðir.</li>
+      <li><b>Umferðin.</b> Þegar þú ert kominn niður úr hylnum er ein umferð búin. Skiptu um flugu, minni eða öðruvísi lit, og farðu aðra umferð. Eftir tvær til þrjár umferðir án viðbragða skaltu færa þig.</li>
+      <li><b>Í lágu vatni:</b> kastaðu lengra niður, 25 til 30 gráður, lengri taumur, láttu fluguna reka hægt í gegnum breiðuna. Láttu hana lenda í lygna vatninu hinum megin við strenginn.</li>
+    </ol>
+    <div class="note"><b>Fiskur eltir en tekur ekki?</b> Hægðu á flugunni í næsta kasti. Ef það dugar ekki, minnkaðu fluguna, skiptu um lit á krók, eða settu smáa tvíkrækju fyrir aftan hitch-túpuna. Síðasta úrræði er lítil þung keila látin reka yfir fiskinn.</div>
+  </section>
+
+  <section class="card" id="hitch">
+    <div class="card-head"><h2><span class="ico">〰️</span> Hitch, flugan sem gárar yfirborðið</h2></div>
+    <p>Hitch er lítil túpa þar sem taumurinn kemur út um hlið túpunnar svo hún skautar á yfirborðinu og skilur eftir sig V-laga gáru. Laxinn kemur upp og tekur hana sýnilega. Þetta er skemmtilegasta aðferðin og hentar byrjendum vel af því að þú sérð allt sem gerist.</p>
+    <ul>
+      <li><b>Hvenær:</b> tært vatn, nægur straumur til að flugan skauti, vatnshiti um 10 til 14°C. Stærri hitch snemmsumars í háu vatni, micro-hitch þegar vatnið lækkar. Virkar allt sumarið, líka í kulda og vindi.</li>
+      <li><b>Taumur:</b> um ein stangarlengd. Of langur taumur, flugan sekkur. Of stuttur, línan fælir fiskinn.</li>
+      <li><b>Kast:</b> 45 gráður yfir hylinn, lína og taumur strekkt, stöngin í um 45 gráðu halla upp frá vatninu.</li>
+      <li><b>Hraði:</b> í straumi lætur þú fluguna skauta á hraða straumsins. Í lygnu vatni strippar þú hægt. Ekki svo hratt að það freyði fyrir framan fluguna.</li>
+      <li><b>Takan:</b> gerðu ekkert. Laxinn kemur upp, tekur og snýr sér, og línan strekkist sjálf. Ef þú lyftir stönginni um leið og þú sérð hann, tekurðu fluguna frá honum. Þetta er erfiðasta reglan að fara eftir.</li>
+    </ul>
+  </section>
+
+  <section class="card" id="hnutar">
+    <div class="card-head"><h2><span class="ico">🪢</span> Hnútarnir sem þú þarft</h2></div>
+    <p class="dim">Þrír hnútar duga í byrjun: lykkja í lykkju, klinshnútur og skurðlæknishnútur. Hinir koma seinna. Æfðu þá heima með sverum taum áður en þú stendur í kulda við ána. Bleyttu alltaf hnútinn með munnvatni áður en þú herðir, annars brennur taumefnið og hnúturinn veikist. Tenglarnir fara á netknots.com, sem sýnir hvern hnút skref fyrir skref með hreyfimynd. Yfirlit á myndbandi: <a href="https://www.youtube.com/watch?v=K7ex8V8z-M8" target="_blank" rel="noopener">Veiðihnútar á YouTube</a>.</p>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Hvað á að festa</th><th>Hnútur</th><th>Athugasemd</th></tr></thead>
+      <tbody>
+        <tr><td>Flugulína við taum</td><td><a href="https://www.netknots.com/fishing_knots/loop-to-loop" target="_blank" rel="noopener">Lykkja í lykkju (loop to loop)</a></td><td>Nær allar nýjar flugulínur og keyptir taumar koma með lykkju á endanum. Þá þarf engan hnút, bara að þræða rétt, eins og tvö handtök. Ekki herða svo lykkjurnar krossist, þá slitnar þetta.</td></tr>
+        <tr><td>Flugulína við taum, engin lykkja á línunni</td><td><a href="https://www.netknots.com/fishing_knots/nail-knot" target="_blank" rel="noopener">Naglahnútur (nail knot)</a></td><td>Grannur og rennur í gegnum lykkjurnar á stönginni. Þarf rör eða nagla til að hnýta. Flestar verslanir hnýta hann fyrir þig þegar þú kaupir línuna.</td></tr>
+        <tr><td>Lykkja á enda taums</td><td><a href="https://www.netknots.com/fishing_knots/perfection-loop" target="_blank" rel="noopener">Fullkomna lykkjan (perfection loop)</a></td><td>Til að búa til lykkju á taum sem á að fara í lykkja-í-lykkju tengingu.</td></tr>
+        <tr><td>Taumendi við taum (auka taumur framan á)</td><td><a href="https://www.netknots.com/fishing_knots/blood-knot" target="_blank" rel="noopener">Blóðhnútur (blood knot)</a></td><td>Fallegasti og grennsti hnúturinn fyrir tvö taumefni af svipuðum sverleika. Krefst æfingar. Fimm snúningar hvorum megin.</td></tr>
+        <tr><td>Taumendi við taum, auðveldari leið</td><td><a href="https://www.netknots.com/fishing_knots/surgeons-knot" target="_blank" rel="noopener">Tvöfaldur skurðlæknishnútur (surgeon's knot)</a></td><td>Hraðari og fyrirgefur kulda og stirða fingur. Aðeins grófari en blóðhnúturinn. Góður þegar sverleikinn er ólíkur.</td></tr>
+        <tr><td>Mjög ólíkur sverleiki, t.d. sökkendi við taum</td><td><a href="https://www.netknots.com/fishing_knots/albright-knot" target="_blank" rel="noopener">Albright-hnútur</a></td><td>Tengir svert efni við grannt. Sjaldan þörf fyrir byrjanda.</td></tr>
+        <tr><td>Fluga á taum</td><td><a href="https://www.netknots.com/fishing_knots/improved-clinch-knot" target="_blank" rel="noopener">Klinshnútur (improved clinch)</a></td><td>Hnúturinn sem allir læra fyrst. Fimm til sjö snúningar, tag-endinn aftur í gegnum litlu lykkjuna við augað, og aftur í gegnum stóru lykkjuna. Bleyta, herða rólega, klippa 2 mm frá.</td></tr>
+        <tr><td>Túpa eða hitch á taum</td><td><a href="https://www.netknots.com/fishing_knots/non-slip-loop-knot" target="_blank" rel="noopener">Lykkjuhnútur sem rennur ekki (non-slip loop)</a></td><td>Taumurinn er þræddur í gegnum túpuna og krókurinn hnýttur með lítilli lykkju svo hnúturinn, ekki krókleggurinn, sitji inni í túpunni. Lykkjan leyfir flugunni að hreyfast frjálst.</td></tr>
+        <tr><td>Hitch á venjulega flugu</td><td><a href="https://www.netknots.com/fishing_knots/riffle-hitch" target="_blank" rel="noopener">Hitch-hnútur (riffle hitch)</a></td><td>Tvær hálfbrögð um hausinn á flugunni eftir að klinshnúturinn er hnýttur. Taumurinn á að koma út þeim megin sem snýr að bakkanum sem þú stendur á. Skiptu um hlið ef þú skiptir um bakka.</td></tr>
+        <tr><td>Baklína á hjólið</td><td><a href="https://www.netknots.com/fishing_knots/arbor-knot" target="_blank" rel="noopener">Spóluhnútur (arbor knot)</a></td><td>Einu sinni á ævi hjólsins. Verslunin gerir þetta oftast.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note"><b>Prófaðu hvern hnút</b> með því að toga fast í fluguna og tauminn áður en þú kastar. Hnútur sem slitnar í hendinni á þér hefði slitnað á fiskinum.</div>
+  </section>
+
+  <section class="card" id="taka">
+    <div class="card-head"><h2><span class="ico">🐟</span> Takan, viðureignin og löndunin</h2></div>
+    <div class="grid2">
+      <div class="box"><h4>Lax</h4><ul>
+        <li><b>Ekki bregða við.</b> Laxinn festir sig sjálfur þegar hann snýr sér. Lyftu stönginni rólega og strekktu á línunni, meira þarf ekki.</li>
+        <li>Haltu stönginni í boga og stangartoppnum nálægt vatnsborðinu, ekki beint upp.</li>
+        <li>Reyndu að komast niður fyrir fiskinn svo hann þurfi að synda á móti straumnum, þá þreytist hann.</li>
+        <li>Stekkur hann, lækkaðu stöngina strax svo taumurinn slitni ekki.</li>
+        <li>Hliðarátak, stöngin á ská til hliðar, þreytir fiskinn hraðar en lóðrétt átak.</li>
+      </ul></div>
+      <div class="box"><h4>Silungur</h4><ul>
+        <li><b>Bregddu hratt við</b> á votflugu, púpu og straumflugu, með því að lyfta stönginni ákveðið.</li>
+        <li>Á þurrflugu, teldu upp að þremur áður en þú lyftir, annars tekurðu fluguna úr munninum á honum.</li>
+        <li>Hemlan hæfilega stillt. Urriði tekur ákveðið og hleypur.</li>
+      </ul></div>
+      <div class="box"><h4>Löndun</h4><ul>
+        <li>Þreyttu laxinn þar til hann leggst á hliðina í flæðarmálinu. Gakktu aftan að honum, taktu þétt um sporðinn og styddu undir kviðinn með hinni hendinni. Lyftu honum aldrei á sporðinum einum, vöðvafestingar slitna.</li>
+        <li>Hnútalaus háfur fer best með hreistrið og er öruggasta leiðin við stóra fiska. Láttu fiskinn liggja í háfnum í vatninu á meðan þú losar.</li>
+        <li>Mældu frá sporði að miðri snoppu. Í flestum ám má halda eftir laxi upp að um 68 cm (smálaxi) en stærri fiski er sleppt. Reglur árinnar segja til um þetta.</li>
+        <li>Ef fiskurinn fer í matinn, rotaðu hann strax og örugglega. Hann þjáist af súrefnisskorti fyrr en þú heldur.</li>
+      </ul></div>
+      <div class="box"><h4>Veiða og sleppa</h4><ul>
+        <li>Þreyttu fiskinn sem minnst. Sverari taumur gerir þér kleift að landa hraðar.</li>
+        <li>Blautar hendur, aldrei þurrar, og haltu fiskinum í vatninu. Lyftu honum í mesta lagi í nokkrar sekúndur fyrir mynd.</li>
+        <li>Losaðu krókinn með töng. Agnhaldslaus krókur losnar á sekúndu.</li>
+        <li>Haltu honum með hausinn upp í strauminn þar til hann syndir sjálfur úr höndunum á þér. Það getur tekið mínútu.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section class="card" id="silungur">
+    <div class="card-head"><h2><span class="ico">🎏</span> Silungur í stuttu máli</h2></div>
+    <p class="dim">Urriði og bleikja eru auðveldari byrjun en lax: fleiri fiskar, ódýrari leyfi og þú getur veitt allan daginn.</p>
+    <ul>
+      <li><b>Púpur</b> eru grunnurinn: Krókurinn (besta bleikjuflugan), Peacock, Pheasant Tail, #12 til 16. Látnar reka með straumnum eða dregnar hægt inn í vatni. Tökuvari hjálpar.</li>
+      <li><b>Straumflugur</b> þegar fiskurinn eltir: Black Ghost, Nobbler, Dentist, #6 til 10. Dregnar inn í rykkjum.</li>
+      <li><b>Þurrflugur</b> þegar fiskur sést vaka: Black Gnat, Adams, #14 til 18. Bíddu með að bregða við.</li>
+      <li><b>Litir:</b> sjóbleikja tekur bleikt, appelsínugult og rautt. Urriði vill dökkt og náttúrulegt, hornsílalíki.</li>
+      <li><b>Í vötnum:</b> veiddu við innrennsli og útrennsli, þar sem grynningar mæta dýpi, og í vindinum, fiskurinn fylgir fæðunni sem vindurinn rekur. Lengri taumur, ein og hálf stangarlengd.</li>
+    </ul>
+  </section>
+
+  <section class="card" id="siggi">
+    <div class="card-head"><h2><span class="ico">🎓</span> Úr námskeiði Sigga Haugs</h2></div>
+    <p class="dim">Sigurður Héðinn, Siggi Haugur, hannaði fluguna Haug og hefur kennt laxveiði í áratugi. Þetta eru glósur af námskeiði hans í apríl 2023, teknar af þátttakendum, ekki yfirfarnar af honum. Þar sem þær stangast á við annað hér á blaðinu er það merkt.</p>
+
+    <div class="grid2">
+      <div class="box"><h4>Kjöraðstæður</h4><ul>
+        <li>Lofthiti hærri en vatnshiti, vatnið 10 til 14°C.</li>
+        <li>Kjörrennsli, allir veiðistaðir „inni“.</li>
+        <li>Skýjað, smá vindur, hár loftþrýstingur.</li>
+      </ul></div>
+      <div class="box"><h4>Verstu aðstæður</h4><ul>
+        <li>Vaxandi vatn í úrhelli.</li>
+        <li>Glampandi sól og logn.</li>
+        <li>Langvarandi þurrkur, áin „í grjótum“.</li>
+        <li>Lofthiti lægri en vatnshiti.</li>
+        <li>Suðvestanátt, víða á landinu.</li>
+      </ul></div>
+    </div>
+
+    <h3>Fluguval Sigga</h3>
+    <ul>
+      <li><b>Röðin á hylnum:</b> fyrst gárutúpa (hitch), svo smáfluga, að lokum eitthvað stærra eða þyngra. Hann setur hitch-túpuna alltaf þannig að taumurinn komi út að ofan, ekki á hlið.</li>
+      <li><b>Stærð eftir vatnshita:</b> 12 til 14°C, þá #12. Kaldara, stærra. Þegar vatnið er komið niður í 6°C fer hann í stórar flugur, annars notar hann helst ekki „hlussur“.</li>
+      <li><b>Hitamæling án mælis:</b> höndina ofan í þar til hún kólnar, upp aftur, og finna hvort hún kólnar meira eða hlýnar í loftinu. Þá veistu hvort loftið er hlýrra en vatnið.</li>
+      <li><b>Krókalitur:</b> sól, þá silfurkrókur. Eftir miðjan ágúst, gullkrókur „massívt“.</li>
+      <li><b>Flugurnar þrjár:</b> Haugur (blár), Vonin (græn) og Collie Dog. Grænt og blátt gengur alls staðar á Íslandi. Siggi segir að stærstur hluti laxa á Íslandi veiðist á þessar þrjár. Ætti hann bara eina flugu veldi hann Collie Dog. Collie Dog Campari er sama fluga með rauðum haus, á silfurkrók.</li>
+      <li><b>Silver Sheep</b> er besta sólarflugan, á silfurkrók.</li>
+      <li><b>Micro-túpa</b> er öflug í smálaxinn.</li>
+      <li><b>Hnútar:</b> Rapala-lykkjuhnútur á litlar flugur svo þær hreyfist frjálst, venjulegur klinshnútur á stærri.</li>
+    </ul>
+
+    <h3>Að lesa vatnið</h3>
+    <ul>
+      <li>Laxinn liggur alltaf á móti straumi og þar sem hann hefur minnst fyrir lífinu: við hliðina á steini eða fyrir aftan hann, í ljósa svæðinu á botninum (hvítu eða ljósgrænu), undir hvítfrussi í fosshyl og við berghlaup sem gengur út í ána. Ekki í bakstraumi.</li>
+      <li>Vatnshæðin ræður alltaf hvar hann liggur. Tökustaðirnir eru nánast alltaf þeir sömu ár eftir ár, spurðu í veiðihúsinu.</li>
+      <li>Fiskur sem er að ganga hegðar sér öðruvísi en fiskur sem er kominn í hylinn sinn. Tökufiskur er á iði, sporðurinn hreyfist öðruvísi.</li>
+      <li>Í grænum hyl sýnist allt svart og grátt vera fiskur. Í dökkum hyl sýnist allt ílangt vera fiskur. Gul gleraugu með skautun eru best. Klæddu þig aldrei í hvítt.</li>
+      <li>Sjónsvið laxins er eins og demantur og hann sér meira í djúpu vatni. Standirðu við hliðina á honum sér hann þig ekki, og þú getur gengið aftan að honum.</li>
+      <li>Veiddu fiskinn nær alltaf „innan frá“, frá bakkanum sem hann liggur nær. Stattu þar sem þú nærð yfir svæðið, oft úti í grjótinu, ekki uppi á bakkanum.</li>
+    </ul>
+
+    <h3>Kastið og rekið</h3>
+    <ul>
+      <li>Byrja með 3 metra línu og lengja um eitt strip í hverju kasti, þar til lengdin er komin, oftast í 6 köstum. Svo eitt skref og kast, skref og kast. Draga inn áður en stigið er.</li>
+      <li>Smáfluga: kasta 60 eða 45 gráður niður og til hliðar. Hún þarf að fara jafnhratt eða hægar en vatnið.</li>
+      <li>Hann strippar allar smáflugur, smátt og hratt, og mendar alltaf, hann vill beina línu.</li>
+      <li>Í ágúst: fyrst dauðarek yfir staðinn, svo sama kast aftur og strippað.</li>
+      <li>Andstreymisveiði, þegar þú sérð fiskinn: stattu mjög nálægt, kastaðu bara taumnum, aldrei línunni, og láttu stangaroddinn fara rétt fram fyrir hausinn á honum.</li>
+      <li>Á sumum svæðum er rétt að „dorga“ með hitch, láta hana hanga í straumnum.</li>
+    </ul>
+
+    <h3>Taka, viðureign og löndun</h3>
+    <ul>
+      <li>Ekki hafa hemluna of stífa. Gefðu mikla línu. Reistu stöngina þegar hann hættir að draga út.</li>
+      <li>Snúi hausinn að þér, taktu á honum. Snúi hann frá þér, leyfðu honum að fara.</li>
+      <li>Dragðu inn á 90 gráðum, til hliðar, ekki beint á móti honum.</li>
+      <li>Alltaf með háf fyrir stóra fiska. Helst ekki taka fiskinn upp úr háfnum eða vatninu.</li>
+      <li>Leggðu blautt þvottastykki yfir augað sem snýr að þér, þá róast hann á meðan flugan er losuð. Kældu hendurnar í ánni fyrst, það minnkar hættu á sveppasýkingu í fiskinum.</li>
+      <li>Aldrei lyfta fiski á sporðinum einum. Hann drepst.</li>
+      <li>Veiðiugginn segir til um stærð fisksins. Norðurlandið á stóru fiskana.</li>
+      <li>Mundu hvar hann tók, á hvað og hvernig (strip, dauðarek). Veiðihúsið vill vita það allt.</li>
+    </ul>
+
+    <h3>Búnaður og umhirða</h3>
+    <ul>
+      <li>Stöng, hjól og lína eiga að passa saman, helst frá sama framleiðanda. Switch-stöng er um 1,5 sinnum lengri en einhenda.</li>
+      <li><b>Taumur, þar sem Siggi er ósammála blaðinu:</b> áður var taumur jafnlangur stönginni, í dag 1,5 til 2 stangarlengdir, tveir faðmar. Laxinn er ekki hræddur við taum, ólíkt silungi. Kónískir keyptir taumar sem mjókka fram kasta best. Hann notar Maxima Chameleon (sterkari, þolir vindhnúta) og Ultragreen (í sól), 12 og 15 pund, og kaupir oftast Guideline. Mýktu tauminn með því að hita hann milli fingranna og toga létt.</li>
+      <li>Alltaf nýir taumar í hverja veiðiferð, og ekkert hnjask á þeim. Línan endurnýjuð á 2 til 3 ára fresti.</li>
+      <li>Aldrei teygja á línunni, til dæmis ef hún festist í botni, það er óafturkræft. Dragðu að þér og skjóttu línunni út aftur. Aldrei stíga á línuna. Haltu efsta hringnum á stönginni hreinum, annars skemmist húðin á línunni.</li>
+      <li>Flugan fer framhjá þér á miklum hraða í góðu kasti. Hattur, gleraugu og helst eitthvað fyrir munninn.</li>
+      <li>Vöðluskór með 5 nöglum í tá og 5 í hæl. Vöðlur snúið á röngunni annan hvern dag til að lofta, þvegnar á ullarkerfi eða í baðkari, hengdar strax upp heima. Skór spúlaðir. Ekki drepa í sígarettu í vöðlunum.</li>
+      <li>Ekki setja blauta stöng í hólkinn, korkurinn myglar.</li>
+      <li>Oft gott að veiða fram í myrkur. Þá glær gleraugu.</li>
+    </ul>
+    <div class="note">Glósurnar eru úr höndum þátttakenda og tveir liðir voru óljósir í upprunanum: nákvæm hitamörk og hvers vegna suðvestanátt er slæm. Taktu þá með fyrirvara.</div>
+  </section>
+
+  <section class="card" id="mistok">
+    <div class="card-head"><h2><span class="ico">⚠️</span> Algeng byrjendamistök</h2></div>
+    <ol>
+      <li><b>Að bregða við laxatöku.</b> Flugan hrifsast úr munninum. Gerðu ekkert, láttu línuna strekkjast.</li>
+      <li><b>Að standa kyrr og kasta á sama stað.</b> Skref niður eftir hvert kast.</li>
+      <li><b>Of stór fluga í lágu vatni.</b> Hún fælir hylinn fyrir alla sem koma á eftir þér. Í lágu vatni, #14 og minni.</li>
+      <li><b>Að vaða of langt út.</b> Fiskurinn liggur oft við bakkann þar sem þú stendur. Veiddu fyrst nær, svo lengra.</li>
+      <li><b>Skugginn þinn á hylnum.</b> Haltu þig lágt og hafðu sólina á hlið.</li>
+      <li><b>Hnútur og krumpur í taumnum.</b> Þeir slíta við fyrsta stóra fisk. Skiptu um taumenda.</li>
+      <li><b>Að gleyma vöðlubeltinu.</b> Öryggisatriði, ekki tískuatriði.</li>
+      <li><b>Að lesa ekki veiðibókina og reglur árinnar.</b> Þar er svarið við „hvaða fluga“ oftast.</li>
+      <li><b>Að gefast upp á hyl eftir eina umferð.</b> Skiptu um flugu og farðu aðra. Eftir þrjár, færðu þig.</li>
+      <li><b>Gleraugun heima.</b> Krókur í auga er alvarlegasta slysið í fluguveiði og gleraugu koma í veg fyrir það. Án skautaðra glerja sérðu heldur hvorki fiskinn, botninn né tökuna.</li>
+    </ol>
+  </section>
+
+  <section class="card" id="ord">
+    <div class="card-head"><h2><span class="ico">📖</span> Orðalisti</h2></div>
+    <dl class="glossary">
+      <dt>Stærð (#)</dt><dd>Krókastærð. Hærri tala er minni fluga. #16 er örsmá, #12 miðlungs, #8 stór.</dd>
+      <dt>Túpa</dt><dd>Fluga hnýtt á plast- eða málmrör, krókur settur í aftan á. Flottúpa er létt og syndir grunnt.</dd>
+      <dt>Keila (conehead)</dt><dd>Málmhaus framan á túpu sem þyngir hana. Micro-keila er örsmá útgáfa.</dd>
+      <dt>Einkrækja, tvíkrækja, þríkrækja</dt><dd>Krókur með einum, tveimur eða þremur oddum.</dd>
+      <dt>Hitch, gárutúpa</dt><dd>Túpa sem taumurinn kemur út um hliðina á, svo hún skautar á yfirborðinu.</dd>
+      <dt>Micro</dt><dd>Minnsta útgáfan af flugu, 1 til 1,5 cm túpa eða #16 til 18 krókur.</dd>
+      <dt>Strip</dt><dd>Að draga línuna inn með hendinni í rykkjum svo flugan hreyfist.</dd>
+      <dt>Mend</dt><dd>Að færa línuna á vatninu eftir kastið svo straumurinn dragi fluguna ekki of hratt.</dd>
+      <dt>Sveifla (swing)</dt><dd>Þegar flugan berst með straumnum í boga yfir hylinn.</dd>
+      <dt>Umferð</dt><dd>Að veiða hyl frá toppi niður úr, einu sinni.</dd>
+      <dt>Flotlína, sökklína, sökkendi</dt><dd>Lína sem flýtur, sekkur öll, eða sekkur aðeins fremst.</dd>
+      <dt>Skotlína, skothaus, runninglína</dt><dd>Lína í tveimur hlutum: þungur skothaus fremst (flot eða sökk) og grönn runninglína fyrir aftan sem „skýtur“ út í kastinu. Andstæðan er heil lína (WF).</dd>
+      <dt>Flúorkarbon</dt><dd>Taumefni sem sést síður í vatni og sekkur betur en nælon. Stífara og dýrara.</dd>
+      <dt>Taumur</dt><dd>Grannt gegnsætt efni milli flugulínu og flugu. Sverleiki í mm eða pundum.</dd>
+      <dt>Flúorkarbon</dt><dd>Taumefni sem sést síður í vatni og sekkur betur en nylon.</dd>
+      <dt>Nýgenginn</dt><dd>Lax sem er nýkominn úr sjó, silfraður og tökuglaður. Leginn lax hefur verið lengi í ánni og er tregari.</dd>
+      <dt>Vakt</dt><dd>Veiðitímabil dagsins, oftast morgunvakt og kvöldvakt með hléi í miðjunni.</dd>
+    </dl>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2><span class="ico">🎓</span> Heimildir</h2></div>
+    <p class="src">
+      <a href="https://veidiflugur.is/2020/06/22/flugur-i-nordura/" target="_blank" rel="noopener">Flugur í Norðurá</a> og <a href="https://veidiflugur.is/hitch/" target="_blank" rel="noopener">Hitch</a> (veidiflugur.is) ·
+      <a href="https://veidihornid.is/2023/08/05/bestu-laxveidiflugurnar-i-sumar/" target="_blank" rel="noopener">Bestu laxveiðiflugurnar í sumar</a> (Veiðihornið, 2023) ·
+      <a href="https://www.visir.is/g/20181426429d/eitt-gott-rad-fyrir-sidsumars-laxveidi" target="_blank" rel="noopener">Eitt gott ráð fyrir síðsumars laxveiði</a> (Vísir) ·
+      <a href="https://arvik.is/frodleikur-veidi/fra-toku-til-londunar/" target="_blank" rel="noopener">Frá töku til löndunar</a> (Árvík) ·
+      <a href="https://fishpartner.com/icelandic-salmon-flies/" target="_blank" rel="noopener">Icelandic salmon flies</a> (Fish Partner) ·
+      <a href="https://veidiheimar.is/en/arctic-char/popular-flies/" target="_blank" rel="noopener">Popular flies</a> (Veiðiheimar) ·
+      <a href="https://blog.fullingmill.com/your-fly-box-for-salmon-fishing-in-iceland/" target="_blank" rel="noopener">Your fly box for salmon fishing in Iceland</a> (Fulling Mill) ·
+      <a href="https://www.superflies.com/blog/riffling-hitches-and-micro-iceland-flies-the-playbook-for-midfjardara-salmon-fishing" target="_blank" rel="noopener">Riffling hitches and micro flies</a> (Superflies) ·
+      <a href="https://icelandfishingguide.com/what-equipment-to-bring-when-going-fly-fishing-in-iceland/" target="_blank" rel="noopener">Equipment to bring</a> (Iceland Fishing Guide) ·
+      <a href="https://www.althingi.is/lagas/nuna/2006061.html" target="_blank" rel="noopener">Lög um lax- og silungsveiði nr. 61/2006</a> ·
+      Um árnar: <a href="https://anglers.is/rivers-and-lakes/thverakjarra-river/" target="_blank" rel="noopener">Þverá og Kjarrá</a> (Anglers.is), <a href="https://www.aardvarkmcleod.com/destination/kjarra-iceland/" target="_blank" rel="noopener">Kjarrá</a> (Aardvark McLeod), <a href="https://www.wherewisemenfish.com/holidays/grimsa-river/s1149/" target="_blank" rel="noopener">Grímsá</a> (Where Wise Men Fish), <a href="https://fishpartner.is/veidisvaedi/blanda-sv-1/" target="_blank" rel="noopener">Blanda</a> (Fish Partner), <a href="https://veidiheimar.is/en/veidisvaedi/haffjardara/" target="_blank" rel="noopener">Haffjarðará</a> (Veiðiheimar), <a href="https://icelandroadguide.com/?p=9262" target="_blank" rel="noopener">Eystri-Rangá</a> (Iceland Road Guide).
+      Hitamörk vatns eru umdeild milli heimilda og eru gefin upp sem viðmið, ekki reglur. Viðmið um krókalit og taumsverleika eru venjur veiðimanna.
+    </p>
+  </section>
+
+  <p class="credit">Strekktir taumar og létt hönd á töku. <em>Góða veiði.</em> 🎣</p>
+  <p class="support">Ég smíðaði þessa síðu fyrir mig og vini mína og deili henni með þér. Ef hún nýtist þér vel, þá er andvirði einnar Collie Dog (um 750 kr.) vel þegið.<span class="acct">Reikningur <b>0527-26-1416</b>, kt. <b>471025-0380</b>.</span></p>
+</div>
+</body>
+</html>
