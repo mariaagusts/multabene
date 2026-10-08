@@ -104,6 +104,11 @@
   .form input:focus,.form select:focus,.form textarea:focus{outline:2px solid var(--accent);outline-offset:1px;}
   .form .row{grid-column:1 / -1;}
   @media (max-width:560px){.form{grid-template-columns:1fr;}}
+  .form .opts{grid-column:1 / -1;display:grid;gap:8px;}
+  .form label.opt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:15px;color:var(--fg);cursor:pointer;}
+  .form label.opt input{width:18px;height:18px;margin:3px 0 0;accent-color:var(--accent);flex:0 0 18px;}
+  .form label.opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft);}
+  .opt small{display:block;color:var(--dim);font-size:13px;}
   .themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;grid-column:1 / -1;}
   .theme{border:2px solid var(--line);border-radius:12px;padding:10px;background:var(--t-bg,#fff);color:var(--t-fg,#000);text-align:left;display:grid;gap:6px;}
   .theme[aria-pressed="true"]{border-color:var(--t-accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--t-accent) 30%,transparent);}
@@ -211,7 +216,11 @@
   .toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--fg);color:var(--bg);border-radius:999px;padding:9px 16px;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100% - 32px);text-align:center;z-index:20;}
   .toast.show{opacity:1;}
   .foot{color:var(--dim);font-size:13px;margin:26px 0 0;}
-  .viewseg{display:flex;justify-content:flex-end;margin:0 0 12px;}
+  .viewseg{display:flex;justify-content:flex-end;margin:-4px 0 14px;}
+  .seg{display:inline-flex;background:var(--panel-2);border-radius:999px;padding:3px;gap:2px;}
+  .seg button{border:0;background:transparent;border-radius:999px;padding:6px 14px;font-size:14px;color:var(--dim);font-weight:500;white-space:nowrap;transition:background .15s,color .15s;}
+  .seg button:hover{color:var(--fg);}
+  .seg button[aria-pressed="true"]{background:var(--panel);color:var(--fg);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.12);}
   .pack{display:grid;gap:14px;}
   .pack .cat h3{font-size:16px;margin:0 0 6px;font-family:var(--display);}
   .pack .pi{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--line);}
@@ -1192,14 +1201,47 @@ function printTrip(){
 
 /* ---------- pökkunarlisti: sameiginlegur, allir með hlekk geta hakað og bætt við ---------- */
 const PACK_CATS = ['Föt', 'Snyrtivörur', 'Skjöl og peningar', 'Rafmagn', 'Lyf', 'Annað'];
-const PACK_TEMPLATE = {
+// Sameiginlegur kjarni fyrir allar ferðir, viðbót eftir þema ferðarinnar
+const PACK_BASE = {
   'Skjöl og peningar': ['Vegabréf', 'Greiðslukort', 'Reiðufé', 'Ferðatrygging, skírteini', 'Útprentuð áætlun'],
   'Rafmagn': ['Hleðslutæki fyrir síma', 'Hleðslubanki', 'Millistykki fyrir innstungur', 'Heyrnartól'],
-  'Snyrtivörur': ['Sólarvörn', 'Tannbursti og tannkrem', 'Sjampó', 'Svitalyktareyðir', 'After sun'],
-  'Lyf': ['Verkjalyf', 'Plástrar', 'Ferðaveikitöflur', 'Eigin lyf'],
-  'Föt': ['Sundföt', 'Stuttbuxur', 'Bolir', 'Kjóll eða fín föt', 'Sandalar', 'Göngusko', 'Hattur', 'Sólgleraugu', 'Léttur jakki', 'Nærföt', 'Sokkar'],
-  'Annað': ['Handklæði fyrir strönd', 'Bakpoki', 'Vatnsflaska', 'Bók']
+  'Snyrtivörur': ['Tannbursti og tannkrem', 'Sjampó', 'Svitalyktareyðir', 'Varasalvi'],
+  'Lyf': ['Verkjalyf', 'Plástrar', 'Eigin lyf'],
+  'Föt': ['Nærföt', 'Sokkar', 'Náttföt', 'Léttur jakki'],
+  'Annað': ['Bakpoki', 'Vatnsflaska', 'Bók']
 };
+const PACK_SUN = {
+  'Snyrtivörur': ['Sólarvörn', 'After sun', 'Flugnafæla'],
+  'Lyf': ['Ferðaveikitöflur', 'Magalyf'],
+  'Föt': ['Sundföt', 'Stuttbuxur', 'Bolir', 'Kjóll eða fín föt', 'Sandalar', 'Gönguskór', 'Hattur', 'Sólgleraugu'],
+  'Annað': ['Handklæði fyrir strönd', 'Snorklgræjur', 'Vatnsheld taska fyrir síma']
+};
+const PACK_THEME = {
+  sol: { name:'Sólarferð', items: PACK_SUN },
+  sjor: { name:'Strandferð', items: PACK_SUN },
+  snjor: { name:'Skíðaferð', items: {
+    'Snyrtivörur': ['Sólarvörn fyrir andlit', 'Rakakrem'],
+    'Föt': ['Skíðajakki', 'Skíðabuxur', 'Ullarnærföt', 'Flíspeysa', 'Skíðasokkar', 'Hanskar', 'Húfa', 'Buff', 'Hlý stígvél', 'Sundföt fyrir heitan pott'],
+    'Skjöl og peningar': ['Skíðapassi eða bókun'],
+    'Annað': ['Skíðagleraugu', 'Hjálmur', 'Sólgleraugu', 'Lítill bakpoki fyrir brekkuna', 'Handhitapokar']
+  } },
+  borg: { name:'Borgarferð', items: {
+    'Föt': ['Þægilegir gönguskór', 'Regnjakki', 'Fín föt fyrir kvöldið', 'Peysa'],
+    'Skjöl og peningar': ['Miðar á söfn og sýningar', 'Kort fyrir almenningssamgöngur'],
+    'Annað': ['Lítil taska yfir öxl', 'Regnhlíf', 'Fjöltengi fyrir hótelið']
+  } },
+  sveit: { name:'Sveita- og útivistarferð', items: {
+    'Snyrtivörur': ['Flugnafæla', 'Sólarvörn'],
+    'Föt': ['Gönguskór', 'Regnjakki og regnbuxur', 'Flíspeysa', 'Ullarsokkar', 'Húfa', 'Stuttbuxur', 'Bolir'],
+    'Annað': ['Höfuðljós', 'Nestisbox', 'Hitabrúsi', 'Göngukort', 'Sjúkrapakki', 'Sundföt']
+  } }
+};
+function packTemplate(key){
+  const t = PACK_THEME[key] || PACK_THEME.sjor;
+  const out = {};
+  for (const cat of PACK_CATS) out[cat] = [...(PACK_BASE[cat] || []), ...(t.items[cat] || [])];
+  return out;
+}
 function renderPacking(host){
   const items = cur.packing;
   const done = items.filter(x => x.done).length;
@@ -1212,7 +1254,7 @@ function renderPacking(host){
   const wrap = el('div', {class:'pack'});
   if (!items.length){
     wrap.append(el('p', {class:'empty'}, 'Listinn er tómur.'));
-    wrap.append(el('div', {class:'row'}, el('button', {class:'btn small', type:'button', onclick: addTemplate}, 'Setja inn grunnlista'), el('button', {class:'btn ghost small', type:'button', onclick: () => openPackDialog()}, 'Bæta við sjálf')));
+    wrap.append(el('div', {class:'row'}, el('button', {class:'btn small', type:'button', onclick: openTemplateDialog}, 'Setja inn grunnlista'), el('button', {class:'btn ghost small', type:'button', onclick: () => openPackDialog()}, 'Bæta við sjálf')));
   }
   for (const cat of PACK_CATS.concat([...new Set(items.map(x => x.cat).filter(c => c && !PACK_CATS.includes(c)))])){
     const list = items.filter(x => (x.cat || 'Annað') === cat && (!hideDone || !x.done));
@@ -1231,16 +1273,44 @@ function renderPacking(host){
   if (items.length){
     host.append(el('div', {class:'row', style:'margin-top:14px'},
       el('button', {class:'btn ghost small', type:'button', onclick: () => { store.set('travel:packhide', !hideDone); renderTrip(); }}, hideDone ? 'Sýna afgreitt' : 'Fela afgreitt'),
-      el('button', {class:'btn ghost small', type:'button', onclick: addTemplate}, 'Bæta grunnlista við'),
+      el('button', {class:'btn ghost small', type:'button', onclick: openTemplateDialog}, 'Bæta grunnlista við'),
       done ? el('button', {class:'btn ghost small', type:'button', onclick: async () => { if (!confirm('Taka hakið af öllu? Gott fyrir heimferðina.')) return; const upd = {}; for (const x of items) if (x.done) upd[`travel/trips/${cur.id}/packing/${x.id}/done`] = false; try { await db.ref().update(upd); } catch(e){ toast('Tókst ekki.'); } }}, 'Taka hak af öllu') : null));
   }
 }
-async function addTemplate(){
+function openTemplateDialog(){
+  const dlg = $('#dlg'), inner = $('#dlgInner'); inner.innerHTML = '';
+  const def = PACK_THEME[cur.trip.theme] ? cur.trip.theme : 'sjor';
+  inner.append(el('h2', {}, 'Grunnlisti'));
+  inner.append(el('p', {class:'help'}, 'Listinn fer eftir tegund ferðar. Hlutir sem eru þegar á listanum bætast ekki við aftur. Þú getur eytt hverju sem er á eftir.'));
+  const f = el('form', {class:'form'});
+  const opts = el('div', {class:'opts full'});
+  const seen = new Set();
+  for (const key of ['sol', 'snjor', 'borg', 'sveit']){
+    const t = PACK_THEME[key];
+    const n = Object.values(packTemplate(key)).reduce((a, b) => a + b.length, 0);
+    const sample = Object.values(t.items).flat().slice(0, 4).join(', ');
+    opts.append(el('label', {class:'opt'},
+      el('input', {type:'radio', name:'pkTpl', value:key, checked: (key === def || (def === 'sjor' && key === 'sol')) ? '' : null}),
+      el('span', {}, el('b', {}, t.name), el('small', {}, `${n} hlutir. ${sample}, …`))));
+  }
+  f.append(opts);
+  const st = el('p', {class:'status'});
+  f.append(el('div', {class:'row'}, el('button', {class:'btn', type:'submit'}, 'Setja inn'), el('button', {class:'btn ghost', type:'button', onclick: () => dlg.close()}, 'Hætta við')), st);
+  f.addEventListener('submit', async e => {
+    e.preventDefault();
+    const key = (f.querySelector('input[name=pkTpl]:checked') || {}).value || def;
+    try { await addTemplate(key); dlg.close(); }
+    catch(err){ st.textContent = 'Vistun tókst ekki: ' + (err.code || err.message) + (err.code === 'PERMISSION_DENIED' ? '. Reglan "packing" vantar í Firebase.' : ''); st.classList.add('err'); }
+  });
+  inner.append(f); dlg.showModal();
+}
+async function addTemplate(key){
+  const tpl = packTemplate(key);
   const have = new Set(cur.packing.map(x => (x.text || '').toLowerCase()));
   const upd = {}; let n = 0; const now = new Date().toISOString();
-  for (const cat in PACK_TEMPLATE) for (const t of PACK_TEMPLATE[cat]){ if (have.has(t.toLowerCase())) continue; upd[`travel/trips/${cur.id}/packing/${rnd(10)}`] = { text: t, cat, done: false, by: null, created: now }; n++; }
-  if (!n){ toast('Allt úr grunnlistanum er þegar á listanum.'); return; }
-  try { await db.ref().update(upd); toast(`${n} hlutir settir á listann`); } catch(e){ toast('Tókst ekki að vista: ' + (e.code || '')); }
+  for (const cat in tpl) for (const t of tpl[cat]){ if (have.has(t.toLowerCase())) continue; have.add(t.toLowerCase()); upd[`travel/trips/${cur.id}/packing/${rnd(10)}`] = { text: t, cat, done: false, by: null, created: now }; n++; }
+  if (!n){ toast('Allt úr listanum er þegar á listanum.'); return; }
+  await db.ref().update(upd); toast(`${n} hlutir settir á listann`);
 }
 function openPackDialog(){
   const dlg = $('#dlg'), inner = $('#dlgInner'); inner.innerHTML = '';
@@ -1276,7 +1346,7 @@ const FAQ = [
   ['Hvernig skrifa ég verð svo kostnaðaryfirlitið telji rétt?', 'Tölu og gjaldmiðil, í hvaða rithætti sem er: "121.384 kr.", "US$905.62", "USD 1,007.45", "257,84 CAD", "4.200 MXN". Kr. og kr merkja íslenskar krónur, dollaramerki eitt og sér merkir bandaríska dollara.\n\nYfirlitið er undir Stillingar. Gengi dagsins er sótt sjálfkrafa frá Seðlabanka Evrópu. Ef þú vilt nota gengið sem kortið þitt notaði, skráðu það undir "Nota eigið gengi".'],
   ['Í hvaða tímabelti eru tímarnir?', 'Alltaf staðartími á áfangastað. Flug frá Keflavík kl. 17:00 er íslenskur tími, lending í Cancún kl. 18:05 er mexíkóskur tími. Síðan umreiknar ekkert.'],
   ['Hvað er Mikilvægt?', 'Flipi sem aðeins þú sérð, fyrir vegabréfsnúmer, tryggingar, neyðarnúmer, sendiráð, kortafyrirtæki og wifi-lykilorð. Geymt í sama læsta hólfi og bókunarnúmerin. Gott að hafa þetta við höndina án nets.'],
-  ['Hvernig virkar pökkunarlistinn?', 'Flipinn Pökkun er sameiginlegur listi fyrir alla með hlekkinn. Allir geta bætt við og hakað við. "Setja inn grunnlista" gefur algenga hluti til að byrja með. Merktu hlut með nafni ef hann er bara fyrir eina. "Taka hak af öllu" er gott fyrir heimferðina.'],
+  ['Hvernig virkar pökkunarlistinn?', 'Flipinn Pökkun er sameiginlegur listi fyrir alla með hlekkinn. Allir geta bætt við og hakað við. "Setja inn grunnlista" gefur algenga hluti til að byrja með, valið eftir tegund ferðar (sól, skíði, borg eða sveit). Þú getur bætt við og eytt hverju sem er á eftir. Merktu hlut með nafni ef hann er bara fyrir eina. "Taka hak af öllu" er gott fyrir heimferðina.'],
   ['Hvar er dagatalið?', 'Undir Dagskrá. Efst hægra megin velur þú milli "Dagur fyrir dag" og "Dagatal". Valið helst í símanum.'],
   ['Hvað er klukkan í hausnum?', 'Ef þú velur tímabelti áfangastaðar undir Stillingar sýnir hausinn klukkuna þar og heima. Gott fyrir símtöl og skilaboð heim.'],
   ['Get ég prentað ferðina?', 'Já, "Prenta" neðst á síðunni gefur hreina útgáfu af dagskrá, gistingu og Mikilvægt (aðeins hjá eiganda). Í síma má velja "Vista sem PDF" í prentglugganum. Pappír er góð varaleið ef síminn er tómur eða týndur.'],
