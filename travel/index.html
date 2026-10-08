@@ -952,18 +952,22 @@ function exportIcs(){
 /* ---------- stillingar og tillögur ---------- */
 function renderSettings(host){
   const sug = Object.entries(cur.suggestions).sort((a,b) => (a[1].created || '').localeCompare(b[1].created || ''));
-  const sc = el('div', {class:'card'}, el('h2', {}, 'Tillögur'), el('p', {class:'help', style:'margin:0 0 10px'}, 'Samferðafólk með hlekkinn getur sent tillögu. Hún birtist ekki í áætluninni fyrr en þú samþykkir.'));
+  const sc = el('div', {class:'card'}, el('h2', {}, 'Tillögur'), el('p', {class:'help', style:'margin:0 0 10px'}, 'Samferðafólk með hlekkinn getur sent tillögu. Þú setur hana á dagskrá á þeim degi sem tillagan nefnir, geymir hana í hugmyndabankanum til að ákveða daginn síðar, eða hafnar henni.'));
   if (!sug.length) sc.append(el('p', {class:'empty'}, 'Engin tillaga bíður.'));
   for (const [sid, s] of sug){
     const c = itemCard({ ...s, title: s.title }, false);
     c.querySelector('.kind').textContent = `${kindOf(s.kind).label} · tillaga frá ${s.by || 'gesti'}`;
     const acts = c.querySelector('.acts'); acts.querySelectorAll('button').forEach(b => b.remove());
     acts.append(
-      el('button', {class:'btn small', type:'button', onclick: async () => {
+      el('button', {class:'btn small', type:'button', title:'Setja færsluna inn í áætlunina á þeim degi sem tillagan nefnir', onclick: async () => {
         const { by, created, conf, ...item } = s;
         const nid = rnd(12);
-        try { await db.ref().update({ [`travel/trips/${cur.id}/items/${nid}`]: item, [`travel/private/${cur.id}/${nid}/conf`]: conf || null, [`travel/trips/${cur.id}/suggestions/${sid}`]: null }); toast('Tillaga samþykkt'); } catch(e){ toast('Tókst ekki.'); }
-      }}, 'Samþykkja'),
+        try { await db.ref().update({ [`travel/trips/${cur.id}/items/${nid}`]: item, [`travel/private/${cur.id}/${nid}/conf`]: conf || null, [`travel/trips/${cur.id}/suggestions/${sid}`]: null }); toast('Tillaga komin á dagskrá'); } catch(e){ toast('Tókst ekki.'); }
+      }}, 'Á dagskrá'),
+      el('button', {class:'btn ghost small', type:'button', title:'Geyma í hugmyndabankanum og ákveða daginn síðar', onclick: async () => {
+        const idea = { title: s.title, place: s.place || null, lat: s.lat ?? null, lng: s.lng ?? null, placeId: s.placeId || null, url: s.url || null, note: s.note || null, by: s.by || 'gesti', created: new Date().toISOString() };
+        try { await db.ref().update({ [`travel/trips/${cur.id}/ideas/${rnd(12)}`]: idea, [`travel/trips/${cur.id}/suggestions/${sid}`]: null }); toast('Tillaga komin í hugmyndabankann'); } catch(e){ toast('Tókst ekki.'); }
+      }}, 'Í hugmyndabanka'),
       el('button', {class:'btn ghost small', type:'button', onclick: async () => { try { await db.ref(`travel/trips/${cur.id}/suggestions/${sid}`).remove(); toast('Tillögu hafnað'); } catch(e){ toast('Tókst ekki.'); } }}, 'Hafna'));
     sc.append(c);
   }
