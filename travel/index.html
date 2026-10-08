@@ -228,7 +228,7 @@
   .pack .cat h3 small{font-family:var(--body);font-size:12px;font-weight:500;color:var(--dim);background:var(--panel-2);padding:2px 9px;border-radius:999px;white-space:nowrap;}
   .pack .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;}
   .pack .grid.wide{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));}
-  .pack .pi{position:relative;display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;min-width:0;}
+  .pack .pi{position:relative;display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:color-mix(in srgb,var(--panel) 62%,var(--panel-2));border:1px solid var(--line);border-radius:10px;min-width:0;}
   .pack .pi.done{background:var(--panel-2);}
   .pack .pi input[type=checkbox]{width:20px;height:20px;margin:1px 0 0;accent-color:var(--accent);flex:0 0 20px;}
   .pack .pi label{flex:1;min-width:0;overflow-wrap:break-word;cursor:pointer;line-height:1.35;}
@@ -239,7 +239,7 @@
   .pack .pi .x{background:none;border:0;color:var(--dim);font-size:18px;line-height:1;padding:0 4px;cursor:pointer;}
   .pack .pi .x:hover{color:var(--danger);}
   @media (hover:hover){
-    .pack .pi .ed,.pack .pi .x{position:absolute;top:6px;opacity:0;transition:opacity .15s;background:var(--panel);border-radius:6px;}
+    .pack .pi .ed,.pack .pi .x{position:absolute;top:6px;opacity:0;transition:opacity .15s;background:color-mix(in srgb,var(--panel) 62%,var(--panel-2));border-radius:6px;}
     .pack .pi .x{right:6px;padding:2px 6px;}
     .pack .pi .ed{right:30px;padding:2px 4px;}
     .pack .pi.done .ed,.pack .pi.done .x{background:var(--panel-2);}
