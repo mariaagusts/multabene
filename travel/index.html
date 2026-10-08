@@ -224,6 +224,7 @@
   .toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--fg);color:var(--bg);border-radius:999px;padding:9px 16px;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100% - 32px);text-align:center;z-index:20;}
   .toast.show{opacity:1;}
   .foot{color:var(--dim);font-size:13px;margin:26px 0 0;}
+  .foot .footlinks{display:block;margin-top:6px;}
   .viewseg{display:flex;justify-content:flex-end;margin:-4px 0 14px;}
   .seg{display:inline-flex;background:var(--panel-2);border-radius:999px;padding:3px;gap:2px;}
   .seg button{border:0;background:transparent;border-radius:999px;padding:6px 14px;font-size:14px;color:var(--dim);font-weight:500;white-space:nowrap;transition:background .15s,color .15s;}
@@ -910,8 +911,9 @@ function renderTrip(){
     document.body.append(el('button', {class:'btn fab', id:'fab', type:'button', onclick: addFn}, addLabel));
   }
   const nEd = Object.keys(trip.editors || {}).length;
-  $('#foot').innerHTML = (owner ? `Hver sem hefur leshlekkinn getur skoðað ferðina, sent tillögu og bætt í hugmyndabankann. Þú${nEd ? ` og ${nEd} ${nEd === 1 ? 'ritstjóri' : 'ritstjórar'}` : ''} ${nEd ? 'breytið' : 'breytir'} áætluninni. <button class="linkbtn" id="copyShare">Afrita leshlekk</button>` : editor ? `Þú ert ritstjóri þessarar ferðar og breytir áætluninni, verkefnum og pökkun. Bókunarnúmer, verð og Mikilvægt sér aðeins eigandi.` : `Þú skoðar þessa ferð sem gestur. Þú getur sent tillögu að færslu sem eigandi samþykkir. <button class="linkbtn" id="sugBtn">Senda tillögu</button>`) + ` · <button class="linkbtn" id="icsBtn">Sækja í dagatal símans</button>`;
-  $('#foot').innerHTML += ` · <button class="linkbtn" id="printBtn">Prenta</button>` + (editor ? ` · <button class="linkbtn" id="logBtn">Breytingasaga</button>` : '') + ` · <button class="linkbtn" id="helpBtn">Hjálp</button>`;
+  const footText = owner ? `Hver sem hefur leshlekkinn getur skoðað ferðina, sent tillögu og bætt í hugmyndabankann. Þú${nEd ? ` og ${nEd} ${nEd === 1 ? 'ritstjóri' : 'ritstjórar'}` : ''} ${nEd ? 'breytið' : 'breytir'} áætluninni.` : editor ? `Þú ert ritstjóri þessarar ferðar og breytir áætluninni, verkefnum og pökkun. Bókunarnúmer, verð og Mikilvægt sér aðeins eigandi.` : `Þú skoðar þessa ferð sem gestur. Þú getur sent tillögu að færslu sem eigandi samþykkir.`;
+  const footLinks = [owner ? `<button class="linkbtn" id="copyShare">Afrita leshlekk</button>` : '', !editor ? `<button class="linkbtn" id="sugBtn">Senda tillögu</button>` : '', `<button class="linkbtn" id="icsBtn">Sækja í dagatal símans</button>`, `<button class="linkbtn" id="printBtn">Prenta</button>`, editor ? `<button class="linkbtn" id="logBtn">Breytingasaga</button>` : '', `<button class="linkbtn" id="helpBtn">Hjálp</button>`].filter(Boolean).join(' · ');
+  $('#foot').innerHTML = `${footText}<span class="footlinks">${footLinks}</span>`;
   $('#printBtn').onclick = printTrip;
   const cs = $('#copyShare'); if (cs) cs.onclick = () => copy(`${BASE}#t/${cur.id}`, 'Hlekkur afritaður');
   const sb = $('#sugBtn'); if (sb) sb.onclick = () => openItemDialog(null, true);
