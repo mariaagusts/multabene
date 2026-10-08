@@ -1387,7 +1387,7 @@ async function toggleMark(r){
   const marked = cur.marks.some(m => m.placeId === r.placeId);
   try {
     if (marked) await db.ref(`travel/team/${cur.id}/marks/${r.placeId}`).remove();
-    else { const { placeId, ...rest } = r; const c = exploreCenter(); await db.ref(`travel/team/${cur.id}/marks/${placeId}`).set({ ...rest, near: rest.near || (c && c.title) || null, at: new Date().toISOString() }); }
+    else { const { placeId, ...rest } = r; const c = exploreCenter(); await db.ref(`travel/team/${cur.id}/marks/${placeId}`).set({ ...rest, near: rest.near || (c && c.title) || null, nearId: rest.nearId || (c && c.id) || null, at: new Date().toISOString() }); }
   } catch(e){ toast('Tókst ekki: ' + (e.code || e.message)); }
 }
 function exploreCard(r){
@@ -1410,7 +1410,8 @@ function exploreCard(r){
   if (have) acts.append(el('span', {class:'tag'}, 'Þegar í bankanum'));
   else acts.append(el('button', {class:'btn small', type:'button', onclick: async (e) => {
     const btn = e.currentTarget; btn.disabled = true;
-    const idea = { title: r.name, place: r.addr || r.name, lat: r.lat, lng: r.lng, placeId: r.placeId, url: r.url, note: null, by: myName(), rating: r.rating, ratingCount: r.ratingCount, hours: r.hours, photo: r.photo, created: new Date().toISOString() };
+    const c = exploreCenter();
+    const idea = { title: r.name, place: r.addr || r.name, lat: r.lat, lng: r.lng, placeId: r.placeId, url: r.url, note: null, by: myName(), rating: r.rating, ratingCount: r.ratingCount, hours: r.hours, photo: r.photo, near: r.near || (c && c.title) || null, nearId: r.nearId || (c && c.id) || null, created: new Date().toISOString() };
     try { await db.ref(`travel/trips/${cur.id}/ideas`).push(idea); toast('Komið í hugmyndabankann'); logChange(`Hugmynd: "${r.name}"`); c.classList.add('added'); btn.replaceWith(el('span', {class:'tag'}, 'Þegar í bankanum')); }
     catch(err){ btn.disabled = false; toast('Tókst ekki: ' + (err.code || err.message)); }
   }}, 'Í hugmyndabankann'));
@@ -1419,7 +1420,7 @@ function exploreCard(r){
 }
 
 function renderIdeas(host){
-  host.append(el('p', {class:'help', style:'margin:0 0 12px'}, 'Staðir og afþreying sem koma til greina. Hugmyndir hópsins eru efst, tillögur frá Google fyrir neðan. Settu hugmynd á dag þegar það er ákveðið.'));
+  host.append(el('p', {class:'help', style:'margin:0 0 12px'}, 'Staðir og afþreying sem koma til greina. Ný hugmynd: "+ Hugmynd" og leitaðu að staðnum í reitnum "Staður (leit)", eða veldu úr tillögunum hér fyrir neðan. "Setja á dag" stingur upp á degi innan gistingarinnar sem hugmyndin á við.'));
   host.append(el('h3', {style:'font-size:17px;margin:0 0 8px'}, `Hugmyndir hópsins${cur.ideas.length ? ` (${cur.ideas.length})` : ''}`));
   if (!cur.ideas.length) host.append(el('p', {class:'empty', style:'margin:0 0 16px'}, 'Engin hugmynd enn. Smelltu á "+ Hugmynd", eða veldu úr tillögunum hér fyrir neðan.'));
   const wrap = el('div', {class:'hotels', style:'margin:0 0 20px'});
@@ -1432,12 +1433,12 @@ function renderIdeas(host){
     left.append(el('h3', {}, idea.title));
     if (idea.place) left.append(el('div', {class:'io', style:'font-size:14px;color:var(--dim)'}, idea.place + (idea.rating ? ` · ★ ${String(idea.rating).replace('.', ',')}` : '')));
     if (idea.note) left.append(el('div', {class:'io', style:'font-size:14px;color:var(--dim);white-space:pre-line;margin-top:4px'}, idea.note));
-    left.append(el('div', {class:'by'}, `Frá ${idea.by || 'eiganda'}` + (sched ? ` · á dagskrá ${fmtD(sched.start)}` : idea.scheduled ? ' · komið á dagskrá' : '')));
+    left.append(el('div', {class:'by'}, `Frá ${idea.by || 'eiganda'}` + (idea.near ? ` · við ${idea.near}` : '') + (sched ? ` · á dagskrá ${fmtD(sched.start)}` : idea.scheduled ? ' · komið á dagskrá' : '')));
     const acts = el('div', {class:'acts', style:'display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;align-items:center'});
     if (link) acts.append(el('a', {class:'maplink', href:link, target:'_blank', rel:'noopener'}, 'Opna í Google Maps ↗'));
     if (idea.url) acts.append(el('a', {class:'maplink', href:idea.url, target:'_blank', rel:'noopener'}, 'Vefsíða ↗'));
     if (canEdit()){
-      if (!idea.scheduled) acts.append(el('button', {class:'btn small', type:'button', onclick: () => openItemDialog({ kind:'act', title: idea.title, place: idea.place, lat: idea.lat, lng: idea.lng, placeId: idea.placeId, note: idea.note, url: idea.url, rating: idea.rating, ratingCount: idea.ratingCount, hours: idea.hours, start: cur.trip.start + 'T10:00', end: cur.trip.start + 'T12:00' }, false, { ideaId: idea.id })}, 'Setja á dag'));
+      if (!idea.scheduled) acts.append(el('button', {class:'btn small', type:'button', onclick: () => { const day = ideaDay(idea); openItemDialog({ kind:'act', title: idea.title, place: idea.place, lat: idea.lat, lng: idea.lng, placeId: idea.placeId, note: idea.note, url: idea.url, rating: idea.rating, ratingCount: idea.ratingCount, hours: idea.hours, start: day + 'T10:00', end: day + 'T12:00' }, false, { ideaId: idea.id }); }}, 'Setja á dag'));
       acts.append(el('button', {class:'linkbtn', type:'button', onclick: async () => { if (!confirm(`Eyða hugmyndinni "${idea.title}"?`)) return; try { await db.ref(`travel/trips/${cur.id}/ideas/${idea.id}`).remove(); } catch(e){ toast('Tókst ekki.'); } }}, 'Eyða'));
     }
     left.append(acts);
@@ -1447,6 +1448,14 @@ function renderIdeas(host){
   }
   if (cur.ideas.length) host.append(wrap);
   if (canEdit()) renderExplore(host);
+}
+/* Sjálfgefinn dagur fyrir hugmynd: fyrsti heili dagur gistingarinnar sem hún fannst við, annars fyrsti ferðadagur */
+function ideaDay(idea){
+  const stay = idea.nearId ? cur.items.find(i => i.id === idea.nearId) : (idea.near ? cur.items.find(i => i.kind === 'hotel' && i.title === idea.near) : null);
+  if (!stay || !stay.start) return cur.trip.start;
+  const a = dpart(stay.start), b = dpart(stay.end || stay.start);
+  const next = iso(new Date(parse(a).getTime() + 86400000));
+  return next < b ? next : a;
 }
 function openIdeaDialog(){
   const dlg = $('#dlg'), inner = $('#dlgInner'); inner.innerHTML = '';
