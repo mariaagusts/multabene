@@ -69,7 +69,9 @@
   .avatar img{width:100%;height:100%;object-fit:cover;}
 
   .tabrow{display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);margin:0 0 18px;}
-  nav.tabs{display:flex;gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch;min-width:0;flex:1;}
+  nav.tabs{display:flex;gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch;min-width:0;flex:1;scrollbar-width:none;}
+  nav.tabs::-webkit-scrollbar{display:none;}
+  nav.tabs.more{mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent);-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent);}
   .tabrow .btn{flex:0 0 auto;margin-left:auto;}
   @media (max-width:640px){ .tabrow .btn{display:none;} }
   @media (min-width:641px){ .fab{display:none;} }
@@ -142,7 +144,7 @@
   @media (max-width:640px){
     .days{grid-template-columns:50px minmax(0,1fr) 36px;gap:12px 8px;}
     .days .date b{font-size:22px;}
-    .stay{padding:10px 0;align-items:center;cursor:pointer;border-left-width:3px;}
+    .stay{padding:10px 0;align-items:center;justify-content:flex-start;cursor:pointer;border-left-width:3px;}
     .stay .full{display:none;}
     .stay .short{display:block;writing-mode:vertical-rl;text-orientation:mixed;font-weight:700;font-size:12px;white-space:nowrap;overflow:hidden;max-height:100%;color:var(--hotel);}
     .stayhead{display:none;}
@@ -264,7 +266,8 @@
   .info-view .kv span{white-space:pre-line;overflow-wrap:anywhere;}
   @media (max-width:560px){ .info-view .kv{grid-template-columns:1fr;gap:4px;} }
   .support{color:var(--dim);font-size:13px;margin:18px 0 0;padding-top:14px;border-top:1px solid var(--line);}
-  .support b{color:var(--fg);font-weight:500;font-variant-numeric:tabular-nums;}
+  .support b{color:var(--fg);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .support .acct{display:block;margin-top:6px;}
   .idea{display:grid;grid-template-columns:1fr auto;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;}
   .idea h3{font-size:17px;overflow-wrap:anywhere;}
   .idea .by{font-size:12px;color:var(--dim);}
@@ -283,7 +286,7 @@
   <div class="tabrow" id="tabrow" hidden><nav class="tabs" id="tabs" role="tablist"></nav><button class="btn small" id="addTop" type="button" hidden></button></div>
   <main id="app"></main>
   <p class="foot" id="foot"></p>
-  <p class="support">Ég smíðaði þessa síðu fyrir mig og vini mína og deili henni með þér. Ef hún sparar þér tíma, þá er kaffibolli vel þeginn. Reikningur <b>0527-26-1416</b>, kt. <b>471025-0380</b>.</p>
+  <p class="support">Ég smíðaði þessa síðu fyrir mig og vini mína og deili henni með þér. Ef hún sparar þér tíma, þá er kaffibolli vel þeginn.<span class="acct">Reikningur <b>0527-26-1416</b>, kt. <b>471025-0380</b>.</span></p>
 </div>
 <dialog id="dlg"><div class="inner" id="dlgInner"></div></dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -737,6 +740,12 @@ function renderTrip(){
   for (const [k, label] of tabs){
     nav.append(el('button', {role:'tab', 'aria-selected': String(cur.tab === k), html: label, onclick: () => { cur.tab = k; store.set('travel:tab', k); history.replaceState(null, '', `#t/${cur.id}/${k}`); renderTrip(); }}));
   }
+  /* Á síma: fölva hægri brún meðan fleiri flipar eru utan skjás, og skruna valinn flipa í sýn */
+  const paintMore = () => nav.classList.toggle('more', nav.scrollLeft + nav.clientWidth < nav.scrollWidth - 2);
+  if (!nav.dataset.scrollHooked){ nav.addEventListener('scroll', paintMore, { passive:true }); window.addEventListener('resize', paintMore); nav.dataset.scrollHooked = '1'; }
+  const sel = nav.querySelector('[aria-selected="true"]');
+  if (sel && nav.scrollWidth > nav.clientWidth){ const r = sel.offsetLeft + sel.offsetWidth; if (r > nav.scrollLeft + nav.clientWidth) nav.scrollLeft = r - nav.clientWidth + 24; else if (sel.offsetLeft < nav.scrollLeft) nav.scrollLeft = sel.offsetLeft - 24; }
+  paintMore();
 
   const app = $('#app'); app.innerHTML = '';
   if (!navigator.onLine || (cur.fromCache && !cur.live)){
@@ -1504,7 +1513,7 @@ function renderCosts(host){
     list.append(el('div', {class:'kv'},
       el('b', {}, `${kindOf(k).label} (${g.n})`),
       el('span', {}, parts),
-      el('span', {style:'font-weight:700;white-space:nowrap'}, g.missing ? `≥ ${fmtAmt(g.isk, 'ISK')} kr.` : `${fmtAmt(g.isk, 'ISK')} kr.`)));
+      el('span', {style:'font-weight:700;white-space:nowrap'}, g.missing ? (g.isk ? `≥ ${fmtAmt(g.isk, 'ISK')} kr.` : 'gengi vantar') : `${fmtAmt(g.isk, 'ISK')} kr.`)));
   }
   card.append(list);
   card.append(el('p', {style:'margin:12px 0 0;font-weight:700;font-size:17px'}, `Samtals ${missing ? 'að minnsta kosti ' : ''}${fmtAmt(total, 'ISK')} kr.` + (missing ? ' (gengi vantar fyrir hluta)' : '')));
