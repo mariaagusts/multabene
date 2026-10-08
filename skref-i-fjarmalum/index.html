@@ -13,171 +13,212 @@
 <meta property="og:locale" content="is_IS">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex, nofollow">
-<meta name="description" content="Beinagrind að yfirliti yfir fjármál einstaklinga, byggð á bókunum Fyrstu skref í fjármálum og Farsæl skref í fjármálum (Fjármálavit). Þrjú stig: börn, fullorðnir og lengra komnir.">
+<meta name="description" content="Yfirlit yfir fjármál einstaklinga, byggð á bókunum Fyrstu skref í fjármálum og Farsæl skref í fjármálum (Fjármálavit). Þrjú stig: börn, fullorðnir og lengra komnir.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f4efe6; --surface:#fffdf9; --surface-2:#efe8da;
-  --ink:#292018; --ink-2:#5d5140; --muted:#6b6150;
-  --hairline:#e3dac8; --accent:#1266c4; --accent-ink:#fff; --accent-soft:#e4edf9;
-  --l1:#0f766e; --l1-soft:#dff3ef;
-  --l2:#1266c4; --l2-soft:#e4edf9;
-  --l3:#8a4a9f; --l3-soft:#f0e6f5;
-  --warn:#eda100; --warn-soft:#fdf3d8;
-  --shadow:0 1px 2px rgba(84,66,32,.06),0 6px 20px rgba(84,66,32,.09);
-  --r:14px;
+  --bg:#F4F1EA; --surface:#FFFDF9; --surface-2:#ECE7DC;
+  --ink:#1B2430; --ink-2:#3C4654; --muted:#6B6E72;
+  --hairline:#DED8CB; --rule:rgba(27,36,48,.14);
+  --accent:#B86B4B; --accent-ink:#fff; --accent-soft:#F3E4DC;
+  --l1:#2F7D5B; --l1-soft:#E3EFE7;
+  --l2:#2E4055; --l2-soft:#E4E8EE;
+  --l3:#7A4A8A; --l3-soft:#EEE4F2;
+  --warn:#B98A2F; --warn-soft:#F7EEDA;
+  --shadow:0 1px 2px rgba(27,36,48,.05),0 8px 24px rgba(27,36,48,.06);
+  --r:12px;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:"IBM Plex Mono","SF Mono",Menlo,Consolas,monospace;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#161310; --surface:#211d17; --surface-2:#2b2620;
-    --ink:#f3efe8; --ink-2:#cbc2b3; --muted:#9e9384;
-    --hairline:#352f26; --accent:#5aa2f0; --accent-ink:#161310; --accent-soft:#1e3048;
-    --l1:#3fbfae; --l1-soft:#15302c;
-    --l2:#5aa2f0; --l2-soft:#1e3048;
-    --l3:#c28ad8; --l3-soft:#32233a;
-    --warn:#c98500; --warn-soft:#332a14;
-    --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 20px rgba(0,0,0,.3);
+    --bg:#15181C; --surface:#1E2228; --surface-2:#272C33;
+    --ink:#EEEAE2; --ink-2:#C9C3B8; --muted:#9A968E;
+    --hairline:#343A42; --rule:rgba(238,234,226,.14);
+    --accent:#D28B6B; --accent-ink:#15181C; --accent-soft:#3A2A22;
+    --l1:#5FB78F; --l1-soft:#1E2F27;
+    --l2:#8FA9C6; --l2-soft:#232C36;
+    --l3:#B88BC8; --l3-soft:#2E2434;
+    --warn:#D1A34D; --warn-soft:#332C1C;
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 24px rgba(0,0,0,.3);
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#161310; --surface:#211d17; --surface-2:#2b2620;
-  --ink:#f3efe8; --ink-2:#cbc2b3; --muted:#9e9384;
-  --hairline:#352f26; --accent:#5aa2f0; --accent-ink:#161310; --accent-soft:#1e3048;
-  --l1:#3fbfae; --l1-soft:#15302c;
-  --l2:#5aa2f0; --l2-soft:#1e3048;
-  --l3:#c28ad8; --l3-soft:#32233a;
-  --warn:#c98500; --warn-soft:#332a14;
-  --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 20px rgba(0,0,0,.3);
+  --bg:#15181C; --surface:#1E2228; --surface-2:#272C33;
+  --ink:#EEEAE2; --ink-2:#C9C3B8; --muted:#9A968E;
+  --hairline:#343A42; --rule:rgba(238,234,226,.14);
+  --accent:#D28B6B; --accent-ink:#15181C; --accent-soft:#3A2A22;
+  --l1:#5FB78F; --l1-soft:#1E2F27;
+  --l2:#8FA9C6; --l2-soft:#232C36;
+  --l3:#B88BC8; --l3-soft:#2E2434;
+  --warn:#D1A34D; --warn-soft:#332C1C;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 8px 24px rgba(0,0,0,.3);
   color-scheme:dark;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
   margin:0; background:var(--bg); color:var(--ink);
-  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  line-height:1.55; font-size:17px;
+  font-family:var(--sans); font-size:15.5px; line-height:1.58;
+  -webkit-font-smoothing:antialiased;
 }
 a{color:var(--accent)}
-.wrap{max-width:1100px; margin:0 auto; padding:16px 16px 80px}
+.wrap{max-width:1180px; margin:0 auto; padding:28px 24px 80px}
+@media (max-width:640px){ .wrap{padding:20px 16px 70px} }
 
-/* Haus */
-header.top{padding:24px 0 8px}
-.eyebrow{font-size:.8rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin:0 0 6px}
-h1{font-size:clamp(1.8rem,4vw,2.6rem); line-height:1.1; margin:0 0 10px; letter-spacing:-.02em}
-.lead{color:var(--ink-2); max-width:70ch; margin:0}
-.draft{display:inline-block; background:var(--warn-soft); border:1px solid var(--warn); color:var(--ink); border-radius:999px; padding:2px 10px; font-size:.78rem; margin-left:8px; vertical-align:middle}
+/* ---------- Haus ---------- */
+header.top{padding:8px 0 10px; max-width:72ch}
+.eyebrow{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.2em; color:var(--muted); margin:0 0 10px}
+h1{font-family:var(--serif); font-weight:500; font-size:clamp(38px,5.5vw,56px); line-height:1.02; margin:0 0 14px; letter-spacing:-.02em}
+.lead{font-family:var(--serif); font-size:19px; line-height:1.5; color:var(--ink-2); margin:0; text-wrap:pretty}
+.lead em{font-style:italic}
+.draft{display:inline-block; font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--warn); border:1px solid var(--warn); border-radius:999px; padding:3px 9px; margin-left:10px; vertical-align:middle; font-weight:500}
 
-/* Stigaval */
-.levels{
-  position:sticky; top:0; z-index:10; background:var(--bg);
-  padding:12px 0; margin:12px 0 8px; border-bottom:1px solid var(--hairline);
-}
-.levels .row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+/* ---------- Stigaval ---------- */
+.levels{position:sticky; top:0; z-index:10; background:var(--bg); padding:14px 0 12px; margin:14px 0 6px; border-bottom:1px solid var(--rule)}
+.levels .row{display:flex; gap:8px; flex-wrap:wrap; align-items:stretch}
 .levels button{
-  flex:1 1 150px; border:2px solid var(--hairline); background:var(--surface); color:var(--ink-2);
-  border-radius:var(--r); padding:10px 12px; font:inherit; font-weight:700; cursor:pointer; text-align:left;
-  transition:border-color .15s, background .15s;
+  flex:1 1 180px; border:1px solid var(--hairline); background:var(--surface); color:var(--ink-2);
+  border-radius:10px; padding:9px 13px; font:inherit; font-weight:600; font-size:14px; line-height:1.25; cursor:pointer; text-align:left;
+  transition:border-color .15s, background .15s, color .15s;
 }
-.levels button small{display:block; font-weight:400; font-size:.8rem; color:var(--muted)}
-.levels button[aria-pressed="true"]{color:var(--ink)}
-.levels button[data-set="1"][aria-pressed="true"]{border-color:var(--l1); background:var(--l1-soft)}
-.levels button[data-set="2"][aria-pressed="true"]{border-color:var(--l2); background:var(--l2-soft)}
-.levels button[data-set="3"][aria-pressed="true"]{border-color:var(--l3); background:var(--l3-soft)}
-.levels button[data-set="all"][aria-pressed="true"]{border-color:var(--ink-2); background:var(--surface-2)}
+.levels button small{display:block; font-weight:400; font-size:12px; color:var(--muted); margin-top:2px}
+.levels button:hover{border-color:var(--accent)}
+.levels button[aria-pressed="true"]{color:var(--ink); border-width:1px}
+.levels button[data-set="1"][aria-pressed="true"]{border-color:var(--l1); background:var(--l1-soft); box-shadow:inset 0 0 0 1px var(--l1)}
+.levels button[data-set="2"][aria-pressed="true"]{border-color:var(--l2); background:var(--l2-soft); box-shadow:inset 0 0 0 1px var(--l2)}
+.levels button[data-set="3"][aria-pressed="true"]{border-color:var(--l3); background:var(--l3-soft); box-shadow:inset 0 0 0 1px var(--l3)}
+.levels button[data-set="all"][aria-pressed="true"]{border-color:var(--ink-2); background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--ink-2)}
 .levels button[data-set="all"]{flex:0 1 auto}
-.levels button:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+.levels button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+@media (max-width:640px){
+  .levels{padding:10px 0 8px}
+  .levels .row{gap:6px}
+  .levels button{flex:1 1 auto; padding:7px 9px; font-size:12.5px; text-align:center; border-radius:999px}
+  .levels button small{display:none}
+  .levels button[data-set="all"]{flex:1 1 auto}
+  section.chapter{scroll-margin-top:70px}
+}
 
-/* Uppbygging */
-.layout{display:grid; grid-template-columns:1fr; gap:24px}
-@media (min-width:900px){ .layout{grid-template-columns:240px 1fr} }
-nav.toc{position:sticky; top:96px; align-self:start; font-size:.9rem; display:none}
-@media (min-width:900px){ nav.toc{display:block} }
+/* ---------- Uppbygging ---------- */
+.layout{display:grid; grid-template-columns:1fr; gap:28px}
+@media (min-width:960px){ .layout{grid-template-columns:200px minmax(0,1fr); gap:40px} }
+nav.toc{position:sticky; top:86px; align-self:start; font-size:13px}
 nav.toc ol{list-style:none; padding:0; margin:0}
-nav.toc li{margin:0 0 6px}
-nav.toc a{text-decoration:none; color:var(--ink-2)}
-nav.toc a:hover{color:var(--accent)}
-nav.toc .num{color:var(--muted); margin-right:6px}
+nav.toc li{margin:0}
+nav.toc a{display:block; text-decoration:none; color:var(--ink-2); padding:5px 0 5px 10px; border-left:2px solid var(--rule); line-height:1.3}
+nav.toc a:hover{color:var(--accent); border-left-color:var(--accent)}
+nav.toc .num{font-family:var(--mono); font-size:11px; color:var(--muted); margin-right:8px}
+@media (max-width:959px){
+  nav.toc{position:static; display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; margin:0 -16px; padding:0 16px}
+  nav.toc ol{display:flex; gap:6px; width:max-content; padding-bottom:4px}
+  nav.toc a{border:1px solid var(--hairline); border-radius:999px; padding:5px 11px; white-space:nowrap; background:var(--surface)}
+  nav.toc .num{margin-right:5px}
+}
 
-section.chapter{margin:0 0 40px; scroll-margin-top:110px}
+/* ---------- Kaflar: rist af kössum ---------- */
+section.chapter{
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:14px; align-items:start;
+  margin:0 0 44px; scroll-margin-top:104px;
+}
 section.chapter > h2{
-  font-size:1.5rem; margin:28px 0 4px; letter-spacing:-.01em; padding-top:12px; border-top:2px solid var(--hairline);
+  grid-column:1/-1; font-family:var(--serif); font-weight:500; font-size:30px; line-height:1.1; letter-spacing:-.015em;
+  margin:14px 0 0; padding:18px 0 0; border-top:1px solid var(--rule);
 }
-.src{font-size:.78rem; color:var(--muted); margin:0 0 14px}
-.src span{display:inline-block; background:var(--surface-2); border-radius:999px; padding:1px 8px; margin-right:4px}
+section.chapter:first-of-type > h2{border-top:none; padding-top:0; margin-top:0}
+.src{grid-column:1/-1; margin:0 0 4px; display:flex; flex-wrap:wrap; gap:6px}
+.src span{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; color:var(--muted); background:var(--surface-2); border-radius:999px; padding:3px 9px}
 article.topic{
-  background:var(--surface); border-radius:var(--r); box-shadow:var(--shadow);
-  padding:14px 16px; margin:0 0 12px; scroll-margin-top:110px;
+  background:var(--surface); border:1px solid var(--hairline); border-radius:var(--r);
+  padding:16px 18px 14px; margin:0; scroll-margin-top:104px; min-width:0;
 }
-article.topic h3{margin:0 0 8px; font-size:1.1rem}
-article.topic p{margin:0 0 8px}
-article.topic ul{margin:0 0 8px; padding-left:20px}
-article.topic li{margin:2px 0}
-.lvl{border-left:4px solid transparent; padding:2px 0 2px 12px; margin:6px 0}
-.lvl .tag{display:none; font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; font-weight:700; margin-bottom:2px}
-.l1{border-color:var(--l1)} .l1 .tag{color:var(--l1)}
-.l2{border-color:var(--l2)} .l2 .tag{color:var(--l2)}
-.l3{border-color:var(--l3)} .l3 .tag{color:var(--l3)}
-/* Stigaval: sýna aðeins valið stig */
+article.topic h3{font-family:var(--serif); font-weight:600; font-size:20px; line-height:1.2; margin:0 0 10px; letter-spacing:-.01em}
+article.topic p{margin:0 0 8px; text-wrap:pretty}
+article.topic p:last-child{margin-bottom:0}
+article.topic ul,article.topic ol{margin:0 0 8px; padding-left:18px}
+article.topic li{margin:3px 0}
+article.topic li::marker{color:var(--accent)}
+.lvl{border-left:0; padding:0; margin:0}
+.lvl .tag{display:none; font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.12em; font-weight:500; margin-bottom:6px}
+.l1 .tag{color:var(--l1)} .l2 .tag{color:var(--l2)} .l3 .tag{color:var(--l3)}
 html[data-level="1"] .lvl:not(.l1){display:none}
 html[data-level="2"] .lvl:not(.l2){display:none}
 html[data-level="3"] .lvl:not(.l3){display:none}
 html[data-level="all"] .lvl .tag{display:block}
-html[data-level="all"] .lvl{background:var(--surface-2); border-radius:0 8px 8px 0; padding:8px 12px}
+html[data-level="all"] .lvl{border-left:3px solid var(--hairline); padding:4px 0 4px 12px; margin:10px 0}
+html[data-level="all"] .lvl.l1{border-left-color:var(--l1)}
+html[data-level="all"] .lvl.l2{border-left-color:var(--l2)}
+html[data-level="all"] .lvl.l3{border-left-color:var(--l3)}
 
-.box{background:var(--surface-2); border-radius:var(--r); padding:12px 16px; margin:8px 0 0}
-.box h3{margin:0 0 6px; font-size:1rem}
+/* Æfingar og lausnir: ná yfir alla breiddina */
+.box{grid-column:1/-1; background:var(--surface-2); border:1px solid var(--hairline); border-radius:var(--r); padding:14px 18px; margin:2px 0 0}
+.box h3{font-family:var(--serif); font-weight:600; font-size:18px; margin:0 0 8px}
+.box p{margin:0 0 6px}
 details.losn{margin:8px 0 4px}
 details.losn summary{
   display:inline-block; cursor:pointer; list-style:none;
-  border:2px solid var(--accent); color:var(--accent); background:var(--surface);
-  border-radius:999px; padding:5px 14px; font-weight:700; font-size:.9rem; user-select:none;
+  font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+  border:1px solid var(--accent); color:var(--accent); background:transparent;
+  border-radius:999px; padding:6px 13px; user-select:none;
 }
 details.losn summary::-webkit-details-marker{display:none}
-details.losn summary::before{content:"+ "; font-weight:700}
+details.losn summary::before{content:"+ "}
 details.losn[open] summary::before{content:"− "}
 details.losn[open] summary{background:var(--accent-soft)}
-details.losn summary:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
-.losn-body{margin-top:10px; padding:12px 14px; background:var(--surface); border-radius:10px; border:1px solid var(--hairline); font-size:.95rem}
+details.losn summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.losn-body{margin-top:10px; padding:12px 14px; background:var(--surface); border-radius:10px; border:1px solid var(--hairline); font-size:14.5px}
 .losn-body p:last-child{margin-bottom:0}
-.losn-body table{border-collapse:collapse; width:100%; margin:6px 0 10px; font-size:.9rem}
-.losn-body th,.losn-body td{text-align:left; padding:5px 8px; border-bottom:1px solid var(--hairline); vertical-align:top}
-.losn-body th{font-size:.78rem; text-transform:uppercase; letter-spacing:.04em; color:var(--muted)}
-.losn-body ul,.losn-body ol{padding-left:20px}
-@media (max-width:600px){ .losn-body table{display:block; overflow-x:auto} }
+.losn-body table{border-collapse:collapse; width:100%; margin:6px 0 10px; font-size:13.5px; display:block; overflow-x:auto}
+.losn-body th,.losn-body td{text-align:left; padding:6px 10px; border-bottom:1px solid var(--hairline); vertical-align:top; white-space:nowrap}
+.losn-body th{font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:500}
+.losn-body ul,.losn-body ol{padding-left:18px}
 @media print{ details.losn{display:block} details.losn summary{display:none} details.losn:not([open]) .losn-body{display:block} }
-code,.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.92em; background:var(--surface-2); padding:1px 5px; border-radius:5px}
+code,.formula{font-family:var(--mono); font-size:.9em; background:var(--surface-2); padding:1px 5px; border-radius:5px}
 .formula{display:block; padding:8px 10px; margin:6px 0; overflow-x:auto}
-dl.gloss{margin:0}
-dl.gloss dt{font-weight:700; margin-top:10px}
-dl.gloss dd{margin:0}
+
+/* ---------- Orðskýringar ---------- */
+#ord article.topic{grid-column:1/-1; background:transparent; border:0; padding:0}
+dl.gloss{margin:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:10px}
+dl.gloss .term{background:var(--surface); border:1px solid var(--hairline); border-radius:var(--r); padding:12px 14px; margin:0; scroll-margin-top:110px; min-width:0}
+dl.gloss dt{font-family:var(--serif); font-weight:600; font-size:17px; margin:0 0 4px}
+dl.gloss dd{margin:0; font-size:14.5px; color:var(--ink-2)}
 dl.gloss dd .tag{display:none}
-html[data-level="all"] dl.gloss dd .tag{display:inline; margin-right:6px}
-dl.gloss .term{scroll-margin-top:120px; padding:2px 6px; margin:0 -6px; border-radius:8px}
-dl.gloss .term:target{background:var(--accent-soft)}
-a.ord{color:inherit; text-decoration:underline; text-decoration-style:dotted; text-decoration-color:var(--accent); text-decoration-thickness:1.5px; text-underline-offset:3px; cursor:pointer}
+html[data-level="all"] dl.gloss dd{margin:4px 0}
+html[data-level="all"] dl.gloss dd .tag{display:inline-block; margin-right:6px}
+dl.gloss .term:target{border-color:var(--accent); box-shadow:0 0 0 2px var(--accent-soft)}
+a.ord{color:inherit; text-decoration:underline; text-decoration-color:color-mix(in oklab, var(--accent) 30%, transparent); text-decoration-thickness:1px; text-underline-offset:3px; cursor:pointer; transition:text-decoration-color .12s}
 a.ord:hover,a.ord:focus-visible{color:var(--accent); text-decoration-style:solid}
-.ordpop{position:absolute; z-index:60; width:min(400px, calc(100vw - 32px)); background:var(--surface); color:var(--ink); border:1px solid var(--hairline); border-radius:12px; box-shadow:var(--shadow); padding:14px 16px; font-size:.95rem; line-height:1.5}
-.ordpop h4{margin:0 28px 6px 0; font-size:1rem}
+.ordpop{position:absolute; z-index:60; width:min(400px, calc(100vw - 32px)); background:var(--surface); color:var(--ink); border:1px solid var(--hairline); border-radius:12px; box-shadow:var(--shadow); padding:14px 16px; font-size:14.5px; line-height:1.5}
+.ordpop h4{font-family:var(--serif); margin:0 28px 6px 0; font-size:17px}
 .ordpop-close{position:absolute; top:4px; right:6px; border:0; background:none; font:inherit; font-size:1.4rem; line-height:1; cursor:pointer; color:var(--muted); padding:4px 8px}
 .ordpop-close:hover{color:var(--ink)}
 .ordpop-def{margin:4px 0; border-left:3px solid var(--accent); padding-left:10px}
 .ordpop-def.l1{border-color:var(--l1)} .ordpop-def.l2{border-color:var(--l2)} .ordpop-def.l3{border-color:var(--l3)}
-.ordpop-def .tag{display:block; font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; font-weight:700; color:var(--muted)}
-.ordpop-all{display:inline-block; margin-top:8px; font-size:.85rem}
+.ordpop-def .tag{display:block; font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.12em; color:var(--muted)}
+.ordpop-all{display:inline-block; margin-top:8px; font-size:13px}
 @media (max-width:640px){
   .ordpop{position:fixed; left:0; right:0; bottom:0; top:auto !important; width:auto; max-height:60vh; overflow:auto; border-radius:16px 16px 0 0; padding-bottom:max(16px, env(safe-area-inset-bottom))}
   .ordpop-backdrop{position:fixed; inset:0; background:rgba(0,0,0,.3); z-index:55}
 }
-footer.foot{margin-top:40px; padding-top:16px; border-top:1px solid var(--hairline); font-size:.85rem; color:var(--muted)}
+
+/* ---------- Fótur ---------- */
+footer.foot{margin-top:40px; padding-top:18px; border-top:1px solid var(--rule); font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
 footer.foot ul{padding-left:18px}
-.backtop{position:fixed; right:14px; bottom:14px; background:var(--accent); color:var(--accent-ink); border-radius:999px; padding:10px 14px; text-decoration:none; font-weight:700; box-shadow:var(--shadow)}
+.backtop{position:fixed; right:16px; bottom:16px; width:40px; height:40px; display:grid; place-items:center; background:var(--surface); color:var(--ink); border:1px solid var(--hairline); border-radius:999px; text-decoration:none; font-weight:600; box-shadow:var(--shadow)}
+.backtop:hover{border-color:var(--accent); color:var(--accent)}
 @media print{
   .levels,.backtop,nav.toc,.ordpop,.ordpop-backdrop{display:none !important}
   a.ord{text-decoration:none}
   body{background:#fff; color:#000; font-size:11pt}
-  article.topic{box-shadow:none; border:1px solid #ccc; break-inside:avoid}
+  section.chapter{display:block}
+  article.topic,.box,dl.gloss .term{box-shadow:none; border:1px solid #ccc; break-inside:avoid; margin-bottom:10px}
 }
 </style>
 </head>
@@ -186,7 +227,7 @@ footer.foot ul{padding-left:18px}
 
 <header class="top">
   <p class="eyebrow">Fjármál einstaklinga · yfirlit</p>
-  <h1>Skref í fjármálum <span class="draft">beinagrind, drög</span></h1>
+  <h1>Skref í fjármálum</h1>
   <p class="lead">
     Stiklað á stóru um helstu atriði fjármála einstaklinga. Byggt á kennslubókunum
     <em>Fyrstu skref í fjármálum</em> og <em>Farsæl skref í fjármálum</em> eftir Gunnar Baldvinsson,
@@ -235,7 +276,7 @@ footer.foot ul{padding-left:18px}
       <p>Fjármálavit er fræðsluverkefni Samtaka fjármálafyrirtækja. Það dreifir þremur bókum eftir Gunnar Baldvinsson ókeypis til skóla: <em>Fyrstu skref í fjármálum</em> (efstu bekkir grunnskóla), <em>Snjöll skref í fjármálum</em> (byrjun framhaldsskóla) og <em>Farsæl skref í fjármálum</em> (eldri nemendur, háskólastig og fullorðnir). Þetta yfirlit fylgir kaflaskipan Farsælla skrefa og fléttar inn grunnatriðum úr Fyrstu skrefum og þeim efnisatriðum Snjallra skrefa sem hinar tvær hafa ekki.</p>
     </div>
     <div class="lvl l3"><div class="tag">3. stig</div>
-      <p>Útgefandi bókanna er Framtíðarsýn hf. Fyrstu skref komu fyrst út 2017 (2. útgáfa 2020, vefútgáfa janúar 2022, 58 bls.). Farsæl skref komu út 2020 og önnur útgáfa 2026 (208 bls.), þar sem bætt var við skuldamælikvörðum, lánþegaskilyrðum, nýjum tegundum húsnæðislána og lykilupplýsingaskjölum. Þessi beinagrind fylgir efnisyfirliti 2. útgáfu. Númer sýnidæma (1-74) vísa í bókina.</p>
+      <p>Útgefandi bókanna er Framtíðarsýn hf. Fyrstu skref komu fyrst út 2017 (2. útgáfa 2020, vefútgáfa janúar 2022, 58 bls.). Farsæl skref komu út 2020 og önnur útgáfa 2026 (208 bls.), þar sem bætt var við skuldamælikvörðum, lánþegaskilyrðum, nýjum tegundum húsnæðislána og lykilupplýsingaskjölum. Þetta yfirlit fylgir efnisyfirliti 2. útgáfu. Númer sýnidæma (1-74) vísa í bókina.</p>
     </div>
   </article>
 
@@ -1953,13 +1994,13 @@ footer.foot ul{padding-left:18px}
       <li><a href="https://fjarmalavit.is/snjoll-skref-i-fjarmalum/" rel="noopener">Snjöll skref í fjármálum</a>, millibókin. Aðeins efnisyfirlit er á netinu. Efnisatriði sem eru ekki í hinum bókunum eru felld inn: hrein eign, heimilisbókhald, þrjú atriði við ráðningu, sparnaður sem lífsstíll, gefðu þér tíma.</li>
     </ul>
     <div class="lvl l1">
-      <p><strong>Staða:</strong> Þetta er fyrsta uppkast. Sumt á eftir að laga og tölur geta breyst.</p>
+      <p><strong>Fyrirvari:</strong> Tölur eins og skattar og vextir breytast á hverju ári. Athugaðu gildandi tölur áður en þú treystir á þær.</p>
     </div>
     <div class="lvl l2">
-      <p><strong>Staða skjalsins:</strong> beinagrind. Kaflar 1 til 2 og hollráðin byggja á lesnum texta Fyrstu skrefa. Kaflar 3 til 5 fylgja efnisyfirliti Farsælla skrefa en textinn er samantekt á almennri þekkingu, ekki tilvitnun í bókina. Tölur sem breytast árlega (skatthlutföll, frítekjumörk, lánþegaskilyrði, séreignarúrræði) þarf að sannreyna fyrir birtingu.</p>
+      <p><strong>Fyrirvari:</strong> Kaflar 1 til 2 og hollráðin byggja á lesnum texta Fyrstu skrefa. Kaflar 3 til 5 fylgja efnisyfirliti Farsælla skrefa en textinn er samantekt á almennri þekkingu, ekki tilvitnun í bókina. Tölur sem breytast árlega (skatthlutföll, frítekjumörk, lánþegaskilyrði, séreignarúrræði) ber að sannreyna hjá Skattinum, Seðlabankanum og lífeyrissjóðum.</p>
     </div>
     <div class="lvl l3">
-      <p><strong>Staða skjalsins:</strong> beinagrind. Formúlur og reglur á 3. stigi eru staðlaðar en lagatilvísanir (lög nr. 38/2001, 33/2013, 118/2016, PRIIPs, SFDR, MiCA) og tölur (fjármagnstekjuskattur 22%, iðgjald 15,5%, LTV/DSTI-mörk, 500.000 kr. séreignarþak) þarf að sannreyna gegn gildandi rétti fyrir birtingu. Sýnidæmi 1-74 í Farsælum skrefum mætti tengja við viðeigandi efnisatriði hér.</p>
+      <p><strong>Fyrirvari:</strong> Formúlur og reglur á 3. stigi eru staðlaðar en lagatilvísanir (lög nr. 38/2001, 33/2013, 118/2016, PRIIPs, SFDR, MiCA) og tölur (fjármagnstekjuskattur 22%, iðgjald 15,5%, LTV/DSTI-mörk, 500.000 kr. séreignarþak) ber að sannreyna gegn gildandi rétti. Sýnidæmi 1-74 í Farsælum skrefum mætti tengja við viðeigandi efnisatriði hér.</p>
     </div>
   </article>
 </section>
@@ -1968,7 +2009,7 @@ footer.foot ul{padding-left:18px}
 </div>
 
 <footer class="foot">
-  <p>Yfirlit byggt á námsefni Fjármálavits. Ekki fjármálaráðgjöf. Drög.</p>
+  <p>Yfirlit byggt á námsefni Fjármálavits. Ekki fjármálaráðgjöf.</p>
 </footer>
 
 <a class="backtop" href="#top" aria-label="Efst á síðu">↑</a>
