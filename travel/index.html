@@ -1254,7 +1254,7 @@ function packTemplate(key){
 function renderPacking(host){
   const items = cur.packing;
   const done = items.filter(x => x.done).length;
-  host.append(el('p', {class:'help', style:'margin:0 0 10px'}, 'Sameiginlegur listi fyrir alla með hlekkinn. Hakið við þegar pakkað er. Merktu hlut með nafni ef hann er bara fyrir eina.'));
+  host.append(el('p', {class:'help', style:'margin:0 0 10px'}, 'Sameiginlegur listi fyrir alla með hlekkinn. Hakið við þegar pakkað er. Ef hlutur er bara fyrir eina manneskju, skrifaðu nafn hennar í reitinn Fyrir hvern.'));
   if (items.length){
     const bar = el('div', {class:'progress'}); bar.append(el('i', {style:`width:${Math.round(done / items.length * 100)}%`}));
     host.append(el('div', {style:'margin:0 0 14px'}, el('div', {class:'help'}, `${done} af ${items.length} pakkað`), bar));
@@ -1355,7 +1355,7 @@ const FAQ = [
   ['Hvernig skrifa ég verð svo kostnaðaryfirlitið telji rétt?', 'Tölu og gjaldmiðil, í hvaða rithætti sem er: "121.384 kr.", "US$905.62", "USD 1,007.45", "257,84 CAD", "4.200 MXN". Kr. og kr merkja íslenskar krónur, dollaramerki eitt og sér merkir bandaríska dollara.\n\nYfirlitið er undir Stillingar. Gengi dagsins er sótt sjálfkrafa frá Seðlabanka Evrópu. Ef þú vilt nota gengið sem kortið þitt notaði, skráðu það undir "Nota eigið gengi".'],
   ['Í hvaða tímabelti eru tímarnir?', 'Alltaf staðartími á áfangastað. Flug frá Keflavík kl. 17:00 er íslenskur tími, lending í Cancún kl. 18:05 er mexíkóskur tími. Síðan umreiknar ekkert.'],
   ['Hvað er Mikilvægt?', 'Flipi sem aðeins þú sérð, fyrir vegabréfsnúmer, tryggingar, neyðarnúmer, sendiráð, kortafyrirtæki og wifi-lykilorð. Geymt í sama læsta hólfi og bókunarnúmerin. Gott að hafa þetta við höndina án nets.'],
-  ['Hvernig virkar pökkunarlistinn?', 'Flipinn Pökkun er sameiginlegur listi fyrir alla með hlekkinn. Allir geta bætt við og hakað við. "Setja inn grunnlista" gefur algenga hluti til að byrja með, valið eftir tegund ferðar (sól, skíði, borg eða sveit). Þú getur bætt við og eytt hverju sem er á eftir. Merktu hlut með nafni ef hann er bara fyrir eina. "Taka hak af öllu" er gott fyrir heimferðina.'],
+  ['Hvernig virkar pökkunarlistinn?', 'Flipinn Pökkun er sameiginlegur listi fyrir alla með hlekkinn. Allir geta bætt við og hakað við. "Setja inn grunnlista" gefur algenga hluti til að byrja með, valið eftir tegund ferðar (sól, skíði, borg eða sveit). Þú getur bætt við og eytt hverju sem er á eftir. Ef hlutur er bara fyrir eina manneskju, skrifaðu nafn hennar í reitinn Fyrir hvern. "Taka hak af öllu" er gott fyrir heimferðina.'],
   ['Hvar er dagatalið?', 'Undir Dagskrá. Efst hægra megin velur þú milli "Dagur fyrir dag" og "Dagatal". Valið helst í símanum.'],
   ['Hvað er klukkan í hausnum?', 'Ef þú velur tímabelti áfangastaðar undir Stillingar sýnir hausinn klukkuna þar og heima. Gott fyrir símtöl og skilaboð heim.'],
   ['Get ég prentað ferðina?', 'Já, "Prenta" neðst á síðunni gefur hreina útgáfu af dagskrá, gistingu og Mikilvægt (aðeins hjá eiganda). Í síma má velja "Vista sem PDF" í prentglugganum. Pappír er góð varaleið ef síminn er tómur eða týndur.'],
