@@ -98,13 +98,15 @@ h1{font-family:var(--serif); font-weight:500; font-size:clamp(38px,5.5vw,56px); 
 .levels button[data-set="all"][aria-pressed="true"]{border-color:var(--ink-2); background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--ink-2)}
 .levels button[data-set="all"]{flex:0 1 auto}
 .levels button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.level-desc{display:none; margin:8px 2px 0; font-size:12.5px; color:var(--muted); line-height:1.35}
 @media (max-width:640px){
   .levels{padding:10px 0 8px}
   .levels .row{gap:6px}
   .levels button{flex:1 1 auto; padding:7px 9px; font-size:12.5px; text-align:center; border-radius:999px}
   .levels button small{display:none}
   .levels button[data-set="all"]{flex:1 1 auto}
-  section.chapter{scroll-margin-top:70px}
+  .level-desc{display:block}
+  section.chapter{scroll-margin-top:90px}
 }
 
 /* ---------- Uppbygging ---------- */
@@ -242,6 +244,7 @@ footer.foot ul{padding-left:18px}
     <button type="button" data-set="3" aria-pressed="false">3. stig: Lengra komnir<small>Formúlur, reglur og fínni blæbrigði</small></button>
     <button type="button" data-set="all" aria-pressed="false">Öll stig<small>Til yfirlestrar</small></button>
   </div>
+  <p class="level-desc" id="levelDesc" aria-live="polite"></p>
 </div>
 
 <div class="layout">
@@ -2024,6 +2027,8 @@ footer.foot ul{padding-left:18px}
     if(!valid[level]) level = '2';
     root.setAttribute('data-level', level);
     buttons.forEach(function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-set') === level ? 'true' : 'false'); });
+    var desc = document.getElementById('levelDesc');
+    if(desc){ var cur = document.querySelector('.levels button[data-set="' + level + '"] small'); desc.textContent = cur ? cur.textContent : ''; }
     try { localStorage.setItem('skref-stig', level); } catch(e) {}
     if(push){ try { history.replaceState(null, '', '#stig-' + level); } catch(e) {} }
   }

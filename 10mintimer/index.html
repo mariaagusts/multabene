@@ -262,13 +262,13 @@ body {
   font-size: 11px; font-weight: 700; color: #FF4E2A;
   text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px;
 }
-.add-zone-inputs { display: flex; gap: 8px; align-items: center; }
+.add-zone-inputs { display: flex; gap: 8px; align-items: center; min-width: 0; }
 .add-zone-emoji {
-  width: 48px; height: 40px; border: 1.5px solid #FFD0C4; border-radius: 10px;
+  flex: 0 0 48px; width: 48px; height: 40px; border: 1.5px solid #FFD0C4; border-radius: 10px;
   background: #FFF5F0; font-size: 20px; text-align: center; cursor: pointer; outline: none;
 }
 .add-zone-name-input {
-  flex: 1; height: 40px; border: 1.5px solid #FFD0C4; border-radius: 10px;
+  flex: 1 1 0; min-width: 0; height: 40px; border: 1.5px solid #FFD0C4; border-radius: 10px;
   background: #FFF5F0; padding: 0 12px; font-size: 14px; outline: none;
   font-family: inherit; color: #1a1a1a;
 }
@@ -276,7 +276,7 @@ body {
 .add-zone-btn {
   height: 40px; padding: 0 16px; background: #FF4E2A; color: white;
   border: none; border-radius: 10px; font-size: 14px; font-weight: 700;
-  cursor: pointer; transition: opacity 0.15s; white-space: nowrap;
+  cursor: pointer; transition: opacity 0.15s; white-space: nowrap; flex: 0 0 auto;
 }
 .add-zone-btn:hover { opacity: 0.88; }
 .add-zone-hint { font-size: 11px; color: #ccc; margin-top: 8px; }
@@ -392,6 +392,12 @@ body {
   background: #FF4E2A; color: white; border-radius: 20px;
   padding: 4px 12px; font-size: 12px; font-weight: 700;
 }
+.support {
+  color: #c4b8b2; font-size: 10.5px; line-height: 1.5; text-align: center;
+  margin: 28px 0 0; padding-top: 14px; border-top: 1px solid #FFE0D8;
+}
+.support b { color: #a89c96; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.support .acct { display: block; margin-top: 4px; }
 </style>
 </head>
 <body>
@@ -466,6 +472,7 @@ body {
     </div>
     <div class="add-zone-hint">Gögn eru samstillt á milli tækja með sync-kóðanum þínum.</div>
   </div>
+  <p class="support">Ég smíðaði þessa síðu fyrir mig og vini mína og deili henni með þér. Ef hún sparar þér tíma, þá er kaffibolli vel þeginn.<span class="acct">Reikningur <b>0527-26-1416</b>, kt. <b>471025-0380</b>.</span></p>
 </div>
 
 <!-- TIMER -->
