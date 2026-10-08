@@ -109,6 +109,8 @@
     background:var(--river-deep);color:var(--mist);border:1px solid var(--line);
     border-radius:10px;padding:9px 11px;font:inherit;font-size:14px;outline:none
   }
+  optgroup{background:var(--river-deep);color:var(--moss);font-style:normal;font-weight:600}
+  option{color:var(--mist)}
   select:focus,input[type=text]:focus{border-color:var(--salmon);box-shadow:0 0 0 3px rgba(240,144,122,.18)}
   .btn{
     background:var(--salmon);color:#2a1411;border:none;border-radius:10px;
@@ -363,16 +365,35 @@
     </div>
     <div class="wx-controls">
       <select id="riverSelect" aria-label="Veldu á">
-        <option value="64.77,-21.52" selected>Norðurá (Borgarfjörður)</option>
-        <option value="64.85,-21.43">Þverá / Kjarrá</option>
-        <option value="64.55,-21.37">Grímsá</option>
-        <option value="64.40,-21.43">Laxá í Kjós</option>
-        <option value="64.13,-21.83">Elliðaár (Reykjavík)</option>
-        <option value="65.83,-17.35">Laxá í Aðaldal</option>
-        <option value="65.50,-19.85">Blanda</option>
-        <option value="65.40,-20.75">Miðfjarðará</option>
-        <option value="65.75,-14.85">Selá í Vopnafirði</option>
-        <option value="64.85,-22.30">Haffjarðará</option>
+        <optgroup label="Vesturland">
+          <option value="64.77,-21.52" selected>Norðurá (Borgarfjörður)</option>
+          <option value="64.85,-21.43">Þverá / Kjarrá</option>
+          <option value="64.55,-21.37">Grímsá</option>
+          <option value="64.60,-21.95">Langá á Mýrum</option>
+          <option value="64.72,-22.22">Hítará</option>
+          <option value="64.85,-22.30">Haffjarðará</option>
+          <option value="65.15,-21.80">Laxá í Dölum</option>
+          <option value="64.42,-21.75">Laxá í Leirársveit</option>
+        </optgroup>
+        <optgroup label="Suðvesturland">
+          <option value="64.40,-21.43">Laxá í Kjós</option>
+          <option value="64.13,-21.83">Elliðaár (Reykjavík)</option>
+        </optgroup>
+        <optgroup label="Suðurland">
+          <option value="63.83,-20.40">Ytri-Rangá</option>
+          <option value="63.75,-20.22">Eystri-Rangá</option>
+        </optgroup>
+        <optgroup label="Norðurland">
+          <option value="65.40,-20.75">Miðfjarðará</option>
+          <option value="65.45,-20.55">Víðidalsá</option>
+          <option value="65.50,-19.85">Blanda</option>
+          <option value="65.83,-17.35">Laxá í Aðaldal</option>
+        </optgroup>
+        <optgroup label="Austurland">
+          <option value="65.75,-14.85">Selá í Vopnafirði</option>
+          <option value="65.68,-15.00">Hofsá í Vopnafirði</option>
+          <option value="65.35,-14.95">Jökla</option>
+        </optgroup>
         <option value="__search">Leita að öðrum stað…</option>
       </select>
       <input type="text" id="placeSearch" placeholder="t.d. Egilsstaðir" style="display:none" />
@@ -961,6 +982,9 @@ const FLIES = [
   { id:"friggi",   g:"lax", name:"Friggi", kind:"Þríkrækja · micro-keila",
     when:"Íslensk fluga Baldurs Hermannssonar, vaxandi vinsældir. Góð á tregan fisk. Farðu varlega með stóru stærðirnar í litlum ám, þær geta fælt hylinn.",
     size:"#10–14, micro-keila", u:"friggi" },
+  { id:"metallica",g:"lax", name:"Metallica", kind:"Keilutúpa · micro-keila",
+    when:"Fluga Péturs Steingrímssonar heitins, grönn túpa með wolfram-keilu sem sekkur hratt og syndir líflega í sveiflunni. Hönnuð fyrir tærar íslenskar ár, bláa útgáfan glampar í tæru vatni. Eigandi Veiðiflugna nefnir bláa Metallica sem uppáhalds snemmsumarsflugu.",
+    size:"½ og 1\" túpa, micro-keila", u:"metallica" },
   { id:"valbeinn", g:"lax", name:"Valbeinn", kind:"Þríkrækja",
     when:"Gefur oft í Norðurá og var á lista yfir flugur sem gáfu vel 2023.",
     size:"#12–14", u:"valbeinn" },
