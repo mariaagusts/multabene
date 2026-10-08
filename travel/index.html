@@ -223,17 +223,29 @@
   .seg button{border:0;background:transparent;border-radius:999px;padding:6px 14px;font-size:14px;color:var(--dim);font-weight:500;white-space:nowrap;transition:background .15s,color .15s;}
   .seg button:hover{color:var(--fg);}
   .seg button[aria-pressed="true"]{background:var(--panel);color:var(--fg);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.12);}
-  .pack{display:grid;gap:14px;}
-  .pack .cat h3{font-size:16px;margin:0 0 6px;font-family:var(--display);}
-  .pack .pi{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--line);}
-  .pack .pi input[type=checkbox]{width:20px;height:20px;margin:2px 0 0;accent-color:var(--accent);flex:0 0 20px;}
-  .pack .pi label{flex:1;min-width:0;overflow-wrap:anywhere;cursor:pointer;}
+  .pack{display:grid;gap:18px;}
+  .pack .cat h3{font-size:16px;margin:0 0 8px;font-family:var(--display);display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
+  .pack .cat h3 small{font-family:var(--body);font-size:12px;font-weight:500;color:var(--dim);background:var(--panel-2);padding:2px 9px;border-radius:999px;white-space:nowrap;}
+  .pack .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;}
+  .pack .grid.wide{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));}
+  .pack .pi{position:relative;display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;min-width:0;}
+  .pack .pi.done{background:var(--panel-2);}
+  .pack .pi input[type=checkbox]{width:20px;height:20px;margin:1px 0 0;accent-color:var(--accent);flex:0 0 20px;}
+  .pack .pi label{flex:1;min-width:0;overflow-wrap:break-word;cursor:pointer;line-height:1.35;}
   .pack .pi.done label{text-decoration:line-through;color:var(--dim);}
-  .pack .pi small{color:var(--dim);margin-left:6px;}
-  .pack .pi .ed{background:none;border:0;color:var(--dim);font-size:13px;padding:0 4px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
+  .pack .pi small{color:var(--dim);margin-left:6px;font-size:12px;}
+  .pack .pi .ed{background:none;border:0;color:var(--dim);font-size:13px;padding:0 4px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;line-height:1.5;}
   .pack .pi .ed:hover{color:var(--accent);}
   .pack .pi .x{background:none;border:0;color:var(--dim);font-size:18px;line-height:1;padding:0 4px;cursor:pointer;}
   .pack .pi .x:hover{color:var(--danger);}
+  @media (hover:hover){
+    .pack .pi .ed,.pack .pi .x{position:absolute;top:6px;opacity:0;transition:opacity .15s;background:var(--panel);border-radius:6px;}
+    .pack .pi .x{right:6px;padding:2px 6px;}
+    .pack .pi .ed{right:30px;padding:2px 4px;}
+    .pack .pi.done .ed,.pack .pi.done .x{background:var(--panel-2);}
+    .pack .pi:hover .ed,.pack .pi:hover .x,.pack .pi:focus-within .ed,.pack .pi:focus-within .x{opacity:1;}
+    .pack .pi label{padding-right:56px;}
+  }
   .progress{height:6px;background:var(--panel-2);border-radius:3px;overflow:hidden;margin:6px 0 0;}
   .progress i{display:block;height:100%;background:var(--accent);}
   .clock{display:inline-flex;gap:14px;font-size:13px;color:var(--dim);margin-left:12px;font-variant-numeric:tabular-nums;}
@@ -1322,11 +1334,11 @@ const PACK_CATS = ['Föt', 'Snyrtivörur', 'Skjöl og peningar', 'Rafmagn', 'Lyf
 // Sameiginlegur kjarni fyrir allar ferðir, viðbót eftir þema ferðarinnar
 const PACK_BASE = {
   'Skjöl og peningar': ['Vegabréf', 'Greiðslukort', 'Reiðufé', 'Ferðatrygging, skírteini', 'Útprentuð áætlun'],
-  'Rafmagn': ['Hleðslutæki fyrir síma', 'Hleðslubanki', 'Millistykki fyrir innstungur', 'Heyrnartól'],
+  'Rafmagn': ['Hleðslutæki fyrir síma', 'Hleðslubanki', 'Millistykki fyrir innstungur', 'Heyrnartól', 'iPad eða spjaldtölva með hleðslusnúru'],
   'Snyrtivörur': ['Tannbursti og tannkrem', 'Sjampó', 'Svitalyktareyðir', 'Varasalvi'],
   'Lyf': ['Verkjalyf', 'Plástrar', 'Eigin lyf'],
   'Föt': ['Nærföt', 'Sokkar', 'Náttföt', 'Léttur jakki'],
-  'Annað': ['Bakpoki', 'Vatnsflaska', 'Bók']
+  'Annað': ['Bakpoki', 'Vatnsflaska', 'Bók', 'Ferðakoddi']
 };
 const PACK_SUN = {
   'Snyrtivörur': ['Sólarvörn', 'After sun', 'Flugnafæla'],
@@ -1354,7 +1366,32 @@ const PACK_THEME = {
     'Annað': ['Höfuðljós', 'Nestisbox', 'Hitabrúsi', 'Göngukort', 'Sjúkrapakki', 'Sundföt']
   } }
 };
+/* Listar eftir aldri: bætast ofan á, án grunnhlutanna */
+const PACK_KIDS = {
+  ungabarn: { name:'Ungabarn (0 til 2 ára)', items: {
+    'Snyrtivörur': ['Bleyjur, fleiri en þú heldur', 'Blautþurrkur', 'Bleyjukrem', 'Sólarvörn fyrir ungbörn', 'Snuð og aukasnuð'],
+    'Föt': ['Samfellur og aukaföt, slys gerast', 'Sundbleyjur', 'Sólhattur', 'Léttur svefnpoki eða teppi'],
+    'Lyf': ['Hitalækkandi stílar eða mixtúra', 'Hitamælir', 'Saltvatnsdropar í nef'],
+    'Skjöl og peningar': ['Vegabréf barns', 'Samþykki hins foreldris ef annað ferðast eitt með barn'],
+    'Annað': ['Pelar og þurrmjólk', 'Grautur og skeið', 'Smekkir', 'Kerra eða burðarpoki', 'Ferðarúm, eða bóka hjá hóteli', 'Barnabílstóll, eða bóka í bílaleigu', 'Uppáhaldsbangsi eða teppi', 'Pokar fyrir óhreinar bleyjur']
+  } },
+  barn: { name:'Barn (3 til 12 ára)', items: {
+    'Föt': ['Aukaföt, slys gerast', 'Sundföt og armkútar', 'Sólhattur', 'Þægilegir skór'],
+    'Snyrtivörur': ['Sólarvörn fyrir börn', 'Tannbursti barns'],
+    'Lyf': ['Hitalækkandi fyrir börn', 'Hitamælir', 'Plástrar með myndum', 'Ferðaveikitöflur fyrir börn'],
+    'Skjöl og peningar': ['Vegabréf barns', 'Samþykki hins foreldris ef annað ferðast eitt með barn'],
+    'Annað': ['Uppáhaldsbangsi', 'Afþreying í flugi: bók, litir, spjaldtölva', 'Heyrnartól fyrir barn', 'Nesti og snakk', 'Bílstólapúði, eða bóka í bílaleigu', 'Lítill bakpoki sem barnið ber sjálft']
+  } },
+  unglingur: { name:'Unglingur', items: {
+    'Rafmagn': ['Hleðslubanki', 'Heyrnartól', 'Hleðslusnúra fyrir eigin síma'],
+    'Föt': ['Sundföt', 'Fín föt fyrir kvöldið', 'Þægilegir skór'],
+    'Snyrtivörur': ['Eigin snyrtivörur', 'Svitalyktareyðir', 'Sólarvörn'],
+    'Skjöl og peningar': ['Vegabréf', 'Eigið kort eða vasapeningur', 'Afrit af vegabréfi í síma'],
+    'Annað': ['Vatnsheld hlíf fyrir síma', 'Bók eða afþreying í flugi', 'Lítill bakpoki']
+  } }
+};
 function packTemplate(key){
+  if (PACK_KIDS[key]){ const out = {}; for (const cat of PACK_CATS) out[cat] = [...(PACK_KIDS[key].items[cat] || [])]; return out; }
   const t = PACK_THEME[key] || PACK_THEME.sjor;
   const out = {};
   for (const cat of PACK_CATS) out[cat] = [...(PACK_BASE[cat] || []), ...(t.items[cat] || [])];
@@ -1384,16 +1421,25 @@ function renderPacking(host){
     wrap.append(el('div', {class:'row'}, el('button', {class:'btn small', type:'button', onclick: openTemplateDialog}, 'Setja inn grunnlista'), el('button', {class:'btn ghost small', type:'button', onclick: () => openPackDialog()}, 'Bæta við sjálf')));
   }
   for (const cat of PACK_CATS.concat([...new Set(items.map(x => x.cat).filter(c => c && !PACK_CATS.includes(c)))])){
-    const list = items.filter(x => (x.cat || 'Annað') === cat && (!hideDone || !x.done));
+    const inCat = items.filter(x => (x.cat || 'Annað') === cat);
+    const list = inCat.filter(x => !hideDone || !x.done);
     if (!list.length) continue;
-    const sec = el('div', {class:'cat'}); sec.append(el('h3', {}, cat));
+    const sec = el('div', {class:'cat'});
+    sec.append(el('h3', {}, cat, el('span', {class:'row', style:'gap:8px'},
+      el('button', {class:'linkbtn', type:'button', style:'font-size:12px;color:var(--dim)', title:'Eyða öllum hlutum í þessum flokki', onclick: async () => {
+        if (!confirm(`Eyða öllum ${inCat.length} hlutum úr "${cat}"?`)) return;
+        const upd = {}; for (const x of inCat) upd[`travel/team/${cur.id}/packing/${x.id}`] = null;
+        try { await db.ref().update(upd); toast(`${cat}: ${inCat.length} hlutum eytt`); logChange(`Eyddi flokki í pökkun: ${cat}`); } catch(e){ toast('Tókst ekki.'); }
+      }}, 'Eyða flokki'),
+      el('small', {}, `${inCat.filter(x => x.done).length}/${inCat.length} pakkað`))));
+    const grid = el('div', {class:'grid'}); sec.append(grid);
     for (const it of list){
       const row = el('div', {class:'pi' + (it.done ? ' done' : '')});
       const cb = el('input', {type:'checkbox', id:'pk-' + it.id, checked: it.done ? '' : null, onchange: async () => { try { await db.ref(`travel/team/${cur.id}/packing/${it.id}/done`).set(cb.checked); } catch(e){ toast('Tókst ekki að vista.'); cb.checked = !cb.checked; } }});
       row.append(cb, el('label', {for:'pk-' + it.id}, it.text, it.by ? el('small', {}, it.by) : null),
         el('button', {class:'ed', type:'button', title:'Breyta texta, flokki eða nafni', onclick: () => openPackDialog(it)}, 'Breyta'),
         el('button', {class:'x', type:'button', title:'Eyða', onclick: async () => { if (!confirm(`Eyða "${it.text}"?`)) return; try { await db.ref(`travel/team/${cur.id}/packing/${it.id}`).remove(); } catch(e){ toast('Tókst ekki.'); } }}, '×'));
-      sec.append(row);
+      grid.append(row);
     }
     wrap.append(sec);
   }
@@ -1402,7 +1448,8 @@ function renderPacking(host){
     host.append(el('div', {class:'row', style:'margin-top:14px'},
       el('button', {class:'btn ghost small', type:'button', onclick: () => { store.set('travel:packhide', !hideDone); renderTrip(); }}, hideDone ? 'Sýna afgreitt' : 'Fela afgreitt'),
       el('button', {class:'btn ghost small', type:'button', onclick: openTemplateDialog}, 'Bæta grunnlista við'),
-      done ? el('button', {class:'btn ghost small', type:'button', onclick: async () => { if (!confirm('Taka hakið af öllu? Gott fyrir heimferðina.')) return; const upd = {}; for (const x of items) if (x.done) upd[`travel/team/${cur.id}/packing/${x.id}/done`] = false; try { await db.ref().update(upd); } catch(e){ toast('Tókst ekki.'); } }}, 'Taka hak af öllu') : null));
+      done ? el('button', {class:'btn ghost small', type:'button', onclick: async () => { if (!confirm('Taka hakið af öllu? Gott fyrir heimferðina.')) return; const upd = {}; for (const x of items) if (x.done) upd[`travel/team/${cur.id}/packing/${x.id}/done`] = false; try { await db.ref().update(upd); } catch(e){ toast('Tókst ekki.'); } }}, 'Taka hak af öllu') : null,
+      el('button', {class:'btn danger small', type:'button', onclick: async () => { if (!confirm(`Tæma allan pökkunarlistann (${items.length} hlutir)? Þetta er endanlegt.`)) return; try { await db.ref(`travel/team/${cur.id}/packing`).remove(); toast('Listinn tæmdur'); logChange('Tæmdi pökkunarlistann'); } catch(e){ toast('Tókst ekki.'); } }}, 'Tæma listann')));
   }
 }
 function openTemplateDialog(){
@@ -1413,32 +1460,36 @@ function openTemplateDialog(){
   const f = el('form', {class:'form'});
   const opts = el('div', {class:'opts full'});
   const seen = new Set();
-  for (const key of ['sol', 'snjor', 'borg', 'sveit']){
-    const t = PACK_THEME[key];
+  for (const key of ['sol', 'snjor', 'borg', 'sveit', 'ungabarn', 'barn', 'unglingur']){
+    const t = PACK_KIDS[key] || PACK_THEME[key];
     const n = Object.values(packTemplate(key)).reduce((a, b) => a + b.length, 0);
     const sample = Object.values(t.items).flat().slice(0, 4).join(', ');
+    if (key === 'ungabarn') opts.append(el('div', {class:'help', style:'margin:6px 0 0'}, 'Eftir aldri, bætast ofan á listann sem er fyrir:'));
     opts.append(el('label', {class:'opt'},
       el('input', {type:'radio', name:'pkTpl', value:key, checked: (key === def || (def === 'sjor' && key === 'sol')) ? '' : null}),
       el('span', {}, el('b', {}, t.name), el('small', {}, `${n} hlutir. ${sample}, …`))));
   }
   f.append(opts);
+  const forWho = el('input', {id:'tplBy', maxlength:'30', placeholder:'Tómt = fyrir alla', list:'peopleDl', autocomplete:'off'});
+  f.append(el('label', {}, 'Fyrir hvern (valkvætt, t.d. nafn barnsins)', forWho), peopleDatalist());
   const st = el('p', {class:'status'});
   f.append(el('div', {class:'row'}, el('button', {class:'btn', type:'submit'}, 'Setja inn'), el('button', {class:'btn ghost', type:'button', onclick: () => dlg.close()}, 'Hætta við')), st);
   f.addEventListener('submit', async e => {
     e.preventDefault();
     const key = (f.querySelector('input[name=pkTpl]:checked') || {}).value || def;
-    try { await addTemplate(key); dlg.close(); }
+    try { await addTemplate(key, forWho.value.trim() || null); dlg.close(); }
     catch(err){ st.textContent = 'Vistun tókst ekki: ' + (err.code || err.message) + (err.code === 'PERMISSION_DENIED' ? '. Reglan "team" vantar í Firebase.' : ''); st.classList.add('err'); }
   });
   inner.append(f); dlg.showModal();
 }
-async function addTemplate(key){
+/* Sami hlutur bætist ekki við tvisvar fyrir sama nafn, en má vera til fyrir tvö börn */
+async function addTemplate(key, by){
   const tpl = packTemplate(key);
-  const have = new Set(cur.packing.map(x => (x.text || '').toLowerCase()));
+  const have = new Set(cur.packing.map(x => ((x.text || '') + '|' + (x.by || '')).toLowerCase()));
   const upd = {}; let n = 0; const now = new Date().toISOString();
-  for (const cat in tpl) for (const t of tpl[cat]){ if (have.has(t.toLowerCase())) continue; have.add(t.toLowerCase()); upd[`travel/team/${cur.id}/packing/${rnd(10)}`] = { text: t, cat, done: false, by: null, created: now }; n++; }
+  for (const cat in tpl) for (const t of tpl[cat]){ const k = (t + '|' + (by || '')).toLowerCase(); if (have.has(k)) continue; have.add(k); upd[`travel/team/${cur.id}/packing/${rnd(10)}`] = { text: t, cat, done: false, by: by || null, created: now }; n++; }
   if (!n){ toast('Allt úr listanum er þegar á listanum.'); return; }
-  await db.ref().update(upd); toast(`${n} hlutir settir á listann`);
+  await db.ref().update(upd); toast(`${n} hlutir settir á listann${by ? ' fyrir ' + by : ''}`); logChange(`Setti grunnlista í pökkun (${(PACK_KIDS[key] || PACK_THEME[key] || {}).name || key}${by ? ', fyrir ' + by : ''})`);
 }
 /* Nýr hlutur (margir í einu, einn í hverja línu) eða breyta hlut sem er til: texti, flokkur, nafn */
 function openPackDialog(it){
@@ -1487,6 +1538,7 @@ const TODO_BASE = [
   ['Láta kortafyrirtæki vita af ferðinni', 7],
   ['Sæti valin og farangur bókaður í flugið', 7],
   ['Sækja ferðina í dagatal símans og prenta áætlunina', 2],
+  ['Hlaða niður þáttum og bíómyndum á iPad og síma (Netflix, Disney+, YouTube)', 1],
   ['Innritun í flug', 1]
 ];
 function peopleDatalist(){
@@ -1533,14 +1585,14 @@ function renderTodos(host){
   };
   for (const [name, list] of groups){
     if (!list.length) continue;
-    const sec = el('div', {class:'cat'}); sec.append(el('h3', {style: name === 'Komið fram yfir' ? 'color:var(--danger)' : ''}, name));
-    for (const it of list) sec.append(row(it));
-    wrap.append(sec);
+    const sec = el('div', {class:'cat'}); sec.append(el('h3', {style: name === 'Komið fram yfir' ? 'color:var(--danger)' : ''}, name, el('small', {}, String(list.length))));
+    const grid = el('div', {class:'grid wide'}); for (const it of list) grid.append(row(it));
+    sec.append(grid); wrap.append(sec);
   }
   if (done.length){
-    const det = el('details', {style:'margin-top:8px'}); det.append(el('summary', {}, `Lokið (${done.length})`));
-    for (const it of done) det.append(row(it));
-    wrap.append(det);
+    const det = el('details', {style:'margin-top:4px'}); det.append(el('summary', {}, `Lokið (${done.length})`));
+    const grid = el('div', {class:'grid wide', style:'margin-top:8px'}); for (const it of done) grid.append(row(it));
+    det.append(grid); wrap.append(det);
   }
   host.append(wrap);
   if (all.length) host.append(el('div', {class:'row', style:'margin-top:14px'}, el('button', {class:'btn ghost small', type:'button', onclick: addTodoTemplate}, 'Bæta grunnlista við')));
@@ -1604,7 +1656,7 @@ const FAQ = [
   ['Hvernig deili ég ferðinni?', 'Undir Stillingar eru tveir hlekkir. Leshlekkurinn er fyrir þá sem eiga bara að skoða. Ritstjórahlekkurinn er fyrir þá sem eiga að breyta. "Afrita leshlekk" neðst á síðunni gefur þann fyrri.'],
   ['Hvernig bæti ég ritstjóra við?', 'Undir Stillingar, "Ritstjórahlekkur": smelltu á "Búa til ritstjórahlekk" og sendu hlekkinn. Sá sem opnar hann skráir sig inn með Google og verður ritstjóri. Nafnið birtist í listanum "Ritstjórar" þar sem þú getur fjarlægt hvern sem er.\n\nEf hlekkurinn lekur: "búa til nýjan og afturkalla alla ritstjóra". Gamli hlekkurinn hættir þá að virka og allir þurfa nýja hlekkinn.'],
   ['Hvað er Verkefni?', 'Listi yfir það sem þarf að klára fyrir ferðina, með skiladegi og ábyrgð: vegabréf, tryggingar, áritun, gjaldeyrir, innritun. "Setja inn grunnlista" gefur algeng verkefni með skiladögum miðað við fyrsta ferðadag. Það sem er komið fram yfir er rautt efst. Fyrir eiganda og ritstjóra.'],
-  ['Hvað eru þátttakendur?', 'Nöfn þeirra sem fara, skráð undir Stillingar. Þá getur þú merkt færslu með "Hverjir fara" (ekki allir fara í snorkl), sett ábyrgð á verkefni og hlut á pökkunarlista, og skipt kostnaði.'],
+  ['Hvað eru þátttakendur?', 'Nöfn þeirra sem fara, skráð undir Stillingar. Þá getur þú merkt færslu með "Hverjir fara" (ekki allir fara í snorkl), sett ábyrgð á verkefni og hlut á pökkunarlista, og skipt kostnaði.\n\n"Fylgir" er fyrir börn og aðra sem borga ekki sjálfir: hlutur þeirra í kostnaði rennur í hlut þess sem þeir fylgja, og kostnaðaryfirlitið sýnir bara þá sem borga.'],
   ['Hvernig skipti ég kostnaði?', 'Skráðu þátttakendur undir Stillingar. Í hverri færslu með verði velur þú "Greitt af" (hver lagði út) og "Kostnaður skiptist á" (ekkert valið = allir). Undir Stillingar, Kostnaður, sést þá hlutur hvers og eins, hvað hver lagði út og hver á inni eða skuldar. Aðeins þú sérð þetta.'],
   ['Hvar sé ég hver breytti hverju?', '"Breytingasaga" neðst á síðunni, fyrir eiganda og ritstjóra. Þar sést hver bætti við, breytti eða eyddi, og hvenær.'],
   ['Hvernig skrái ég stað svo hann birtist á korti?', 'Í reitnum "Staður (leit)" skrifaðu nafn hótels eða staðar og veldu úr listanum frá Google. Þá fær færslan staðsetningu, birtist á kortinu og fær hlekkina "Opna í Google Maps" og "Leið frá hótelinu".\n\nEf leitin finnur ekki staðinn, límdu hlekk úr Google Maps í reitinn fyrir neðan.'],
@@ -1612,7 +1664,7 @@ const FAQ = [
   ['Hvernig skrifa ég verð svo kostnaðaryfirlitið telji rétt?', 'Tölu og gjaldmiðil, í hvaða rithætti sem er: "121.384 kr.", "US$905.62", "USD 1,007.45", "257,84 CAD", "4.200 MXN". Kr. og kr merkja íslenskar krónur, dollaramerki eitt og sér merkir bandaríska dollara.\n\nYfirlitið er undir Stillingar. Gengi dagsins er sótt sjálfkrafa frá Seðlabanka Evrópu. Ef þú vilt nota gengið sem kortið þitt notaði, skráðu það undir "Nota eigið gengi".'],
   ['Í hvaða tímabelti eru tímarnir?', 'Alltaf staðartími á áfangastað. Flug frá Keflavík kl. 17:00 er íslenskur tími, lending í Cancún kl. 18:05 er mexíkóskur tími. Síðan umreiknar ekkert.'],
   ['Hvað er Mikilvægt?', 'Flipi sem aðeins þú sérð, fyrir vegabréfsnúmer, tryggingar, neyðarnúmer, sendiráð, kortafyrirtæki og wifi-lykilorð. Geymt í sama læsta hólfi og bókunarnúmerin. Gott að hafa þetta við höndina án nets.'],
-  ['Hvernig virkar pökkunarlistinn?', 'Flipinn Pökkun er sameiginlegur listi fyrir eiganda og ritstjóra. Gestir með leshlekk sjá hann ekki. "Setja inn grunnlista" gefur algenga hluti til að byrja með, valið eftir tegund ferðar (sól, skíði, borg eða sveit). Þú getur bætt við og eytt hverju sem er á eftir. Ef hlutur er bara fyrir eina manneskju, skrifaðu nafn hennar í reitinn Fyrir hvern. "Taka hak af öllu" er gott fyrir heimferðina.'],
+  ['Hvernig virkar pökkunarlistinn?', 'Flipinn Pökkun er sameiginlegur listi fyrir eiganda og ritstjóra. Gestir með leshlekk sjá hann ekki. "Setja inn grunnlista" gefur algenga hluti til að byrja með, valið eftir tegund ferðar (sól, skíði, borg eða sveit), og listar eftir aldri (ungabarn, barn, unglingur) sem bætast ofan á. "Eyða flokki" við fyrirsögn flokks og "Tæma listann" neðst hreinsa hratt. Þú getur bætt við og eytt hverju sem er á eftir. Ef hlutur er bara fyrir eina manneskju, skrifaðu nafn hennar í reitinn Fyrir hvern. "Taka hak af öllu" er gott fyrir heimferðina.'],
   ['Hvar er dagatalið?', 'Undir Dagskrá. Efst hægra megin velur þú milli "Dagur fyrir dag" og "Dagatal". Valið helst í símanum.'],
   ['Hvað er klukkan í hausnum?', 'Ef þú velur tímabelti áfangastaðar undir Stillingar sýnir hausinn klukkuna þar og heima. Gott fyrir símtöl og skilaboð heim.'],
   ['Get ég prentað ferðina?', 'Já, "Prenta" neðst á síðunni gefur hreina útgáfu af dagskrá, gistingu og Mikilvægt (aðeins hjá eiganda). Í síma má velja "Vista sem PDF" í prentglugganum. Pappír er góð varaleið ef síminn er tómur eða týndur.'],
@@ -1629,6 +1681,15 @@ function openHelp(){
 
 /* ---------- mikilvægt: einkaupplýsingar eiganda ---------- */
 const INFO_DEFAULTS = ['Vegabréf', 'Tryggingar', 'Neyðarnúmer', 'Sendiráð', 'Kortafyrirtæki', 'Wifi á hóteli', 'Annað'];
+const INFO_HINTS = {
+  'Vegabréf': 'A1234567, gildir til 2030',
+  'Tryggingar': 'Tryggingafélag, skírteinisnúmer og neyðarsími tryggingarinnar',
+  'Neyðarnúmer': 'Neyðarnúmer landsins, næsta sjúkrahús, læknir heima',
+  'Sendiráð': 'Sendiráð eða ræðismaður Íslands, heimilisfang og sími',
+  'Kortafyrirtæki': 'Sími til að loka korti, síðustu 4 tölustafir kortsins',
+  'Wifi á hóteli': 'Netheiti og lykilorð',
+  'Annað': 'Það sem þarf að hafa við höndina'
+};
 function renderInfo(host){
   if (!isOwner()) return;
   const info = (cur.priv && cur.priv._info) || {};
@@ -1656,8 +1717,10 @@ function editInfo(id, presetLabel){
   const dlg = $('#dlg'), inner = $('#dlgInner'); inner.innerHTML = '';
   inner.append(el('h2', {}, id ? 'Breyta' : 'Ný lína'));
   const f = el('form', {class:'form'});
-  const label = el('input', {id:'nfLabel', maxlength:'40', required:'', placeholder:'t.d. Vegabréf', value: r.label || ''});
-  const value = el('textarea', {id:'nfValue', rows:'3', maxlength:'600', placeholder:'t.d. A1234567, gildir til 2030'}); value.value = r.value || '';
+  const label = el('input', {id:'nfLabel', maxlength:'40', required:'', placeholder: presetLabel === 'Annað' ? 't.d. Lyf, bílaleiga, lykilorð' : 't.d. Vegabréf', value: r.label || ''});
+  label.addEventListener('input', () => { if (!value.value) value.placeholder = 't.d. ' + (INFO_HINTS[label.value.trim()] || INFO_HINTS['Annað']); });
+  const hint = INFO_HINTS[presetLabel] || INFO_HINTS[r.label] || INFO_HINTS['Annað'];
+  const value = el('textarea', {id:'nfValue', rows:'3', maxlength:'600', placeholder:'t.d. ' + hint}); value.value = r.value || '';
   f.append(el('label', {class:'full'}, 'Heiti', label), el('label', {class:'full'}, 'Upplýsingar', value));
   const st = el('p', {class:'status'});
   const row = el('div', {class:'row'}, el('button', {class:'btn', type:'submit'}, 'Vista'), el('button', {class:'btn ghost', type:'button', onclick: () => dlg.close()}, 'Hætta við'));
@@ -1777,6 +1840,8 @@ function renderCosts(host){
   /* skipting á þátttakendur: hlutur hvers og hvað hver lagði út */
   if (cur.people.length && kinds.length){
     const ids = cur.people.map(p => p.id);
+    /* greiðandi: sá sem þátttakandi fylgir, annars hann sjálfur (hámark 3 skref) */
+    const payerOf = id => { let cur_ = id; for (let i = 0; i < 3; i++){ const p = cur.people.find(x => x.id === cur_); if (!p || !p.follows || !ids.includes(p.follows)) break; cur_ = p.follows; } return cur_; };
     const share = {}, paid = {}; for (const id of ids){ share[id] = 0; paid[id] = 0; }
     let skipped = 0;
     for (const it of cur.items){
@@ -1784,18 +1849,20 @@ function renderCosts(host){
       const p = parsePrice(it.price); if (!p) continue;
       const isk = toIsk(p); if (isk == null){ skipped++; continue; }
       let sh = (it.split || []).filter(id => ids.includes(id)); if (!sh.length) sh = ids;
-      for (const id of sh) share[id] += isk / sh.length;
-      if (it.paidBy && paid[it.paidBy] != null) paid[it.paidBy] += isk;
+      for (const id of sh) share[payerOf(id)] += isk / sh.length;
+      if (it.paidBy && paid[it.paidBy] != null) paid[payerOf(it.paidBy)] += isk;
     }
     card.append(el('h3', {style:'font-size:16px;margin:16px 0 4px'}, 'Á mann'));
     const pl = el('div', {class:'info-view'});
     for (const p of cur.people){
+      if (payerOf(p.id) !== p.id) continue;
+      const deps = cur.people.filter(q => q.id !== p.id && payerOf(q.id) === p.id).map(q => q.name);
       const diff = paid[p.id] - share[p.id];
-      pl.append(el('div', {class:'kv'}, el('b', {}, p.name),
+      pl.append(el('div', {class:'kv'}, el('b', {}, p.name, deps.length ? el('small', {style:'display:block;font-weight:400;color:var(--dim)'}, 'með ' + deps.join(', ')) : null),
         el('span', {}, `Hlutur ${fmtAmt(share[p.id], 'ISK')} kr. · lagði út ${fmtAmt(paid[p.id], 'ISK')} kr.`),
         el('span', {style:'font-weight:700;white-space:nowrap;color:' + (diff > 0.5 ? 'var(--accent)' : diff < -0.5 ? 'var(--danger)' : 'var(--dim)')}, diff > 0.5 ? `á inni ${fmtAmt(diff, 'ISK')} kr.` : diff < -0.5 ? `skuldar ${fmtAmt(-diff, 'ISK')} kr.` : 'jafnt')));
     }
-    card.append(pl, el('p', {class:'help', style:'margin:8px 0 0'}, 'Hlutur fer eftir "Kostnaður skiptist á" í hverri færslu, annars skiptist jafnt á alla. "Greitt af" skráir hver lagði út.' + (skipped ? ` ${skipped} ${skipped === 1 ? 'færsla' : 'færslur'} ekki með vegna þess að gengi vantar.` : '')));
+    card.append(pl, el('p', {class:'help', style:'margin:8px 0 0'}, 'Hlutur fer eftir "Kostnaður skiptist á" í hverri færslu, annars skiptist jafnt á alla. Hlutur þess sem fylgir öðrum rennur í hlut greiðandans. "Greitt af" skráir hver lagði út.' + (skipped ? ` ${skipped} ${skipped === 1 ? 'færsla' : 'færslur'} ekki með vegna þess að gengi vantar.` : '')));
   } else if (kinds.length && !cur.people.length){
     card.append(el('p', {class:'help', style:'margin:8px 0 0'}, 'Skráðu þátttakendur hér fyrir ofan til að sjá kostnað á mann og hver skuldar hverjum.'));
   }
@@ -1887,24 +1954,38 @@ function renderSettings(host){
   /* þátttakendur */
   const pc = el('div', {class:'card'}, el('h2', {}, 'Þátttakendur'),
     el('p', {class:'help', style:'margin:0 0 10px'}, 'Hverjir fara. Nöfnin birtast í valmyndum fyrir "Hverjir fara" á færslum, ábyrgð á verkefnum, pökkun og kostnaðarskiptingu.'));
+  /* "Fylgir": barn eða maki sem borgar ekki sjálft. Hlutur þess rennur í hlut þess sem það fylgir. */
+  const followSel = (p) => {
+    const sel = el('select', {title:'Fylgir', style:'background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:5px 8px;font-size:13px;color:var(--dim)'});
+    sel.append(el('option', {value:''}, 'Borgar sjálf/ur'));
+    for (const q of cur.people){ if (p && q.id === p.id) continue; if (q.follows) continue; sel.append(el('option', {value:q.id, selected: p && p.follows === q.id ? '' : null}, 'Fylgir ' + q.name)); }
+    return sel;
+  };
   if (!cur.people.length) pc.append(el('p', {class:'empty'}, 'Enginn skráður enn.'));
   else {
     const ul = el('ul', {class:'people'});
-    for (const p of cur.people) ul.append(el('li', {}, el('span', {}, p.name),
-      el('button', {class:'x', type:'button', title:'Fjarlægja', style:'background:none;border:0;color:var(--dim);font-size:18px;cursor:pointer', onclick: async () => {
-        if (!confirm(`Fjarlægja ${p.name} úr ferðinni?`)) return;
-        try { await db.ref(`travel/trips/${cur.id}/people/${p.id}`).remove(); logChange(`Fjarlægði þátttakanda: ${p.name}`); } catch(err){ toast('Tókst ekki.'); }
-      }}, '×')));
+    for (const p of cur.people){
+      const sel = followSel(p);
+      sel.addEventListener('change', async () => { try { await db.ref(`travel/trips/${cur.id}/people/${p.id}/follows`).set(sel.value || null); } catch(err){ toast('Tókst ekki.'); } });
+      ul.append(el('li', {}, el('span', {}, p.name), el('span', {class:'row', style:'gap:6px'}, sel,
+        el('button', {class:'x', type:'button', title:'Fjarlægja', style:'background:none;border:0;color:var(--dim);font-size:18px;cursor:pointer', onclick: async () => {
+          if (!confirm(`Fjarlægja ${p.name} úr ferðinni?`)) return;
+          const upd = { [`travel/trips/${cur.id}/people/${p.id}`]: null };
+          for (const q of cur.people) if (q.follows === p.id) upd[`travel/trips/${cur.id}/people/${q.id}/follows`] = null;
+          try { await db.ref().update(upd); logChange(`Fjarlægði þátttakanda: ${p.name}`); } catch(err){ toast('Tókst ekki.'); }
+        }}, '×'))));
+    }
     pc.append(ul);
   }
   const pf = el('form', {class:'row'});
   const pn = el('input', {maxlength:'40', placeholder:'Nafn', style:'flex:1;min-width:140px;background:var(--panel-2);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:16px;color:var(--fg)'});
-  pf.append(pn, el('button', {class:'btn small', type:'submit'}, 'Bæta við'));
+  const pfSel = cur.people.length ? followSel(null) : null;
+  pf.append(pn, pfSel, el('button', {class:'btn small', type:'submit'}, 'Bæta við'));
   pf.addEventListener('submit', async e => {
     e.preventDefault(); const n = pn.value.trim(); if (!n) return;
-    try { await db.ref(`travel/trips/${cur.id}/people/${rnd(10)}`).set({ name: n.slice(0, 40), created: new Date().toISOString() }); pn.value = ''; logChange(`Bætti við þátttakanda: ${n}`); } catch(err){ toast('Tókst ekki: ' + (err.code || err.message)); }
+    try { await db.ref(`travel/trips/${cur.id}/people/${rnd(10)}`).set({ name: n.slice(0, 40), follows: pfSel && pfSel.value || null, created: new Date().toISOString() }); pn.value = ''; if (pfSel) pfSel.value = ''; logChange(`Bætti við þátttakanda: ${n}`); } catch(err){ toast('Tókst ekki: ' + (err.code || err.message)); }
   });
-  pc.append(pf);
+  pc.append(pf, el('p', {class:'help', style:'margin:8px 0 0'}, '"Fylgir" er fyrir börn og aðra sem borga ekki sjálfir. Hlutur þeirra í kostnaði rennur í hlut þess sem þeir fylgja.'));
   host.append(pc);
   const nPriv = Object.entries(cur.priv || {}).filter(([k, x]) => k !== '_info' && x && (x.conf || x.price)).length;
   const nPub = Object.values(cur.trip.items || {}).filter(x => x && (x.conf || x.price)).length;
