@@ -230,6 +230,8 @@
   .pack .pi label{flex:1;min-width:0;overflow-wrap:anywhere;cursor:pointer;}
   .pack .pi.done label{text-decoration:line-through;color:var(--dim);}
   .pack .pi small{color:var(--dim);margin-left:6px;}
+  .pack .pi .ed{background:none;border:0;color:var(--dim);font-size:13px;padding:0 4px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
+  .pack .pi .ed:hover{color:var(--accent);}
   .pack .pi .x{background:none;border:0;color:var(--dim);font-size:18px;line-height:1;padding:0 4px;cursor:pointer;}
   .pack .pi .x:hover{color:var(--danger);}
   .progress{height:6px;background:var(--panel-2);border-radius:3px;overflow:hidden;margin:6px 0 0;}
@@ -1254,7 +1256,7 @@ function packTemplate(key){
 function renderPacking(host){
   const items = cur.packing;
   const done = items.filter(x => x.done).length;
-  host.append(el('p', {class:'help', style:'margin:0 0 10px'}, 'Sameiginlegur listi fyrir alla með hlekkinn. Hakið við þegar pakkað er. Ef hlutur er bara fyrir eina manneskju, skrifaðu nafn hennar í reitinn Fyrir hvern.'));
+  host.append(el('p', {class:'help', style:'margin:0 0 10px'}, 'Sameiginlegur listi fyrir alla með hlekkinn. Hakið við þegar pakkað er. Ef hlutur er bara fyrir eina manneskju, skrifaðu nafn hennar í reitinn Fyrir hvern. "Breyta" við hlut lagar texta, flokk og nafn.'));
   if (items.length){
     const bar = el('div', {class:'progress'}); bar.append(el('i', {style:`width:${Math.round(done / items.length * 100)}%`}));
     host.append(el('div', {style:'margin:0 0 14px'}, el('div', {class:'help'}, `${done} af ${items.length} pakkað`), bar));
@@ -1273,6 +1275,7 @@ function renderPacking(host){
       const row = el('div', {class:'pi' + (it.done ? ' done' : '')});
       const cb = el('input', {type:'checkbox', id:'pk-' + it.id, checked: it.done ? '' : null, onchange: async () => { try { await db.ref(`travel/trips/${cur.id}/packing/${it.id}/done`).set(cb.checked); } catch(e){ toast('Tókst ekki að vista.'); cb.checked = !cb.checked; } }});
       row.append(cb, el('label', {for:'pk-' + it.id}, it.text, it.by ? el('small', {}, it.by) : null),
+        el('button', {class:'ed', type:'button', title:'Breyta texta, flokki eða nafni', onclick: () => openPackDialog(it)}, 'Breyta'),
         el('button', {class:'x', type:'button', title:'Eyða', onclick: async () => { if (!confirm(`Eyða "${it.text}"?`)) return; try { await db.ref(`travel/trips/${cur.id}/packing/${it.id}`).remove(); } catch(e){ toast('Tókst ekki.'); } }}, '×'));
       sec.append(row);
     }
@@ -1321,18 +1324,29 @@ async function addTemplate(key){
   if (!n){ toast('Allt úr listanum er þegar á listanum.'); return; }
   await db.ref().update(upd); toast(`${n} hlutir settir á listann`);
 }
-function openPackDialog(){
+/* Nýr hlutur (margir í einu, einn í hverja línu) eða breyta hlut sem er til: texti, flokkur, nafn */
+function openPackDialog(it){
   const dlg = $('#dlg'), inner = $('#dlgInner'); inner.innerHTML = '';
-  inner.append(el('h2', {}, 'Bæta á pökkunarlista'));
+  const editing = !!(it && it.id);
+  inner.append(el('h2', {}, editing ? 'Breyta hlut' : 'Bæta á pökkunarlista'));
   const f = el('form', {class:'form'});
-  const text = el('textarea', {id:'pkText', rows:'4', placeholder:'Einn hlutur í hverja línu'});
-  const cat = el('select', {id:'pkCat'}); for (const c of PACK_CATS) cat.append(el('option', {value:c}, c));
-  const by = el('input', {id:'pkBy', maxlength:'30', placeholder:'Tómt = fyrir alla', value: isOwner() ? '' : store.get('travel:name', '')});
-  f.append(el('label', {class:'full'}, 'Hlutir', text), el('label', {}, 'Flokkur', cat), el('label', {}, 'Fyrir hvern (valkvætt)', by));
+  const text = editing ? el('input', {id:'pkText', maxlength:'80', required:'', value: it.text || ''}) : el('textarea', {id:'pkText', rows:'4', placeholder:'Einn hlutur í hverja línu'});
+  const cat = el('select', {id:'pkCat'});
+  const cats = PACK_CATS.concat(editing && it.cat && !PACK_CATS.includes(it.cat) ? [it.cat] : []);
+  for (const c of cats) cat.append(el('option', {value:c, selected: editing && (it.cat || 'Annað') === c ? '' : null}, c));
+  const by = el('input', {id:'pkBy', maxlength:'30', placeholder:'Tómt = fyrir alla', value: editing ? (it.by || '') : (isOwner() ? '' : store.get('travel:name', ''))});
+  f.append(el('label', {class:'full'}, editing ? 'Hlutur' : 'Hlutir', text), el('label', {}, 'Flokkur', cat), el('label', {}, 'Fyrir hvern (valkvætt)', by));
   const st = el('p', {class:'status'});
-  f.append(el('div', {class:'row'}, el('button', {class:'btn', type:'submit'}, 'Bæta við'), el('button', {class:'btn ghost', type:'button', onclick: () => dlg.close()}, 'Hætta við')), st);
+  f.append(el('div', {class:'row'}, el('button', {class:'btn', type:'submit'}, editing ? 'Vista' : 'Bæta við'), el('button', {class:'btn ghost', type:'button', onclick: () => dlg.close()}, 'Hætta við')), st);
   f.addEventListener('submit', async e => {
-    e.preventDefault();
+    e.preventDefault(); st.className = 'status';
+    if (editing){
+      const t = text.value.trim();
+      if (!t){ st.textContent = 'Hluturinn þarf texta.'; st.classList.add('err'); return; }
+      try { await db.ref(`travel/trips/${cur.id}/packing/${it.id}`).update({ text: t.slice(0, 80), cat: cat.value, by: by.value.trim() || null }); dlg.close(); toast('Vistað'); }
+      catch(err){ st.textContent = 'Vistun tókst ekki: ' + (err.code || err.message); st.classList.add('err'); }
+      return;
+    }
     const lines = text.value.split('\n').map(x => x.trim()).filter(Boolean);
     if (!lines.length){ st.textContent = 'Skrifaðu að minnsta kosti einn hlut.'; st.classList.add('err'); return; }
     const upd = {}; const now = new Date().toISOString();
