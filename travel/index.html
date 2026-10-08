@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ferðir</title>
+<title>Travel</title>
 <meta name="description" content="Ferðaáætlun: gisting, flug, afþreying og allt sem er bókað, dag fyrir dag, í dagatali og á korti.">
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -212,8 +212,8 @@
 <div class="wrap">
   <header class="hero">
     <div class="motif" id="motif" aria-hidden="true"></div>
-    <p class="eyebrow" id="eyebrow"><a href="/travel/">Ferðir</a></p>
-    <h1 id="title">Ferðir<small>Allt sem er bókað, á einum stað.</small></h1>
+    <p class="eyebrow" id="eyebrow"><a href="/travel/">Travel</a></p>
+    <h1 id="title">Travel<small>Allt sem er bókað, á einum stað.</small></h1>
     <div class="userbar" id="userbar"></div>
   </header>
   <div class="tabrow" id="tabrow" hidden><nav class="tabs" id="tabs" role="tablist"></nav><button class="btn small" id="addTop" type="button" hidden></button></div>
@@ -379,8 +379,8 @@ function route(){
 }
 function setHeader(title, sub, eyebrow){
   $('#title').innerHTML = esc(title) + (sub ? `<small>${esc(sub)}</small>` : '');
-  $('#eyebrow').innerHTML = `<a href="/travel/">Ferðir</a>` + (eyebrow ? ` · ${esc(eyebrow)}` : '');
-  document.title = title === 'Ferðir' ? 'Ferðir' : `${title} · Ferðir`;
+  $('#eyebrow').innerHTML = `<a href="/travel/">Travel</a>` + (eyebrow ? ` · ${esc(eyebrow)}` : '');
+  document.title = title === 'Travel' ? 'Travel' : `${title} · Travel`;
 }
 
 /* ==================================================================
@@ -390,7 +390,7 @@ let myTripsRef = null;
 function renderHome(){
   stopTrip();
   applyTheme('sjor');
-  setHeader('Ferðir', 'Allt sem er bókað, á einum stað.');
+  setHeader('Travel', 'Allt sem er bókað, á einum stað.');
   $('#tabrow').hidden = true;
   const app = $('#app'); app.innerHTML = '';
   $('#foot').textContent = '';
