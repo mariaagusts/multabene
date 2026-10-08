@@ -223,17 +223,29 @@
   .seg button{border:0;background:transparent;border-radius:999px;padding:6px 14px;font-size:14px;color:var(--dim);font-weight:500;white-space:nowrap;transition:background .15s,color .15s;}
   .seg button:hover{color:var(--fg);}
   .seg button[aria-pressed="true"]{background:var(--panel);color:var(--fg);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.12);}
-  .pack{display:grid;gap:14px;}
-  .pack .cat h3{font-size:16px;margin:0 0 6px;font-family:var(--display);}
-  .pack .pi{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--line);}
-  .pack .pi input[type=checkbox]{width:20px;height:20px;margin:2px 0 0;accent-color:var(--accent);flex:0 0 20px;}
-  .pack .pi label{flex:1;min-width:0;overflow-wrap:anywhere;cursor:pointer;}
+  .pack{display:grid;gap:18px;}
+  .pack .cat h3{font-size:16px;margin:0 0 8px;font-family:var(--display);display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
+  .pack .cat h3 small{font-family:var(--body);font-size:12px;font-weight:500;color:var(--dim);background:var(--panel-2);padding:2px 9px;border-radius:999px;white-space:nowrap;}
+  .pack .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;}
+  .pack .grid.wide{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));}
+  .pack .pi{position:relative;display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;min-width:0;}
+  .pack .pi.done{background:var(--panel-2);}
+  .pack .pi input[type=checkbox]{width:20px;height:20px;margin:1px 0 0;accent-color:var(--accent);flex:0 0 20px;}
+  .pack .pi label{flex:1;min-width:0;overflow-wrap:break-word;cursor:pointer;line-height:1.35;}
   .pack .pi.done label{text-decoration:line-through;color:var(--dim);}
-  .pack .pi small{color:var(--dim);margin-left:6px;}
-  .pack .pi .ed{background:none;border:0;color:var(--dim);font-size:13px;padding:0 4px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
+  .pack .pi small{color:var(--dim);margin-left:6px;font-size:12px;}
+  .pack .pi .ed{background:none;border:0;color:var(--dim);font-size:13px;padding:0 4px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;line-height:1.5;}
   .pack .pi .ed:hover{color:var(--accent);}
   .pack .pi .x{background:none;border:0;color:var(--dim);font-size:18px;line-height:1;padding:0 4px;cursor:pointer;}
   .pack .pi .x:hover{color:var(--danger);}
+  @media (hover:hover){
+    .pack .pi .ed,.pack .pi .x{position:absolute;top:6px;opacity:0;transition:opacity .15s;background:var(--panel);border-radius:6px;}
+    .pack .pi .x{right:6px;padding:2px 6px;}
+    .pack .pi .ed{right:30px;padding:2px 4px;}
+    .pack .pi.done .ed,.pack .pi.done .x{background:var(--panel-2);}
+    .pack .pi:hover .ed,.pack .pi:hover .x,.pack .pi:focus-within .ed,.pack .pi:focus-within .x{opacity:1;}
+    .pack .pi label{padding-right:56px;}
+  }
   .progress{height:6px;background:var(--panel-2);border-radius:3px;overflow:hidden;margin:6px 0 0;}
   .progress i{display:block;height:100%;background:var(--accent);}
   .clock{display:inline-flex;gap:14px;font-size:13px;color:var(--dim);margin-left:12px;font-variant-numeric:tabular-nums;}
@@ -1384,16 +1396,18 @@ function renderPacking(host){
     wrap.append(el('div', {class:'row'}, el('button', {class:'btn small', type:'button', onclick: openTemplateDialog}, 'Setja inn grunnlista'), el('button', {class:'btn ghost small', type:'button', onclick: () => openPackDialog()}, 'Bæta við sjálf')));
   }
   for (const cat of PACK_CATS.concat([...new Set(items.map(x => x.cat).filter(c => c && !PACK_CATS.includes(c)))])){
-    const list = items.filter(x => (x.cat || 'Annað') === cat && (!hideDone || !x.done));
+    const inCat = items.filter(x => (x.cat || 'Annað') === cat);
+    const list = inCat.filter(x => !hideDone || !x.done);
     if (!list.length) continue;
-    const sec = el('div', {class:'cat'}); sec.append(el('h3', {}, cat));
+    const sec = el('div', {class:'cat'}); sec.append(el('h3', {}, cat, el('small', {}, `${inCat.filter(x => x.done).length}/${inCat.length} pakkað`)));
+    const grid = el('div', {class:'grid'}); sec.append(grid);
     for (const it of list){
       const row = el('div', {class:'pi' + (it.done ? ' done' : '')});
       const cb = el('input', {type:'checkbox', id:'pk-' + it.id, checked: it.done ? '' : null, onchange: async () => { try { await db.ref(`travel/team/${cur.id}/packing/${it.id}/done`).set(cb.checked); } catch(e){ toast('Tókst ekki að vista.'); cb.checked = !cb.checked; } }});
       row.append(cb, el('label', {for:'pk-' + it.id}, it.text, it.by ? el('small', {}, it.by) : null),
         el('button', {class:'ed', type:'button', title:'Breyta texta, flokki eða nafni', onclick: () => openPackDialog(it)}, 'Breyta'),
         el('button', {class:'x', type:'button', title:'Eyða', onclick: async () => { if (!confirm(`Eyða "${it.text}"?`)) return; try { await db.ref(`travel/team/${cur.id}/packing/${it.id}`).remove(); } catch(e){ toast('Tókst ekki.'); } }}, '×'));
-      sec.append(row);
+      grid.append(row);
     }
     wrap.append(sec);
   }
@@ -1533,14 +1547,14 @@ function renderTodos(host){
   };
   for (const [name, list] of groups){
     if (!list.length) continue;
-    const sec = el('div', {class:'cat'}); sec.append(el('h3', {style: name === 'Komið fram yfir' ? 'color:var(--danger)' : ''}, name));
-    for (const it of list) sec.append(row(it));
-    wrap.append(sec);
+    const sec = el('div', {class:'cat'}); sec.append(el('h3', {style: name === 'Komið fram yfir' ? 'color:var(--danger)' : ''}, name, el('small', {}, String(list.length))));
+    const grid = el('div', {class:'grid wide'}); for (const it of list) grid.append(row(it));
+    sec.append(grid); wrap.append(sec);
   }
   if (done.length){
-    const det = el('details', {style:'margin-top:8px'}); det.append(el('summary', {}, `Lokið (${done.length})`));
-    for (const it of done) det.append(row(it));
-    wrap.append(det);
+    const det = el('details', {style:'margin-top:4px'}); det.append(el('summary', {}, `Lokið (${done.length})`));
+    const grid = el('div', {class:'grid wide', style:'margin-top:8px'}); for (const it of done) grid.append(row(it));
+    det.append(grid); wrap.append(det);
   }
   host.append(wrap);
   if (all.length) host.append(el('div', {class:'row', style:'margin-top:14px'}, el('button', {class:'btn ghost small', type:'button', onclick: addTodoTemplate}, 'Bæta grunnlista við')));
@@ -1629,6 +1643,15 @@ function openHelp(){
 
 /* ---------- mikilvægt: einkaupplýsingar eiganda ---------- */
 const INFO_DEFAULTS = ['Vegabréf', 'Tryggingar', 'Neyðarnúmer', 'Sendiráð', 'Kortafyrirtæki', 'Wifi á hóteli', 'Annað'];
+const INFO_HINTS = {
+  'Vegabréf': 'A1234567, gildir til 2030',
+  'Tryggingar': 'Tryggingafélag, skírteinisnúmer og neyðarsími tryggingarinnar',
+  'Neyðarnúmer': 'Neyðarnúmer landsins, næsta sjúkrahús, læknir heima',
+  'Sendiráð': 'Sendiráð eða ræðismaður Íslands, heimilisfang og sími',
+  'Kortafyrirtæki': 'Sími til að loka korti, síðustu 4 tölustafir kortsins',
+  'Wifi á hóteli': 'Netheiti og lykilorð',
+  'Annað': 'Það sem þarf að hafa við höndina'
+};
 function renderInfo(host){
   if (!isOwner()) return;
   const info = (cur.priv && cur.priv._info) || {};
@@ -1656,8 +1679,10 @@ function editInfo(id, presetLabel){
   const dlg = $('#dlg'), inner = $('#dlgInner'); inner.innerHTML = '';
   inner.append(el('h2', {}, id ? 'Breyta' : 'Ný lína'));
   const f = el('form', {class:'form'});
-  const label = el('input', {id:'nfLabel', maxlength:'40', required:'', placeholder:'t.d. Vegabréf', value: r.label || ''});
-  const value = el('textarea', {id:'nfValue', rows:'3', maxlength:'600', placeholder:'t.d. A1234567, gildir til 2030'}); value.value = r.value || '';
+  const label = el('input', {id:'nfLabel', maxlength:'40', required:'', placeholder: presetLabel === 'Annað' ? 't.d. Lyf, bílaleiga, lykilorð' : 't.d. Vegabréf', value: r.label || ''});
+  label.addEventListener('input', () => { if (!value.value) value.placeholder = 't.d. ' + (INFO_HINTS[label.value.trim()] || INFO_HINTS['Annað']); });
+  const hint = INFO_HINTS[presetLabel] || INFO_HINTS[r.label] || INFO_HINTS['Annað'];
+  const value = el('textarea', {id:'nfValue', rows:'3', maxlength:'600', placeholder:'t.d. ' + hint}); value.value = r.value || '';
   f.append(el('label', {class:'full'}, 'Heiti', label), el('label', {class:'full'}, 'Upplýsingar', value));
   const st = el('p', {class:'status'});
   const row = el('div', {class:'row'}, el('button', {class:'btn', type:'submit'}, 'Vista'), el('button', {class:'btn ghost', type:'button', onclick: () => dlg.close()}, 'Hætta við'));
