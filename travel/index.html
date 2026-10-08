@@ -524,6 +524,7 @@ function openTrip(r){
     watchPrivate();
     cur.suggestions = v.suggestions || {};
     cur.ideas = Object.entries(v.ideas || {}).map(([id, x]) => ({ id, ...x })).sort((a,b) => (a.created || '').localeCompare(b.created || ''));
+    if (isOwner() && cur.privOk) migrateConf();
     renderTrip();
   }, err => {
     $('#app').innerHTML = `<div class="card"><p style="margin:0 0 12px">Náði ekki í ferðina. ${err && err.code === 'PERMISSION_DENIED' ? 'Reglurnar fyrir /travel vantar í Firebase.' : ''}</p><a class="btn" href="/travel/" style="text-decoration:none;display:inline-block">Á forsíðu</a></div>`;
@@ -537,10 +538,14 @@ function watchPrivate(){
   cur.privRef.on('value', snap => {
     if (!cur) return;
     cur.priv = snap.val() || {};
+    cur.privOk = true;
     cur.items = cur.items.map(it => ({ ...it, conf: (cur.priv[it.id] && cur.priv[it.id].conf) || it.conf || null }));
     migrateConf();
     renderTrip();
-  }, () => {});
+  }, () => {
+    cur.privOk = false;
+    renderTrip();
+  });
 }
 /* Eldri færslur með bókunarnúmer í opna hlutanum: færa í einkahólfið, einu sinni */
 let migrating = false;
@@ -552,7 +557,9 @@ async function migrateConf(){
   }
   if (!Object.keys(upd).length) return;
   migrating = true;
-  try { await db.ref().update(upd); } catch(e){} finally { migrating = false; }
+  try { await db.ref().update(upd); toast('Bókunarnúmer færð í einkahólf'); }
+  catch(e){ toast('Náði ekki að færa bókunarnúmer í einkahólf: ' + (e.code || e.message)); }
+  finally { migrating = false; }
 }
 function renderMissing(){
   stopTrip(); $('#tabrow').hidden = true;
@@ -582,6 +589,9 @@ function renderTrip(){
 
   const app = $('#app'); app.innerHTML = '';
   if (trip.description && cur.tab === 'dagar') app.append(el('p', {class:'help', style:'margin:0 0 14px;white-space:pre-line'}, trip.description));
+  if (owner && cur.privOk === false){
+    app.append(el('div', {class:'notice warn', html:'<b>Einkahólf fyrir bókunarnúmer er lokað.</b> Reglan "private" vantar í Firebase, svo bókunarnúmer eru enn sýnileg gestum og ný númer vistast ekki. Límdu nýjustu reglurnar inn í Firebase console og endurhladdu.'}));
+  }
   if (owner && nSug && cur.tab !== 'stillingar'){
     app.append(el('div', {class:'notice', html:`<b>${nSug} ${nSug === 1 ? 'tillaga bíður' : 'tillögur bíða'} samþykkis.</b> <button class="linkbtn" type="button" id="goSug">Skoða</button>`}));
     $('#goSug').onclick = () => { cur.tab = 'stillingar'; renderTrip(); };
