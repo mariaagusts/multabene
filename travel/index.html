@@ -309,6 +309,9 @@
   .xcard .m .open{color:var(--accent);} .xcard .m .closed{color:var(--danger);}
   .xcard .acts{margin-top:auto;padding-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
   .xcard.added{opacity:.6;}
+  .xcard.marked{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);}
+  .xcard .mark{background:none;border:0;padding:0 2px;color:var(--accent);font-size:15px;cursor:pointer;}
+  .explore h3{font-size:16px;margin:14px 0 6px;}
   .idea h3{font-size:17px;overflow-wrap:anywhere;}
   .idea .by{font-size:12px;color:var(--dim);}
   .idea.done{opacity:.6;}
@@ -717,6 +720,7 @@ function applyTeamData(t){
   cur.team = t || {};
   cur.packing = Object.entries(cur.team.packing || {}).map(([id, x]) => ({ id, ...x })).sort((a,b) => (a.created || '').localeCompare(b.created || ''));
   cur.todos = Object.entries(cur.team.todos || {}).map(([id, x]) => ({ id, ...x }));
+  cur.marks = Object.entries(cur.team.marks || {}).map(([id, x]) => ({ ...x, placeId: id })).sort((a,b) => (b.at || '').localeCompare(a.at || ''));
 }
 function watchTeam(){
   if (!cur) return;
@@ -747,7 +751,7 @@ function openTrip(r){
   if (cur && cur.id === r.id){ cur.tab = r.tab || cur.tab; if (r.key) cur.join = r.key; renderTrip(); return; }
   stopTrip();
   store.set('travel:last', r.id);
-  cur = { id: r.id, trip: null, items: [], suggestions: {}, ideas: [], packing: [], todos: [], people: [], log: [], team: {}, teamRef: null, priv: {}, privRef: null, ref: db.ref(`travel/trips/${r.id}`), tab: r.tab || store.get('travel:tab', 'dagar'), join: r.key || null, fromCache: false, live: false };
+  cur = { id: r.id, trip: null, items: [], suggestions: {}, ideas: [], packing: [], todos: [], marks: [], people: [], log: [], team: {}, teamRef: null, priv: {}, privRef: null, ref: db.ref(`travel/trips/${r.id}`), tab: r.tab || store.get('travel:tab', 'dagar'), join: r.key || null, fromCache: false, live: false };
   $('#app').innerHTML = '<p class="empty">Sæki ferðina…</p>';
   setHeader('Sæki…', '');
   const cached = store.get(`travel:cache:${r.id}`, null);
@@ -1320,10 +1324,13 @@ function renderExplore(host){
   const q = el('input', {placeholder:'Eða leita sjálf, t.d. snorkl, taco, markaður', maxlength:'60'});
   const go = el('button', {class:'btn small', type:'button'}, 'Leita');
   const res = el('div', {class:'xres'});
+  const markedIds = new Set(cur.marks.map(m => m.placeId));
   const paint = (results, cached) => {
     res.innerHTML = '';
+    const rest = results.filter(r => !markedIds.has(r.placeId));
     if (!results.length){ res.append(el('p', {class:'empty'}, 'Ekkert fannst.')); return; }
-    for (const r of results) res.append(exploreCard(r));
+    if (!rest.length){ res.append(el('p', {class:'empty'}, 'Allt úr þessari leit er merkt, sjá efst.')); return; }
+    for (const r of rest) res.append(exploreCard(r));
     status.textContent = `Leitað í kringum ${center.title || center.place}. Niðurstöður með einkunn frá Google. Leitir í dag: ${exploreCount()} af ${EXPLORE_MAX}.${cached ? ' Þessi leit var geymd frá fyrri leit.' : ''}`;
   };
   if (exploreLast && exploreLast.trip === cur.id){ q.value = exploreLast.q; paint(exploreLast.results, exploreLast.cached); }
@@ -1343,12 +1350,29 @@ function renderExplore(host){
   };
   for (const [label, query] of EXPLORE_CHIPS) chips.append(el('button', {type:'button', class:'chip', onclick: () => run(query)}, label));
   go.onclick = () => run(q.value); q.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); run(q.value); } });
-  box.append(chips, el('div', {class:'q'}, q, go), res);
+  box.append(chips, el('div', {class:'q'}, q, go));
+  /* merktar tillögur: alltaf efst, geymdar með ferðinni */
+  if (cur.marks.length){
+    box.append(el('h3', {}, `Merktar tillögur (${cur.marks.length})`));
+    const mg = el('div', {class:'xres', style:'margin:0 0 6px'});
+    for (const m of cur.marks) mg.append(exploreCard(m));
+    box.append(mg);
+    box.append(el('h3', {}, 'Leit'));
+  }
+  box.append(res);
   host.append(box);
+}
+async function toggleMark(r){
+  const marked = cur.marks.some(m => m.placeId === r.placeId);
+  try {
+    if (marked) await db.ref(`travel/team/${cur.id}/marks/${r.placeId}`).remove();
+    else { const { placeId, ...rest } = r; await db.ref(`travel/team/${cur.id}/marks/${placeId}`).set({ ...rest, at: new Date().toISOString() }); }
+  } catch(e){ toast('Tókst ekki: ' + (e.code || e.message)); }
 }
 function exploreCard(r){
   const have = cur.ideas.find(i => i.placeId && i.placeId === r.placeId) || cur.items.find(i => i.placeId && i.placeId === r.placeId);
-  const c = el('div', {class:'xcard' + (have ? ' added' : '')});
+  const marked = cur.marks.some(m => m.placeId === r.placeId);
+  const c = el('div', {class:'xcard' + (have ? ' added' : '') + (marked ? ' marked' : '')});
   if (r.photo) c.append(el('img', {src: r.photo, alt:'', loading:'lazy', referrerpolicy:'no-referrer'}));
   const b = el('div', {class:'b'});
   b.append(el('b', {}, r.name));
@@ -1358,6 +1382,7 @@ function exploreCard(r){
   if (todayLine) b.append(el('div', {class:'m'}, el('span', {class: /lokað/i.test(todayLine) ? 'closed' : 'open'}, todayLine.replace('Opið', 'Opið í dag').replace('Lokað þennan dag', 'Lokað í dag'))));
   if (r.addr) b.append(el('div', {class:'m'}, r.addr));
   const acts = el('div', {class:'acts'});
+  acts.append(el('button', {class:'mark', type:'button', title: marked ? 'Afmerkja' : 'Merkja, fer efst', onclick: () => toggleMark(r)}, marked ? '★ Merkt' : '☆ Merkja'));
   const link = gmapsLink({ place: r.name, placeId: r.placeId, lat: r.lat, lng: r.lng });
   if (link) acts.append(el('a', {class:'maplink', href:link, target:'_blank', rel:'noopener'}, 'Google Maps ↗'));
   if (r.url) acts.append(el('a', {class:'maplink', href:r.url, target:'_blank', rel:'noopener'}, 'Vefsíða ↗'));
@@ -1937,7 +1962,7 @@ const FAQ = [
   ['Hvernig skrifa ég verð svo kostnaðaryfirlitið telji rétt?', 'Tölu og gjaldmiðil, í hvaða rithætti sem er: "121.384 kr.", "US$905.62", "USD 1,007.45", "257,84 CAD", "4.200 MXN". Kr. og kr merkja íslenskar krónur, dollaramerki eitt og sér merkir bandaríska dollara.\n\nYfirlitið er undir Stillingar. Gengi dagsins er sótt sjálfkrafa frá Seðlabanka Evrópu. Ef þú vilt nota gengið sem kortið þitt notaði, skráðu það undir "Nota eigið gengi".'],
   ['Hvaðan kemur veðurspáin?', 'Frá Open-Meteo, sama og á veiðisíðunni. Hún birtist við dagana í Dagskrá þegar 16 dagar eða færri eru í þá, miðað við gistingu dagsins (annars fyrstu færslu dagsins með staðsetningu). Hæsti og lægsti hiti, tákn fyrir veðrið, og úrkomulíkur ef bendillinn er látinn hvíla á spánni.'],
   ['Hvað þýðir stjarnan og "Opið" á færslu?', 'Þegar staður er valinn úr Google leitinni fylgja einkunn (★ 4,6) og opnunartímar með. Á spjaldinu sést opnunartíminn þann vikudag sem færslan er á, eða rautt "Lokað þennan dag". Opnunartímar eru eins og þeir voru þegar staðurinn var valinn, veldu staðinn aftur í "Breyta" til að uppfæra.'],
-  ['Hvað eru "Tillögur úr nágrenninu"?', 'Neðst í Hugmyndabankanum, fyrir eiganda og ritstjóra. Hugmyndir hópsins eru alltaf efst, tillögur Google fyrir neðan og merktar sem slíkar. Flýtihnappar (Það helsta, Veitingastaðir, Strendur…) eða eigin leit sækja staði frá Google í kringum gistinguna, með einkunn, mynd og opnunartíma dagsins. "Í hugmyndabankann" geymir staðinn með öllu. Hámark 30 leitir á dag á hverja ferð, og sama leit er geymd í síma í sólarhring.'],
+  ['Hvað eru "Tillögur úr nágrenninu"?', 'Neðst í Hugmyndabankanum, fyrir eiganda og ritstjóra. Hugmyndir hópsins eru alltaf efst, tillögur Google fyrir neðan og merktar sem slíkar. Flýtihnappar (Það helsta, Veitingastaðir, Strendur…) eða eigin leit sækja staði frá Google í kringum gistinguna, með einkunn, mynd og opnunartíma dagsins. "Í hugmyndabankann" geymir staðinn með öllu. "☆ Merkja" á spjaldi færir tillöguna í hópinn "Merktar tillögur" efst, sem geymist með ferðinni og sést ritstjórum líka, svo ekki þurfi að skruna gegnum alla leitina aftur. Hámark 30 leitir á dag á hverja ferð, og sama leit er geymd í síma í sólarhring.'],
   ['Hvað er bíllinn milli færslna?', 'Áætlaður aksturstími og vegalengd frá gistingu dagsins í fyrstu færslu og svo milli færslna, frá Google. Birtist aðeins milli færslna með staðsetningu á korti. Þarf að Routes API sé virkjað fyrir Google lykilinn, annars sést ekkert.'],
   ['Í hvaða tímabelti eru tímarnir?', 'Alltaf staðartími á áfangastað. Flug frá Keflavík kl. 17:00 er íslenskur tími, lending í Cancún kl. 18:05 er mexíkóskur tími. Síðan umreiknar ekkert.'],
   ['Hvað er Mikilvægt?', 'Flipi sem aðeins þú sérð, fyrir vegabréfsnúmer, tryggingar, neyðarnúmer, sendiráð, kortafyrirtæki og wifi-lykilorð. Geymt í sama læsta hólfi og bókunarnúmerin. Gott að hafa þetta við höndina án nets.'],
