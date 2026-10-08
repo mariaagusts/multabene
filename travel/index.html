@@ -432,6 +432,12 @@ function renderHome(){
   if (!AUTH_READY){
     app.append(el('div', {class:'notice warn', html:'<b>Innskráning er ekki stillt enn.</b> Firebase-stillingarnar (apiKey og appId) vantar í kóðann. Ferðir sem þegar eru til má samt skoða með hlekk.'}));
   }
+  if (!navigator.onLine){
+    const last = store.get('travel:last', null);
+    const card = el('div', {class:'offline'}, 'Án nets. Innskráning þarf net. ');
+    if (last && store.get(`travel:cache:${last}`, null)) card.append(el('a', {href:`#t/${last}`}, 'Opna síðustu ferð úr geymslu'));
+    app.append(card);
+  }
   if (!user){
     const card = el('div', {class:'card'}, el('h2', {}, 'Skráðu þig inn'),
       el('p', {class:'help', style:'margin:0 0 14px'}, 'Innskráning með Google. Aðeins þú sérð og breytir þínum ferðum. Samferðafólk fær hlekk og þarf ekki að skrá sig inn.'));
@@ -564,6 +570,7 @@ function applyTripData(v){
 function openTrip(r){
   if (cur && cur.id === r.id){ cur.tab = r.tab || cur.tab; renderTrip(); return; }
   stopTrip();
+  store.set('travel:last', r.id);
   cur = { id: r.id, trip: null, items: [], suggestions: {}, ideas: [], priv: {}, privRef: null, ref: db.ref(`travel/trips/${r.id}`), tab: r.tab || store.get('travel:tab', 'dagar'), fromCache: false, live: false };
   $('#app').innerHTML = '<p class="empty">Sæki ferðina…</p>';
   setHeader('Sæki…', '');
@@ -1138,8 +1145,38 @@ function parsePrice(str){
   return { amount, cur };
 }
 const fmtAmt = (n, cur) => cur === 'ISK' || cur === 'MXN' && n >= 1000 ? Math.round(n).toLocaleString('de-DE') : n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+/* Gengi dagsins: Seðlabanki Evrópu (frankfurter.dev), varaleið open.er-api.com. Geymt í síma í 12 klst. */
+let fxState = { rates: null, date: null, loading: false, failed: false };
+async function fetchRates(){
+  const cached = store.get('travel:fx', null);
+  if (cached && Date.now() - cached.at < 12 * 3600 * 1000){ fxState = { rates: cached.rates, date: cached.date, loading: false, failed: false }; return fxState; }
+  fxState.loading = true;
+  const want = ['USD','CAD','MXN','EUR','GBP','DKK','NOK','SEK'];
+  try {
+    let rates = {}, date = null;
+    try {
+      const r = await fetch(`https://api.frankfurter.dev/v1/latest?base=ISK&symbols=${want.join(',')}`);
+      if (!r.ok) throw new Error('fx');
+      const j = await r.json();
+      for (const c of want) if (j.rates && j.rates[c]) rates[c] = 1 / j.rates[c];
+      date = j.date;
+    } catch(e){
+      const r = await fetch('https://open.er-api.com/v6/latest/ISK');
+      if (!r.ok) throw new Error('fx2');
+      const j = await r.json();
+      for (const c of want) if (j.rates && j.rates[c]) rates[c] = 1 / j.rates[c];
+      date = (j.time_last_update_utc || '').slice(0, 16);
+    }
+    if (!Object.keys(rates).length) throw new Error('empty');
+    fxState = { rates, date, loading: false, failed: false };
+    store.set('travel:fx', { rates, date, at: Date.now() });
+  } catch(e){ fxState = { rates: null, date: null, loading: false, failed: true }; }
+  return fxState;
+}
 function renderCosts(host){
-  const rates = (cur.trip.rates) || {};
+  const manual = (cur.trip.rates) || {};
+  const auto = fxState.rates || {};
+  const rates = { ...auto, ...manual };
   const byCur = {}, byKind = {}, bad = [];
   for (const it of cur.items){
     if (!it.price) continue;
@@ -1153,26 +1190,33 @@ function renderCosts(host){
   const curs = Object.keys(byCur).sort();
   if (!curs.length && !bad.length){ card.append(el('p', {class:'empty'}, 'Engin verð skráð enn. Verðreiturinn á færslum má vera í hvaða rithætti sem er, til dæmis "121.384 kr.", "US$905.62" eða "257,84 CAD".')); host.append(card); return; }
   const list = el('div', {class:'info-view'});
-  for (const c of curs) list.append(el('div', {class:'kv'}, el('b', {}, c), el('span', {}, fmtAmt(byCur[c], c) + ' ' + c), el('span', {class:'help'}, c === 'ISK' ? '' : (rates[c] ? `≈ ${fmtAmt(byCur[c] * rates[c], 'ISK')} kr.` : 'gengi vantar'))));
+  for (const c of curs) list.append(el('div', {class:'kv'}, el('b', {}, c), el('span', {}, fmtAmt(byCur[c], c) + ' ' + c), el('span', {class:'help'}, c === 'ISK' ? '' : (rates[c] ? `≈ ${fmtAmt(byCur[c] * rates[c], 'ISK')} kr.` + (manual[c] ? ' (þitt gengi)' : '') : (fxState.loading ? 'sæki gengi…' : 'gengi vantar')))));
   card.append(list);
+  /* sækja gengi ef vantar fyrir einhvern gjaldmiðil, teikna aftur þegar það kemur */
+  const foreignNow = curs.filter(c => c !== 'ISK' && !rates[c]);
+  if (foreignNow.length && !fxState.loading && !fxState.failed){ fetchRates().then(() => { if (cur && cur.tab === 'stillingar') renderTrip(); }); }
   if (byKind._all != null) card.append(el('p', {style:'margin:12px 0 0;font-weight:700'}, `Samtals ${byKind._missing ? 'að minnsta kosti ' : ''}${fmtAmt(byKind._all, 'ISK')} kr.` + (byKind._missing ? ' (gengi vantar fyrir hluta)' : '')));
   const kinds = Object.keys(byKind).filter(k => !k.startsWith('_'));
   if (kinds.length > 1) card.append(el('p', {class:'help', style:'margin:4px 0 0'}, kinds.map(k => `${kindOf(k).label}: ${fmtAmt(byKind[k], 'ISK')} kr.`).join(' · ')));
   /* gengi */
   const foreign = curs.filter(c => c !== 'ISK');
   if (foreign.length){
-    const f = el('form', {class:'form', style:'margin-top:14px'});
-    f.append(el('div', {class:'full help'}, 'Gengi í krónum, til að leggja saman. Skráðu sjálf, til dæmis af vef Landsbankans. Gildir aðeins fyrir þessa ferð.'));
+    const src = fxState.date ? `Gengi Seðlabanka Evrópu, ${fxState.date}. Sótt sjálfkrafa.` : fxState.failed ? 'Náði ekki í gengi dagsins. Skráðu gengi hér fyrir neðan.' : '';
+    if (src) card.append(el('p', {class:'help', style:'margin:8px 0 0'}, src + ' ' + foreign.filter(c => auto[c]).map(c => `1 ${c} = ${auto[c].toFixed(2)} kr.`).join(' · ')));
+    const det = el('details', {style:'margin-top:12px'});
+    det.append(el('summary', {style:'cursor:pointer;color:var(--dim);font-size:14px'}, 'Nota eigið gengi í stað gengis dagsins'));
+    const f = el('form', {class:'form', style:'margin-top:10px'});
+    f.append(el('div', {class:'full help'}, 'Til dæmis gengið sem kortið þitt notaði. Tómt = gengi dagsins. Gildir aðeins fyrir þessa ferð.'));
     const inputs = {};
-    for (const c of foreign){ inputs[c] = el('input', {type:'number', step:'0.01', min:'0', placeholder:'kr. fyrir 1 ' + c, value: rates[c] || ''}); f.append(el('label', {}, `1 ${c} =`, inputs[c])); }
+    for (const c of foreign){ inputs[c] = el('input', {type:'number', step:'0.01', min:'0', placeholder: auto[c] ? auto[c].toFixed(2) : 'kr. fyrir 1 ' + c, value: manual[c] || ''}); f.append(el('label', {}, `1 ${c} =`, inputs[c])); }
     const st = el('p', {class:'status'});
     f.append(el('div', {class:'row'}, el('button', {class:'btn small', type:'submit'}, 'Vista gengi')), st);
     f.addEventListener('submit', async e => {
       e.preventDefault();
       const r = {}; for (const c of foreign){ const v = parseFloat(inputs[c].value); if (v > 0) r[c] = v; }
-      try { await db.ref(`travel/trips/${cur.id}/rates`).set(r); toast('Gengi vistað'); } catch(err){ st.textContent = 'Vistun tókst ekki.'; st.classList.add('err'); }
+      try { await db.ref(`travel/trips/${cur.id}/rates`).set(Object.keys(r).length ? r : null); toast('Gengi vistað'); } catch(err){ st.textContent = 'Vistun tókst ekki.'; st.classList.add('err'); }
     });
-    card.append(f);
+    det.append(f); card.append(det);
   }
   if (bad.length) card.append(el('p', {class:'help', style:'margin-top:10px'}, 'Skildi ekki verðið á: ' + bad.map(b => `"${b.price}" (${b.title})`).join(', ') + '. Skrifaðu tölu og gjaldmiðil, til dæmis "905.62 USD".'));
   host.append(card);
@@ -1350,7 +1394,14 @@ function openItemDialog(it, asSuggestion, opts={}){
 /* ------------------------------------------------------------------
    Ræsing
 ------------------------------------------------------------------ */
+let firstLoad = true;
 function go(){
+  /* Fyrsta opnun án slóðar, til dæmis úr heimaskjásappi: fara beint í síðustu ferð */
+  if (firstLoad){
+    firstLoad = false;
+    const last = store.get('travel:last', null);
+    if (!location.hash && last && store.get(`travel:cache:${last}`, null)){ location.hash = `#t/${last}`; return; }
+  }
   const r = route();
   if (r.view === 'home'){ const f = $('#fab'); if (f) f.remove(); renderHome(); renderUserbar(); }
   else openTrip(r);
