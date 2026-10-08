@@ -1112,7 +1112,7 @@ function renderFlyLegend(todayId){
     + FLY_CATEGORIES.map(c=>
         `<div class="fly-row${c.id===todayId?' match':''}"><span class="nm">${escapeHtml(c.name)}</span><span class="why">${escapeHtml(c.why)} Prófaðu: ${c.flies.map(flyLink).join(", ")}.</span></div>`
       ).join("") + '</div>'
-    + '<span class="fly-ref">Smelltu á flugunafn til að sjá lýsingu og mynd í <a href="#flugur">fluguyfirlitinu</a> hér fyrir neðan.</span>';
+    + '<span class="fly-ref">Smelltu á flugunafn til að sjá lýsingu og mynd í <a href="#flugur">fluguyfirlitinu</a> hér fyrir neðan. Ertu að byrja? <a href="/veidi/byrjendur/">Byrjendablaðið</a> útskýrir allt frá búnaði til töku.</span>';
 }
 
 function renderForecast(days, placeName){
