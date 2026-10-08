@@ -1208,32 +1208,43 @@ function renderCosts(host){
   const manual = (cur.trip.rates) || {};
   const auto = fxState.rates || {};
   const rates = { ...auto, ...manual };
-  const byCur = {}, byKind = {}, bad = [];
+  const toIsk = p => p.cur === 'ISK' ? p.amount : (rates[p.cur] ? p.amount * rates[p.cur] : null);
+  /* flokka eftir gerð, svo eftir gjaldmiðli */
+  const groups = {}, bad = [], allCur = new Set();
+  let total = 0, missing = false;
   for (const it of cur.items){
     if (!it.price) continue;
     const p = parsePrice(it.price);
     if (!p){ bad.push(it); continue; }
-    byCur[p.cur] = (byCur[p.cur] || 0) + p.amount;
-    const isk = p.cur === 'ISK' ? p.amount : (rates[p.cur] ? p.amount * rates[p.cur] : null);
-    if (isk != null){ byKind[it.kind] = (byKind[it.kind] || 0) + isk; byKind._all = (byKind._all || 0) + isk; } else byKind._missing = true;
+    allCur.add(p.cur);
+    const g = groups[it.kind] || (groups[it.kind] = { byCur: {}, isk: 0, missing: false, n: 0 });
+    g.byCur[p.cur] = (g.byCur[p.cur] || 0) + p.amount; g.n++;
+    const isk = toIsk(p);
+    if (isk == null){ g.missing = true; missing = true; } else { g.isk += isk; total += isk; }
   }
   const card = el('div', {class:'card'}, el('h2', {}, 'Kostnaður'));
-  const curs = Object.keys(byCur).sort();
-  if (!curs.length && !bad.length){ card.append(el('p', {class:'empty'}, 'Engin verð skráð enn. Verðreiturinn á færslum má vera í hvaða rithætti sem er, til dæmis "121.384 kr.", "US$905.62" eða "257,84 CAD".')); host.append(card); return; }
+  const order = ['hotel','flight','move','act','note'];
+  const kinds = order.filter(k => groups[k]);
+  if (!kinds.length && !bad.length){ card.append(el('p', {class:'empty'}, 'Engin verð skráð enn. Verðreiturinn á færslum má vera í hvaða rithætti sem er, til dæmis "121.384 kr.", "US$905.62" eða "257,84 CAD".')); host.append(card); return; }
   const list = el('div', {class:'info-view'});
-  for (const c of curs) list.append(el('div', {class:'kv'}, el('b', {}, c), el('span', {}, fmtAmt(byCur[c], c) + ' ' + c), el('span', {class:'help'}, c === 'ISK' ? '' : (rates[c] ? `≈ ${fmtAmt(byCur[c] * rates[c], 'ISK')} kr.` + (manual[c] ? ' (þitt gengi)' : '') : (fxState.loading ? 'sæki gengi…' : 'gengi vantar')))));
+  for (const k of kinds){
+    const g = groups[k];
+    const curs = Object.keys(g.byCur).sort();
+    const parts = curs.map(c => `${fmtAmt(g.byCur[c], c)} ${c}`).join(' + ');
+    list.append(el('div', {class:'kv'},
+      el('b', {}, `${kindOf(k).label} (${g.n})`),
+      el('span', {}, parts),
+      el('span', {style:'font-weight:700;white-space:nowrap'}, g.missing ? `≥ ${fmtAmt(g.isk, 'ISK')} kr.` : `${fmtAmt(g.isk, 'ISK')} kr.`)));
+  }
   card.append(list);
-  /* sækja gengi ef vantar fyrir einhvern gjaldmiðil, teikna aftur þegar það kemur */
-  const foreignNow = curs.filter(c => c !== 'ISK' && !rates[c]);
-  if (foreignNow.length && !fxState.loading && !fxState.failed){ fetchRates().then(() => { if (cur && cur.tab === 'stillingar') renderTrip(); }); }
-  if (byKind._all != null) card.append(el('p', {style:'margin:12px 0 0;font-weight:700'}, `Samtals ${byKind._missing ? 'að minnsta kosti ' : ''}${fmtAmt(byKind._all, 'ISK')} kr.` + (byKind._missing ? ' (gengi vantar fyrir hluta)' : '')));
-  const kinds = Object.keys(byKind).filter(k => !k.startsWith('_'));
-  if (kinds.length > 1) card.append(el('p', {class:'help', style:'margin:4px 0 0'}, kinds.map(k => `${kindOf(k).label}: ${fmtAmt(byKind[k], 'ISK')} kr.`).join(' · ')));
+  card.append(el('p', {style:'margin:12px 0 0;font-weight:700;font-size:17px'}, `Samtals ${missing ? 'að minnsta kosti ' : ''}${fmtAmt(total, 'ISK')} kr.` + (missing ? ' (gengi vantar fyrir hluta)' : '')));
   /* gengi */
-  const foreign = curs.filter(c => c !== 'ISK');
+  const foreign = [...allCur].filter(c => c !== 'ISK').sort();
+  const foreignNow = foreign.filter(c => !rates[c]);
+  if (foreignNow.length && !fxState.loading && !fxState.failed){ fetchRates().then(() => { if (cur && cur.tab === 'stillingar') renderTrip(); }); }
   if (foreign.length){
-    const src = fxState.date ? `Gengi Seðlabanka Evrópu, ${fxState.date}. Sótt sjálfkrafa.` : fxState.failed ? 'Náði ekki í gengi dagsins. Skráðu gengi hér fyrir neðan.' : '';
-    if (src) card.append(el('p', {class:'help', style:'margin:8px 0 0'}, src + ' ' + foreign.filter(c => auto[c]).map(c => `1 ${c} = ${auto[c].toFixed(2)} kr.`).join(' · ')));
+    const src = fxState.loading && foreignNow.length ? 'Sæki gengi dagsins…' : fxState.date ? `Gengi Seðlabanka Evrópu, ${fxState.date}. Sótt sjálfkrafa.` : fxState.failed ? 'Náði ekki í gengi dagsins. Skráðu gengi hér fyrir neðan.' : '';
+    if (src) card.append(el('p', {class:'help', style:'margin:8px 0 0'}, src + ' ' + foreign.filter(c => rates[c]).map(c => `1 ${c} = ${rates[c].toFixed(2)} kr.${manual[c] ? ' (þitt gengi)' : ''}`).join(' · ')));
     const det = el('details', {style:'margin-top:12px'});
     det.append(el('summary', {style:'cursor:pointer;color:var(--dim);font-size:14px'}, 'Nota eigið gengi í stað gengis dagsins'));
     const f = el('form', {class:'form', style:'margin-top:10px'});
