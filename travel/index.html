@@ -56,7 +56,11 @@
   .avatar{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-size:12px;overflow:hidden;}
   .avatar img{width:100%;height:100%;object-fit:cover;}
 
-  nav.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin:0 0 18px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .tabrow{display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);margin:0 0 18px;}
+  nav.tabs{display:flex;gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch;min-width:0;flex:1;}
+  .tabrow .btn{flex:0 0 auto;margin-left:auto;}
+  @media (max-width:640px){ .tabrow .btn{display:none;} }
+  @media (min-width:641px){ .fab{display:none;} }
   nav.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 12px;color:var(--dim);font-weight:500;white-space:nowrap;}
   nav.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent);}
   nav.tabs button .n{display:inline-block;min-width:18px;padding:0 5px;border-radius:999px;background:var(--act);color:#fff;font-size:11px;font-weight:700;margin-left:4px;text-align:center;}
@@ -212,7 +216,7 @@
     <h1 id="title">Ferðir<small>Allt sem er bókað, á einum stað.</small></h1>
     <div class="userbar" id="userbar"></div>
   </header>
-  <nav class="tabs" id="tabs" role="tablist" hidden></nav>
+  <div class="tabrow" id="tabrow" hidden><nav class="tabs" id="tabs" role="tablist"></nav><button class="btn small" id="addTop" type="button" hidden></button></div>
   <main id="app"></main>
   <p class="foot" id="foot"></p>
   <p class="support">Finnst þér þessi síða hjálpleg? Það má endilega styrkja síðuna um nokkrar krónur. Reikningur <b>0527-26-1416</b>, kt. <b>471025-0380</b>.</p>
@@ -387,7 +391,7 @@ function renderHome(){
   stopTrip();
   applyTheme('sjor');
   setHeader('Ferðir', 'Allt sem er bókað, á einum stað.');
-  $('#tabs').hidden = true;
+  $('#tabrow').hidden = true;
   const app = $('#app'); app.innerHTML = '';
   $('#foot').textContent = '';
 
@@ -523,7 +527,7 @@ function openTrip(r){
   });
 }
 function renderMissing(){
-  stopTrip(); $('#tabs').hidden = true;
+  stopTrip(); $('#tabrow').hidden = true;
   setHeader('Úps', '');
   $('#app').innerHTML = `<div class="card"><p style="margin:0 0 12px">Þessi ferð finnst ekki. Kannski var henni eytt, eða hlekkurinn er rangur.</p><a class="btn" href="/travel/" style="text-decoration:none;display:inline-block">Á forsíðu</a></div>`;
 }
@@ -542,7 +546,8 @@ function renderTrip(){
   const tabs = [['dagar','Dagur fyrir dag'],['dagatal','Dagatal'],['kort','Kort'],['gisting','Gisting'],['hugmyndir','Hugmyndabanki' + (nIdeas ? ` <span style="color:var(--dim);font-weight:400">${nIdeas}</span>` : '')]];
   if (owner) tabs.push(['stillingar', 'Stillingar' + (nSug ? `<span class="n">${nSug}</span>` : '')]);
   if (!tabs.some(t => t[0] === cur.tab)) cur.tab = 'dagar';
-  const nav = $('#tabs'); nav.hidden = false; nav.innerHTML = '';
+  $('#tabrow').hidden = false;
+  const nav = $('#tabs'); nav.innerHTML = '';
   for (const [k, label] of tabs){
     nav.append(el('button', {role:'tab', 'aria-selected': String(cur.tab === k), html: label, onclick: () => { cur.tab = k; store.set('travel:tab', k); history.replaceState(null, '', `#t/${cur.id}/${k}`); renderTrip(); }}));
   }
@@ -560,15 +565,23 @@ function renderTrip(){
   else if (cur.tab === 'hugmyndir') renderIdeas(app);
   else if (cur.tab === 'stillingar') renderSettings(app);
 
+  /* Hnappur til að bæta við: í flipalínunni á tölvu, fljótandi neðst í síma */
   const old = $('#fab'); if (old) old.remove();
-  if (cur.tab === 'hugmyndir'){
-    document.body.append(el('button', {class:'btn fab', id:'fab', type:'button', onclick: () => openIdeaDialog()}, '+ Hugmynd'));
-  } else if (cur.tab !== 'stillingar'){
-    if (owner) document.body.append(el('button', {class:'btn fab', id:'fab', type:'button', onclick: () => openItemDialog(null)}, '+ Bæta við'));
-    else document.body.append(el('button', {class:'btn fab', id:'fab', type:'button', onclick: () => openItemDialog(null, true)}, '+ Senda tillögu'));
+  const top = $('#addTop');
+  let addLabel = null, addFn = null;
+  if (cur.tab === 'hugmyndir'){ addLabel = '+ Hugmynd'; addFn = () => openIdeaDialog(); }
+  else if (cur.tab !== 'stillingar'){
+    if (owner){ addLabel = '+ Bæta við'; addFn = () => openItemDialog(null); }
+    else { addLabel = '+ Senda tillögu'; addFn = () => openItemDialog(null, true); }
   }
-  $('#foot').innerHTML = owner ? `Hver sem hefur hlekkinn getur skoðað ferðina, sent tillögu og bætt í hugmyndabankann. Aðeins þú breytir áætluninni. <button class="linkbtn" id="copyShare">Afrita hlekk</button>` : 'Þú skoðar þessa ferð sem gestur. Þú getur sent tillögu að færslu sem eigandi samþykkir.';
+  top.hidden = !addLabel;
+  if (addLabel){
+    top.textContent = addLabel; top.onclick = addFn;
+    document.body.append(el('button', {class:'btn fab', id:'fab', type:'button', onclick: addFn}, addLabel));
+  }
+  $('#foot').innerHTML = (owner ? `Hver sem hefur hlekkinn getur skoðað ferðina, sent tillögu og bætt í hugmyndabankann. Aðeins þú breytir áætluninni. <button class="linkbtn" id="copyShare">Afrita hlekk</button>` : 'Þú skoðar þessa ferð sem gestur. Þú getur sent tillögu að færslu sem eigandi samþykkir.') + ` · <button class="linkbtn" id="icsBtn">Sækja í dagatal símans</button>`;
   const cs = $('#copyShare'); if (cs) cs.onclick = () => copy(`${BASE}#t/${cur.id}`, 'Hlekkur afritaður');
+  $('#icsBtn').onclick = exportIcs;
 }
 
 /* ---------- dagur fyrir dag ---------- */
@@ -867,6 +880,47 @@ function openIdeaDialog(){
   });
 }
 
+/* ---------- útflutningur í dagatal (ics) ----------
+   Tímar eru "fljótandi", án tímabeltis: 10:00 í Mexíkó birtist sem 10:00
+   í síma sem er stilltur á Mexíkótíma. Gisting er heilsdagsviðburður. */
+function icsEscape(s){ return String(s ?? '').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n'); }
+function icsFold(line){ const out = []; let i = 0; while (i < line.length){ out.push((i ? ' ' : '') + line.slice(i, i + (i ? 74 : 75))); i += i ? 74 : 75; } return out.join('\r\n'); }
+const icsDT = s => s.replace(/[-:]/g, '').slice(0, 15) + (s.length > 10 ? '00' : '');
+function buildIcs(){
+  const { trip } = cur;
+  const stamp = new Date().toISOString().replace(/[-:]/g,'').slice(0,15) + 'Z';
+  const lines = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//multabene.is//travel//IS','CALSCALE:GREGORIAN','METHOD:PUBLISH', 'X-WR-CALNAME:' + icsEscape(trip.title)];
+  for (const it of cur.items){
+    if (!it.start) continue;
+    const k = kindOf(it.kind);
+    const desc = [it.conf ? 'Bókunarnúmer: ' + it.conf : '', it.flightNo ? 'Flug: ' + it.flightNo : '', it.price ? 'Verð: ' + it.price : '', it.note || '', it.url || '', gmapsLink(it) || ''].filter(Boolean).join('\n');
+    lines.push('BEGIN:VEVENT', 'UID:' + it.id + '@multabene.is/travel/' + cur.id, 'DTSTAMP:' + stamp, 'SUMMARY:' + icsEscape((it.kind === 'hotel' ? 'Gisting: ' : '') + it.title));
+    if (it.kind === 'hotel'){
+      const endDate = dpart(it.end || it.start) > dpart(it.start) ? dpart(it.end) : iso(new Date(parse(it.start).getTime() + 86400000));
+      lines.push('DTSTART;VALUE=DATE:' + dpart(it.start).replace(/-/g,''), 'DTEND;VALUE=DATE:' + endDate.replace(/-/g,''));
+    } else {
+      const st = it.start.length > 10 ? it.start : it.start + 'T09:00';
+      const en = it.end ? (it.end.length > 10 ? it.end : it.end + 'T10:00') : st.slice(0,11) + pad(Math.min(23, +st.slice(11,13) + 1)) + st.slice(13);
+      lines.push('DTSTART:' + icsDT(st), 'DTEND:' + icsDT(en > st ? en : st));
+    }
+    if (it.place) lines.push('LOCATION:' + icsEscape(it.place));
+    if (it.lat != null && it.lng != null) lines.push('GEO:' + it.lat + ';' + it.lng);
+    if (desc) lines.push('DESCRIPTION:' + icsEscape(desc));
+    lines.push('CATEGORIES:' + icsEscape(k.label), 'END:VEVENT');
+  }
+  lines.push('END:VCALENDAR');
+  return lines.map(icsFold).join('\r\n') + '\r\n';
+}
+function exportIcs(){
+  if (!cur || !cur.items.length){ toast('Engin færsla til að flytja út.'); return; }
+  const blob = new Blob([buildIcs()], { type:'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = (cur.trip.title || 'ferd').replace(/[^\wáéíóúýþæðöÁÉÍÓÚÝÞÆÐÖ -]/g,'').trim().replace(/\s+/g,'-') + '.ics';
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+  toast('Dagatalsskrá sótt. Opnaðu hana til að bæta í dagatalið.');
+}
+
 /* ---------- stillingar og tillögur ---------- */
 function renderSettings(host){
   const sug = Object.entries(cur.suggestions).sort((a,b) => (a[1].created || '').localeCompare(b[1].created || ''));
@@ -892,6 +946,9 @@ function renderSettings(host){
     el('div', {class:'row'}, el('button', {class:'btn small', type:'button', onclick: () => copy(share, 'Hlekkur afritaður')}, 'Afrita'),
       navigator.share ? el('button', {class:'btn ghost small', type:'button', onclick: () => navigator.share({ title: cur.trip.title, url: share }).catch(() => {})}, 'Deila…') : null));
   host.append(shc);
+  host.append(el('div', {class:'card'}, el('h2', {}, 'Dagatal símans'),
+    el('p', {class:'help', style:'margin:0 0 10px'}, 'Sækir ics-skrá með öllum færslum. Opnaðu hana í símanum og veldu að bæta í dagatalið. Tímar eru staðartími áfangastaðar. Skráin uppfærist ekki sjálfkrafa, sæktu hana aftur eftir breytingar.'),
+    el('button', {class:'btn small', type:'button', onclick: exportIcs}, 'Sækja í dagatal (.ics)')));
   host.append(tripForm(cur.trip));
 }
 
