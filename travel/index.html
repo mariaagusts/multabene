@@ -432,6 +432,12 @@ function renderHome(){
   if (!AUTH_READY){
     app.append(el('div', {class:'notice warn', html:'<b>Innskráning er ekki stillt enn.</b> Firebase-stillingarnar (apiKey og appId) vantar í kóðann. Ferðir sem þegar eru til má samt skoða með hlekk.'}));
   }
+  if (!navigator.onLine){
+    const last = store.get('travel:last', null);
+    const card = el('div', {class:'offline'}, 'Án nets. Innskráning þarf net. ');
+    if (last && store.get(`travel:cache:${last}`, null)) card.append(el('a', {href:`#t/${last}`}, 'Opna síðustu ferð úr geymslu'));
+    app.append(card);
+  }
   if (!user){
     const card = el('div', {class:'card'}, el('h2', {}, 'Skráðu þig inn'),
       el('p', {class:'help', style:'margin:0 0 14px'}, 'Innskráning með Google. Aðeins þú sérð og breytir þínum ferðum. Samferðafólk fær hlekk og þarf ekki að skrá sig inn.'));
@@ -564,6 +570,7 @@ function applyTripData(v){
 function openTrip(r){
   if (cur && cur.id === r.id){ cur.tab = r.tab || cur.tab; renderTrip(); return; }
   stopTrip();
+  store.set('travel:last', r.id);
   cur = { id: r.id, trip: null, items: [], suggestions: {}, ideas: [], priv: {}, privRef: null, ref: db.ref(`travel/trips/${r.id}`), tab: r.tab || store.get('travel:tab', 'dagar'), fromCache: false, live: false };
   $('#app').innerHTML = '<p class="empty">Sæki ferðina…</p>';
   setHeader('Sæki…', '');
@@ -1387,7 +1394,14 @@ function openItemDialog(it, asSuggestion, opts={}){
 /* ------------------------------------------------------------------
    Ræsing
 ------------------------------------------------------------------ */
+let firstLoad = true;
 function go(){
+  /* Fyrsta opnun án slóðar, til dæmis úr heimaskjásappi: fara beint í síðustu ferð */
+  if (firstLoad){
+    firstLoad = false;
+    const last = store.get('travel:last', null);
+    if (!location.hash && last && store.get(`travel:cache:${last}`, null)){ location.hash = `#t/${last}`; return; }
+  }
   const r = route();
   if (r.view === 'home'){ const f = $('#fab'); if (f) f.remove(); renderHome(); renderUserbar(); }
   else openTrip(r);
