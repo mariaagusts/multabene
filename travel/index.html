@@ -688,14 +688,15 @@ function watchTeam(){
 }
 /* Eldri pökkunarlistar lágu í opna hlutanum. Eigandi flytur þá í hópshólfið, einu sinni. */
 let migratingPack = false;
-async function migratePacking(){
-  if (migratingPack || !isOwner() || !cur.trip || !cur.trip.packing || cur.teamOk !== true) return;
-  migratingPack = true;
+async function migratePacking(force){
+  if (migratingPack || !isOwner() || !cur.trip || !cur.trip.packing) return;
+  if (!force && (cur.teamOk !== true || cur.packErr)) return;
+  migratingPack = true; cur.packErr = null;
   const upd = {};
   for (const [id, x] of Object.entries(cur.trip.packing)) if (x && !(cur.team.packing && cur.team.packing[id])) upd[`travel/team/${cur.id}/packing/${id}`] = x;
-  upd[`travel/team/${cur.id}/packing`] = null;
+  upd[`travel/trips/${cur.id}/packing`] = null;
   try { await db.ref().update(upd); toast('Pökkunarlistinn fluttur í hólf fyrir eiganda og ritstjóra'); }
-  catch(e){ toast('Náði ekki að flytja pökkunarlistann: ' + (e.code || e.message)); }
+  catch(e){ cur.packErr = (e && (e.code || e.message)) || 'óþekkt villa'; toast('Náði ekki að flytja pökkunarlistann: ' + cur.packErr); renderTrip(); }
   finally { migratingPack = false; }
 }
 function openTrip(r){
@@ -869,7 +870,7 @@ function renderTrip(){
     document.body.append(el('button', {class:'btn fab', id:'fab', type:'button', onclick: addFn}, addLabel));
   }
   const nEd = Object.keys(trip.editors || {}).length;
-  $('#foot').innerHTML = (owner ? `Hver sem hefur lesahlekkinn getur skoðað ferðina, sent tillögu og bætt í hugmyndabankann. Þú${nEd ? ` og ${nEd} ${nEd === 1 ? 'ritstjóri' : 'ritstjórar'}` : ''} ${nEd ? 'breytið' : 'breytir'} áætluninni. <button class="linkbtn" id="copyShare">Afrita lesahlekk</button>` : editor ? `Þú ert ritstjóri þessarar ferðar og breytir áætluninni, verkefnum og pökkun. Bókunarnúmer, verð og Mikilvægt sér aðeins eigandi.` : `Þú skoðar þessa ferð sem gestur. Þú getur sent tillögu að færslu sem eigandi samþykkir. <button class="linkbtn" id="sugBtn">Senda tillögu</button>`) + ` · <button class="linkbtn" id="icsBtn">Sækja í dagatal símans</button>`;
+  $('#foot').innerHTML = (owner ? `Hver sem hefur leshlekkinn getur skoðað ferðina, sent tillögu og bætt í hugmyndabankann. Þú${nEd ? ` og ${nEd} ${nEd === 1 ? 'ritstjóri' : 'ritstjórar'}` : ''} ${nEd ? 'breytið' : 'breytir'} áætluninni. <button class="linkbtn" id="copyShare">Afrita leshlekk</button>` : editor ? `Þú ert ritstjóri þessarar ferðar og breytir áætluninni, verkefnum og pökkun. Bókunarnúmer, verð og Mikilvægt sér aðeins eigandi.` : `Þú skoðar þessa ferð sem gestur. Þú getur sent tillögu að færslu sem eigandi samþykkir. <button class="linkbtn" id="sugBtn">Senda tillögu</button>`) + ` · <button class="linkbtn" id="icsBtn">Sækja í dagatal símans</button>`;
   $('#foot').innerHTML += ` · <button class="linkbtn" id="printBtn">Prenta</button>` + (editor ? ` · <button class="linkbtn" id="logBtn">Breytingasaga</button>` : '') + ` · <button class="linkbtn" id="helpBtn">Hjálp</button>`;
   $('#printBtn').onclick = printTrip;
   const cs = $('#copyShare'); if (cs) cs.onclick = () => copy(`${BASE}#t/${cur.id}`, 'Hlekkur afritaður');
@@ -1363,6 +1364,14 @@ function renderPacking(host){
   const items = cur.packing;
   const done = items.filter(x => x.done).length;
   host.append(el('p', {class:'help', style:'margin:0 0 10px'}, 'Listi fyrir eiganda og ritstjóra. Hakið við þegar pakkað er. Ef hlutur er bara fyrir eina manneskju, skrifaðu nafn hennar í reitinn Fyrir hvern. "Breyta" við hlut lagar texta, flokk og nafn.'));
+  /* eldri listi á gamla staðnum sem hefur ekki flust í hópshólfið */
+  const oldN = isOwner() && cur.trip.packing ? Object.keys(cur.trip.packing).length : 0;
+  if (oldN){
+    const box = el('div', {class:'notice warn'}, el('b', {}, `Eldri pökkunarlisti (${oldN} ${oldN === 1 ? 'hlutur' : 'hlutir'}) bíður flutnings í nýja hólfið. `),
+      cur.packErr ? `Síðasta tilraun mistókst: ${cur.packErr}. ` : cur.teamOk === false ? 'Hólfið er lokað, sjá viðvörun efst. ' : cur.teamOk !== true ? 'Bíð eftir hólfinu… ' : '',
+      el('button', {class:'linkbtn', type:'button', onclick: () => migratePacking(true)}, 'Flytja núna'));
+    host.append(box);
+  }
   if (cur.teamOk === false) host.append(el('div', {class:'notice warn'}, 'Hólfið svarar ekki, svo ekki er hægt að vista hér. Sjá viðvörun efst.'));
   if (items.length){
     const bar = el('div', {class:'progress'}); bar.append(el('i', {style:`width:${Math.round(done / items.length * 100)}%`}));
@@ -1591,8 +1600,8 @@ function openLog(){
 const FAQ = [
   ['Virkar síðan án nets, til dæmis í útlöndum?', 'Já, ef þú opnar ferðina með neti fyrst. Síðan geymir þá ferðina í símanum og sýnir hana aftur þótt net vanti, með tilkynningunni "Án nets". Breytingar vistast þegar net næst.\n\nÖruggast er að setja síðuna á heimaskjá símans (sjá næstu spurningu), skrá sig inn þar og opna ferðina einu sinni með neti. Appið á heimaskjánum er með sína eigin geymslu, aðskilda frá vafranum.'],
   ['Hvernig set ég síðuna á heimaskjá?', 'iPhone: opnaðu síðuna í Safari, smelltu á deilitáknið neðst (ferningur með ör upp) og veldu "Bæta á heimaskjá".\n\nAndroid: opnaðu síðuna í Chrome, smelltu á þrjá punkta efst til hægri og veldu "Setja upp app" eða "Bæta á heimaskjá".\n\nAppið heitir Travel. Skráðu þig inn í því sjálfu, innskráning í vafranum fylgir ekki með.'],
-  ['Hver sér hvað?', 'Þrjú stig.\n\nEigandi (þú, innskráð): sérð allt og breytir öllu. Bókunarnúmer, verð, kostnaðarskipting og Mikilvægt eru bara þín.\n\nRitstjóri (innskráður með ritstjórahlekk): breytir áætluninni, hugmyndabanka, verkefnum og pökkun. Sér ekki bókunarnúmer, verð eða Mikilvægt.\n\nGestur (með lesahlekk, engin innskráning): sér áætlun, kort, gistingu og hugmyndabanka. Sér ekki verkefni eða pökkun. Getur sent tillögu að færslu, sem þú samþykkir undir Stillingar, og bætt hugmyndum í bankann.\n\nHlekkirnir eru lyklarnir. Deildu þeim aðeins með þeim sem eiga að fá aðganginn.'],
-  ['Hvernig deili ég ferðinni?', 'Undir Stillingar eru tveir hlekkir. Lesahlekkurinn er fyrir þá sem eiga bara að skoða. Ritstjórahlekkurinn er fyrir þá sem eiga að breyta. "Afrita lesahlekk" neðst á síðunni gefur þann fyrri.'],
+  ['Hver sér hvað?', 'Þrjú stig.\n\nEigandi (þú, innskráð): sérð allt og breytir öllu. Bókunarnúmer, verð, kostnaðarskipting og Mikilvægt eru bara þín.\n\nRitstjóri (innskráður með ritstjórahlekk): breytir áætluninni, hugmyndabanka, verkefnum og pökkun. Sér ekki bókunarnúmer, verð eða Mikilvægt.\n\nGestur (með leshlekk, engin innskráning): sér áætlun, kort, gistingu og hugmyndabanka. Sér ekki verkefni eða pökkun. Getur sent tillögu að færslu, sem þú samþykkir undir Stillingar, og bætt hugmyndum í bankann.\n\nHlekkirnir eru lyklarnir. Deildu þeim aðeins með þeim sem eiga að fá aðganginn.'],
+  ['Hvernig deili ég ferðinni?', 'Undir Stillingar eru tveir hlekkir. Leshlekkurinn er fyrir þá sem eiga bara að skoða. Ritstjórahlekkurinn er fyrir þá sem eiga að breyta. "Afrita leshlekk" neðst á síðunni gefur þann fyrri.'],
   ['Hvernig bæti ég ritstjóra við?', 'Undir Stillingar, "Ritstjórahlekkur": smelltu á "Búa til ritstjórahlekk" og sendu hlekkinn. Sá sem opnar hann skráir sig inn með Google og verður ritstjóri. Nafnið birtist í listanum "Ritstjórar" þar sem þú getur fjarlægt hvern sem er.\n\nEf hlekkurinn lekur: "búa til nýjan og afturkalla alla ritstjóra". Gamli hlekkurinn hættir þá að virka og allir þurfa nýja hlekkinn.'],
   ['Hvað er Verkefni?', 'Listi yfir það sem þarf að klára fyrir ferðina, með skiladegi og ábyrgð: vegabréf, tryggingar, áritun, gjaldeyrir, innritun. "Setja inn grunnlista" gefur algeng verkefni með skiladögum miðað við fyrsta ferðadag. Það sem er komið fram yfir er rautt efst. Fyrir eiganda og ritstjóra.'],
   ['Hvað eru þátttakendur?', 'Nöfn þeirra sem fara, skráð undir Stillingar. Þá getur þú merkt færslu með "Hverjir fara" (ekki allir fara í snorkl), sett ábyrgð á verkefni og hlut á pökkunarlista, og skipt kostnaði.'],
@@ -1603,7 +1612,7 @@ const FAQ = [
   ['Hvernig skrifa ég verð svo kostnaðaryfirlitið telji rétt?', 'Tölu og gjaldmiðil, í hvaða rithætti sem er: "121.384 kr.", "US$905.62", "USD 1,007.45", "257,84 CAD", "4.200 MXN". Kr. og kr merkja íslenskar krónur, dollaramerki eitt og sér merkir bandaríska dollara.\n\nYfirlitið er undir Stillingar. Gengi dagsins er sótt sjálfkrafa frá Seðlabanka Evrópu. Ef þú vilt nota gengið sem kortið þitt notaði, skráðu það undir "Nota eigið gengi".'],
   ['Í hvaða tímabelti eru tímarnir?', 'Alltaf staðartími á áfangastað. Flug frá Keflavík kl. 17:00 er íslenskur tími, lending í Cancún kl. 18:05 er mexíkóskur tími. Síðan umreiknar ekkert.'],
   ['Hvað er Mikilvægt?', 'Flipi sem aðeins þú sérð, fyrir vegabréfsnúmer, tryggingar, neyðarnúmer, sendiráð, kortafyrirtæki og wifi-lykilorð. Geymt í sama læsta hólfi og bókunarnúmerin. Gott að hafa þetta við höndina án nets.'],
-  ['Hvernig virkar pökkunarlistinn?', 'Flipinn Pökkun er sameiginlegur listi fyrir eiganda og ritstjóra. Gestir með lesahlekk sjá hann ekki. "Setja inn grunnlista" gefur algenga hluti til að byrja með, valið eftir tegund ferðar (sól, skíði, borg eða sveit). Þú getur bætt við og eytt hverju sem er á eftir. Ef hlutur er bara fyrir eina manneskju, skrifaðu nafn hennar í reitinn Fyrir hvern. "Taka hak af öllu" er gott fyrir heimferðina.'],
+  ['Hvernig virkar pökkunarlistinn?', 'Flipinn Pökkun er sameiginlegur listi fyrir eiganda og ritstjóra. Gestir með leshlekk sjá hann ekki. "Setja inn grunnlista" gefur algenga hluti til að byrja með, valið eftir tegund ferðar (sól, skíði, borg eða sveit). Þú getur bætt við og eytt hverju sem er á eftir. Ef hlutur er bara fyrir eina manneskju, skrifaðu nafn hennar í reitinn Fyrir hvern. "Taka hak af öllu" er gott fyrir heimferðina.'],
   ['Hvar er dagatalið?', 'Undir Dagskrá. Efst hægra megin velur þú milli "Dagur fyrir dag" og "Dagatal". Valið helst í símanum.'],
   ['Hvað er klukkan í hausnum?', 'Ef þú velur tímabelti áfangastaðar undir Stillingar sýnir hausinn klukkuna þar og heima. Gott fyrir símtöl og skilaboð heim.'],
   ['Get ég prentað ferðina?', 'Já, "Prenta" neðst á síðunni gefur hreina útgáfu af dagskrá, gistingu og Mikilvægt (aðeins hjá eiganda). Í síma má velja "Vista sem PDF" í prentglugganum. Pappír er góð varaleið ef síminn er tómur eða týndur.'],
@@ -1844,7 +1853,7 @@ function renderSettings(host){
   const shareRow = (url, label) => el('div', {class:'row'}, el('button', {class:'btn small', type:'button', onclick: () => copy(url, 'Hlekkur afritaður')}, 'Afrita'),
       navigator.share ? el('button', {class:'btn ghost small', type:'button', onclick: () => navigator.share({ title: cur.trip.title + (label ? ' · ' + label : ''), url }).catch(() => {})}, 'Deila…') : null);
   const shc = el('div', {class:'card'}, el('h2', {}, 'Deila ferð'),
-    el('h3', {style:'font-size:16px;margin:0 0 4px'}, 'Lesahlekkur'),
+    el('h3', {style:'font-size:16px;margin:0 0 4px'}, 'Leshlekkur'),
     el('p', {class:'help'}, 'Þeir sem fá hann sjá áætlunina án innskráningar og geta sent tillögu og hugmyndir. Þeir sjá ekki verkefni, pökkun, bókunarnúmer eða verð, og geta ekki breytt.'),
     el('div', {class:'share-box'}, share), shareRow(share, ''));
   /* ritstjórahlekkur */
@@ -1852,7 +1861,7 @@ function renderSettings(host){
     el('p', {class:'help'}, 'Sá sem opnar hann og skráir sig inn með Google verður ritstjóri: breytir áætluninni, verkefnum og pökkun. Sér ekki bókunarnúmer, verð eða Mikilvægt. Sendu hann aðeins þeim sem eiga að breyta.'));
   if (cur.editKey === undefined){ shc.append(el('p', {class:'empty'}, 'Sæki…')); loadEditKey(); }
   else if (cur.editKeyErr) shc.append(el('div', {class:'notice warn'}, `Næ ekki í ritstjóralykilinn (${cur.editKeyErr}). Reglan "editkeys" vantar líklega í Firebase. Sjá travel/firebase-reglur.md.`));
-  else if (!cur.editKey) shc.append(el('div', {class:'row'}, el('button', {class:'btn small', type:'button', onclick: () => rotateEditKey(false)}, 'Búa til ritstjórahlekk')));
+  else if (!cur.editKey) shc.append(el('div', {class:'row', style:'margin-top:10px'}, el('button', {class:'btn small', type:'button', onclick: () => rotateEditKey(false)}, 'Búa til ritstjórahlekk')));
   else {
     const edit = `${BASE}#t/${cur.id}/join/${cur.editKey}`;
     shc.append(el('div', {class:'share-box'}, edit), shareRow(edit, 'ritstjóri'),
