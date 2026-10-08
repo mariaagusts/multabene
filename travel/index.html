@@ -399,7 +399,17 @@ const db = firebase.database();
 const auth = AUTH_READY ? firebase.auth() : null;
 let user = null;
 if (auth){
-  auth.onAuthStateChanged(u => { user = u; renderUserbar(); go(); });
+  auth.onAuthStateChanged(u => {
+    user = u;
+    /* Við útskráningu, eða skipti um notanda, hverfa einkagögn úr minni síðunnar */
+    if (cur && cur.trip && !isOwner()){
+      if (cur.privRef){ cur.privRef.off(); cur.privRef = null; }
+      cur.priv = {}; cur.privOk = undefined;
+      applyTripData(cur.trip);
+    }
+    if (cur && cur.trip && isOwner()) watchPrivate();
+    renderUserbar(); go();
+  });
 }
 async function signIn(){
   if (!auth){ toast('Innskráning er ekki stillt enn.'); return; }
@@ -592,7 +602,7 @@ function isOwner(){ return !!(user && cur && cur.trip && cur.trip.owner === user
 /* Síðasta útgáfa ferðar er geymd í símanum svo hún opnist án nets */
 function cacheTrip(){
   if (!cur || !cur.trip) return;
-  store.set(`travel:cache:${cur.id}`, { trip: cur.trip, priv: isOwner() ? cur.priv : {}, savedAt: new Date().toISOString() });
+  store.set(`travel:cache:${cur.id}`, { trip: cur.trip, priv: isOwner() ? cur.priv : {}, uid: isOwner() ? user.uid : null, savedAt: new Date().toISOString() });
 }
 function applyTripData(v){
   cur.trip = v;
@@ -609,7 +619,8 @@ function openTrip(r){
   setHeader('Sæki…', '');
   const cached = store.get(`travel:cache:${r.id}`, null);
   if (cached && cached.trip){
-    cur.priv = cached.priv || {};
+    /* einkagögn úr geymslu aðeins ef sami notandi er innskráður */
+    cur.priv = (cached.uid && user && cached.uid === user.uid) ? (cached.priv || {}) : {};
     cur.fromCache = true; cur.cachedAt = cached.savedAt;
     applyTripData(cached.trip);
     renderTrip();
