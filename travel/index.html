@@ -6,6 +6,13 @@
 <title>Travel</title>
 <meta name="description" content="Ferðaáætlun: gisting, flug, afþreying og allt sem er bókað, dag fyrir dag, í dagatali og á korti.">
 <meta name="robots" content="noindex">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="multabene.is">
+<meta property="og:title" content="Travel">
+<meta property="og:description" content="Ferðaáætlun: gisting, flug, afþreying og allt sem er bókað, dag fyrir dag, í dagatali og á korti.">
+<meta property="og:url" content="https://www.multabene.is/travel/">
+<meta property="og:image" content="https://www.multabene.is/apple-touch-icon.png">
+<meta name="twitter:card" content="summary">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -542,8 +549,9 @@ function watchPrivate(){
     cur.items = cur.items.map(it => ({ ...it, conf: (cur.priv[it.id] && cur.priv[it.id].conf) || it.conf || null }));
     migrateConf();
     renderTrip();
-  }, () => {
+  }, err => {
     cur.privOk = false;
+    cur.privErr = err && (err.code || err.message) || 'óþekkt villa';
     renderTrip();
   });
 }
@@ -590,7 +598,7 @@ function renderTrip(){
   const app = $('#app'); app.innerHTML = '';
   if (trip.description && cur.tab === 'dagar') app.append(el('p', {class:'help', style:'margin:0 0 14px;white-space:pre-line'}, trip.description));
   if (owner && cur.privOk === false){
-    app.append(el('div', {class:'notice warn', html:'<b>Einkahólf fyrir bókunarnúmer er lokað.</b> Reglan "private" vantar í Firebase, svo bókunarnúmer eru enn sýnileg gestum og ný númer vistast ekki. Límdu nýjustu reglurnar inn í Firebase console og endurhladdu.'}));
+    app.append(el('div', {class:'notice warn', html:`<b>Einkahólf fyrir bókunarnúmer er lokað</b> (${esc(cur.privErr || '')}). Reglan "private" vantar líklega í Firebase. Límdu nýjustu reglurnar inn í Firebase console og endurhladdu.`}));
   }
   if (owner && nSug && cur.tab !== 'stillingar'){
     app.append(el('div', {class:'notice', html:`<b>${nSug} ${nSug === 1 ? 'tillaga bíður' : 'tillögur bíða'} samþykkis.</b> <button class="linkbtn" type="button" id="goSug">Skoða</button>`}));
@@ -989,6 +997,10 @@ function renderSettings(host){
     el('div', {class:'row'}, el('button', {class:'btn small', type:'button', onclick: () => copy(share, 'Hlekkur afritaður')}, 'Afrita'),
       navigator.share ? el('button', {class:'btn ghost small', type:'button', onclick: () => navigator.share({ title: cur.trip.title, url: share }).catch(() => {})}, 'Deila…') : null));
   host.append(shc);
+  const nPriv = Object.values(cur.priv || {}).filter(x => x && x.conf).length;
+  const nPub = Object.values(cur.trip.items || {}).filter(x => x && x.conf).length;
+  host.append(el('div', {class:'card'}, el('h2', {}, 'Bókunarnúmer'),
+    el('p', {class:'help'}, `Einkahólf: ${cur.privOk === true ? 'opið' : cur.privOk === false ? 'lokað (' + (cur.privErr || '') + ')' : 'ekki svarað enn'}. ${nPriv} ${nPriv === 1 ? 'númer vistað' : 'númer vistuð'} í einkahólfi, ${nPub} í opna hlutanum. Gestir sjá aðeins opna hlutann.`)));
   host.append(el('div', {class:'card'}, el('h2', {}, 'Dagatal símans'),
     el('p', {class:'help', style:'margin:0 0 10px'}, 'Sækir ics-skrá með öllum færslum. Opnaðu hana í símanum og veldu að bæta í dagatalið. Tímar eru staðartími áfangastaðar. Skráin uppfærist ekki sjálfkrafa, sæktu hana aftur eftir breytingar.'),
     el('button', {class:'btn small', type:'button', onclick: exportIcs}, 'Sækja í dagatal (.ics)')));
