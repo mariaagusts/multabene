@@ -248,7 +248,7 @@ const FIREBASE_CONFIG = {
 const MAPS_KEY = "AIzaSyBX0KzjuWDJ43p78HqDz9MfhSFVGmTiFtQ";
 const AUTH_READY = !!FIREBASE_CONFIG.apiKey;
 const MAPS_READY = !!MAPS_KEY;
-const BASE = location.origin + location.pathname.replace(/[^/]*$/, '');
+const BASE = location.origin + '/travel/';   /* föst slóð, Vercel sýnir síðuna ýmist með og án skástriks á eftir */
 
 /* ------------------------------------------------------------------
    Þemu. Hvert þema skiptir um liti og mynstur í haus.

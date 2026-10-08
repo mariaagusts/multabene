@@ -256,7 +256,7 @@
    Database undir /hittumst/{id}. Enginn innskráning: hlekkurinn er lykillinn.
    ================================================================== */
 const FB = 'https://min-timer-multabeneis-default-rtdb.europe-west1.firebasedatabase.app/hittumst';
-const BASE = location.origin + location.pathname.replace(/[^/]*$/, '');
+const BASE = location.origin + '/hittumst/';   /* föst slóð, Vercel sýnir síðuna ýmist með og án skástriks á eftir */
 
 const MONTH_NAMES = ['janúar','febrúar','mars','apríl','maí','júní','júlí','ágúst','september','október','nóvember','desember'];
 const MONTH_SHORT = ['jan','feb','mar','apr','maí','jún','júl','ágú','sep','okt','nóv','des'];
