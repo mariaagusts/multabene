@@ -69,15 +69,18 @@
   .avatar img{width:100%;height:100%;object-fit:cover;}
 
   .tabrow{display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);margin:0 0 18px;}
-  nav.tabs{display:flex;gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch;min-width:0;flex:1;scrollbar-width:none;}
+  nav.tabs{position:relative;display:flex;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;min-width:0;flex:1;scrollbar-width:none;}
   nav.tabs::-webkit-scrollbar{display:none;}
   nav.tabs.more{mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent);-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent);}
   .tabrow .btn{flex:0 0 auto;margin-left:auto;}
   @media (max-width:640px){ .tabrow .btn{display:none;} }
   @media (min-width:641px){ .fab{display:none;} }
-  nav.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 12px;color:var(--dim);font-weight:500;white-space:nowrap;}
+  nav.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 10px;color:var(--dim);font-weight:500;white-space:nowrap;font-size:15px;}
   nav.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent);}
-  nav.tabs button .n{display:inline-block;min-width:18px;padding:0 5px;border-radius:999px;background:var(--act);color:#fff;font-size:11px;font-weight:700;margin-left:4px;text-align:center;}
+  nav.tabs button .cnt,nav.tabs button .n{display:inline-block;min-width:18px;padding:1px 6px;border-radius:999px;font-size:11px;font-weight:600;margin-left:5px;text-align:center;line-height:1.4;vertical-align:1px;font-variant-numeric:tabular-nums;}
+  nav.tabs button .cnt{background:var(--panel-2);color:var(--dim);}
+  nav.tabs button[aria-selected="true"] .cnt{background:var(--accent-soft);color:var(--accent);}
+  nav.tabs button .n{background:var(--act);color:#fff;font-weight:700;}
 
   /* ---------- spjöld og hnappar ---------- */
   .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 14px;}
@@ -837,9 +840,9 @@ function renderTrip(){
   const nPack = cur.packing.length, nPackDone = cur.packing.filter(x => x.done).length;
   const todayStr = todayIso();
   const nTodo = cur.todos.filter(x => !x.done).length, nOver = cur.todos.filter(x => !x.done && x.due && x.due < todayStr).length;
-  const tabs = [['dagar','Dagskrá'],['kort','Kort'],['gisting','Gisting'],['hugmyndir','Hugmyndabanki' + (nIdeas ? ` <span style="color:var(--dim);font-weight:400">${nIdeas}</span>` : '')]];
-  if (editor) tabs.push(['verkefni','Verkefni' + (nOver ? `<span class="n">${nOver}</span>` : nTodo ? ` <span style="color:var(--dim);font-weight:400">${nTodo}</span>` : '')]);
-  if (editor) tabs.push(['pokkun','Pökkun' + (nPack ? ` <span style="color:var(--dim);font-weight:400">${nPackDone}/${nPack}</span>` : '')]);
+  const tabs = [['dagar','Dagskrá'],['kort','Kort'],['gisting','Gisting'],['hugmyndir','Hugmyndabanki' + (nIdeas ? `<span class="cnt">${nIdeas}</span>` : '')]];
+  if (editor) tabs.push(['verkefni','Verkefni' + (nOver ? `<span class="n" title="${nOver} komið fram yfir">${nOver}</span>` : nTodo ? `<span class="cnt">${nTodo}</span>` : '')]);
+  if (editor) tabs.push(['pokkun','Pökkun' + (nPack ? `<span class="cnt">${nPackDone}/${nPack}</span>` : '')]);
   if (owner) tabs.push(['mikilvaegt', 'Mikilvægt']);
   if (owner) tabs.push(['stillingar', 'Stillingar' + (nSug ? `<span class="n">${nSug}</span>` : '')]);
   if (!tabs.some(t => t[0] === cur.tab)) cur.tab = 'dagar';
