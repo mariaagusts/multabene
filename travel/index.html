@@ -434,7 +434,8 @@ function tripForm(trip){
   const f = el('form', {class:'form', onsubmit: e => { e.preventDefault(); saveTrip(); }});
   const title = el('input', {id:'tTitle', maxlength:'80', required:'', placeholder:'t.d. Mexíkó 2026', value: trip ? trip.title : ''});
   const start = el('input', {id:'tStart', type:'date', required:'', value: trip ? trip.start : ''});
-  const end = el('input', {id:'tEnd', type:'date', required:'', value: trip ? trip.end : ''});
+  const end = el('input', {id:'tEnd', type:'date', required:'', value: trip ? trip.end : '', min: trip ? trip.start : null});
+  start.addEventListener('change', () => { end.min = start.value; if (end.value && end.value < start.value) end.value = start.value; });
   const desc = el('textarea', {id:'tDesc', rows:'2', maxlength:'300', placeholder:'Valkvætt'}); desc.value = trip && trip.description || '';
   let theme = trip ? (trip.theme || 'sjor') : 'sjor';
   const themes = el('div', {class:'themes'});
@@ -964,7 +965,17 @@ function openItemDialog(it, asSuggestion, opts={}){
   for (const k in KINDS) kind.append(el('option', {value:k, selected: v.kind === k ? '' : null}, KINDS[k].label));
   const title = el('input', {id:'iTitle', maxlength:'100', required:'', placeholder:'t.d. Hotel Playa Norte', value: v.title || ''});
   const start = el('input', {id:'iStart', type:'datetime-local', required:'', value: v.start || ''});
-  const end = el('input', {id:'iEnd', type:'datetime-local', value: v.end || ''});
+  const end = el('input', {id:'iEnd', type:'datetime-local', value: v.end || '', min: v.start || null});
+  /* Lok mega ekki vera á undan byrjun. Tóm lok fá sjálfgefið gildi:
+     gisting næsta dag kl. 11:00, annað tveimur tímum síðar. */
+  const addMinutes = (dt, mins) => { const d = new Date(dt); if (isNaN(d)) return ''; d.setMinutes(d.getMinutes() + mins); return `${iso(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+  start.addEventListener('change', () => {
+    if (!start.value) return;
+    end.min = start.value;
+    if (!end.value || end.value < start.value){
+      end.value = kind.value === 'hotel' ? dpart(addMinutes(start.value, 24*60)) + 'T11:00' : addMinutes(start.value, 120);
+    }
+  });
   const place = el('input', {id:'iPlace', maxlength:'200', placeholder: MAPS_READY ? 'Leitaðu að stað eða heimilisfangi' : 'Heiti staðar eða heimilisfang', value: v.place || '', autocomplete:'off'});
   const gl = el('input', {id:'iLink', placeholder:'Límdu hlekk úr Google Maps, eða hnit', value:''});
   const conf = el('input', {id:'iConf', maxlength:'60', placeholder:'Bókunarnúmer', value: v.conf || ''});
