@@ -211,6 +211,12 @@
   .toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--fg);color:var(--bg);border-radius:999px;padding:9px 16px;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100% - 32px);text-align:center;z-index:20;}
   .toast.show{opacity:1;}
   .foot{color:var(--dim);font-size:13px;margin:26px 0 0;}
+  .faq details{border-bottom:1px solid var(--line);padding:8px 0;}
+  .faq summary{cursor:pointer;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:10px;}
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::after{content:"+";color:var(--dim);font-weight:400;}
+  .faq details[open] summary::after{content:"−";}
+  .faq p{margin:8px 0 0;color:var(--dim);font-size:14px;white-space:pre-line;}
   .offline{background:#FFF1D6;color:#5A3D07;border-radius:10px;padding:8px 14px;font-size:13px;margin:0 0 12px;}
   .item.next{box-shadow:0 0 0 2px var(--accent);}
   .countdown{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:700;margin-left:6px;vertical-align:middle;font-family:var(--body);}
@@ -427,7 +433,8 @@ function renderHome(){
   setHeader('Travel', 'Allt sem er bókað, á einum stað.');
   $('#tabrow').hidden = true;
   const app = $('#app'); app.innerHTML = '';
-  $('#foot').textContent = '';
+  $('#foot').innerHTML = `<button class="linkbtn" id="helpBtn">Hjálp: án nets, heimaskjár, deiling, kostnaður</button>`;
+  $('#helpBtn').onclick = openHelp;
 
   if (!AUTH_READY){
     app.append(el('div', {class:'notice warn', html:'<b>Innskráning er ekki stillt enn.</b> Firebase-stillingarnar (apiKey og appId) vantar í kóðann. Ferðir sem þegar eru til má samt skoða með hlekk.'}));
@@ -710,8 +717,10 @@ function renderTrip(){
     document.body.append(el('button', {class:'btn fab', id:'fab', type:'button', onclick: addFn}, addLabel));
   }
   $('#foot').innerHTML = (owner ? `Hver sem hefur hlekkinn getur skoðað ferðina, sent tillögu og bætt í hugmyndabankann. Aðeins þú breytir áætluninni. <button class="linkbtn" id="copyShare">Afrita hlekk</button>` : `Þú skoðar þessa ferð sem gestur. Þú getur sent tillögu að færslu sem eigandi samþykkir. <button class="linkbtn" id="sugBtn">Senda tillögu</button>`) + ` · <button class="linkbtn" id="icsBtn">Sækja í dagatal símans</button>`;
+  $('#foot').innerHTML += ` · <button class="linkbtn" id="helpBtn">Hjálp</button>`;
   const cs = $('#copyShare'); if (cs) cs.onclick = () => copy(`${BASE}#t/${cur.id}`, 'Hlekkur afritaður');
   const sb = $('#sugBtn'); if (sb) sb.onclick = () => openItemDialog(null, true);
+  $('#helpBtn').onclick = openHelp;
   $('#icsBtn').onclick = exportIcs;
 }
 
@@ -1058,6 +1067,28 @@ function exportIcs(){
   document.body.append(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 5000);
   toast('Dagatalsskrá sótt. Opnaðu hana til að bæta í dagatalið.');
+}
+
+/* ---------- hjálp ---------- */
+const FAQ = [
+  ['Virkar síðan án nets, til dæmis í útlöndum?', 'Já, ef þú opnar ferðina með neti fyrst. Síðan geymir þá ferðina í símanum og sýnir hana aftur þótt net vanti, með tilkynningunni "Án nets". Breytingar vistast þegar net næst.\n\nÖruggast er að setja síðuna á heimaskjá símans (sjá næstu spurningu), skrá sig inn þar og opna ferðina einu sinni með neti. Appið á heimaskjánum er með sína eigin geymslu, aðskilda frá vafranum.'],
+  ['Hvernig set ég síðuna á heimaskjá?', 'iPhone: opnaðu síðuna í Safari, smelltu á deilitáknið neðst (ferningur með ör upp) og veldu "Bæta á heimaskjá".\n\nAndroid: opnaðu síðuna í Chrome, smelltu á þrjá punkta efst til hægri og veldu "Setja upp app" eða "Bæta á heimaskjá".\n\nAppið heitir Travel. Skráðu þig inn í því sjálfu, innskráning í vafranum fylgir ekki með.'],
+  ['Hver sér hvað?', 'Þú, innskráð, sérð allt og breytir öllu.\n\nÞeir sem fá hlekkinn sjá áætlunina án innskráningar, en ekki bókunarnúmer og ekki flipann Mikilvægt. Þeir geta sent tillögu að færslu, sem þú samþykkir undir Stillingar, og bætt hugmyndum í hugmyndabankann.\n\nHlekkurinn er lykillinn. Deildu honum aðeins með þeim sem eiga að sjá ferðina.'],
+  ['Hvernig deili ég ferðinni?', 'Smelltu á "Afrita hlekk" neðst á síðunni, eða á "Afrita" undir Stillingar, og sendu hlekkinn. Hann byrjar á www.multabene.is/travel/#t/.'],
+  ['Hvernig skrái ég stað svo hann birtist á korti?', 'Í reitnum "Staður (leit)" skrifaðu nafn hótels eða staðar og veldu úr listanum frá Google. Þá fær færslan staðsetningu, birtist á kortinu og fær hlekkina "Opna í Google Maps" og "Leið frá hótelinu".\n\nEf leitin finnur ekki staðinn, límdu hlekk úr Google Maps í reitinn fyrir neðan.'],
+  ['Hvernig fær ég ferðina í dagatal símans?', 'Smelltu á "Sækja í dagatal símans" neðst á síðunni. Síminn býður þá að bæta öllum færslum í dagatalið. Gisting verður heilsdagsviðburður yfir næturnar.\n\nSkráin uppfærist ekki sjálfkrafa. Ef þú breytir ferðinni þarftu að sækja hana aftur.'],
+  ['Hvernig skrifa ég verð svo kostnaðaryfirlitið telji rétt?', 'Tölu og gjaldmiðil, í hvaða rithætti sem er: "121.384 kr.", "US$905.62", "USD 1,007.45", "257,84 CAD", "4.200 MXN". Kr. og kr merkja íslenskar krónur, dollaramerki eitt og sér merkir bandaríska dollara.\n\nYfirlitið er undir Stillingar. Gengi dagsins er sótt sjálfkrafa frá Seðlabanka Evrópu. Ef þú vilt nota gengið sem kortið þitt notaði, skráðu það undir "Nota eigið gengi".'],
+  ['Í hvaða tímabelti eru tímarnir?', 'Alltaf staðartími á áfangastað. Flug frá Keflavík kl. 17:00 er íslenskur tími, lending í Cancún kl. 18:05 er mexíkóskur tími. Síðan umreiknar ekkert.'],
+  ['Hvað er Mikilvægt?', 'Flipi sem aðeins þú sérð, fyrir vegabréfsnúmer, tryggingar, neyðarnúmer, sendiráð, kortafyrirtæki og wifi-lykilorð. Geymt í sama læsta hólfi og bókunarnúmerin. Gott að hafa þetta við höndina án nets.'],
+  ['Hvernig breyti ég eða eyði ferð?', 'Undir Stillingar, neðst. Þar breytir þú heiti, dagsetningum, lýsingu og útliti, og getur eytt ferðinni. Eyðing er endanleg.']
+];
+function openHelp(){
+  const dlg = $('#dlg'), inner = $('#dlgInner'); inner.innerHTML = '';
+  inner.append(el('h2', {}, 'Hjálp'));
+  const box = el('div', {class:'faq'});
+  for (const [q, a] of FAQ) box.append(el('details', {}, el('summary', {}, q), el('p', {}, a)));
+  inner.append(box, el('div', {class:'row', style:'margin-top:14px'}, el('button', {class:'btn ghost', type:'button', onclick: () => dlg.close()}, 'Loka')));
+  dlg.showModal();
 }
 
 /* ---------- mikilvægt: einkaupplýsingar eiganda ---------- */
