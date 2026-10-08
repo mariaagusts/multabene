@@ -1333,37 +1333,37 @@ function printTrip(){
 const PACK_CATS = ['Föt', 'Snyrtivörur', 'Skjöl og peningar', 'Rafmagn', 'Lyf', 'Annað'];
 // Sameiginlegur kjarni fyrir allar ferðir, viðbót eftir þema ferðarinnar
 const PACK_BASE = {
-  'Skjöl og peningar': ['Vegabréf', 'Greiðslukort', 'Reiðufé', 'Ferðatrygging, skírteini', 'Útprentuð áætlun'],
-  'Rafmagn': ['Hleðslutæki fyrir síma', 'Hleðslubanki', 'Millistykki fyrir innstungur', 'Heyrnartól', 'iPad eða spjaldtölva með hleðslusnúru'],
-  'Snyrtivörur': ['Tannbursti og tannkrem', 'Sjampó', 'Svitalyktareyðir', 'Varasalvi'],
-  'Lyf': ['Verkjalyf', 'Plástrar', 'Eigin lyf'],
-  'Föt': ['Nærföt', 'Sokkar', 'Náttföt', 'Léttur jakki'],
-  'Annað': ['Bakpoki', 'Vatnsflaska', 'Bók', 'Ferðakoddi', 'Ferðateppi fyrir flugið']
+  'Skjöl og peningar': ['Vegabréf', 'Ökuskírteini', 'Greiðslukort, tvö frá ólíkum fyrirtækjum', 'Kort sett í símann, Apple Pay eða Google Pay', 'Reiðufé í gjaldmiðli áfangastaðar', 'Ferðatrygging, skírteini og neyðarsími', 'Evrópska sjúkratryggingakortið, innan Evrópu', 'Útprentuð áætlun og bókanir', 'Afrit af vegabréfi, á pappír og í síma', 'Flugmiðar eða brottfararspjöld í síma', 'Bílaleigustaðfesting', 'Húslykill og bíllykill í öruggum vasa'],
+  'Rafmagn': ['Sími', 'Hleðslutæki fyrir síma', 'Hleðslusnúrur fyrir öll tæki: síma, úr, tölvu, spjaldtölvu', 'Hleðslubanki', 'Millistykki fyrir innstungur', 'Heyrnartól', 'iPad eða spjaldtölva', 'Tölva ef þarf', 'Lítill hátalari', 'Fjöltengi fyrir hótelið', 'Hárblásari ef gistingin hefur ekki', 'Myndavél, minniskort og hleðslutæki', 'Lesljós eða höfuðljós'],
+  'Snyrtivörur': ['Tannbursti og tannkrem', 'Tannþráður og tannstönglar', 'Sjampó og hárnæring', 'Þurrsjampó', 'Hárolía', 'Sturtusápa', 'Handsápa', 'Svitalyktareyðir', 'Varasalvi', 'Rakakrem', 'Förðunardót', 'Rakvél og raksápa', 'Plokkari og flísatöng', 'Hárbursti eða greiða', 'Hárteygjur og spennur', 'Dömubindi eða tíðarvörur', 'Naglaklippur og naglaþjöl', 'Naglalakk', 'Eyrnapinnar', 'Blautþurrkur', 'Sólarvörn', 'Ferðaflöskur undir 100 ml fyrir handfarangur', 'Snyrtitaska'],
+  'Lyf': ['Verkjalyf, parasetamól og íbúfen', 'Plástrar', 'Hælsærisplástrar', 'Eigin lyf, í upprunalegum umbúðum', 'Lyfseðlar eða lyfjaskírteini fyrir lyf sem þarf að sýna', 'Ofnæmislyf', 'Kveflyf', 'Vítamín', 'Magalyf og niðurgangslyf', 'Hálstöflur', 'Nefúði', 'Ferðaveikitöflur', 'Hitamælir', 'Handspritt', 'Sáraumbúðir og sárakrem', 'Augndropar', 'Melatónín fyrir tímamismun'],
+  'Föt': ['Nærföt, fyrir hvern dag og tvö auka', 'Brjóstahaldarar', 'Sokkar', 'Náttföt', 'Léttur jakki', 'Buxur', 'Gallabuxur', 'Bolir', 'Hlýrabolir', 'Hettupeysa eða síðerma peysa', 'Hlý peysa', 'Íþróttaföt', 'Kjóll eða pils', 'Þægilegir skór til að ganga í', 'Inniskór', 'Fín föt fyrir eitt kvöld', 'Belti', 'Þægileg föt fyrir flugið, í lögum', 'Poki fyrir óhreinan þvott'],
+  'Annað': ['Bakpoki eða taska yfir öxl', 'Lítið veski fyrir daginn', 'Vatnsflaska', 'Bók eða lesbretti', 'Ferðakoddi', 'Ferðateppi fyrir flugið', 'Svefngríma og eyrnatappar', 'Sólgleraugu', 'Gleraugu og aukagleraugu eða linsur', 'Regnhlíf', 'Lítill hengilás á töskuna', 'Töskumerki með nafni og síma', 'Vigt fyrir ferðatösku', 'Snakk og drykkir fyrir ferðalagið', 'Tómur poki fyrir rusl og blautt dót', 'Penni fyrir eyðublöð á landamærum', 'Þvottaefni í litlum skammti fyrir handþvott', 'Lítill saumapakki', 'Spil, t.d. Yatzy eða spilastokkur', 'Handavinna eða annað til að stytta stundir', 'Handklæði ef gistingin býður ekki upp á það', 'Gjafir ef afmæli ber upp á ferðina']
 };
 const PACK_SUN = {
-  'Snyrtivörur': ['Sólarvörn', 'After sun', 'Flugnafæla'],
-  'Lyf': ['Ferðaveikitöflur', 'Magalyf'],
-  'Föt': ['Sundföt', 'Stuttbuxur', 'Bolir', 'Kjóll eða fín föt', 'Sandalar', 'Gönguskór', 'Hattur', 'Sólgleraugu'],
-  'Annað': ['Handklæði fyrir strönd', 'Snorklgræjur', 'Vatnsheld taska fyrir síma']
+  'Snyrtivörur': ['After sun', 'Flugnafæla', 'After-bite við stungum', 'Sólarvörn fyrir andlit', 'Aloe vera gel'],
+  'Lyf': ['Hleðslusölt fyrir vökvatap'],
+  'Föt': ['Sundföt, tvenn', 'Stuttbuxur', 'Léttir kjólar eða pils', 'Sandalar', 'Gönguskór', 'Hattur eða derhúfa', 'Létt langerma skyrta gegn sól', 'Strandsokkar eða vatnsskór'],
+  'Annað': ['Handklæði fyrir strönd', 'Sundgleraugu', 'Snorklgræjur', 'Vatnsheld taska fyrir síma', 'Strandtaska', 'Lítil kælitaska', 'Strandleikföng', 'Uppblásin dýna eða koddi fyrir ströndina', 'Blævængur eða lítil vifta']
 };
 const PACK_THEME = {
   sol: { name:'Sólarferð', items: PACK_SUN },
   sjor: { name:'Strandferð', items: PACK_SUN },
   snjor: { name:'Skíðaferð', items: {
-    'Snyrtivörur': ['Sólarvörn fyrir andlit', 'Rakakrem'],
-    'Föt': ['Skíðajakki', 'Skíðabuxur', 'Ullarnærföt', 'Flíspeysa', 'Skíðasokkar', 'Hanskar', 'Húfa', 'Buff', 'Hlý stígvél', 'Sundföt fyrir heitan pott'],
-    'Skjöl og peningar': ['Skíðapassi eða bókun'],
-    'Annað': ['Skíðagleraugu', 'Hjálmur', 'Sólgleraugu', 'Lítill bakpoki fyrir brekkuna', 'Handhitapokar']
+    'Snyrtivörur': ['Sólarvörn fyrir andlit', 'Varasalvi með sólarvörn'],
+    'Föt': ['Skíðajakki', 'Skíðabuxur', 'Ullarnærföt, tvenn', 'Flíspeysa', 'Lopapeysa', 'Skíðasokkar, nokkur pör', 'Hlýir sokkar, háir', 'Hanskar og vettlingar', 'Húfa', 'Buff', 'Trefill', 'Lambhúshetta fyrir kuldadaga', 'Hlý stígvél', 'Hlý úlpa fyrir kvöldin', 'Sundföt fyrir heitan pott'],
+    'Skjöl og peningar': ['Skíðapassi eða bókun', 'Skíðaleiga bókuð'],
+    'Annað': ['Skíðagleraugu', 'Hjálmur', 'Lítill bakpoki fyrir brekkuna', 'Handhitapokar', 'Hitapúðar í skó og hanska', 'Skíði og stafir, eða leiga', 'Skíðaskór', 'Bakverja ef farið er í garðinn', 'Smurning og lítið viðhaldssett']
   } },
   borg: { name:'Borgarferð', items: {
-    'Föt': ['Þægilegir gönguskór', 'Regnjakki', 'Fín föt fyrir kvöldið', 'Peysa'],
-    'Skjöl og peningar': ['Miðar á söfn og sýningar', 'Kort fyrir almenningssamgöngur'],
-    'Annað': ['Lítil taska yfir öxl', 'Regnhlíf', 'Fjöltengi fyrir hótelið']
+    'Föt': ['Þægilegir gönguskór, innbrotnir', 'Regnjakki', 'Fín föt fyrir kvöldið', 'Lagskipt föt fyrir breytilegt veður'],
+    'Skjöl og peningar': ['Miðar á söfn og sýningar', 'Kort fyrir almenningssamgöngur', 'Borðapantanir'],
+    'Annað': ['Lítil taska yfir öxl með rennilás', 'Niðurhalað kort af borginni í síma', 'Innlegg í skó fyrir langa göngudaga', 'Endurnýtanlegur innkaupapoki']
   } },
   sveit: { name:'Sveita- og útivistarferð', items: {
-    'Snyrtivörur': ['Flugnafæla', 'Sólarvörn'],
-    'Föt': ['Gönguskór', 'Regnjakki og regnbuxur', 'Flíspeysa', 'Ullarsokkar', 'Húfa', 'Stuttbuxur', 'Bolir'],
-    'Annað': ['Höfuðljós', 'Nestisbox', 'Hitabrúsi', 'Göngukort', 'Sjúkrapakki', 'Sundföt']
+    'Snyrtivörur': ['Flugnafæla'],
+    'Föt': ['Gönguskór', 'Stígvél', 'Regnjakki og regnbuxur', 'Hlý úlpa', 'Flíspeysa', 'Lopapeysa', 'Merino nærföt', 'Ullarsokkar, háir', 'Húfa, vettlingar og buff', 'Trefill', 'Stuttbuxur', 'Göngubuxur', 'Strigaskór', 'Aukaskór fyrir kvöldið'],
+    'Annað': ['Höfuðljós', 'Nestisbox', 'Hitabrúsi', 'Göngukort og áttaviti', 'Sjúkrapakki', 'Sundföt', 'Göngustafir', 'Stór vatnsflaska eða vatnsblaðra', 'Regnhlíf fyrir bakpoka', 'Fjölnotahnífur', 'Sessa til að sitja á', 'Sjónauki']
   } }
 };
 /* Listar eftir aldri: bætast ofan á, án grunnhlutanna */
@@ -1539,7 +1539,14 @@ const TODO_BASE = [
   ['Sæti valin og farangur bókaður í flugið', 7],
   ['Sækja ferðina í dagatal símans og prenta áætlunina', 2],
   ['Hlaða niður þáttum og bíómyndum á iPad og síma (Netflix, Disney+, YouTube)', 1],
-  ['Innritun í flug', 1]
+  ['Hlaða síma, hleðslubanka og heyrnartól', 1],
+  ['Láta nágranna vita og skilja varalykil eftir hjá einhverjum', 1],
+  ['Athuga að vegabréf og skilríki séu komin í töskuna', 1],
+  ['Innritun í flug', 1],
+  ['Tæma ísskápinn og taka út rusl', 0],
+  ['Slökkva á fjöltengjum og lækka hitann', 0],
+  ['Stilla ljós á tímastillingu', 0],
+  ['Læsa hurðum og gluggum, kveikja á þjófavörn', 0]
 ];
 function peopleDatalist(){
   const dl = el('datalist', {id:'peopleDl'});
