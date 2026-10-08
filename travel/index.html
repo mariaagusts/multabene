@@ -977,13 +977,27 @@ function paintWx(root){
   }
 }
 
-/* ---------- ferðatími milli staða sama dags: Google Distance Matrix ---------- */
+/* ---------- ferðatími milli staða sama dags: Google Routes API (computeRouteMatrix) ---------- */
 let legsDenied = false;
 function legKey(o, d){ return `${(+o.lat).toFixed(4)},${(+o.lng).toFixed(4)}|${(+d.lat).toFixed(4)},${(+d.lng).toFixed(4)}`; }
 function fmtLeg(secs, meters){
   const m = Math.round(secs / 60); const t = m >= 60 ? `${Math.floor(m / 60)} klst ${m % 60} mín` : `${m} mín`;
   const km = meters >= 10000 ? Math.round(meters / 1000) + ' km' : (meters / 1000).toFixed(1).replace('.', ',') + ' km';
   return `🚗 ${t} · ${km}`;
+}
+async function fetchLeg(key){
+  const [o, d] = key.split('|').map(x => x.split(',').map(Number));
+  const wp = ([lat, lng]) => ({ waypoint: { location: { latLng: { latitude: lat, longitude: lng } } } });
+  const r = await fetch('https://routes.googleapis.com/distanceMatrix/v2:computeRouteMatrix', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Goog-Api-Key': MAPS_KEY, 'X-Goog-FieldMask': 'originIndex,destinationIndex,duration,distanceMeters,condition' },
+    body: JSON.stringify({ origins: [wp(o)], destinations: [wp(d)], travelMode: 'DRIVE' })
+  });
+  if (r.status === 403 || r.status === 401){ legsDenied = true; console.warn('Routes API: aðgangi hafnað. Virkja Routes API fyrir Google lykilinn.'); return null; }
+  if (!r.ok) return null;
+  const j = await r.json(); const e = Array.isArray(j) ? j[0] : null;
+  if (!e || e.condition !== 'ROUTE_EXISTS' || !e.duration) return null;
+  return { secs: parseInt(e.duration, 10), meters: e.distanceMeters || 0 };
 }
 function paintLegs(root){
   const legs = [...root.querySelectorAll('.leg[data-o]')]; if (!legs.length || !MAPS_READY || legsDenied) return;
@@ -994,21 +1008,15 @@ function paintLegs(root){
     if (c && Date.now() - c.at < 7 * 24 * 3600 * 1000){ if (c.secs != null) lg.textContent = fmtLeg(c.secs, c.meters); }
     else todo.push(lg);
   }
-  if (!todo.length) return;
-  loadMaps().then(() => {
-    const svc = new google.maps.DistanceMatrixService();
-    for (const lg of todo.slice(0, 30)){
-      const [o, d] = lg.dataset.key.split('|');
-      svc.getDistanceMatrix({ origins: [o], destinations: [d], travelMode: 'DRIVING' }, (res, status) => {
-        if (status === 'REQUEST_DENIED' || status === 'OVER_QUERY_LIMIT'){ legsDenied = true; console.warn('Distance Matrix: ' + status + '. Virkja Distance Matrix API fyrir lykilinn.'); return; }
-        const elm = res && res.rows && res.rows[0] && res.rows[0].elements && res.rows[0].elements[0];
-        const c = store.get('travel:legs', {});
-        if (elm && elm.status === 'OK'){ c[lg.dataset.key] = { at: Date.now(), secs: elm.duration.value, meters: elm.distance.value }; lg.textContent = fmtLeg(elm.duration.value, elm.distance.value); }
-        else c[lg.dataset.key] = { at: Date.now(), secs: null };
-        store.set('travel:legs', c);
-      });
-    }
-  }).catch(() => {});
+  const keys = [...new Set(todo.map(l => l.dataset.key))].slice(0, 30);
+  for (const key of keys){
+    fetchLeg(key).then(res => {
+      const c = store.get('travel:legs', {});
+      c[key] = res ? { at: Date.now(), secs: res.secs, meters: res.meters } : { at: Date.now(), secs: null };
+      store.set('travel:legs', c);
+      if (res) for (const lg of todo) if (lg.dataset.key === key) lg.textContent = fmtLeg(res.secs, res.meters);
+    }).catch(() => {});
+  }
 }
 
 /* ---------- dagur fyrir dag ---------- */
@@ -1812,7 +1820,7 @@ const FAQ = [
   ['Hvernig skrifa ég verð svo kostnaðaryfirlitið telji rétt?', 'Tölu og gjaldmiðil, í hvaða rithætti sem er: "121.384 kr.", "US$905.62", "USD 1,007.45", "257,84 CAD", "4.200 MXN". Kr. og kr merkja íslenskar krónur, dollaramerki eitt og sér merkir bandaríska dollara.\n\nYfirlitið er undir Stillingar. Gengi dagsins er sótt sjálfkrafa frá Seðlabanka Evrópu. Ef þú vilt nota gengið sem kortið þitt notaði, skráðu það undir "Nota eigið gengi".'],
   ['Hvaðan kemur veðurspáin?', 'Frá Open-Meteo, sama og á veiðisíðunni. Hún birtist við dagana í Dagskrá þegar 16 dagar eða færri eru í þá, miðað við gistingu dagsins (annars fyrstu færslu dagsins með staðsetningu). Hæsti og lægsti hiti, tákn fyrir veðrið, og úrkomulíkur ef bendillinn er látinn hvíla á spánni.'],
   ['Hvað þýðir stjarnan og "Opið" á færslu?', 'Þegar staður er valinn úr Google leitinni fylgja einkunn (★ 4,6) og opnunartímar með. Á spjaldinu sést opnunartíminn þann vikudag sem færslan er á, eða rautt "Lokað þennan dag". Opnunartímar eru eins og þeir voru þegar staðurinn var valinn, veldu staðinn aftur í "Breyta" til að uppfæra.'],
-  ['Hvað er bíllinn milli færslna?', 'Áætlaður aksturstími og vegalengd frá gistingu dagsins í fyrstu færslu og svo milli færslna, frá Google. Birtist aðeins milli færslna með staðsetningu á korti. Þarf að Distance Matrix API sé virkjað fyrir Google lykilinn, annars sést ekkert.'],
+  ['Hvað er bíllinn milli færslna?', 'Áætlaður aksturstími og vegalengd frá gistingu dagsins í fyrstu færslu og svo milli færslna, frá Google. Birtist aðeins milli færslna með staðsetningu á korti. Þarf að Routes API sé virkjað fyrir Google lykilinn, annars sést ekkert.'],
   ['Í hvaða tímabelti eru tímarnir?', 'Alltaf staðartími á áfangastað. Flug frá Keflavík kl. 17:00 er íslenskur tími, lending í Cancún kl. 18:05 er mexíkóskur tími. Síðan umreiknar ekkert.'],
   ['Hvað er Mikilvægt?', 'Flipi sem aðeins þú sérð, fyrir vegabréfsnúmer, tryggingar, neyðarnúmer, sendiráð, kortafyrirtæki og wifi-lykilorð. Geymt í sama læsta hólfi og bókunarnúmerin. Gott að hafa þetta við höndina án nets.'],
   ['Hvernig virkar pökkunarlistinn?', 'Flipinn Pökkun er sameiginlegur listi fyrir eiganda og ritstjóra. Gestir með leshlekk sjá hann ekki. "Setja inn grunnlista" gefur algenga hluti til að byrja með, valið eftir tegund ferðar (sól, skíði, borg, sveit, útilega eða íþróttaferð), og listar eftir aldri (ungabarn, barn, unglingur) sem bætast ofan á. "Eyða flokki" við fyrirsögn flokks og "Tæma listann" neðst hreinsa hratt. Þú getur bætt við og eytt hverju sem er á eftir. Ef hlutur er bara fyrir eina manneskju, skrifaðu nafn hennar í reitinn Fyrir hvern. "Taka hak af öllu" er gott fyrir heimferðina.'],
