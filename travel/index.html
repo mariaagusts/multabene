@@ -1446,7 +1446,7 @@ function renderIdeas(host){
     left.append(el('h3', {}, idea.title));
     if (idea.place) left.append(el('div', {class:'io', style:'font-size:14px;color:var(--dim)'}, idea.place + (idea.rating ? ` · ★ ${String(idea.rating).replace('.', ',')}` : '')));
     if (idea.note) left.append(el('div', {class:'io', style:'font-size:14px;color:var(--dim);white-space:pre-line;margin-top:4px'}, idea.note));
-    left.append(el('div', {class:'by'}, `Frá ${idea.by || 'eiganda'}` + (idea.near ? ` · við ${idea.near}` : '') + (sched ? ` · á dagskrá ${fmtD(sched.start)}` : idea.scheduled ? ' · komið á dagskrá' : '')));
+    left.append(el('div', {class:'by'}, 'Frá ', el('b', {}, idea.by || 'eiganda'), (idea.near ? ` · við ${idea.near}` : '') + (sched ? ` · á dagskrá ${fmtD(sched.start)}` : idea.scheduled ? ' · komið á dagskrá' : '')));
     const acts = el('div', {class:'acts', style:'display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;align-items:center'});
     if (link) acts.append(el('a', {class:'maplink', href:link, target:'_blank', rel:'noopener'}, 'Opna í Google Maps ↗'));
     if (idea.url) acts.append(el('a', {class:'maplink', href:idea.url, target:'_blank', rel:'noopener'}, 'Vefsíða ↗'));
