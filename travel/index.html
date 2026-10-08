@@ -211,6 +211,23 @@
   .toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--fg);color:var(--bg);border-radius:999px;padding:9px 16px;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100% - 32px);text-align:center;z-index:20;}
   .toast.show{opacity:1;}
   .foot{color:var(--dim);font-size:13px;margin:26px 0 0;}
+  .clock{display:inline-flex;gap:14px;font-size:13px;color:var(--dim);margin-left:12px;font-variant-numeric:tabular-nums;}
+  .clock b{color:var(--fg);font-weight:700;}
+  #print{display:none;}
+  @media print{
+    body{background:#fff;color:#000;padding:0;}
+    .wrap,.toast,dialog,.fab{display:none!important;}
+    #print{display:block;font-family:Georgia,serif;font-size:12pt;color:#000;max-width:none;padding:0;}
+    #print h1{font-size:22pt;margin:0 0 4pt;}
+    #print h2{font-size:14pt;margin:16pt 0 6pt;border-bottom:1px solid #000;padding-bottom:2pt;}
+    #print .pday{margin:0 0 8pt;page-break-inside:avoid;}
+    #print .pday h3{font-size:12pt;margin:0 0 2pt;}
+    #print .pit{margin:0 0 3pt 14pt;}
+    #print .pit small{color:#444;}
+    #print table{border-collapse:collapse;width:100%;}
+    #print td,#print th{border-bottom:1px solid #999;padding:3pt 6pt;text-align:left;vertical-align:top;font-size:11pt;}
+    #print .pnote{color:#444;font-size:10pt;margin:12pt 0 0;}
+  }
   .faq details{border-bottom:1px solid var(--line);padding:8px 0;}
   .faq summary{cursor:pointer;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:10px;}
   .faq summary::-webkit-details-marker{display:none;}
@@ -249,6 +266,7 @@
 </div>
 <dialog id="dlg"><div class="inner" id="dlgInner"></div></dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div id="print" aria-hidden="true"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -381,7 +399,17 @@ const db = firebase.database();
 const auth = AUTH_READY ? firebase.auth() : null;
 let user = null;
 if (auth){
-  auth.onAuthStateChanged(u => { user = u; renderUserbar(); go(); });
+  auth.onAuthStateChanged(u => {
+    user = u;
+    /* Við útskráningu, eða skipti um notanda, hverfa einkagögn úr minni síðunnar */
+    if (cur && cur.trip && !isOwner()){
+      if (cur.privRef){ cur.privRef.off(); cur.privRef = null; }
+      cur.priv = {}; cur.privOk = undefined;
+      applyTripData(cur.trip);
+    }
+    if (cur && cur.trip && isOwner()) watchPrivate();
+    renderUserbar(); go();
+  });
 }
 async function signIn(){
   if (!auth){ toast('Innskráning er ekki stillt enn.'); return; }
@@ -490,6 +518,13 @@ function tripForm(trip){
   const end = el('input', {id:'tEnd', type:'date', required:'', value: trip ? trip.end : '', min: trip ? trip.start : null});
   start.addEventListener('change', () => { end.min = start.value; if (end.value && end.value < start.value) end.value = start.value; });
   const desc = el('textarea', {id:'tDesc', rows:'2', maxlength:'300', placeholder:'Valkvætt'}); desc.value = trip && trip.description || '';
+  const tzSel = el('select', {id:'tTz'});
+  tzSel.append(el('option', {value:''}, 'Ekki valið (engin klukka)'));
+  const allTz = (typeof Intl.supportedValuesOf === 'function') ? Intl.supportedValuesOf('timeZone') : COMMON_TZ;
+  const curTz = trip && trip.tz || '';
+  const og1 = el('optgroup', {label:'Algeng'}); for (const z of COMMON_TZ) og1.append(el('option', {value:z, selected: curTz === z ? '' : null}, z.replace(/_/g,' ')));
+  const og2 = el('optgroup', {label:'Öll'}); for (const z of allTz) og2.append(el('option', {value:z, selected: curTz === z ? '' : null}, z.replace(/_/g,' ')));
+  tzSel.append(og1, og2);
   let theme = trip ? (trip.theme || 'sjor') : 'sjor';
   const themes = el('div', {class:'themes'});
   function paintThemes(){
@@ -508,6 +543,7 @@ function tripForm(trip){
     el('label', {}, 'Fyrsti dagur', start),
     el('label', {}, 'Síðasti dagur', end),
     el('label', {class:'full'}, 'Um ferðina', desc),
+    el('label', {class:'full'}, 'Tímabelti áfangastaðar (sýnir klukku þar og heima í haus)', tzSel),
     el('div', {class:'full', style:'font-size:13px;color:var(--dim)'}, 'Útlit'),
     themes
   );
@@ -526,13 +562,13 @@ function tripForm(trip){
     try {
       if (isNew){
         const id = rnd(10);
-        const data = { owner: user.uid, title: t, start: s, end: e, description: desc.value.trim(), theme, created: new Date().toISOString() };
+        const data = { owner: user.uid, title: t, start: s, end: e, description: desc.value.trim(), theme, tz: tzSel.value || null, created: new Date().toISOString() };
         await db.ref().update({ [`travel/trips/${id}`]: data, [`travel/users/${user.uid}/trips/${id}`]: { title: t, start: s, end: e } });
         location.hash = `#t/${id}`;
       } else {
         await db.ref().update({
           [`travel/trips/${cur.id}/title`]: t, [`travel/trips/${cur.id}/start`]: s, [`travel/trips/${cur.id}/end`]: e,
-          [`travel/trips/${cur.id}/description`]: desc.value.trim(), [`travel/trips/${cur.id}/theme`]: theme,
+          [`travel/trips/${cur.id}/description`]: desc.value.trim(), [`travel/trips/${cur.id}/theme`]: theme, [`travel/trips/${cur.id}/tz`]: tzSel.value || null,
           [`travel/users/${user.uid}/trips/${cur.id}`]: { title: t, start: s, end: e }
         });
         toast('Vistað');
@@ -566,7 +602,7 @@ function isOwner(){ return !!(user && cur && cur.trip && cur.trip.owner === user
 /* Síðasta útgáfa ferðar er geymd í símanum svo hún opnist án nets */
 function cacheTrip(){
   if (!cur || !cur.trip) return;
-  store.set(`travel:cache:${cur.id}`, { trip: cur.trip, priv: isOwner() ? cur.priv : {}, savedAt: new Date().toISOString() });
+  store.set(`travel:cache:${cur.id}`, { trip: cur.trip, priv: isOwner() ? cur.priv : {}, uid: isOwner() ? user.uid : null, savedAt: new Date().toISOString() });
 }
 function applyTripData(v){
   cur.trip = v;
@@ -583,7 +619,8 @@ function openTrip(r){
   setHeader('Sæki…', '');
   const cached = store.get(`travel:cache:${r.id}`, null);
   if (cached && cached.trip){
-    cur.priv = cached.priv || {};
+    /* einkagögn úr geymslu aðeins ef sami notandi er innskráður */
+    cur.priv = (cached.uid && user && cached.uid === user.uid) ? (cached.priv || {}) : {};
     cur.fromCache = true; cur.cachedAt = cached.savedAt;
     applyTripData(cached.trip);
     renderTrip();
@@ -660,6 +697,7 @@ function renderTrip(){
   else cd = 'Lokið';
   $('#title').append(el('span', {class:'countdown'}, cd));
   renderUserbar();
+  renderClock();
 
   const owner = isOwner();
   const nSug = Object.keys(cur.suggestions).length;
@@ -717,7 +755,8 @@ function renderTrip(){
     document.body.append(el('button', {class:'btn fab', id:'fab', type:'button', onclick: addFn}, addLabel));
   }
   $('#foot').innerHTML = (owner ? `Hver sem hefur hlekkinn getur skoðað ferðina, sent tillögu og bætt í hugmyndabankann. Aðeins þú breytir áætluninni. <button class="linkbtn" id="copyShare">Afrita hlekk</button>` : `Þú skoðar þessa ferð sem gestur. Þú getur sent tillögu að færslu sem eigandi samþykkir. <button class="linkbtn" id="sugBtn">Senda tillögu</button>`) + ` · <button class="linkbtn" id="icsBtn">Sækja í dagatal símans</button>`;
-  $('#foot').innerHTML += ` · <button class="linkbtn" id="helpBtn">Hjálp</button>`;
+  $('#foot').innerHTML += ` · <button class="linkbtn" id="printBtn">Prenta</button> · <button class="linkbtn" id="helpBtn">Hjálp</button>`;
+  $('#printBtn').onclick = printTrip;
   const cs = $('#copyShare'); if (cs) cs.onclick = () => copy(`${BASE}#t/${cur.id}`, 'Hlekkur afritaður');
   const sb = $('#sugBtn'); if (sb) sb.onclick = () => openItemDialog(null, true);
   $('#helpBtn').onclick = openHelp;
@@ -1069,6 +1108,64 @@ function exportIcs(){
   toast('Dagatalsskrá sótt. Opnaðu hana til að bæta í dagatalið.');
 }
 
+/* ---------- klukka: staðartími á áfangastað og heima ---------- */
+let clockTimer = null;
+const COMMON_TZ = ['America/Cancun','America/Mexico_City','Europe/London','Europe/Copenhagen','Europe/Stockholm','Europe/Oslo','Europe/Madrid','Europe/Lisbon','Europe/Paris','Europe/Berlin','Europe/Rome','Europe/Athens','America/New_York','America/Toronto','America/Chicago','America/Denver','America/Los_Angeles','Atlantic/Canary','Asia/Bangkok','Asia/Tokyo','Asia/Dubai','Australia/Sydney','Africa/Johannesburg'];
+const homeTz = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch(e){ return 'Atlantic/Reykjavik'; } };
+const fmtClock = tz => { try { return new Intl.DateTimeFormat('is-IS', { timeZone: tz, hour:'2-digit', minute:'2-digit', hour12: false }).format(new Date()); } catch(e){ return null; } };
+const tzLabel = tz => (tz || '').split('/').pop().replace(/_/g, ' ');
+function renderClock(){
+  clearInterval(clockTimer);
+  const old = $('#clock'); if (old) old.remove();
+  const tz = cur && cur.trip && cur.trip.tz; if (!tz) return;
+  const home = homeTz(); if (tz === home) return;
+  const node = el('span', {class:'clock', id:'clock'});
+  const paint = () => { const a = fmtClock(tz), b = fmtClock(home); if (!a) return; node.innerHTML = `<span>${esc(tzLabel(tz))} <b>${a}</b></span><span>Heima <b>${b}</b></span>`; };
+  paint(); $('#userbar').append(node);
+  clockTimer = setInterval(paint, 30000);
+}
+
+/* ---------- prentvæn útgáfa ---------- */
+function buildPrint(){
+  const { trip } = cur; const owner = isOwner();
+  const h = [];
+  h.push(`<h1>${esc(trip.title)}</h1><div>${esc(fmtRange(trip.start, trip.end))}${trip.description ? ' · ' + esc(trip.description) : ''}</div>`);
+  h.push('<h2>Dagur fyrir dag</h2>');
+  for (const day of allDays()){
+    const d = parse(day);
+    const todays = cur.items.filter(i => i.kind !== 'hotel' && dpart(i.start) === day).sort((a,b) => a.start.localeCompare(b.start));
+    const stay = stayOn(day);
+    if (!todays.length && !stay) continue;
+    h.push(`<div class="pday"><h3>${DOW[dow(d)]} ${d.getDate()}. ${MONTH[d.getMonth()]}${stay ? ` <small>· gisting: ${esc(stay.title)}</small>` : ''}</h3>`);
+    for (const it of todays){
+      const bits = [tpart(it.start) + (it.end ? ' til ' + (dpart(it.end) !== dpart(it.start) ? parse(it.end).getDate() + '. ' + MONTH_S[parse(it.end).getMonth()] + ' ' : '') + tpart(it.end) : ''), kindOf(it.kind).label, it.flightNo, it.place, owner && it.conf ? 'bókun ' + it.conf : null, it.price, it.note].filter(Boolean).map(esc);
+      h.push(`<div class="pit"><b>${esc(it.title)}</b><br><small>${bits.join(' · ')}</small></div>`);
+    }
+    h.push('</div>');
+  }
+  const hs = cur.items.filter(i => i.kind === 'hotel');
+  if (hs.length){
+    h.push('<h2>Gisting</h2><table><tr><th>Hótel</th><th>Inn</th><th>Út</th><th>Heimilisfang</th>' + (owner ? '<th>Bókun</th>' : '') + '</tr>');
+    for (const x of hs) h.push(`<tr><td>${esc(x.title)}</td><td>${esc(fmtD(x.start))} ${esc(tpart(x.start))}</td><td>${x.end ? esc(fmtD(x.end)) + ' ' + esc(tpart(x.end)) : ''}</td><td>${esc(x.place || '')}${x.note ? '<br><small>' + esc(x.note) + '</small>' : ''}</td>` + (owner ? `<td>${esc(x.conf || '')}</td>` : '') + '</tr>');
+    h.push('</table>');
+  }
+  if (owner){
+    const info = Object.values((cur.priv && cur.priv._info) || {}).sort((a,b) => (a.order ?? 0) - (b.order ?? 0));
+    if (info.length){
+      h.push('<h2>Mikilvægt</h2><table>');
+      for (const r of info) h.push(`<tr><th>${esc(r.label)}</th><td>${esc(r.value)}</td></tr>`);
+      h.push('</table>');
+    }
+  }
+  h.push(`<p class="pnote">Prentað ${new Date().getDate()}. ${MONTH[new Date().getMonth()]} ${new Date().getFullYear()} af www.multabene.is/travel/. Tímar eru staðartími áfangastaðar.</p>`);
+  return h.join('');
+}
+function printTrip(){
+  if (!cur || !cur.trip) return;
+  $('#print').innerHTML = buildPrint();
+  setTimeout(() => window.print(), 50);
+}
+
 /* ---------- hjálp ---------- */
 const FAQ = [
   ['Virkar síðan án nets, til dæmis í útlöndum?', 'Já, ef þú opnar ferðina með neti fyrst. Síðan geymir þá ferðina í símanum og sýnir hana aftur þótt net vanti, með tilkynningunni "Án nets". Breytingar vistast þegar net næst.\n\nÖruggast er að setja síðuna á heimaskjá símans (sjá næstu spurningu), skrá sig inn þar og opna ferðina einu sinni með neti. Appið á heimaskjánum er með sína eigin geymslu, aðskilda frá vafranum.'],
@@ -1080,6 +1177,8 @@ const FAQ = [
   ['Hvernig skrifa ég verð svo kostnaðaryfirlitið telji rétt?', 'Tölu og gjaldmiðil, í hvaða rithætti sem er: "121.384 kr.", "US$905.62", "USD 1,007.45", "257,84 CAD", "4.200 MXN". Kr. og kr merkja íslenskar krónur, dollaramerki eitt og sér merkir bandaríska dollara.\n\nYfirlitið er undir Stillingar. Gengi dagsins er sótt sjálfkrafa frá Seðlabanka Evrópu. Ef þú vilt nota gengið sem kortið þitt notaði, skráðu það undir "Nota eigið gengi".'],
   ['Í hvaða tímabelti eru tímarnir?', 'Alltaf staðartími á áfangastað. Flug frá Keflavík kl. 17:00 er íslenskur tími, lending í Cancún kl. 18:05 er mexíkóskur tími. Síðan umreiknar ekkert.'],
   ['Hvað er Mikilvægt?', 'Flipi sem aðeins þú sérð, fyrir vegabréfsnúmer, tryggingar, neyðarnúmer, sendiráð, kortafyrirtæki og wifi-lykilorð. Geymt í sama læsta hólfi og bókunarnúmerin. Gott að hafa þetta við höndina án nets.'],
+  ['Hvað er klukkan í hausnum?', 'Ef þú velur tímabelti áfangastaðar undir Stillingar sýnir hausinn klukkuna þar og heima. Gott fyrir símtöl og skilaboð heim.'],
+  ['Get ég prentað ferðina?', 'Já, "Prenta" neðst á síðunni gefur hreina útgáfu af dagskrá, gistingu og Mikilvægt (aðeins hjá eiganda). Í síma má velja "Vista sem PDF" í prentglugganum. Pappír er góð varaleið ef síminn er tómur eða týndur.'],
   ['Hvernig breyti ég eða eyði ferð?', 'Undir Stillingar, neðst. Þar breytir þú heiti, dagsetningum, lýsingu og útliti, og getur eytt ferðinni. Eyðing er endanleg.']
 ];
 function openHelp(){
