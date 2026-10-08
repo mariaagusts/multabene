@@ -224,6 +224,7 @@
   .toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--fg);color:var(--bg);border-radius:999px;padding:9px 16px;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100% - 32px);text-align:center;z-index:20;}
   .toast.show{opacity:1;}
   .foot{color:var(--dim);font-size:13px;margin:26px 0 0;}
+  .foot .footlinks{display:block;margin-top:6px;}
   .viewseg{display:flex;justify-content:flex-end;margin:-4px 0 14px;}
   .seg{display:inline-flex;background:var(--panel-2);border-radius:999px;padding:3px;gap:2px;}
   .seg button{border:0;background:transparent;border-radius:999px;padding:6px 14px;font-size:14px;color:var(--dim);font-weight:500;white-space:nowrap;transition:background .15s,color .15s;}
@@ -289,6 +290,22 @@
   .support b{color:var(--fg);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;}
   .support .acct{display:block;margin-top:6px;}
   .idea{display:grid;grid-template-columns:1fr auto;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;}
+  .idea.withphoto{grid-template-columns:96px 1fr auto;}
+  .idea .photo{width:96px;height:72px;object-fit:cover;border-radius:8px;background:var(--panel-2);}
+  @media (max-width:560px){ .idea.withphoto{grid-template-columns:72px 1fr auto;} .idea .photo{width:72px;height:60px;} }
+  .explore{margin:0 0 18px;}
+  .explore .chips{margin:8px 0 10px;}
+  .explore .q{display:flex;gap:8px;}
+  .explore .q input{flex:1;min-width:0;background:var(--panel-2);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:16px;color:var(--fg);}
+  .xres{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin:12px 0 0;}
+  .xcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;min-width:0;}
+  .xcard img{width:100%;height:120px;object-fit:cover;background:var(--panel-2);display:block;}
+  .xcard .b{padding:10px 12px;display:flex;flex-direction:column;gap:3px;flex:1;}
+  .xcard b{font-size:15px;overflow-wrap:anywhere;}
+  .xcard .m{font-size:13px;color:var(--dim);}
+  .xcard .m .open{color:var(--accent);} .xcard .m .closed{color:var(--danger);}
+  .xcard .acts{margin-top:auto;padding-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .xcard.added{opacity:.6;}
   .idea h3{font-size:17px;overflow-wrap:anywhere;}
   .idea .by{font-size:12px;color:var(--dim);}
   .idea.done{opacity:.6;}
@@ -662,7 +679,7 @@ function stopTrip(){
   if (cur && cur.privRef) cur.privRef.off();
   if (cur && cur.teamRef) cur.teamRef.off();
   if (myTripsRef){ myTripsRef.off(); myTripsRef = null; }
-  cur = null; map = null; markers = [];
+  cur = null; map = null; markers = []; exploreLast = null;
 }
 function isOwner(){ return !!(user && cur && cur.trip && cur.trip.owner === user.uid); }
 /* Ritstjóri: innskráður notandi sem þáði ritstjórahlekk. Má breyta áætluninni, sér ekki einkahólfið. */
@@ -894,8 +911,9 @@ function renderTrip(){
     document.body.append(el('button', {class:'btn fab', id:'fab', type:'button', onclick: addFn}, addLabel));
   }
   const nEd = Object.keys(trip.editors || {}).length;
-  $('#foot').innerHTML = (owner ? `Hver sem hefur leshlekkinn getur skoðað ferðina, sent tillögu og bætt í hugmyndabankann. Þú${nEd ? ` og ${nEd} ${nEd === 1 ? 'ritstjóri' : 'ritstjórar'}` : ''} ${nEd ? 'breytið' : 'breytir'} áætluninni. <button class="linkbtn" id="copyShare">Afrita leshlekk</button>` : editor ? `Þú ert ritstjóri þessarar ferðar og breytir áætluninni, verkefnum og pökkun. Bókunarnúmer, verð og Mikilvægt sér aðeins eigandi.` : `Þú skoðar þessa ferð sem gestur. Þú getur sent tillögu að færslu sem eigandi samþykkir. <button class="linkbtn" id="sugBtn">Senda tillögu</button>`) + ` · <button class="linkbtn" id="icsBtn">Sækja í dagatal símans</button>`;
-  $('#foot').innerHTML += ` · <button class="linkbtn" id="printBtn">Prenta</button>` + (editor ? ` · <button class="linkbtn" id="logBtn">Breytingasaga</button>` : '') + ` · <button class="linkbtn" id="helpBtn">Hjálp</button>`;
+  const footText = owner ? `Hver sem hefur leshlekkinn getur skoðað ferðina, sent tillögu og bætt í hugmyndabankann. Þú${nEd ? ` og ${nEd} ${nEd === 1 ? 'ritstjóri' : 'ritstjórar'}` : ''} ${nEd ? 'breytið' : 'breytir'} áætluninni.` : editor ? `Þú ert ritstjóri þessarar ferðar og breytir áætluninni, verkefnum og pökkun. Bókunarnúmer, verð og Mikilvægt sér aðeins eigandi.` : `Þú skoðar þessa ferð sem gestur. Þú getur sent tillögu að færslu sem eigandi samþykkir.`;
+  const footLinks = [owner ? `<button class="linkbtn" id="copyShare">Afrita leshlekk</button>` : '', !editor ? `<button class="linkbtn" id="sugBtn">Senda tillögu</button>` : '', `<button class="linkbtn" id="icsBtn">Sækja í dagatal símans</button>`, `<button class="linkbtn" id="printBtn">Prenta</button>`, editor ? `<button class="linkbtn" id="logBtn">Breytingasaga</button>` : '', `<button class="linkbtn" id="helpBtn">Hjálp</button>`].filter(Boolean).join(' · ');
+  $('#foot').innerHTML = `${footText}<span class="footlinks">${footLinks}</span>`;
   $('#printBtn').onclick = printTrip;
   const cs = $('#copyShare'); if (cs) cs.onclick = () => copy(`${BASE}#t/${cur.id}`, 'Hlekkur afritaður');
   const sb = $('#sugBtn'); if (sb) sb.onclick = () => openItemDialog(null, true);
@@ -1258,14 +1276,109 @@ function renderHotels(host){
 }
 
 /* ---------- hugmyndabanki ---------- */
+/* ---------- Skoða í nágrenninu: Google Text Search, aðeins eigandi og ritstjórar, hámark á dag ---------- */
+const EXPLORE_MAX = 30;
+let exploreLast = null;   /* síðasta leit, svo niðurstöður lifi endurteikningu */
+const EXPLORE_CHIPS = [['Það helsta', 'helstu ferðamannastaðir og afþreying'], ['Veitingastaðir', 'bestu veitingastaðir'], ['Kaffihús', 'kaffihús'], ['Strendur', 'strendur'], ['Söfn og sýningar', 'söfn og sýningar'], ['Barnvænt', 'afþreying fyrir börn og fjölskyldur']];
+const PRICE = { PRICE_LEVEL_FREE:'ókeypis', PRICE_LEVEL_INEXPENSIVE:'$', PRICE_LEVEL_MODERATE:'$$', PRICE_LEVEL_EXPENSIVE:'$$$', PRICE_LEVEL_VERY_EXPENSIVE:'$$$$' };
+function exploreCenter(){
+  const today = todayIso();
+  if (cur.trip.start && cur.trip.end && today >= cur.trip.start && today <= cur.trip.end){ const l = dayLoc(today); if (l) return l; }
+  return cur.items.find(i => i.kind === 'hotel' && hasLoc(i)) || cur.items.find(i => hasLoc(i)) || null;
+}
+function exploreCount(){ return (cur.team && cur.team.searches && cur.team.searches[todayIso()]) || 0; }
+async function exploreSearch(q, center){
+  const key = `${q.toLowerCase()}|${locKey(center)}`;
+  const cache = store.get('travel:explore', {});
+  if (cache[key] && Date.now() - cache[key].at < 24 * 3600 * 1000) return { results: cache[key].results, cached: true };
+  if (exploreCount() >= EXPLORE_MAX) throw new Error('max');
+  await loadMaps();
+  const { Place } = await google.maps.importLibrary('places');
+  const near = center.place ? center.place.split(',').slice(-2).join(',').trim() : '';
+  const { places } = await Place.searchByText({ textQuery: near ? `${q} nálægt ${near}` : q, fields: ['id','displayName','formattedAddress','location','rating','userRatingCount','priceLevel','primaryTypeDisplayName','photos','regularOpeningHours','websiteURI'], locationBias: { center: { lat: +center.lat, lng: +center.lng }, radius: 30000 }, maxResultCount: 10, language: 'is' });
+  const results = (places || []).map(p => ({
+    placeId: p.id, name: p.displayName || '', addr: p.formattedAddress || '', lat: p.location ? p.location.lat() : null, lng: p.location ? p.location.lng() : null,
+    rating: p.rating || null, ratingCount: p.userRatingCount || null, price: PRICE[p.priceLevel] || '', type: p.primaryTypeDisplayName || '',
+    photo: (p.photos && p.photos[0]) ? p.photos[0].getURI({ maxWidth: 480 }) : null,
+    hours: (p.regularOpeningHours && p.regularOpeningHours.weekdayDescriptions) || null, url: p.websiteURI || null
+  }));
+  const keep = {}; for (const k in cache) if (Date.now() - cache[k].at < 24 * 3600 * 1000) keep[k] = cache[k];
+  keep[key] = { at: Date.now(), results }; store.set('travel:explore', keep);
+  return { results, cached: false };
+}
+function renderExplore(host){
+  const box = el('div', {class:'card explore'}, el('h2', {}, 'Tillögur úr nágrenninu'), el('p', {class:'help', style:'margin:0 0 4px'}, 'Frá Google, ekki frá hópnum. Staður fer ekki í hugmyndabankann fyrr en þú velur "Í hugmyndabankann".'));
+  const center = exploreCenter();
+  if (!MAPS_READY){ box.append(el('p', {class:'help'}, 'Google Maps lykilinn vantar.')); host.append(box); return; }
+  if (!center){ box.append(el('p', {class:'help'}, 'Skráðu gistingu með staðsetningu úr Google leitinni, þá leitar þetta í nágrenni hennar.')); host.append(box); return; }
+  const status = el('p', {class:'help', style:'margin:0'}, `Leitað í kringum ${center.title || center.place}. Niðurstöður með einkunn frá Google. Leitir í dag: ${exploreCount()} af ${EXPLORE_MAX}.`);
+  box.append(status);
+  const chips = el('div', {class:'chips'});
+  const q = el('input', {placeholder:'Eða leita sjálf, t.d. snorkl, taco, markaður', maxlength:'60'});
+  const go = el('button', {class:'btn small', type:'button'}, 'Leita');
+  const res = el('div', {class:'xres'});
+  const paint = (results, cached) => {
+    res.innerHTML = '';
+    if (!results.length){ res.append(el('p', {class:'empty'}, 'Ekkert fannst.')); return; }
+    for (const r of results) res.append(exploreCard(r));
+    status.textContent = `Leitað í kringum ${center.title || center.place}. Niðurstöður með einkunn frá Google. Leitir í dag: ${exploreCount()} af ${EXPLORE_MAX}.${cached ? ' Þessi leit var geymd frá fyrri leit.' : ''}`;
+  };
+  if (exploreLast && exploreLast.trip === cur.id){ q.value = exploreLast.q; paint(exploreLast.results, exploreLast.cached); }
+  const run = async (query) => {
+    if (!query.trim()) return;
+    res.innerHTML = ''; res.append(el('p', {class:'empty'}, 'Leita…'));
+    try {
+      const { results, cached } = await exploreSearch(query.trim(), center);
+      exploreLast = { trip: cur.id, q: query.trim(), results, cached };
+      paint(results, cached);
+      /* teljari dagsins, skrifaður eftir að niðurstöður eru geymdar svo endurteikning sýni þær */
+      if (!cached){ try { await db.ref(`travel/team/${cur.id}/searches/${todayIso()}`).set(exploreCount() + 1); } catch(e){} }
+    } catch(e){
+      res.innerHTML = '';
+      res.append(el('p', {class:'empty'}, e && e.message === 'max' ? `Hámarki dagsins náð (${EXPLORE_MAX} leitir). Reyndu á morgun.` : 'Leitin tókst ekki. Athugaðu að Places API (New) sé virkjað fyrir lykilinn.'));
+    }
+  };
+  for (const [label, query] of EXPLORE_CHIPS) chips.append(el('button', {type:'button', class:'chip', onclick: () => run(query)}, label));
+  go.onclick = () => run(q.value); q.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); run(q.value); } });
+  box.append(chips, el('div', {class:'q'}, q, go), res);
+  host.append(box);
+}
+function exploreCard(r){
+  const have = cur.ideas.find(i => i.placeId && i.placeId === r.placeId) || cur.items.find(i => i.placeId && i.placeId === r.placeId);
+  const c = el('div', {class:'xcard' + (have ? ' added' : '')});
+  if (r.photo) c.append(el('img', {src: r.photo, alt:'', loading:'lazy', referrerpolicy:'no-referrer'}));
+  const b = el('div', {class:'b'});
+  b.append(el('b', {}, r.name));
+  const bits = [r.rating ? `★ ${String(r.rating).replace('.', ',')}${r.ratingCount ? ` (${Number(r.ratingCount).toLocaleString('de-DE')})` : ''}` : '', r.type, r.price].filter(Boolean).join(' · ');
+  if (bits) b.append(el('div', {class:'m'}, bits));
+  const todayLine = r.hours ? openingText({ hours: r.hours, start: todayIso(), kind:'act' }) : '';
+  if (todayLine) b.append(el('div', {class:'m'}, el('span', {class: /lokað/i.test(todayLine) ? 'closed' : 'open'}, todayLine.replace('Opið', 'Opið í dag').replace('Lokað þennan dag', 'Lokað í dag'))));
+  if (r.addr) b.append(el('div', {class:'m'}, r.addr));
+  const acts = el('div', {class:'acts'});
+  const link = gmapsLink({ place: r.name, placeId: r.placeId, lat: r.lat, lng: r.lng });
+  if (link) acts.append(el('a', {class:'maplink', href:link, target:'_blank', rel:'noopener'}, 'Google Maps ↗'));
+  if (r.url) acts.append(el('a', {class:'maplink', href:r.url, target:'_blank', rel:'noopener'}, 'Vefsíða ↗'));
+  if (have) acts.append(el('span', {class:'tag'}, 'Þegar í bankanum'));
+  else acts.append(el('button', {class:'btn small', type:'button', onclick: async (e) => {
+    const btn = e.currentTarget; btn.disabled = true;
+    const idea = { title: r.name, place: r.addr || r.name, lat: r.lat, lng: r.lng, placeId: r.placeId, url: r.url, note: null, by: myName(), rating: r.rating, ratingCount: r.ratingCount, hours: r.hours, photo: r.photo, created: new Date().toISOString() };
+    try { await db.ref(`travel/trips/${cur.id}/ideas`).push(idea); toast('Komið í hugmyndabankann'); logChange(`Hugmynd: "${r.name}"`); c.classList.add('added'); btn.replaceWith(el('span', {class:'tag'}, 'Þegar í bankanum')); }
+    catch(err){ btn.disabled = false; toast('Tókst ekki: ' + (err.code || err.message)); }
+  }}, 'Í hugmyndabankann'));
+  b.append(acts); c.append(b);
+  return c;
+}
+
 function renderIdeas(host){
-  host.append(el('p', {class:'help', style:'margin:0 0 12px'}, 'Staðir og afþreying sem koma til greina. Finndu staðinn í Google Maps leitinni, geymdu hann hér og settu á dag þegar það er ákveðið.'));
-  if (!cur.ideas.length){ host.append(el('p', {class:'empty'}, 'Engin hugmynd enn. Smelltu á "+ Hugmynd".')); return; }
-  const wrap = el('div', {class:'hotels'});
+  host.append(el('p', {class:'help', style:'margin:0 0 12px'}, 'Staðir og afþreying sem koma til greina. Hugmyndir hópsins eru efst, tillögur frá Google fyrir neðan. Settu hugmynd á dag þegar það er ákveðið.'));
+  host.append(el('h3', {style:'font-size:17px;margin:0 0 8px'}, `Hugmyndir hópsins${cur.ideas.length ? ` (${cur.ideas.length})` : ''}`));
+  if (!cur.ideas.length) host.append(el('p', {class:'empty', style:'margin:0 0 16px'}, 'Engin hugmynd enn. Smelltu á "+ Hugmynd", eða veldu úr tillögunum hér fyrir neðan.'));
+  const wrap = el('div', {class:'hotels', style:'margin:0 0 20px'});
   for (const idea of cur.ideas){
     const sched = idea.scheduled ? cur.items.find(i => i.id === idea.scheduled) : null;
-    const card = el('div', {class:'idea' + (idea.scheduled ? ' done' : '')});
+    const card = el('div', {class:'idea' + (idea.scheduled ? ' done' : '') + (idea.photo ? ' withphoto' : '')});
     const link = gmapsLink(idea);
+    if (idea.photo) card.append(el('img', {class:'photo', src: idea.photo, alt:'', loading:'lazy', referrerpolicy:'no-referrer'}));
     const left = el('div');
     left.append(el('h3', {}, idea.title));
     if (idea.place) left.append(el('div', {class:'io', style:'font-size:14px;color:var(--dim)'}, idea.place + (idea.rating ? ` · ★ ${String(idea.rating).replace('.', ',')}` : '')));
@@ -1283,7 +1396,8 @@ function renderIdeas(host){
     if (idea.scheduled) card.append(el('span', {class:'tag', style:'align-self:start'}, 'Á dagskrá'));
     wrap.append(card);
   }
-  host.append(wrap);
+  if (cur.ideas.length) host.append(wrap);
+  if (canEdit()) renderExplore(host);
 }
 function openIdeaDialog(){
   const dlg = $('#dlg'), inner = $('#dlgInner'); inner.innerHTML = '';
@@ -1820,6 +1934,7 @@ const FAQ = [
   ['Hvernig skrifa ég verð svo kostnaðaryfirlitið telji rétt?', 'Tölu og gjaldmiðil, í hvaða rithætti sem er: "121.384 kr.", "US$905.62", "USD 1,007.45", "257,84 CAD", "4.200 MXN". Kr. og kr merkja íslenskar krónur, dollaramerki eitt og sér merkir bandaríska dollara.\n\nYfirlitið er undir Stillingar. Gengi dagsins er sótt sjálfkrafa frá Seðlabanka Evrópu. Ef þú vilt nota gengið sem kortið þitt notaði, skráðu það undir "Nota eigið gengi".'],
   ['Hvaðan kemur veðurspáin?', 'Frá Open-Meteo, sama og á veiðisíðunni. Hún birtist við dagana í Dagskrá þegar 16 dagar eða færri eru í þá, miðað við gistingu dagsins (annars fyrstu færslu dagsins með staðsetningu). Hæsti og lægsti hiti, tákn fyrir veðrið, og úrkomulíkur ef bendillinn er látinn hvíla á spánni.'],
   ['Hvað þýðir stjarnan og "Opið" á færslu?', 'Þegar staður er valinn úr Google leitinni fylgja einkunn (★ 4,6) og opnunartímar með. Á spjaldinu sést opnunartíminn þann vikudag sem færslan er á, eða rautt "Lokað þennan dag". Opnunartímar eru eins og þeir voru þegar staðurinn var valinn, veldu staðinn aftur í "Breyta" til að uppfæra.'],
+  ['Hvað eru "Tillögur úr nágrenninu"?', 'Neðst í Hugmyndabankanum, fyrir eiganda og ritstjóra. Hugmyndir hópsins eru alltaf efst, tillögur Google fyrir neðan og merktar sem slíkar. Flýtihnappar (Það helsta, Veitingastaðir, Strendur…) eða eigin leit sækja staði frá Google í kringum gistinguna, með einkunn, mynd og opnunartíma dagsins. "Í hugmyndabankann" geymir staðinn með öllu. Hámark 30 leitir á dag á hverja ferð, og sama leit er geymd í síma í sólarhring.'],
   ['Hvað er bíllinn milli færslna?', 'Áætlaður aksturstími og vegalengd frá gistingu dagsins í fyrstu færslu og svo milli færslna, frá Google. Birtist aðeins milli færslna með staðsetningu á korti. Þarf að Routes API sé virkjað fyrir Google lykilinn, annars sést ekkert.'],
   ['Í hvaða tímabelti eru tímarnir?', 'Alltaf staðartími á áfangastað. Flug frá Keflavík kl. 17:00 er íslenskur tími, lending í Cancún kl. 18:05 er mexíkóskur tími. Síðan umreiknar ekkert.'],
   ['Hvað er Mikilvægt?', 'Flipi sem aðeins þú sérð, fyrir vegabréfsnúmer, tryggingar, neyðarnúmer, sendiráð, kortafyrirtæki og wifi-lykilorð. Geymt í sama læsta hólfi og bókunarnúmerin. Gott að hafa þetta við höndina án nets.'],
