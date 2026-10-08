@@ -300,7 +300,8 @@
   .idea .photo{width:96px;height:72px;object-fit:cover;border-radius:8px;background:var(--panel-2);}
   @media (max-width:560px){ .idea.withphoto{grid-template-columns:72px 1fr auto;} .idea .photo{width:72px;height:60px;} }
   .explore{margin:0 0 18px;}
-  .explore .chips{margin:8px 0 10px;}
+  .explore .chips{margin:8px 0 10px;align-items:center;}
+  .explore .kmsel{margin-left:auto;background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:13px;color:var(--fg);}
   .explore .q{display:flex;gap:8px;}
   .explore .q input{flex:1;min-width:0;background:var(--panel-2);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:16px;color:var(--fg);}
   .xres{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin:12px 0 0;}
@@ -1292,7 +1293,9 @@ const EXPLORE_MAX = 30;
 let exploreLast = null;   /* síðasta leit, svo niðurstöður lifi endurteikningu */
 /* leitarorðin eru á ensku: Google finnur þá rétta staði hvar sem er í heiminum, íslensk orð eins og "strendur" skila íslenskum örnefnum */
 const EXPLORE_CHIPS = [['Það helsta', 'top tourist attractions'], ['Veitingastaðir', 'best restaurants'], ['Kaffihús', 'cafes'], ['Strendur', 'beaches'], ['Söfn og sýningar', 'museums'], ['Barnvænt', 'things to do with kids']];
-const EXPLORE_KM = 20;
+const EXPLORE_KMS = [2, 5, 10, 20];
+/* radíus leitar, valinn af notanda og geymdur í síma á hverja ferð; 10 km sjálfgefið */
+function exploreKm(){ const v = +store.get(`travel:xkm:${cur.id}`, 10); return EXPLORE_KMS.includes(v) ? v : 10; }
 function kmBetween(a, b){ const R = 6371, dLat = (b.lat - a.lat) * Math.PI / 180, dLng = (b.lng - a.lng) * Math.PI / 180, x = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * Math.PI / 180) * Math.cos(b.lat * Math.PI / 180) * Math.sin(dLng / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(x)); }
 const PRICE = { PRICE_LEVEL_FREE:'ókeypis', PRICE_LEVEL_INEXPENSIVE:'$', PRICE_LEVEL_MODERATE:'$$', PRICE_LEVEL_EXPENSIVE:'$$$', PRICE_LEVEL_VERY_EXPENSIVE:'$$$$' };
 /* Allir gististaðir með staðsetningu, í tímaröð. Sjálfgefið gisting dagsins ef ferðin er í gangi, annars sú fyrsta. */
@@ -1310,8 +1313,8 @@ function exploreCenter(){
   return list[0];
 }
 function exploreCount(){ return (cur.team && cur.team.searches && cur.team.searches[todayIso()]) || 0; }
-async function exploreSearch(q, center){
-  const key = `${q.toLowerCase()}|${locKey(center)}`;
+async function exploreSearch(q, center, km){
+  const key = `${q.toLowerCase()}|${locKey(center)}|${km}`;
   const cache = store.get('travel:explore2', {});
   if (cache[key] && Date.now() - cache[key].at < 24 * 3600 * 1000) return { results: cache[key].results, cached: true };
   if (exploreCount() >= EXPLORE_MAX) throw new Error('max');
@@ -1319,9 +1322,9 @@ async function exploreSearch(q, center){
   const { Place } = await google.maps.importLibrary('places');
   /* locationRestriction heldur leitinni innan kassa í kringum gististaðinn; locationBias var bara tillaga og Google fór út fyrir hana */
   const c = { lat: +center.lat, lng: +center.lng };
-  const dLat = EXPLORE_KM / 111, dLng = EXPLORE_KM / (111 * Math.max(0.2, Math.cos(c.lat * Math.PI / 180)));
+  const dLat = km / 111, dLng = km / (111 * Math.max(0.2, Math.cos(c.lat * Math.PI / 180)));
   const { places } = await Place.searchByText({ textQuery: q, fields: ['id','displayName','formattedAddress','location','rating','userRatingCount','priceLevel','primaryTypeDisplayName','photos','regularOpeningHours','websiteURI'], locationRestriction: { north: c.lat + dLat, south: c.lat - dLat, east: c.lng + dLng, west: c.lng - dLng }, maxResultCount: 10, language: 'is' });
-  const results = (places || []).filter(p => !p.location || kmBetween(c, { lat: p.location.lat(), lng: p.location.lng() }) <= EXPLORE_KM * 1.6).map(p => ({
+  const results = (places || []).filter(p => !p.location || kmBetween(c, { lat: p.location.lat(), lng: p.location.lng() }) <= km * 1.45).map(p => ({
     placeId: p.id, name: p.displayName || '', addr: p.formattedAddress || '', lat: p.location ? p.location.lat() : null, lng: p.location ? p.location.lng() : null,
     rating: p.rating || null, ratingCount: p.userRatingCount || null, price: PRICE[p.priceLevel] || '', type: p.primaryTypeDisplayName || '',
     photo: (p.photos && p.photos[0]) ? p.photos[0].getURI({ maxWidth: 480 }) : null,
@@ -1352,17 +1355,17 @@ function renderExplore(host){
   const paint = (results, cached) => {
     res.innerHTML = '';
     const rest = results.filter(r => !markedIds.has(r.placeId));
-    if (!results.length){ res.append(el('p', {class:'empty'}, `Ekkert fannst innan ${EXPLORE_KM} km. Prófaðu annað orð, helst á ensku.`)); return; }
+    if (!results.length){ res.append(el('p', {class:'empty'}, `Ekkert fannst innan ${exploreKm()} km. Prófaðu stærri radíus eða annað orð, helst á ensku.`)); return; }
     if (!rest.length){ res.append(el('p', {class:'empty'}, 'Allt úr þessari leit er merkt, sjá efst.')); return; }
     for (const r of rest) res.append(exploreCard(r, center));
-    status.textContent = `Niðurstöður með einkunn frá Google, í kringum ${center.title}. Leitir í dag: ${exploreCount()} af ${EXPLORE_MAX}.${cached ? ' Þessi leit var geymd frá fyrri leit.' : ''}`;
+    status.textContent = `Niðurstöður með einkunn frá Google, innan ${exploreKm()} km frá ${center.title}. Leitir í dag: ${exploreCount()} af ${EXPLORE_MAX}.${cached ? ' Þessi leit var geymd frá fyrri leit.' : ''}`;
   };
   if (exploreLast && exploreLast.trip === cur.id && exploreLast.center === center.id){ q.value = exploreLast.q; paint(exploreLast.results, exploreLast.cached); }
   const run = async (query) => {
     if (!query.trim()) return;
     res.innerHTML = ''; res.append(el('p', {class:'empty'}, 'Leita…'));
     try {
-      const { results, cached } = await exploreSearch(query.trim(), center);
+      const { results, cached } = await exploreSearch(query.trim(), center, exploreKm());
       exploreLast = { trip: cur.id, center: center.id, q: query.trim(), results, cached };
       paint(results, cached);
       /* teljari dagsins, skrifaður eftir að niðurstöður eru geymdar svo endurteikning sýni þær */
@@ -1373,6 +1376,11 @@ function renderExplore(host){
     }
   };
   for (const [label, query] of EXPLORE_CHIPS) chips.append(el('button', {type:'button', class:'chip', onclick: () => run(query)}, label));
+  /* radíus: 20 km nær t.d. yfir til Cozumel, sem er eyja; styttri radíus heldur sig við hverfið */
+  const kmSel = el('select', {class:'kmsel', title:'Hve langt frá gististaðnum'});
+  for (const k of EXPLORE_KMS) kmSel.append(el('option', {value:String(k), selected: k === exploreKm() ? '' : null}, `Innan ${k} km`));
+  kmSel.addEventListener('change', () => { store.set(`travel:xkm:${cur.id}`, +kmSel.value); const last = exploreLast && exploreLast.trip === cur.id && exploreLast.center === center.id ? exploreLast.q : q.value; exploreLast = null; if (last && last.trim()) run(last); });
+  chips.append(kmSel);
   go.onclick = () => run(q.value); q.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); run(q.value); } });
   box.append(chips, el('div', {class:'q'}, q, go));
   /* merktar tillögur: alltaf efst, geymdar með ferðinni */
@@ -2005,7 +2013,7 @@ const FAQ = [
   ['Hvernig skrifa ég verð svo kostnaðaryfirlitið telji rétt?', 'Tölu og gjaldmiðil, í hvaða rithætti sem er: "121.384 kr.", "US$905.62", "USD 1,007.45", "257,84 CAD", "4.200 MXN". Kr. og kr merkja íslenskar krónur, dollaramerki eitt og sér merkir bandaríska dollara.\n\nYfirlitið er undir Stillingar. Gengi dagsins er sótt sjálfkrafa frá Seðlabanka Evrópu. Ef þú vilt nota gengið sem kortið þitt notaði, skráðu það undir "Nota eigið gengi".'],
   ['Hvaðan kemur veðurspáin?', 'Frá Open-Meteo, sama og á veiðisíðunni. Hún birtist við dagana í Dagskrá þegar 16 dagar eða færri eru í þá, miðað við gistingu dagsins (annars fyrstu færslu dagsins með staðsetningu). Hæsti og lægsti hiti, tákn fyrir veðrið, og úrkomulíkur ef bendillinn er látinn hvíla á spánni.'],
   ['Hvað þýðir stjarnan og "Opið" á færslu?', 'Þegar staður er valinn úr Google leitinni fylgja einkunn (★ 4,6) og opnunartímar með. Á spjaldinu sést opnunartíminn þann vikudag sem færslan er á, eða rautt "Lokað þennan dag". Opnunartímar eru eins og þeir voru þegar staðurinn var valinn, veldu staðinn aftur í "Breyta" til að uppfæra.'],
-  ['Hvað eru "Tillögur úr nágrenninu"?', 'Neðst í Hugmyndabankanum, fyrir eiganda og ritstjóra. Hugmyndir hópsins eru alltaf efst, tillögur Google fyrir neðan og merktar sem slíkar. Veldu fyrst gististað í "Í kringum", tillögurnar fylgja hverri gistingu fyrir sig. Flýtihnappar (Það helsta, Veitingastaðir, Strendur…) eða eigin leit sækja staði frá Google innan um 20 km frá honum, með fjarlægð í loftlínu frá gististaðnum, einkunn, mynd og opnunartíma dagsins. Eigin leitarorð virka best á ensku (snorkeling, tacos, market), Google þekkir íslensk orð illa í útlöndum. "Í hugmyndabankann" geymir staðinn með öllu. "☆ Merkja" á spjaldi færir tillöguna í hópinn "Merktar tillögur" efst, sem geymist með ferðinni og sést ritstjórum líka, svo ekki þurfi að skruna gegnum alla leitina aftur. Hámark 30 leitir á dag á hverja ferð, og sama leit er geymd í síma í sólarhring.'],
+  ['Hvað eru "Tillögur úr nágrenninu"?', 'Neðst í Hugmyndabankanum, fyrir eiganda og ritstjóra. Hugmyndir hópsins eru alltaf efst, tillögur Google fyrir neðan og merktar sem slíkar. Veldu fyrst gististað í "Í kringum", tillögurnar fylgja hverri gistingu fyrir sig. Flýtihnappar (Það helsta, Veitingastaðir, Strendur…) eða eigin leit sækja staði frá Google innan valins radíuss (2, 5, 10 eða 20 km, valið við hliðina á flýtihnöppunum, 10 km sjálfgefið), með fjarlægð í loftlínu frá gististaðnum, einkunn, mynd og opnunartíma dagsins. Styttri radíus heldur sig við hverfið, 20 km nær t.d. yfir sund til næstu eyju. Breyting á radíus endurtekur síðustu leit og telur sem ný leit nema hún sé í geymslu. Eigin leitarorð virka best á ensku (snorkeling, tacos, market), Google þekkir íslensk orð illa í útlöndum. "Í hugmyndabankann" geymir staðinn með öllu. "☆ Merkja" á spjaldi færir tillöguna í hópinn "Merktar tillögur" efst, sem geymist með ferðinni og sést ritstjórum líka, svo ekki þurfi að skruna gegnum alla leitina aftur. Hámark 30 leitir á dag á hverja ferð, og sama leit er geymd í síma í sólarhring.'],
   ['Hvað er bíllinn milli færslna?', 'Áætlaður aksturstími og vegalengd frá gistingu dagsins í fyrstu færslu og svo milli færslna, frá Google. Birtist aðeins milli færslna með staðsetningu á korti. Þarf að Routes API sé virkjað fyrir Google lykilinn, annars sést ekkert.'],
   ['Í hvaða tímabelti eru tímarnir?', 'Alltaf staðartími á áfangastað. Flug frá Keflavík kl. 17:00 er íslenskur tími, lending í Cancún kl. 18:05 er mexíkóskur tími. Síðan umreiknar ekkert.'],
   ['Hvað er Mikilvægt?', 'Flipi sem aðeins þú sérð, fyrir vegabréfsnúmer, tryggingar, neyðarnúmer, sendiráð, kortafyrirtæki og wifi-lykilorð. Geymt í sama læsta hólfi og bókunarnúmerin. Gott að hafa þetta við höndina án nets.'],
