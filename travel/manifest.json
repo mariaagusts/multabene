@@ -1,0 +1,14 @@
+{
+  "name": "Travel",
+  "short_name": "Travel",
+  "description": "Ferðaáætlun: gisting, flug, afþreying og allt sem er bókað.",
+  "start_url": "/travel/",
+  "scope": "/travel/",
+  "display": "standalone",
+  "background_color": "#F3F6F6",
+  "theme_color": "#0F7C8C",
+  "lang": "is",
+  "icons": [
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+  ]
+}
