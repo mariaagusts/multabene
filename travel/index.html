@@ -1489,14 +1489,14 @@ function openTemplateDialog(){
       el('span', {}, el('b', {}, t.name), el('small', {}, `${n} hlutir. ${sample}, …`))));
   }
   f.append(opts);
-  const forWho = el('input', {id:'tplBy', maxlength:'30', placeholder:'Tómt = fyrir alla', list:'peopleDl', autocomplete:'off'});
-  f.append(el('label', {}, 'Fyrir hvern (valkvætt, t.d. nafn barnsins)', forWho), peopleDatalist());
+  const forWho = whoField('');
+  f.append(el('label', {}, 'Fyrir hvern (t.d. nafn barnsins)', forWho));
   const st = el('p', {class:'status'});
   f.append(el('div', {class:'row'}, el('button', {class:'btn', type:'submit'}, 'Setja inn'), el('button', {class:'btn ghost', type:'button', onclick: () => dlg.close()}, 'Hætta við')), st);
   f.addEventListener('submit', async e => {
     e.preventDefault();
     const key = (f.querySelector('input[name=pkTpl]:checked') || {}).value || def;
-    try { await addTemplate(key, forWho.value.trim() || null); dlg.close(); }
+    try { await addTemplate(key, forWho.value()); dlg.close(); }
     catch(err){ st.textContent = 'Vistun tókst ekki: ' + (err.code || err.message) + (err.code === 'PERMISSION_DENIED' ? '. Reglan "team" vantar í Firebase.' : ''); st.classList.add('err'); }
   });
   inner.append(f); dlg.showModal();
@@ -1520,9 +1520,8 @@ function openPackDialog(it){
   const cat = el('select', {id:'pkCat'});
   const cats = [...new Set(PACK_CATS.concat(cur.packing.map(x => x.cat).filter(c => c && !PACK_CATS.includes(c)), editing && it.cat && !PACK_CATS.includes(it.cat) ? [it.cat] : []))];
   for (const c of cats) cat.append(el('option', {value:c, selected: editing && (it.cat || 'Annað') === c ? '' : null}, c));
-  const by = el('input', {id:'pkBy', maxlength:'30', placeholder:'Tómt = fyrir alla', list:'peopleDl', autocomplete:'off', value: editing ? (it.by || '') : ''});
-  f.append(peopleDatalist());
-  f.append(el('label', {class:'full'}, editing ? 'Hlutur' : 'Hlutir', text), el('label', {}, 'Flokkur', cat), el('label', {}, 'Fyrir hvern (valkvætt)', by));
+  const by = whoField(editing ? it.by : '');
+  f.append(el('label', {class:'full'}, editing ? 'Hlutur' : 'Hlutir', text), el('label', {}, 'Flokkur', cat), el('label', {}, 'Fyrir hvern', by));
   const st = el('p', {class:'status'});
   f.append(el('div', {class:'row'}, el('button', {class:'btn', type:'submit'}, editing ? 'Vista' : 'Bæta við'), el('button', {class:'btn ghost', type:'button', onclick: () => dlg.close()}, 'Hætta við')), st);
   f.addEventListener('submit', async e => {
@@ -1530,14 +1529,14 @@ function openPackDialog(it){
     if (editing){
       const t = text.value.trim();
       if (!t){ st.textContent = 'Hluturinn þarf texta.'; st.classList.add('err'); return; }
-      try { await db.ref(`travel/team/${cur.id}/packing/${it.id}`).update({ text: t.slice(0, 80), cat: cat.value, by: by.value.trim() || null }); dlg.close(); toast('Vistað'); }
+      try { await db.ref(`travel/team/${cur.id}/packing/${it.id}`).update({ text: t.slice(0, 80), cat: cat.value, by: by.value() }); dlg.close(); toast('Vistað'); }
       catch(err){ st.textContent = 'Vistun tókst ekki: ' + (err.code || err.message); st.classList.add('err'); }
       return;
     }
     const lines = text.value.split('\n').map(x => x.trim()).filter(Boolean);
     if (!lines.length){ st.textContent = 'Skrifaðu að minnsta kosti einn hlut.'; st.classList.add('err'); return; }
     const upd = {}; const now = new Date().toISOString();
-    for (const t of lines) upd[`travel/team/${cur.id}/packing/${rnd(10)}`] = { text: t.slice(0, 80), cat: cat.value, done: false, by: by.value.trim() || null, created: now };
+    for (const t of lines) upd[`travel/team/${cur.id}/packing/${rnd(10)}`] = { text: t.slice(0, 80), cat: cat.value, done: false, by: by.value(), created: now };
     try { await db.ref().update(upd); dlg.close(); toast(`${lines.length} ${lines.length === 1 ? 'hlutur' : 'hlutir'} á listann`); }
     catch(err){ st.textContent = 'Vistun tókst ekki: ' + (err.code || err.message) + (err.code === 'PERMISSION_DENIED' ? '. Reglan "team" vantar í Firebase.' : ''); st.classList.add('err'); }
   });
@@ -1571,6 +1570,22 @@ function peopleDatalist(){
   const dl = el('datalist', {id:'peopleDl'});
   for (const p of (cur && cur.people) || []) dl.append(el('option', {value:p.name}));
   return dl;
+}
+/* "Fyrir hvern": valmynd með Allir, þátttakendum og Annað nafn (textareitur). value() skilar nafni eða null. */
+function whoField(current, allLabel){
+  const names = ((cur && cur.people) || []).map(p => p.name);
+  const sel = el('select', {});
+  sel.append(el('option', {value:''}, allLabel || 'Allir'));
+  for (const n of names) sel.append(el('option', {value:n}, n));
+  sel.append(el('option', {value:'__annad'}, 'Annað nafn…'));
+  const txt = el('input', {maxlength:'30', placeholder:'Nafn', style:'margin-top:6px', hidden:''});
+  const wrap = el('div', {}, sel, txt);
+  const cur_ = (current || '').trim();
+  if (cur_ && names.includes(cur_)) sel.value = cur_;
+  else if (cur_){ sel.value = '__annad'; txt.value = cur_; txt.hidden = false; }
+  sel.addEventListener('change', () => { txt.hidden = sel.value !== '__annad'; if (sel.value === '__annad') txt.focus(); });
+  wrap.value = () => sel.value === '__annad' ? (txt.value.trim() || null) : (sel.value || null);
+  return wrap;
 }
 const dayDiff = (a, b) => Math.round((parse(a) - parse(b)) / 86400000);
 function dueText(due){
@@ -1642,15 +1657,15 @@ function openTodoDialog(it){
   const f = el('form', {class:'form'});
   const text = el('input', {id:'tdText', maxlength:'120', required:'', placeholder:'t.d. Sækja um ESTA', value: editing ? (it.text || '') : ''});
   const due = el('input', {id:'tdDue', type:'date', value: editing ? (it.due || '') : ''});
-  const who = el('input', {id:'tdWho', maxlength:'30', placeholder:'Tómt = allir', list:'peopleDl', autocomplete:'off', value: editing ? (it.who || '') : ''});
-  f.append(el('label', {class:'full'}, 'Verkefni', text), el('label', {}, 'Skiladagur (valkvætt)', due), el('label', {}, 'Ábyrgð (valkvætt)', who), peopleDatalist());
+  const who = whoField(editing ? it.who : '', 'Allir');
+  f.append(el('label', {class:'full'}, 'Verkefni', text), el('label', {}, 'Skiladagur (valkvætt)', due), el('label', {}, 'Ábyrgð', who));
   const st = el('p', {class:'status'});
   f.append(el('div', {class:'row'}, el('button', {class:'btn', type:'submit'}, editing ? 'Vista' : 'Bæta við'), el('button', {class:'btn ghost', type:'button', onclick: () => dlg.close()}, 'Hætta við')), st);
   f.addEventListener('submit', async e => {
     e.preventDefault(); st.className = 'status';
     const t = text.value.trim();
     if (!t){ st.textContent = 'Verkefnið þarf texta.'; st.classList.add('err'); return; }
-    const data = { text: t, due: due.value || null, who: who.value.trim() || null };
+    const data = { text: t, due: due.value || null, who: who.value() };
     try {
       if (editing) await db.ref(`travel/team/${cur.id}/todos/${it.id}`).update(data);
       else await db.ref(`travel/team/${cur.id}/todos/${rnd(10)}`).set({ ...data, done: false, created: new Date().toISOString() });
