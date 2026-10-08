@@ -1,7 +1,7 @@
 // Service worker fyrir Travel: geymir síðuna sjálfa og Firebase-skrifturnar í skyndiminni
 // svo hún opnist án nets. Gögn ferðarinnar eru geymd í localStorage af síðunni sjálfri.
 // Hækka CACHE-nafnið við stærri breytingar.
-const CACHE = 'travel-v1';
+const CACHE = 'travel-v2';
 const PRECACHE = [
   '/travel/',
   '/travel/index.html',
