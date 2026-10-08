@@ -359,13 +359,19 @@ const THEMES = {
   borg: { name:'Borgarferð', desc:'Steinn, gler og kaffi', motif:'skyline',
     vars:{ '--bg':'#F4F3F0','--panel':'#FFFFFF','--panel-2':'#E8E6E1','--line':'#D3D0C8','--fg':'#1E1D1A','--dim':'#6B6862','--accent':'#A8294A','--accent-soft':'#F6D9E0','--act':'#D27A1F' } },
   sveit:{ name:'Sveit og skógur', desc:'Grænt og rólegt', motif:'forest',
-    vars:{ '--bg':'#F2F5EE','--panel':'#FFFFFF','--panel-2':'#E3EAD9','--line':'#CBD6BC','--fg':'#1C261A','--dim':'#5F6E58','--accent':'#3F7A3A','--accent-soft':'#D9EBD3','--act':'#C7652E' } }
+    vars:{ '--bg':'#F2F5EE','--panel':'#FFFFFF','--panel-2':'#E3EAD9','--line':'#CBD6BC','--fg':'#1C261A','--dim':'#5F6E58','--accent':'#3F7A3A','--accent-soft':'#D9EBD3','--act':'#C7652E' } },
+  utilega:{ name:'Útilega', desc:'Tjald, grill og stjörnur', motif:'tent',
+    vars:{ '--bg':'#F4F1E8','--panel':'#FFFFFF','--panel-2':'#E9E3D3','--line':'#D6CDB6','--fg':'#26221A','--dim':'#6E6652','--accent':'#6B7A2F','--accent-soft':'#E4E8CF','--act':'#C45C2E' } },
+  ithrott:{ name:'Íþróttaferð', desc:'Mót, keppni og lið', motif:'ball',
+    vars:{ '--bg':'#F0F4F8','--panel':'#FFFFFF','--panel-2':'#E1E8F0','--line':'#C8D3E0','--fg':'#13202C','--dim':'#58687A','--accent':'#1F5FA8','--accent-soft':'#D8E5F5','--act':'#E0A024' } }
 };
 const MOTIFS = {
   waves: `<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid slice"><g fill="none" stroke="var(--accent)" stroke-width="3" opacity=".35"><path d="M-10 70c30-20 60-20 90 0s60 20 90 0 60-20 90 0 60 20 90 0"/><path d="M-10 110c30-20 60-20 90 0s60 20 90 0 60-20 90 0 60 20 90 0"/><path d="M-10 150c30-20 60-20 90 0s60 20 90 0 60-20 90 0 60 20 90 0"/></g><circle cx="250" cy="34" r="18" fill="var(--act)" opacity=".5"/></svg>`,
   palm:  `<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid slice"><circle cx="230" cy="52" r="34" fill="var(--act)" opacity=".55"/><g fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round" opacity=".55"><path d="M290 200c-4-60-2-100 14-140"/><path d="M304 60c-30-18-60-10-80 10"/><path d="M304 60c20-24 50-28 76-14"/><path d="M304 60c-6-28 6-50 26-62"/><path d="M304 60c26-6 50 6 64 30"/><path d="M304 60c-26 4-44 24-50 50"/></g><g fill="none" stroke="var(--accent)" stroke-width="3" opacity=".3"><path d="M0 170c30-16 60-16 90 0s60 16 90 0 60-16 90 0 60 16 90 0"/></g></svg>`,
   mountains:`<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid slice"><g opacity=".5"><path d="M20 200L130 60l40 48 30-30 110 122z" fill="var(--accent)" opacity=".5"/><path d="M130 60l-24 30 14 6 10-10 12 12 10-8 12 10 6-10-40-30z" fill="#fff" opacity=".9"/><path d="M200 78l-14 18 10 4 8-8 10 10 8-6 8 10 10-6-40-22z" fill="#fff" opacity=".9"/></g><g fill="var(--accent)" opacity=".35"><circle cx="60" cy="40" r="3"/><circle cx="90" cy="24" r="2"/><circle cx="250" cy="30" r="3"/><circle cx="290" cy="60" r="2"/><circle cx="40" cy="90" r="2"/><circle cx="270" cy="16" r="2"/></g></svg>`,
   skyline:`<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid slice"><g fill="var(--accent)" opacity=".35"><rect x="30" y="110" width="30" height="90"/><rect x="66" y="70" width="24" height="130"/><rect x="96" y="90" width="40" height="110"/><rect x="142" y="40" width="22" height="160"/><rect x="170" y="100" width="34" height="100"/><rect x="210" y="60" width="28" height="140"/><rect x="244" y="120" width="40" height="80"/><rect x="290" y="80" width="26" height="120"/></g><g fill="var(--bg)" opacity=".9"><rect x="72" y="80" width="5" height="6"/><rect x="82" y="80" width="5" height="6"/><rect x="72" y="94" width="5" height="6"/><rect x="148" y="52" width="4" height="6"/><rect x="156" y="52" width="4" height="6"/><rect x="148" y="66" width="4" height="6"/><rect x="216" y="72" width="5" height="6"/><rect x="226" y="72" width="5" height="6"/><rect x="216" y="86" width="5" height="6"/></g><circle cx="270" cy="34" r="14" fill="var(--act)" opacity=".5"/></svg>`,
+  ball:   `<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid slice"><g opacity=".45"><circle cx="240" cy="110" r="54" fill="none" stroke="var(--accent)" stroke-width="4"/><path d="M240 76l22 16-8 26h-28l-8-26z" fill="var(--accent)"/><path d="M240 76v-18M262 92l18-10M254 118l14 18M226 118l-14 18M218 92l-18-10" stroke="var(--accent)" stroke-width="3"/></g><g fill="var(--act)" opacity=".55"><path d="M60 40v150h6V40z"/><path d="M66 42l70 18-70 18z"/></g><g fill="var(--accent)" opacity=".3"><circle cx="150" cy="30" r="3"/><circle cx="300" cy="30" r="2"/><circle cx="120" cy="160" r="2.5"/></g></svg>`,
+  tent:   `<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid slice"><g fill="var(--accent)" opacity=".4"><path d="M150 190L230 60l80 130z"/><path d="M230 60l-8 130h16z" fill="#fff" opacity=".7"/></g><path d="M120 190h200" stroke="var(--accent)" stroke-width="3" opacity=".35"/><g fill="var(--act)" opacity=".6"><path d="M70 190c-14-4-22-16-18-30 3 8 8 11 12 11-4-12 0-24 12-32-2 12 4 18 10 22 2-8 8-12 14-14-4 14 6 20 4 32-2 8-10 12-18 12-6 0-12-1-16-1z"/></g><g fill="var(--accent)" opacity=".4"><circle cx="40" cy="40" r="3"/><circle cx="90" cy="24" r="2"/><circle cx="130" cy="50" r="2.5"/><circle cx="200" cy="20" r="2"/><circle cx="270" cy="28" r="3"/><circle cx="300" cy="50" r="2"/><circle cx="160" cy="20" r="1.5"/></g><circle cx="110" cy="80" r="14" fill="var(--act)" opacity=".35"/></svg>`,
   forest: `<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid slice"><g fill="var(--accent)" opacity=".4"><path d="M60 200V120l-30 0 30-50-20 0 30-50 30 50-20 0 30 50-30 0v80z"/><path d="M160 200V110l-34 0 34-56-22 0 34-54 34 54-22 0 34 56-34 0v90z"/><path d="M260 200V130l-26 0 26-44-16 0 26-44 26 44-16 0 26 44-26 0v70z"/></g><circle cx="40" cy="36" r="16" fill="var(--act)" opacity=".45"/></svg>`
 };
 function applyTheme(key){
@@ -1335,10 +1341,10 @@ const PACK_CATS = ['Föt', 'Snyrtivörur', 'Skjöl og peningar', 'Rafmagn', 'Lyf
 const PACK_BASE = {
   'Skjöl og peningar': ['Vegabréf', 'Ökuskírteini', 'Greiðslukort, tvö frá ólíkum fyrirtækjum', 'Kort sett í símann, Apple Pay eða Google Pay', 'Reiðufé í gjaldmiðli áfangastaðar', 'Ferðatrygging, skírteini og neyðarsími', 'Evrópska sjúkratryggingakortið, innan Evrópu', 'Útprentuð áætlun og bókanir', 'Afrit af vegabréfi, á pappír og í síma', 'Flugmiðar eða brottfararspjöld í síma', 'Bílaleigustaðfesting', 'Húslykill og bíllykill í öruggum vasa'],
   'Rafmagn': ['Sími', 'Hleðslutæki fyrir síma', 'Hleðslusnúrur fyrir öll tæki: síma, úr, tölvu, spjaldtölvu', 'Hleðslubanki', 'Millistykki fyrir innstungur', 'Heyrnartól', 'iPad eða spjaldtölva', 'Tölva ef þarf', 'Lítill hátalari', 'Fjöltengi fyrir hótelið', 'Hárblásari ef gistingin hefur ekki', 'Myndavél, minniskort og hleðslutæki', 'Lesljós eða höfuðljós'],
-  'Snyrtivörur': ['Tannbursti og tannkrem', 'Tannþráður og tannstönglar', 'Sjampó og hárnæring', 'Þurrsjampó', 'Hárolía', 'Sturtusápa', 'Handsápa', 'Svitalyktareyðir', 'Varasalvi', 'Rakakrem', 'Förðunardót', 'Rakvél og raksápa', 'Plokkari og flísatöng', 'Hárbursti eða greiða', 'Hárteygjur og spennur', 'Dömubindi eða tíðarvörur', 'Naglaklippur og naglaþjöl', 'Naglalakk', 'Eyrnapinnar', 'Blautþurrkur', 'Sólarvörn', 'Ferðaflöskur undir 100 ml fyrir handfarangur', 'Snyrtitaska'],
+  'Snyrtivörur': ['Tannbursti og tannkrem', 'Tannþráður og tannstönglar', 'Sjampó og hárnæring', 'Þurrsjampó', 'Hárolía', 'Sturtusápa', 'Handsápa', 'Svitalyktareyðir', 'Varasalvi', 'Rakakrem', 'Förðunardót', 'Rakvél og rakkrem', 'Plokkari og flísatöng', 'Hárbursti eða greiða', 'Hárteygjur og spennur', 'Dömubindi eða tíðarvörur', 'Naglaklippur og naglaþjöl', 'Naglalakk', 'Eyrnapinnar', 'Blautþurrkur', 'Sólarvörn', 'Ferðaflöskur undir 100 ml fyrir handfarangur', 'Snyrtitaska'],
   'Lyf': ['Verkjalyf, parasetamól og íbúfen', 'Plástrar', 'Hælsærisplástrar', 'Eigin lyf, í upprunalegum umbúðum', 'Lyfseðlar eða lyfjaskírteini fyrir lyf sem þarf að sýna', 'Ofnæmislyf', 'Kveflyf', 'Vítamín', 'Magalyf og niðurgangslyf', 'Hálstöflur', 'Nefúði', 'Ferðaveikitöflur', 'Hitamælir', 'Handspritt', 'Sáraumbúðir og sárakrem', 'Augndropar', 'Melatónín fyrir tímamismun'],
   'Föt': ['Nærföt, fyrir hvern dag og tvö auka', 'Brjóstahaldarar', 'Sokkar', 'Náttföt', 'Léttur jakki', 'Buxur', 'Gallabuxur', 'Bolir', 'Hlýrabolir', 'Hettupeysa eða síðerma peysa', 'Hlý peysa', 'Íþróttaföt', 'Kjóll eða pils', 'Þægilegir skór til að ganga í', 'Inniskór', 'Fín föt fyrir eitt kvöld', 'Belti', 'Þægileg föt fyrir flugið, í lögum', 'Poki fyrir óhreinan þvott'],
-  'Annað': ['Bakpoki eða taska yfir öxl', 'Lítið veski fyrir daginn', 'Vatnsflaska', 'Bók eða lesbretti', 'Ferðakoddi', 'Ferðateppi fyrir flugið', 'Svefngríma og eyrnatappar', 'Sólgleraugu', 'Gleraugu og aukagleraugu eða linsur', 'Regnhlíf', 'Lítill hengilás á töskuna', 'Töskumerki með nafni og síma', 'Vigt fyrir ferðatösku', 'Snakk og drykkir fyrir ferðalagið', 'Tómur poki fyrir rusl og blautt dót', 'Penni fyrir eyðublöð á landamærum', 'Þvottaefni í litlum skammti fyrir handþvott', 'Lítill saumapakki', 'Spil, t.d. Yatzy eða spilastokkur', 'Handavinna eða annað til að stytta stundir', 'Handklæði ef gistingin býður ekki upp á það', 'Gjafir ef afmæli ber upp á ferðina']
+  'Annað': ['Bakpoki eða taska yfir öxl', 'Lítið veski fyrir daginn', 'Vatnsflaska', 'Bók eða lesbretti', 'Ferðakoddi og ferðateppi', 'Svefngríma og eyrnatappar', 'Sólgleraugu', 'Gleraugu og aukagleraugu eða linsur', 'Regnhlíf', 'Lítill hengilás á töskuna', 'Töskumerki með nafni og síma', 'Vigt fyrir ferðatösku', 'Snakk og drykkir fyrir ferðalagið', 'Tómur poki fyrir rusl og blautt dót', 'Penni fyrir eyðublöð á landamærum', 'Þvottaefni í litlum skammti fyrir handþvott', 'Lítill saumapakki', 'Spil, t.d. Yatzy eða spilastokkur', 'Handavinna eða annað til að stytta stundir', 'Handklæði ef gistingin býður ekki upp á það', 'Gjafir ef afmæli ber upp á ferðina']
 };
 const PACK_SUN = {
   'Snyrtivörur': ['After sun', 'Flugnafæla', 'After-bite við stungum', 'Sólarvörn fyrir andlit', 'Aloe vera gel'],
@@ -1360,6 +1366,19 @@ const PACK_THEME = {
     'Skjöl og peningar': ['Miðar á söfn og sýningar', 'Kort fyrir almenningssamgöngur', 'Borðapantanir'],
     'Annað': ['Lítil taska yfir öxl með rennilás', 'Niðurhalað kort af borginni í síma', 'Innlegg í skó fyrir langa göngudaga', 'Endurnýtanlegur innkaupapoki']
   } },
+  utilega: { name:'Útilega', items: {
+    'Snyrtivörur': ['Flugnafæla', 'Klósettpappír', 'Örhandklæði sem þornar hratt'],
+    'Föt': ['Hlý úlpa', 'Regnjakki og regnbuxur', 'Flíspeysa', 'Lopapeysa', 'Ullarnærföt', 'Ullarsokkar, háir', 'Húfa, vettlingar og buff', 'Stígvél', 'Strigaskór', 'Sandalar eða Crocs fyrir tjaldstæðið', 'Sundföt'],
+    'Eldhús og matur': ['Prímus og gas', 'Pottur og panna', 'Kaffikanna eða pressukanna', 'Hitabrúsi', 'Bollar, diskar og skálar', 'Hnífapör', 'Beittur hnífur og skurðarbretti', 'Tangir og sleif', 'Tappatogari og dósaopnari', 'Uppþvottabursti og uppþvottasápa', 'Viskastykki og borðtuskur', 'Eldhúspappír', 'Álpappír', 'Plastbox og litlir plastpokar', 'Ruslapokar', 'Krydd, salt og pipar', 'Kveikjari og eldspýtur', 'Grill og kol', 'Kælibox og kælikubbar', 'Vatnsbrúsar', 'Matur fyrir fyrsta daginn', 'Kaffi, te og kakó', 'Morgunmatur', 'Snakk og kex'],
+    'Annað': ['Tjald, súlur og hælar', 'Hamar fyrir tjaldhæla', 'Fortjald eða yfirbreiðsla', 'Svefnpoki', 'Dýna eða vindsæng og pumpa', 'Koddi', 'Teppi', 'Lök ef gist er í húsi', 'Tjaldstólar', 'Tjaldborð', 'Vasaljós og höfuðljós', 'Rafhlöður', 'Vasahnífur', 'Framlengingarsnúra ef rafmagn er á stæðinu', 'Þvottasnúra og klemmur', 'Þvottaefni í púðum', 'Lítill sópur og fægiskófla', 'Spil og bók', 'Kaðall eða snæri', 'Teip', 'Sjúkrapakki', 'Talstöðvar ef hópurinn dreifist', 'Fótbolti eða annar leikur', 'Hitapúðar']
+  } },
+  ithrott: { name:'Íþróttaferð', items: {
+    'Íþróttabúnaður': ['Keppnistreyja, í handfarangur', 'Varakeppnistreyja', 'Keppnisstuttbuxur', 'Keppnissokkar og aukasokkar', 'Legghlífar', 'Íþróttatoppar', 'Keppnisskór, í handfarangur', 'Varaskór fyrir annað undirlag', 'Skópoki', 'Íþróttateip', 'Æfingaföt fyrir hvern dag', 'Liðsgalli eða liðspeysa', 'Drykkjarbrúsi merktur nafni', 'Lítill bakpoki með keppnisfötum, í handfarangur', 'Fánar og hvatningardót'],
+    'Föt': ['Regnjakki', 'Utanyfirgalli', 'Sundföt', 'Derhúfa', 'Hlý peysa fyrir kvöldin'],
+    'Snyrtivörur': ['Flugnafæla', 'After-bite við stungum'],
+    'Lyf': ['Steinefnatöflur eða hleðslusölt', 'Kælisprey eða kælikrem', 'Teygjubindi', 'Upplýsingar um lyfjagjöf og ofnæmi fyrir fararstjóra'],
+    'Annað': ['Nesti fyrir ferðadaginn og snarl á herbergið', 'Merktur poki fyrir óhreinan þvott', 'Lítil ferðaþvottavél eða þvottaefni í púðum', 'Blævængur eða lítil vifta', 'Spil og bók fyrir frítímann', 'Plastvasar fyrir skjöl fararstjóra', 'Lítið veski með hálsól', 'Hátalari fyrir liðið']
+  } },
   sveit: { name:'Sveita- og útivistarferð', items: {
     'Snyrtivörur': ['Flugnafæla'],
     'Föt': ['Gönguskór', 'Stígvél', 'Regnjakki og regnbuxur', 'Hlý úlpa', 'Flíspeysa', 'Lopapeysa', 'Merino nærföt', 'Ullarsokkar, háir', 'Húfa, vettlingar og buff', 'Trefill', 'Stuttbuxur', 'Göngubuxur', 'Strigaskór', 'Aukaskór fyrir kvöldið'],
@@ -1369,32 +1388,32 @@ const PACK_THEME = {
 /* Listar eftir aldri: bætast ofan á, án grunnhlutanna */
 const PACK_KIDS = {
   ungabarn: { name:'Ungabarn (0 til 2 ára)', items: {
-    'Snyrtivörur': ['Bleyjur, fleiri en þú heldur', 'Blautþurrkur', 'Bleyjukrem', 'Sólarvörn fyrir ungbörn', 'Snuð og aukasnuð'],
+    'Snyrtivörur': ['Bleyjur, fleiri en þú heldur', 'Bleyjukrem', 'Sólarvörn fyrir ungbörn', 'Snuð og aukasnuð'],
     'Föt': ['Samfellur og aukaföt, slys gerast', 'Sundbleyjur', 'Sólhattur', 'Léttur svefnpoki eða teppi'],
-    'Lyf': ['Hitalækkandi stílar eða mixtúra', 'Hitamælir', 'Saltvatnsdropar í nef'],
+    'Lyf': ['Hitalækkandi stílar eða mixtúra', 'Saltvatnsdropar í nef'],
     'Skjöl og peningar': ['Vegabréf barns', 'Samþykki hins foreldris ef annað ferðast eitt með barn'],
     'Annað': ['Pelar og þurrmjólk', 'Grautur og skeið', 'Smekkir', 'Kerra eða burðarpoki', 'Ferðarúm, eða bóka hjá hóteli', 'Barnabílstóll, eða bóka í bílaleigu', 'Uppáhaldsbangsi eða teppi', 'Pokar fyrir óhreinar bleyjur']
   } },
   barn: { name:'Barn (3 til 12 ára)', items: {
     'Föt': ['Aukaföt, slys gerast', 'Sundföt og armkútar', 'Sólhattur', 'Þægilegir skór'],
     'Snyrtivörur': ['Sólarvörn fyrir börn', 'Tannbursti barns'],
-    'Lyf': ['Hitalækkandi fyrir börn', 'Hitamælir', 'Plástrar með myndum', 'Ferðaveikitöflur fyrir börn'],
+    'Lyf': ['Hitalækkandi fyrir börn', 'Plástrar með myndum', 'Ferðaveikitöflur fyrir börn'],
     'Skjöl og peningar': ['Vegabréf barns', 'Samþykki hins foreldris ef annað ferðast eitt með barn'],
     'Annað': ['Uppáhaldsbangsi', 'Afþreying í flugi: bók, litir, spjaldtölva', 'Heyrnartól fyrir barn', 'Nesti og snakk', 'Bílstólapúði, eða bóka í bílaleigu', 'Lítill bakpoki sem barnið ber sjálft']
   } },
   unglingur: { name:'Unglingur', items: {
-    'Rafmagn': ['Hleðslubanki', 'Heyrnartól', 'Hleðslusnúra fyrir eigin síma'],
-    'Föt': ['Sundföt', 'Fín föt fyrir kvöldið', 'Þægilegir skór'],
-    'Snyrtivörur': ['Eigin snyrtivörur', 'Svitalyktareyðir', 'Sólarvörn'],
-    'Skjöl og peningar': ['Vegabréf', 'Eigið kort eða vasapeningur', 'Afrit af vegabréfi í síma'],
-    'Annað': ['Vatnsheld hlíf fyrir síma', 'Bók eða afþreying í flugi', 'Lítill bakpoki']
+    'Rafmagn': ['Eigin sími og hleðslusnúra', 'Eigin heyrnartól', 'Eigin hleðslubanki'],
+    'Föt': ['Eigin sundföt', 'Fín föt fyrir kvöldið', 'Þægilegir skór'],
+    'Snyrtivörur': ['Eigin snyrtivörur', 'Eigin svitalyktareyðir'],
+    'Skjöl og peningar': ['Eigið vegabréf', 'Eigið kort eða vasapeningur', 'Afrit af vegabréfi í síma'],
+    'Annað': ['Vatnsheld hlíf fyrir síma', 'Eigin afþreying í flugi', 'Lítill bakpoki']
   } }
 };
 function packTemplate(key){
   if (PACK_KIDS[key]){ const out = {}; for (const cat of PACK_CATS) out[cat] = [...(PACK_KIDS[key].items[cat] || [])]; return out; }
   const t = PACK_THEME[key] || PACK_THEME.sjor;
   const out = {};
-  for (const cat of PACK_CATS) out[cat] = [...(PACK_BASE[cat] || []), ...(t.items[cat] || [])];
+  for (const cat of [...PACK_CATS, ...Object.keys(t.items).filter(c => !PACK_CATS.includes(c))]) out[cat] = [...(PACK_BASE[cat] || []), ...(t.items[cat] || [])];
   return out;
 }
 function renderPacking(host){
@@ -1460,7 +1479,7 @@ function openTemplateDialog(){
   const f = el('form', {class:'form'});
   const opts = el('div', {class:'opts full'});
   const seen = new Set();
-  for (const key of ['sol', 'snjor', 'borg', 'sveit', 'ungabarn', 'barn', 'unglingur']){
+  for (const key of ['sol', 'snjor', 'borg', 'sveit', 'utilega', 'ithrott', 'ungabarn', 'barn', 'unglingur']){
     const t = PACK_KIDS[key] || PACK_THEME[key];
     const n = Object.values(packTemplate(key)).reduce((a, b) => a + b.length, 0);
     const sample = Object.values(t.items).flat().slice(0, 4).join(', ');
@@ -1499,7 +1518,7 @@ function openPackDialog(it){
   const f = el('form', {class:'form'});
   const text = editing ? el('input', {id:'pkText', maxlength:'80', required:'', value: it.text || ''}) : el('textarea', {id:'pkText', rows:'4', placeholder:'Einn hlutur í hverja línu'});
   const cat = el('select', {id:'pkCat'});
-  const cats = PACK_CATS.concat(editing && it.cat && !PACK_CATS.includes(it.cat) ? [it.cat] : []);
+  const cats = [...new Set(PACK_CATS.concat(cur.packing.map(x => x.cat).filter(c => c && !PACK_CATS.includes(c)), editing && it.cat && !PACK_CATS.includes(it.cat) ? [it.cat] : []))];
   for (const c of cats) cat.append(el('option', {value:c, selected: editing && (it.cat || 'Annað') === c ? '' : null}, c));
   const by = el('input', {id:'pkBy', maxlength:'30', placeholder:'Tómt = fyrir alla', list:'peopleDl', autocomplete:'off', value: editing ? (it.by || '') : ''});
   f.append(peopleDatalist());
@@ -1671,7 +1690,7 @@ const FAQ = [
   ['Hvernig skrifa ég verð svo kostnaðaryfirlitið telji rétt?', 'Tölu og gjaldmiðil, í hvaða rithætti sem er: "121.384 kr.", "US$905.62", "USD 1,007.45", "257,84 CAD", "4.200 MXN". Kr. og kr merkja íslenskar krónur, dollaramerki eitt og sér merkir bandaríska dollara.\n\nYfirlitið er undir Stillingar. Gengi dagsins er sótt sjálfkrafa frá Seðlabanka Evrópu. Ef þú vilt nota gengið sem kortið þitt notaði, skráðu það undir "Nota eigið gengi".'],
   ['Í hvaða tímabelti eru tímarnir?', 'Alltaf staðartími á áfangastað. Flug frá Keflavík kl. 17:00 er íslenskur tími, lending í Cancún kl. 18:05 er mexíkóskur tími. Síðan umreiknar ekkert.'],
   ['Hvað er Mikilvægt?', 'Flipi sem aðeins þú sérð, fyrir vegabréfsnúmer, tryggingar, neyðarnúmer, sendiráð, kortafyrirtæki og wifi-lykilorð. Geymt í sama læsta hólfi og bókunarnúmerin. Gott að hafa þetta við höndina án nets.'],
-  ['Hvernig virkar pökkunarlistinn?', 'Flipinn Pökkun er sameiginlegur listi fyrir eiganda og ritstjóra. Gestir með leshlekk sjá hann ekki. "Setja inn grunnlista" gefur algenga hluti til að byrja með, valið eftir tegund ferðar (sól, skíði, borg eða sveit), og listar eftir aldri (ungabarn, barn, unglingur) sem bætast ofan á. "Eyða flokki" við fyrirsögn flokks og "Tæma listann" neðst hreinsa hratt. Þú getur bætt við og eytt hverju sem er á eftir. Ef hlutur er bara fyrir eina manneskju, skrifaðu nafn hennar í reitinn Fyrir hvern. "Taka hak af öllu" er gott fyrir heimferðina.'],
+  ['Hvernig virkar pökkunarlistinn?', 'Flipinn Pökkun er sameiginlegur listi fyrir eiganda og ritstjóra. Gestir með leshlekk sjá hann ekki. "Setja inn grunnlista" gefur algenga hluti til að byrja með, valið eftir tegund ferðar (sól, skíði, borg, sveit, útilega eða íþróttaferð), og listar eftir aldri (ungabarn, barn, unglingur) sem bætast ofan á. "Eyða flokki" við fyrirsögn flokks og "Tæma listann" neðst hreinsa hratt. Þú getur bætt við og eytt hverju sem er á eftir. Ef hlutur er bara fyrir eina manneskju, skrifaðu nafn hennar í reitinn Fyrir hvern. "Taka hak af öllu" er gott fyrir heimferðina.'],
   ['Hvar er dagatalið?', 'Undir Dagskrá. Efst hægra megin velur þú milli "Dagur fyrir dag" og "Dagatal". Valið helst í símanum.'],
   ['Hvað er klukkan í hausnum?', 'Ef þú velur tímabelti áfangastaðar undir Stillingar sýnir hausinn klukkuna þar og heima. Gott fyrir símtöl og skilaboð heim.'],
   ['Get ég prentað ferðina?', 'Já, "Prenta" neðst á síðunni gefur hreina útgáfu af dagskrá, gistingu og Mikilvægt (aðeins hjá eiganda). Í síma má velja "Vista sem PDF" í prentglugganum. Pappír er góð varaleið ef síminn er tómur eða týndur.'],
